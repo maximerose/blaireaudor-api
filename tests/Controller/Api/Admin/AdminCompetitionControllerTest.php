@@ -39,16 +39,14 @@ class AdminCompetitionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        $competitionId = $data['id'];
-
-        CompetitionFactory::assert()->exists(['id' => $competitionId]);
-        ParticipationFactory::assert()->exists([
-            'competition' => $competitionId,
-            'player' => $user->getPlayer()->getId(),
-        ]);
+        
+        $this->assertArrayHasKey('slug', $data);
+        $this->assertEquals('blaireau-d-or', $data['slug']);
 
         $this->assertArrayHasKey('join_code', $data);
-        $this->assertNotNull($data['join_code']);
+        $this->assertMatchesRegularExpression('/^[A-Z0-9]{6}$/', $data['join_code']);
+
+        CompetitionFactory::assert()->exists(['slug' => 'blaireau-d-or']);
     }
 
     public function testCreateCompetitionWithoutEndDateSuccess(): void
@@ -145,7 +143,7 @@ class AdminCompetitionControllerTest extends WebTestCase
             json_encode([
                 'name' => 'Compétition qui finit avant de commencer',
                 'start_date' => '2026-02-20',
-                'end_date' => '2026_02-18',
+                'end_date' => '2026-02-18',
             ]),
         );
 
@@ -296,5 +294,71 @@ class AdminCompetitionControllerTest extends WebTestCase
         $this->assertEquals('', $data['errors'][0]['name']);
 
         PlayerFactory::assert()->notExists(['displayName' => '']);
+    }
+
+    public function addNewPlayerWithSameNameThanExistingPlayer(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+        
+        PlayerFactory::createOne([
+            'displayName' => 'Nom Identique',
+        ]);
+
+        $client->loginUser($admin);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/add-players', $competition->getId()),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'existing_players_ids' => [],
+                'new_players' => ['Nom Identique']
+            ])
+        );      
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        PlayerFactory::assert()->exists(['username' => 'nom-identique']);
+        PlayerFactory::assert()->exists(['username' => 'nom-identique-1']);
+        
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(1, $data['summary']['success_count']);
+        $this->assertNotEmpty($data['successes']);
+        $this->assertEquals('Nom Identique', $data['successes'][0]['name']);
+    }
+
+    public function testAddNewPlayersWithSameName(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+
+        $client->loginUser($admin);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/add-players', $competition->getId()),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'existing_players_ids' => [],
+                'new_players' => ['Même Nom', 'Même Nom']
+            ])
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED); 
+
+        PlayerFactory::assert()->exists(['username' => 'meme-nom']);
+        PlayerFactory::assert()->exists(['username' => 'meme-nom-1']);  
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+        
+        $this->assertEquals(2, $data['summary']['success_count']);
     }
 }

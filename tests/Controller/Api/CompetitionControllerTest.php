@@ -19,21 +19,28 @@ class CompetitionControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $user = UserFactory::createOne();
-
-        $player = PlayerFactory::createOne([
-            'displayName' => 'Maxime Rose',
-            'associatedUser' => $user,
-        ]);
-
         $competition = CompetitionFactory::createOne([
             'name' => 'Tournoi de blaireaux',
             'joinCode' => 'SUCCESS',
         ]);
 
-        $participation = ParticipationFactory::createOne([
+        $user = UserFactory::createOne();
+        $playerWithUser = PlayerFactory::createOne([
+            'displayName' => 'Maxime Connecté',
+            'associatedUser' => $user,
+        ]);
+        ParticipationFactory::createOne([
             'competition' => $competition,
-            'player' => $player,
+            'player' => $playerWithUser,
+        ]);
+
+        $ghostPlayer = PlayerFactory::createOne([
+            'displayName' => 'Joueur Fantôme',
+            'associatedUser' => null
+        ]);
+        ParticipationFactory::createOne([
+            'competition' => $competition, 
+            'player' => $ghostPlayer
         ]);
 
         $client->request('GET','/api/competition/check-code/SUCCESS');
@@ -42,7 +49,11 @@ class CompetitionControllerTest extends WebTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
         
-        $this->assertNotNull($data['players']);  
+        $this->assertEquals('Tournoi de blaireaux', $data['name']);
+        $this->assertEquals('SUCCESS', $data['join_code']);
+
+        $this->assertCount(1, $data['players'], 'Le JSON ne doit contenir que les joueurs sans compte associé');
+        $this->assertEquals('Joueur Fantôme', $data['players'][0]['display_name']);
     }
 
     public function testGetCompetitionByCodeNotFound(): void

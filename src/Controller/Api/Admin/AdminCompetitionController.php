@@ -8,6 +8,8 @@ use App\Entity\Player;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
+use App\Service\PlayerManager;
+use App\Service\UniqueValueGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,8 +21,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/admin/competition', name: 'api.admin.competition.')]
 final class AdminCompetitionController extends AbstractController
 {
+    public function __construct(
+        private PlayerManager $playerManager,
+        private EntityManagerInterface $em,
+        private UniqueValueGenerator $uniqueValueGenerator
+    ) { }
+
     #[Route('', name: 'create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse
+    public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $data = $request->toArray();
 
@@ -53,15 +61,25 @@ final class AdminCompetitionController extends AbstractController
         } catch (\Exception $e) {
             return $this->json([
                 'error' => 'Format de date invalide',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $competition = new Competition();
         $competition->setName($data['name'] ?? 'Nouvelle compétition');
         $competition->setStartDate($startDate);
         $competition->setEndDate($endDate);
+
+        // TODO: Automatiser ça via Gedmo Blameable
         $competition->setCreatedBy($user);
         $competition->setUpdatedBy($user);
+        
+        $customJoinCode = $data['join_code'] ?? null;
+
+        if ($customJoinCode) {
+            $competition->setJoinCode(strtoupper(trim($customJoinCode)));
+        } else {
+            $competition->setJoinCode($this->uniqueValueGenerator->generateRandomCode());
+        }
 
         $errors = $validator->validate($competition);
 
@@ -82,7 +100,7 @@ final class AdminCompetitionController extends AbstractController
             
             if (!$player) {
                 return $this->json([
-                    'error' => 'Vous ne pouvez pas participer car vous n\'avez pas de profil joueur',
+                    'error' => 'Profil joueur manquant',
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -90,15 +108,16 @@ final class AdminCompetitionController extends AbstractController
             $participation->setPlayer($player);
             $competition->addParticipation($participation);
 
-            $em->persist($participation);
+            $this->em->persist($participation);
         }
 
-        $em->persist($competition);
-        $em->flush();
+        $this->em->persist($competition);
+        $this->em->flush();
 
         return $this->json([
             'id' => $competition->getId(),
             'name' => $competition->getName(),
+            'slug' => $competition->getSlug(),
             'join_code' => $competition->getJoinCode(),
         ], Response::HTTP_CREATED);
     }
@@ -107,7 +126,6 @@ final class AdminCompetitionController extends AbstractController
     public function addPlayers(
         Competition $competition,
         Request $request,
-        EntityManagerInterface $em,
         ParticipationRepository $participationRepository,
         PlayerRepository $playerRepository,
         ValidatorInterface $validator
@@ -123,72 +141,66 @@ final class AdminCompetitionController extends AbstractController
         $successes = [];
         $errors = [];
 
-        $existingPlayersIds = $data['existing_players_ids'];
-        $newPlayers = $data['new_players'];
+        $existingPlayersIds = $data['existing_players_ids'] ?? [];
+        $newPlayers = $data['new_players'] ?? [];
+
+        $players = $playerRepository->findBy(['id' => $existingPlayersIds]);
+        
+        $playersById = [];
+        foreach ($players as $player) {
+            $playersById[(string) $player->getId()] = $player;
+        }
+
+        $missingIds = array_diff($existingPlayersIds, array_keys($playersById));
+
+        foreach ($missingIds as $id) {
+            $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
+        }
+
+        $alreadyExistsParticipations = $participationRepository->findBy([
+            'competition' => $competition,
+            'player' => $players
+        ]);
+
+        $alreadyParticipatingIds = array_map(
+            fn($p) => (string) $p->getPlayer()->getId(), $alreadyExistsParticipations
+        );
 
         foreach ($existingPlayersIds as $id) {
-            $player = $playerRepository->find($id);
-
-            if (!$player) {
+            $idStr = (string) $id;
+            if (!array_key_exists($idStr, $playersById)) {
                 $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
-                continue;
-            }
-
-            $alreadyExists = $participationRepository->findOneBy([
-                'competition' => $competition,
-                'player' => $player
-            ]);
-
-            if ($alreadyExists) {
+            } elseif (in_array($idStr, $alreadyParticipatingIds)) {
                 $errors[] = [
                     'id' => $id,
-                    'name' => $player->getDisplayName(),
+                    'name' => $playersById[$idStr]->getDisplayName(),
                     'message' => 'Déjà inscrit'
                 ];
             } else {
+                $currentPlayer = $playersById[$idStr];
+
                 $participation = new Participation();
                 $participation->setCompetition($competition);
-                $participation->setPlayer($player);
+                $participation->setPlayer($currentPlayer);
 
-                $em->persist($participation);
+                $this->em->persist($participation);
 
                 $successes[] = [
                     'id' => $id,
-                    'name' => $player->getDisplayName()
+                    'name' => $currentPlayer->getDisplayName()
                 ];
             }
         }
 
-        foreach ($newPlayers as $newPlayerName) {
-            $player = new Player();
-            $player->setDisplayName($newPlayerName);
-            $player->setCreatedBy($user);
+        if (!empty($newPlayers)) {
+            $batchReport = $this->playerManager->createPlayersBatch($newPlayers, $competition, $user);
 
-            $violations = $validator->validate($player);
-
-            if (count($violations) > 0) {
-                foreach ($violations as $violation) {
-                    $errors[] = [
-                        'name' => $newPlayerName,
-                        'message' => $violation->getMessage()
-                    ];
-                }
-                
-                continue;
-            }
-
-            $em->persist($player);
-            
-            $participation = new Participation();
-            $participation->setCompetition($competition);
-            $participation->setPlayer($player);
-
-            $em->persist($participation);
-
-            $successes[] = ['name' => $player->getDisplayName()];
+            $successes = array_merge($successes, $batchReport['successes']);
+            $errors = array_merge($errors, $batchReport['errors']);
         }
+        
 
-        $em->flush();
+        $this->em->flush();
 
         return $this->json([
             'summary' => [

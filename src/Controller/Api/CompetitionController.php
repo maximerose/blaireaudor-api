@@ -38,6 +38,7 @@ final class CompetitionController extends AbstractController
             'join_code' => $competition->getJoinCode(),
             'start_date' => $competition->getStartDate(),
             'end_date' => $competition->getEndDate(),
+            'slug' => $competition->getSlug(),
             'players' => $arrayPlayers,
         ]);
     }
