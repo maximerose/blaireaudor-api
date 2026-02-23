@@ -4,7 +4,10 @@ namespace App\Controller\Api\Admin;
 
 use App\Entity\Competition;
 use App\Entity\Participation;
+use App\Entity\Player;
 use App\Entity\User;
+use App\Repository\ParticipationRepository;
+use App\Repository\PlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -98,5 +101,103 @@ final class AdminCompetitionController extends AbstractController
             'name' => $competition->getName(),
             'join_code' => $competition->getJoinCode(),
         ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
+    public function addPlayers(
+        Competition $competition,
+        Request $request,
+        EntityManagerInterface $em,
+        ParticipationRepository $participationRepository,
+        PlayerRepository $playerRepository,
+        ValidatorInterface $validator
+    ): JsonResponse
+    {
+        $user = $this->getUser();
+
+        if ($competition->getCreatedBy() !== $user) {
+            return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = $request->toArray();
+        $successes = [];
+        $errors = [];
+
+        $existingPlayersIds = $data['existing_players_ids'];
+        $newPlayers = $data['new_players'];
+
+        foreach ($existingPlayersIds as $id) {
+            $player = $playerRepository->find($id);
+
+            if (!$player) {
+                $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
+                continue;
+            }
+
+            $alreadyExists = $participationRepository->findOneBy([
+                'competition' => $competition,
+                'player' => $player
+            ]);
+
+            if ($alreadyExists) {
+                $errors[] = [
+                    'id' => $id,
+                    'name' => $player->getDisplayName(),
+                    'message' => 'Déjà inscrit'
+                ];
+            } else {
+                $participation = new Participation();
+                $participation->setCompetition($competition);
+                $participation->setPlayer($player);
+
+                $em->persist($participation);
+
+                $successes[] = [
+                    'id' => $id,
+                    'name' => $player->getDisplayName()
+                ];
+            }
+        }
+
+        foreach ($newPlayers as $newPlayerName) {
+            $player = new Player();
+            $player->setDisplayName($newPlayerName);
+            $player->setCreatedBy($user);
+
+            $violations = $validator->validate($player);
+
+            if (count($violations) > 0) {
+                foreach ($violations as $violation) {
+                    $errors[] = [
+                        'name' => $newPlayerName,
+                        'message' => $violation->getMessage()
+                    ];
+                }
+                
+                continue;
+            }
+
+            $em->persist($player);
+            
+            $participation = new Participation();
+            $participation->setCompetition($competition);
+            $participation->setPlayer($player);
+
+            $em->persist($participation);
+
+            $successes[] = ['name' => $player->getDisplayName()];
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'summary' => [
+                'total_processes' => count($successes) + count($errors),
+                'success_count' => count($successes),
+                'error_count' => count($errors),
+            ],
+            'successes' => $successes,
+            'errors' => $errors
+        ], count($errors) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED);
     }
 }

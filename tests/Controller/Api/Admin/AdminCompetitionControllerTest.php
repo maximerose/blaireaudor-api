@@ -198,4 +198,103 @@ class AdminCompetitionControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
+
+    public function testAddPlayersToCompetitionSuccess(): void 
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+        $existingPlayer = PlayerFactory::createOne(['displayName' => 'Ancien joueur']);
+
+        $client->loginUser($admin);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/add-players', $competition->getId()),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'existing_players_ids' => [$existingPlayer->getId()],
+                'new_players' => ['Nouveau joueur fantôme'],
+            ]),
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+        
+        $this->assertEquals(2, $data['summary']['success_count']);
+        ParticipationFactory::assert()->count(2, ['competition' => $competition]);
+    }
+
+    public function testAddPlayersWithDuplicateShouldReportError(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+        $existingPlayer = PlayerFactory::createOne();
+        ParticipationFactory::createOne([
+            'competition' => $competition,
+            'player' => $existingPlayer,
+        ]);
+
+        $client->loginUser($admin);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/add-players', $competition->getId()),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'existing_players_ids' => [$existingPlayer->getId()], // Doublon
+                'new_players' => ['Nouveau Joueur'] // Doit passer
+            ])
+        );
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_MULTI_STATUS);
+        $this->assertEquals(1, $data['summary']['error_count']);
+        $this->assertCount(1, $data['errors']);
+        $this->assertCount(1, $data['successes']);
+
+        $errorIds = array_column($data['errors'], 'id');
+        $this->assertContains((string) $existingPlayer->getId(), $errorIds);
+    }
+
+    public function testAddPlayersValidationError(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+
+        $client->loginUser($admin);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/add-players', $competition->getId()),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'existing_players_ids' => [],
+                'new_players' => [''] // Nom vide qui devrait échouer
+            ])
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_MULTI_STATUS);
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertEquals(1, $data['summary']['error_count']);
+        $this->assertNotEmpty($data['errors']);
+        $this->assertEquals('', $data['errors'][0]['name']);
+
+        PlayerFactory::assert()->notExists(['displayName' => '']);
+    }
 }
