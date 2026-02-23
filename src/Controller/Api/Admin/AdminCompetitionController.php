@@ -29,23 +29,20 @@ final class AdminCompetitionController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $startDate = null;
+        $endDate = null;
+
         if (!isset($data['start_date']) || null === $data['start_date']) {
             return $this->json([
                 'error' => 'La date de début doit être renseignée',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if (!isset($data['end_date']) || null === $data['end_date']) {
-            return $this->json([
-                'error' => 'La date de fin doit être renseignée',
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         try {
             $startDate = new \DateTimeImmutable($data['start_date']);
-            $endDate = new \DateTimeImmutable($data['end_date']);
+            $endDate = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
 
-            if ($endDate < $startDate) {
+            if ($endDate && $endDate < $startDate) {
                 return $this->json([
                     'error' => 'La date de fin doit être postérieure à la date de début',
                 ], Response::HTTP_BAD_REQUEST);

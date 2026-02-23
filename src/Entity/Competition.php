@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['slug'])]
 #[ORM\HasLifecycleCallbacks]
 #[Assert\Expression(
-    "this.getEndDate() >= this.getStartDate()",
+    "this.getEndDate() == null || this.getEndDate() >= this.getStartDate()",
     message: "La date de fin doit être postérieure à la date de début"
 )]
 #[ApiResource]
@@ -41,11 +41,10 @@ class Competition
     #[Assert\NotBlank]
     private ?\DateTimeImmutable $startDate = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endDate = null;
 
-    #[ORM\Column(options:['default' => false])]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $isFinished = false;
 
     /**
@@ -112,7 +111,7 @@ class Competition
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeImmutable $endDate): static
+    public function setEndDate(?\DateTimeImmutable $endDate): static
     {
         $this->endDate = $endDate;
 

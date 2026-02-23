@@ -51,6 +51,45 @@ class AdminCompetitionControllerTest extends WebTestCase
         $this->assertNotNull($data['join_code']);
     }
 
+    public function testCreateCompetitionWithoutEndDateSuccess(): void
+    {
+        $client = static::createClient();
+
+        $user = UserFactory::createOne(['player' => PlayerFactory::new()]);
+        $client->loginUser($user);
+
+        $client->request(
+            'POST',
+            '/api/admin/competition',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'name' => 'Blaireau d\'or',
+                'start_date' => '2026-02-21',
+                'participate' => true,
+            ])
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $competitionId = $data['id'];
+
+        CompetitionFactory::assert()->exists([
+            'id' => $competitionId,
+            'endDate' => null,
+        ]);
+        
+        ParticipationFactory::assert()->exists([
+            'competition' => $competitionId,
+            'player' => $user->getPlayer()->getId(),
+        ]);
+
+        $this->assertArrayHasKey('join_code', $data);
+        $this->assertNotNull($data['join_code']);
+    }
+
     public function testUserNotConnected(): void 
     {
         $client = static::createClient();
@@ -69,7 +108,7 @@ class AdminCompetitionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testCreateCompetitionMissingDates(): void
+    public function testCreateCompetitionMissingStartDate(): void
     {
         $client = static::createClient();
         
@@ -84,6 +123,76 @@ class AdminCompetitionControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'name' => 'Compétition non datée',
+            ]),
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testCreateCompetitionInvalidDatesOrder(): void
+    {
+        $client = static::createClient();
+
+        $user = UserFactory::createOne();
+        $client->loginUser($user);
+
+        $client->request(
+            'POST',
+            'api/admin/competition',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'name' => 'Compétition qui finit avant de commencer',
+                'start_date' => '2026-02-20',
+                'end_date' => '2026_02-18',
+            ]),
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testCreateCompetitionInvalidDateFormat(): void
+    {
+        $client = static::createClient();
+
+        $user = UserFactory::createOne();
+        $client->loginUser($user);
+
+        $client->request(
+            'POST',
+            '/api/admin/competition',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'name' => 'Compétition format date invalide',
+                'start_date' => 'date-invalide',
+                'end_date' => '2026-02-28',
+            ]),
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testCreateCompetitionParticipateWithoutPlayerProfile(): void
+    {
+        $client = static::createClient();
+
+        $user = UserFactory::createOne(['player' => null]);
+        $client->loginUser($user);
+
+        $client->request(
+            'POST',
+            '/api/admin/competition',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'name' => 'Compétition fantôme',
+                'start_date' => '2026-02-21',
+                'end_date' => '2026-02-27',
+                'participate' => true,
             ]),
         );
 
