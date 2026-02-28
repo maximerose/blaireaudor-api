@@ -6,18 +6,12 @@ use App\Entity\Competition;
 use App\Entity\Participation;
 use App\Entity\Player;
 use App\Entity\User;
-use App\Repository\PlayerRepository;
-use App\Trait\SluggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlayerManager
-{
-    use SluggerTrait;
-    
+{    
     public function __construct(
-        private PlayerRepository $playerRepository,
-        private UniqueValueGenerator $uniqueValueGenerator,
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator
     ) {
@@ -27,10 +21,6 @@ class PlayerManager
     {
         $results = ['successes' => [], 'errors' => []];
         
-        $baseSlugs = $this->uniqueValueGenerator->prepareBaseSlugs($rawNames);
-
-        $existingInDb = $this->playerRepository->findPotentialCollisions($baseSlugs, 'username');
-
         foreach ($rawNames as $name) {
             $trimmedName = trim($name);
 
@@ -55,11 +45,6 @@ class PlayerManager
                 }
                 continue;
             }
-
-            $finalUsername = $this->uniqueValueGenerator->generateUniqueValue($trimmedName, $existingInDb);
-            $player->setUsername($finalUsername);
-
-            $existingInDb[] = $finalUsername;
 
             $participation = new Participation();
             $participation->setCompetition($competition);

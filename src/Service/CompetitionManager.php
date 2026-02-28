@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Competition;
-use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -11,35 +10,25 @@ class CompetitionManager
 {
     public function __construct(
         private CompetitionRepository $competitionRepository,
-        private UniqueValueGenerator $uniqueValueGenerator,
+        private CodeGenerator $codeGenerator,
         private EntityManagerInterface $entityManager
     ) {}
 
-    public function createCompetition(string $name, \DateTimeImmutable $startDate, User $creator, ?string $customJoinCode = null): Competition
+    public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate, ?string $customJoinCode = null): Competition
     {
         $competition = new Competition();
+
         $competition->setName($name);
         $competition->setStartDate($startDate);
-
-        $baseSlugs = $this->uniqueValueGenerator->prepareBaseSlugs([$name]);
-        $existingSlugs = $this->competitionRepository->findPotentialCollisions($baseSlugs, 'slug');
-        $finalSlug = $this->uniqueValueGenerator->generateUniqueValue($name, $existingSlugs);
-        $competition->setSlug($finalSlug);
+        $competition->setEndDate($endDate ?? null);
 
         if ($customJoinCode !== null) {
-            $existing = $this->competitionRepository->findOneBy(['joinCode' => $customJoinCode]);
-            
-            if ($existing) {
-                throw new \Exception('Ce code est déjà utilisé');
-            }
-
-            $competition->setJoinCode($customJoinCode);
+            $competition->setJoinCode(strtoupper(trim($customJoinCode)));
         } else {
             $competition->setJoinCode($this->generateSafeJoinCode());
         }
 
         $this->entityManager->persist($competition);
-        $this->entityManager->flush();
 
         return $competition;
     }
@@ -50,7 +39,7 @@ class CompetitionManager
         $code = '';
 
         while (!$unique) {
-            $code = $this->uniqueValueGenerator->generateRandomCode();
+            $code = $this->codeGenerator->generateRandomCode();
             
             if (!$this->competitionRepository->findOneBy(['joinCode' => $code])) {
                 $unique = true;

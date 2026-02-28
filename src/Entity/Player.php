@@ -13,13 +13,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PLAYER_USERNAME', fields: ['username'])]
 #[UniqueEntity(fields: ['username'], message: 'Ce nom d\'utiliateur est déjà utilisé.')]
-#[ORM\HasLifecycleCallbacks]
 #[ApiResource]
 class Player
 {
@@ -29,6 +28,7 @@ class Player
     #[Assert\NotBlank]
     private ?string $displayName = null;
 
+    #[Gedmo\Slug(fields: ['displayName'], unique: true)]
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
@@ -63,7 +63,7 @@ class Player
         return $this->username;
     }
 
-    public function setUsername(string $username): static
+    public function setUsername(?string $username): static
     {
         $this->username = $username;
 
@@ -109,23 +109,10 @@ class Player
     {
         $this->associatedUser = $associatedUser;
 
+        if ($associatedUser) {
+            $this->username = $associatedUser->getUsername();
+        }
+
         return $this;
-    }
-
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function syncUsername(): void
-    {
-        // Si un User est lié, on prend son username
-        if ($this->associatedUser !== null) {
-            $this->username = $this->associatedUser->getUsername();
-            return;
-        }
-
-        // Sinon, si le username est vide (création par l'arbitre), on génère le slug
-        if ($this->username === null && $this->displayName !== null) {
-            $slugger = new AsciiSlugger();
-            $this->username = strtolower($slugger->slug($this->displayName)->toString());
-        }
     }
 }

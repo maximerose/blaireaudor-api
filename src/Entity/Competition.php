@@ -13,10 +13,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
 #[UniqueEntity(fields: ['slug'])]
-#[ORM\HasLifecycleCallbacks]
 #[Assert\Expression(
     "this.getEndDate() == null || this.getEndDate() >= this.getStartDate()",
     message: "La date de fin doit être postérieure à la date de début"
@@ -31,6 +31,7 @@ class Competition
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'], unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 10, unique: true)]

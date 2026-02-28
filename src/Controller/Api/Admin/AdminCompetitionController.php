@@ -4,12 +4,11 @@ namespace App\Controller\Api\Admin;
 
 use App\Entity\Competition;
 use App\Entity\Participation;
-use App\Entity\Player;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
+use App\Service\CompetitionManager;
 use App\Service\PlayerManager;
-use App\Service\UniqueValueGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,15 +22,14 @@ final class AdminCompetitionController extends AbstractController
 {
     public function __construct(
         private PlayerManager $playerManager,
+        private CompetitionManager $competitionManager,
         private EntityManagerInterface $em,
-        private UniqueValueGenerator $uniqueValueGenerator
     ) { }
 
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $data = $request->toArray();
-
         $user = $this->getUser();
         
         if (!$user instanceof User) {
@@ -64,22 +62,12 @@ final class AdminCompetitionController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $competition = new Competition();
-        $competition->setName($data['name'] ?? 'Nouvelle compétition');
-        $competition->setStartDate($startDate);
-        $competition->setEndDate($endDate);
-
-        // TODO: Automatiser ça via Gedmo Blameable
-        $competition->setCreatedBy($user);
-        $competition->setUpdatedBy($user);
-        
-        $customJoinCode = $data['join_code'] ?? null;
-
-        if ($customJoinCode) {
-            $competition->setJoinCode(strtoupper(trim($customJoinCode)));
-        } else {
-            $competition->setJoinCode($this->uniqueValueGenerator->generateRandomCode());
-        }
+        $competition = $this->competitionManager->createCompetition(
+            $data['name'] ?? 'Nouvelle compétition',
+            $startDate,
+            $endDate,
+            $data['join_code'] ?? null
+        );
 
         $errors = $validator->validate($competition);
 
@@ -91,7 +79,7 @@ final class AdminCompetitionController extends AbstractController
             }
 
             return $this->json([
-                'errors' => $errorsArray,
+                'errors' => $errorsArray
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -111,7 +99,6 @@ final class AdminCompetitionController extends AbstractController
             $this->em->persist($participation);
         }
 
-        $this->em->persist($competition);
         $this->em->flush();
 
         return $this->json([
@@ -128,7 +115,6 @@ final class AdminCompetitionController extends AbstractController
         Request $request,
         ParticipationRepository $participationRepository,
         PlayerRepository $playerRepository,
-        ValidatorInterface $validator
     ): JsonResponse
     {
         $user = $this->getUser();

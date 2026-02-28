@@ -26,7 +26,6 @@ final class PlayerFactory extends PersistentObjectFactory
         return [
             'createdBy' => UserFactory::new(),
             'displayName' => self::faker()->unique()->name(),
-            'username' => self::faker()->unique()->userName(),
         ];
     }
 
@@ -44,7 +43,7 @@ final class PlayerFactory extends PersistentObjectFactory
     public function withoutUsername(): static
     {
         return $this->afterInstantiate(function(Player $player) {
-            $player->setUsername('');
+            $player->setUsername(null);
         });
     }
 }

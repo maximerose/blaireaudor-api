@@ -3,27 +3,18 @@
 namespace App\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 trait TimestampableTrait
 {
+    #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
     
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void 
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();   
-    }
-
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
