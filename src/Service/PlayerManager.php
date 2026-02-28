@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Competition;
-use App\Entity\Participation;
 use App\Entity\Player;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,8 +12,34 @@ class PlayerManager
 {    
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private ParticipationManager $participationManager
     ) {
+    }
+
+    public function createPlayer(string $displayName, ?User $createdBy = null): Player
+    {
+        $player = new Player();
+        $player->setDisplayName($displayName);
+        
+        if ($createdBy) {
+            $player->setCreatedBy($createdBy);
+        }
+
+        $this->entityManager->persist($player);
+
+        return $player;
+    }
+
+    public function createPlayerAndJoin(
+        string $displayName, 
+        Competition $competition, 
+        ?User $createdBy = null
+    ): Player {
+        $player = $this->createPlayer($displayName, $createdBy);
+        $this->participationManager->joinCompetition($player, $competition);
+
+        return $player;
     }
 
     public function createPlayersBatch(array $rawNames, Competition $competition, User $user): array
@@ -33,25 +58,18 @@ class PlayerManager
                 continue;
             };
 
-            $player = new Player();
-            $player->setDisplayName($trimmedName);
-            $player->setCreatedBy($user);
-
+            $player = $this->createPlayer($trimmedName, $user);
             $violations = $this->validator->validate($player);
 
             if (count($violations) > 0) {
                 foreach ($violations as $v) {
                     $results['errors'][] = ['name' => $trimmedName, 'message' => $v->getMessage()];
                 }
+                $this->entityManager->detach($player);
                 continue;
             }
 
-            $participation = new Participation();
-            $participation->setCompetition($competition);
-            $participation->setPlayer($player);
-
-            $this->entityManager->persist($player);
-            $this->entityManager->persist($participation);
+            $this->participationManager->joinCompetition($player, $competition);
 
             $results['successes'][] = ['name' => $trimmedName];
         }

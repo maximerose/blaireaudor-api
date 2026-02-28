@@ -3,12 +3,13 @@
 namespace App\Controller\Api\Admin;
 
 use App\Entity\Competition;
-use App\Entity\Participation;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
 use App\Service\CompetitionManager;
+use App\Service\ParticipationManager;
 use App\Service\PlayerManager;
+use App\Service\ValidationHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +24,9 @@ final class AdminCompetitionController extends AbstractController
     public function __construct(
         private PlayerManager $playerManager,
         private CompetitionManager $competitionManager,
-        private EntityManagerInterface $em,
+        private ParticipationManager $participationManager,
+        private ValidationHelper $validationHelper,
+        private EntityManagerInterface $entityManager,
     ) { }
 
     #[Route('', name: 'create', methods: ['POST'])]
@@ -34,28 +37,17 @@ final class AdminCompetitionController extends AbstractController
         
         if (!$user instanceof User) {
             return $this->json([
-                'error' => 'L\'utilisateur connecté n\'est pas un User',
+                'error' => 'Non autorisé',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $startDate = null;
-        $endDate = null;
-
-        if (!isset($data['start_date']) || null === $data['start_date']) {
-            return $this->json([
-                'error' => 'La date de début doit être renseignée',
-            ], Response::HTTP_BAD_REQUEST);
+        if (!isset($data['start_date'])) {
+            return $this->json(['error' => 'La date de début est obligatoire'], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $startDate = new \DateTimeImmutable($data['start_date']);
             $endDate = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
-
-            if ($endDate && $endDate < $startDate) {
-                return $this->json([
-                    'error' => 'La date de fin doit être postérieure à la date de début',
-                ], Response::HTTP_BAD_REQUEST);
-            }
         } catch (\Exception $e) {
             return $this->json([
                 'error' => 'Format de date invalide',
@@ -72,14 +64,8 @@ final class AdminCompetitionController extends AbstractController
         $errors = $validator->validate($competition);
 
         if (count($errors) > 0) {
-            $errorsArray = [];
-
-            foreach($errors as $error) {
-                $errorsArray[$error->getPropertyPath()] = $error->getMessage();
-            }
-
             return $this->json([
-                'errors' => $errorsArray
+                'errors' => $this->validationHelper->formatErrors($errors)
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -92,14 +78,10 @@ final class AdminCompetitionController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            $participation = new Participation();
-            $participation->setPlayer($player);
-            $competition->addParticipation($participation);
-
-            $this->em->persist($participation);
+            $this->participationManager->joinCompetition($player, $competition);
         }
 
-        $this->em->flush();
+        $this->entityManager->flush();
 
         return $this->json([
             'id' => $competition->getId(),
@@ -128,65 +110,54 @@ final class AdminCompetitionController extends AbstractController
         $errors = [];
 
         $existingPlayersIds = $data['existing_players_ids'] ?? [];
-        $newPlayers = $data['new_players'] ?? [];
 
-        $players = $playerRepository->findBy(['id' => $existingPlayersIds]);
-        
-        $playersById = [];
-        foreach ($players as $player) {
-            $playersById[(string) $player->getId()] = $player;
-        }
+        if (!empty($existingPlayersIds)) {
+            $players = $playerRepository->findBy(['id' => $existingPlayersIds]);
+            $playersById = [];
 
-        $missingIds = array_diff($existingPlayersIds, array_keys($playersById));
+            foreach ($players as $player) {
+                $playersById[(string) $player->getId()] = $player;
+            }
 
-        foreach ($missingIds as $id) {
-            $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
-        }
+            foreach ($existingPlayersIds as $id) {
+                $idStr = (string) $id;
 
-        $alreadyExistsParticipations = $participationRepository->findBy([
-            'competition' => $competition,
-            'player' => $players
-        ]);
+                if (!isset($playersById[$idStr])) {
+                    $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
+                    continue;
+                }
 
-        $alreadyParticipatingIds = array_map(
-            fn($p) => (string) $p->getPlayer()->getId(), $alreadyExistsParticipations
-        );
-
-        foreach ($existingPlayersIds as $id) {
-            $idStr = (string) $id;
-            if (!array_key_exists($idStr, $playersById)) {
-                $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
-            } elseif (in_array($idStr, $alreadyParticipatingIds)) {
-                $errors[] = [
-                    'id' => $id,
-                    'name' => $playersById[$idStr]->getDisplayName(),
-                    'message' => 'Déjà inscrit'
-                ];
-            } else {
                 $currentPlayer = $playersById[$idStr];
 
-                $participation = new Participation();
-                $participation->setCompetition($competition);
-                $participation->setPlayer($currentPlayer);
+                 $isAlreadyIn = $participationRepository->findOneBy([
+                    'competition' => $competition,
+                    'player' => $currentPlayer
+                ]);
 
-                $this->em->persist($participation);
+                if ($isAlreadyIn) {
+                    $errors[] = [
+                        'id' => $id,
+                        'name' => $currentPlayer->getDisplayName(),
+                        'message' => 'Déjà inscrit'
+                    ];
+                } else {
+                    $this->participationManager->joinCompetition($currentPlayer, $competition);
 
-                $successes[] = [
-                    'id' => $id,
-                    'name' => $currentPlayer->getDisplayName()
-                ];
+                    $successes[]  = [
+                        'id' => $id,
+                        'name' => $currentPlayer->getDisplayName()
+                    ];
+                }
             }
         }
 
-        if (!empty($newPlayers)) {
-            $batchReport = $this->playerManager->createPlayersBatch($newPlayers, $competition, $user);
-
+        if (!empty($data['new_players'])) {
+            $batchReport = $this->playerManager->createPlayersBatch($data['new_players'], $competition, $user);
             $successes = array_merge($successes, $batchReport['successes']);
             $errors = array_merge($errors, $batchReport['errors']);
         }
-        
 
-        $this->em->flush();
+        $this->entityManager->flush();
 
         return $this->json([
             'summary' => [
