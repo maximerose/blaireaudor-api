@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\Player;
@@ -10,6 +12,9 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
  */
 final class PlayerFactory extends PersistentObjectFactory
 {
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
+     */
     public function __construct()
     {
     }
@@ -20,6 +25,9 @@ final class PlayerFactory extends PersistentObjectFactory
         return Player::class;
     }
 
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     */
     #[\Override]
     protected function defaults(): array|callable
     {

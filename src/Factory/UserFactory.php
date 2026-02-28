@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\User;
@@ -10,6 +12,9 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
  */
 final class UserFactory extends PersistentObjectFactory
 {
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
+     */
     public function __construct()
     {
     }
@@ -20,6 +25,9 @@ final class UserFactory extends PersistentObjectFactory
         return User::class;
     }
 
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     */
     #[\Override]
     protected function defaults(): array|callable
     {
