@@ -41,9 +41,16 @@ class Player
     #[ORM\OneToOne(inversedBy: 'player', cascade: ['persist', 'remove'])]
     private ?User $associatedUser = null;
 
+    /**
+     * @var Collection<int, Action>
+     */
+    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'player', orphanRemoval: true)]
+    private Collection $actions;
+
     public function __construct()
     {
         $this->participations = new ArrayCollection();
+        $this->actions = new ArrayCollection();
     }
 
     public function getDisplayName(): ?string
@@ -111,6 +118,36 @@ class Player
 
         if ($associatedUser) {
             $this->username = $associatedUser->getUsername();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Action>
+     */
+    public function getActions(): Collection
+    {
+        return $this->actions;
+    }
+
+    public function addAction(Action $action): static
+    {
+        if (!$this->actions->contains($action)) {
+            $this->actions->add($action);
+            $action->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAction(Action $action): static
+    {
+        if ($this->actions->removeElement($action)) {
+            // set the owning side to null (unless already changed)
+            if ($action->getPlayer() === $this) {
+                $action->setPlayer(null);
+            }
         }
 
         return $this;

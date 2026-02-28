@@ -54,9 +54,16 @@ class Competition
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true)]
     private Collection $participations;
 
+    /**
+     * @var Collection<int, Action>
+     */
+    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true)]
+    private Collection $actions;
+
     public function __construct()
     {
         $this->participations = new ArrayCollection();
+        $this->actions = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -155,6 +162,36 @@ class Competition
             // set the owning side to null (unless already changed)
             if ($participation->getCompetition() === $this) {
                 $participation->setCompetition(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Action>
+     */
+    public function getActions(): Collection
+    {
+        return $this->actions;
+    }
+
+    public function addAction(Action $action): static
+    {
+        if (!$this->actions->contains($action)) {
+            $this->actions->add($action);
+            $action->setCompetition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAction(Action $action): static
+    {
+        if ($this->actions->removeElement($action)) {
+            // set the owning side to null (unless already changed)
+            if ($action->getCompetition() === $this) {
+                $action->setCompetition(null);
             }
         }
 
