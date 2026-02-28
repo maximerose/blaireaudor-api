@@ -15,4 +15,17 @@ class CompetitionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Competition::class);
     }
+
+    public function findByCodeWithAllPlayers(string $code): ?Competition
+    {
+        return $this->createQueryBuilder('c')
+            ->addSelect('p', 'pl', 'u')
+            ->leftJoin('c.participations', 'p')
+            ->leftJoin('p.player', 'pl')
+            ->leftJoin('pl.associatedUser', 'u')
+            ->where('c.joinCode = :code')
+            ->setParameter('code', $code)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

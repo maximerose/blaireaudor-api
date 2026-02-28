@@ -52,8 +52,13 @@ class CompetitionControllerTest extends WebTestCase
         $this->assertEquals('Tournoi de blaireaux', $data['name']);
         $this->assertEquals('SUCCESS', $data['join_code']);
 
-        $this->assertCount(1, $data['players'], 'Le JSON ne doit contenir que les joueurs sans compte associé');
-        $this->assertEquals('Joueur Fantôme', $data['players'][0]['display_name']);
+        $this->assertCount(2, $data['players'], 'Le JSON doit contenir tous es joueurs');
+        
+        $this->assertEquals('Maxime Connecté', $data['players'][0]['display_name']);
+        $this->assertTrue($data['players'][0]['has_account']);
+
+        $this->assertEquals('Joueur Fantôme', $data['players'][1]['display_name']);
+        $this->assertFalse($data['players'][1]['has_account']);
     }
 
     public function testGetCompetitionByCodeNotFound(): void
