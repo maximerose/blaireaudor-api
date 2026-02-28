@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class RegistrationControllerTest extends WebTestCase
+final class RegistrationControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
 

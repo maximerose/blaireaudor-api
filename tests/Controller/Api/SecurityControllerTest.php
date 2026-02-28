@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class SecurityControllerTest extends WebTestCase
+final class SecurityControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
 

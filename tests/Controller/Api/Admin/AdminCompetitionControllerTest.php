@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class AdminCompetitionControllerTest extends WebTestCase
+final class AdminCompetitionControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
 
