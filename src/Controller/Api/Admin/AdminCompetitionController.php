@@ -85,12 +85,12 @@ final class AdminCompetitionController extends AbstractController
 
         $this->entityManager->flush();
 
-        return $this->json([
-            'id' => $competition->getId(),
-            'name' => $competition->getName(),
-            'slug' => $competition->getSlug(),
-            'join_code' => $competition->getJoinCode(),
-        ], Response::HTTP_CREATED);
+        return $this->json(
+            $competition, 
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => ['competition:read']]
+        );
     }
 
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
@@ -161,14 +161,19 @@ final class AdminCompetitionController extends AbstractController
 
         $this->entityManager->flush();
 
-        return $this->json([
-            'summary' => [
-                'total_processes' => count($successes) + count($errors),
-                'success_count' => count($successes),
-                'error_count' => count($errors),
-            ],
-            'successes' => $successes,
-            'errors' => $errors
-        ], count($errors) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED);
+        return $this->json(
+            [
+                'summary' => [
+                    'total_processes' => count($successes) + count($errors),
+                    'success_count' => count($successes),
+                    'error_count' => count($errors),
+                ],
+                'successes' => $successes,
+                'errors' => $errors
+            ], 
+            count($errors) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED,
+            [],
+            ['groups' => ['competition:read']]
+        );
     }
 }

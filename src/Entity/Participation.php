@@ -11,6 +11,7 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_participation', columns: ['player_id', 'competition_id'])]
@@ -25,10 +26,12 @@ class Participation
     private ?Competition $competition = null;
 
     #[ORM\Column(options: ['default' => 0])]
+    #[Groups(['competition:read'])]
     private int $score = 0;
 
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['competition:read'])]
     private ?Player $player = null;
 
     public function getCompetition(): ?Competition

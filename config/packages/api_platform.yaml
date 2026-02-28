@@ -5,3 +5,4 @@ api_platform:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+    name_converter: 'serializer.name_converter.camel_case_to_snake_case'

@@ -50,7 +50,7 @@ final class CompetitionControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        
+
         $this->assertEquals('Tournoi de blaireaux', $data['name']);
         $this->assertEquals('SUCCESS', $data['join_code']);
 

@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
 #[UniqueEntity(fields: ['slug'])]
@@ -30,30 +31,37 @@ class Competition
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['competition:read', 'action:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'], unique: true)]
+    #[Groups(['competition:read'])]
     private ?string $slug = null;
 
     #[ORM\Column(length: 10, unique: true)]
     #[Assert\Length(max: 10)]
+    #[Groups(['competition:read'])]
     private ?string $joinCode = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
+    #[Groups(['competition:read'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['competition:read'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column(options: ['default' => false])]
+    #[Groups(['competition:read'])]
     private ?bool $isFinished = false;
 
     /**
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true)]
+    #[Groups(['competition:read', 'action:read'])]
     private Collection $participations;
 
     /**
@@ -198,5 +206,11 @@ class Competition
         }
 
         return $this;
+    }
+
+    #[Groups(['competition:read'])]
+    public function getPlayers(): array
+    {
+        return $this->participations->map(fn(Participation $p) => $p->getPlayer())->toArray();
     }
 }

@@ -22,24 +22,11 @@ final class CompetitionController extends AbstractController
             return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
         }
 
-        $players = [];
-
-        foreach ($competition->getParticipations() as $participation) {
-            $player = $participation->getPlayer();
-            $players[] = [
-                'display_name' => $player->getDisplayName(),
-                'username' => $player->getUsername(),
-                'has_account' => $player->getAssociatedUser() !== null,
-            ];
-        }
-
-        return $this->json([
-            'name' => $competition->getName(),
-            'join_code' => $competition->getJoinCode(),
-            'start_date' => $competition->getStartDate(),
-            'end_date' => $competition->getEndDate(),
-            'slug' => $competition->getSlug(),
-            'players' => $players,
-        ]);
+        return $this->json(
+            $competition,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['competition:read']]
+        );
     }
 }
