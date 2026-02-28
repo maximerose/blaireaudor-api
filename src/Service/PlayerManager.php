@@ -74,8 +74,6 @@ class PlayerManager
             $results['successes'][] = ['name' => $trimmedName];
         }
 
-        $this->entityManager->flush();
-
         return $results;
     }
 }

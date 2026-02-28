@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PLAYER_USERNAME', fields: ['username'])]
@@ -26,10 +27,12 @@ class Player
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['action:read'])]
     private ?string $displayName = null;
 
     #[Gedmo\Slug(fields: ['displayName'], unique: true)]
     #[ORM\Column(length: 255)]
+    #[Groups(['action:read'])]
     private ?string $username = null;
 
     /**

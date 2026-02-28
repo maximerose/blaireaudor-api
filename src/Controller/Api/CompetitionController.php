@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/competition', name: 'api.competition.')]
+#[Route('/api/competitions', name: 'api.competition.')]
 final class CompetitionController extends AbstractController
 {
     #[Route('/check-code/{code}', name: 'check_code', methods: 'GET')]

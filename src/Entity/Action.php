@@ -9,6 +9,7 @@ use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
@@ -19,15 +20,18 @@ class Action
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['action:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\Type(type: 'integer')]
+    #[Groups(['action:read'])]
     private ?int $points = null;
 
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['action:read'])]
     private ?Player $player = null;
 
     #[ORM\ManyToOne(inversedBy: 'actions')]
