@@ -1,22 +1,23 @@
 #!/bin/sh
-echo "🐶 Husky vérifie le style du projet..."
 
-# --- Partie BACK-END (PHP) ---
-docker compose exec -T php vendor/bin/php-cs-fixer fix src --diff --ansi
+echo "🐶 Husky vérifie la qualité et le style..."
 
-# --- Partie FRONT-END (React) ---
-# On utilise --loglevel warn pour ne voir que les messages importants
+# --- 1. QUALITÉ FRONT (ESLint) ---
+docker compose run --rm quality eslint front/src || exit 1
+
+# --- 2. STYLE FRONT (Prettier) ---
 docker compose run --rm quality npx prettier --write front/src --log-level warn
 
-# --- VÉRIFICATION GLOBALE ---
-# On demande à Git si des fichiers ont été modifiés (Back ou Front)
-git diff --exit-code > /dev/null
+# --- 3. STYLE BACK (PHP-CS-Fixer) ---
+# On utilise le conteneur "back" (PHP) car il possède déjà PHP et les dépendances
+docker compose exec -T back vendor/bin/php-cs-fixer fix src --diff --ansi
 
+# --- 4. VÉRIFICATION FINALE ---
+git diff --exit-code > /dev/null
 if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ Le code a été formaté automatiquement (PHP ou React)."
-    echo "👉 Vérifie les changements, fais un 'git add .' et recommence ton commit."
+    echo "⚠️ Le code a été formaté automatiquement (PHP ou React)."
+    echo "👉 Fais un 'git add .' et recommence ton commit."
     exit 1
 fi
 
-echo "✅ Tout est parfait, commit autorisé !"
+echo "✅ Qualité et Style validés !"

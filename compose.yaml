@@ -25,7 +25,9 @@ services:
       - /app/node_modules
   
   quality:
-    build: ./docker/quality
+    build: 
+      context: .
+      dockerfile: docker/quality/Dockerfile
     volumes:
       - .:/app
     working_dir: /app
