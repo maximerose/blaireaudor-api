@@ -118,4 +118,23 @@ final class RegistrationControllerTest extends WebTestCase
 
         $this->assertSame('joueur-cree-2', $player3->getUsername());
     }
+
+    public function testCheckUsernameRoute(): void
+    {
+        $client = static::createClient();
+
+        $user = UserFactory::createOne([
+            'username' => 'pseudo-qui-existe-deja',
+        ]);
+
+        $client->request('GET', '/api/check-username/un-pseudo-qui-n-existe-pas');
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertTrue($data['available']);
+
+        $client->request('GET', '/api/check-username/pseudo-qui-existe-deja');
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertFalse($data['available']);
+    }
 }

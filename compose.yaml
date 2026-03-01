@@ -1,5 +1,5 @@
 services:
-  php:
+  back:
     build: ./back
     command: php -S 0.0.0.0:8000 -t public
     tty: true
@@ -12,6 +12,7 @@ services:
       - "8080:8000"
     volumes:
       - ./back:/app
+      - .:/workspace
     working_dir: /app
     # environment:
     #   DATABASE_URL: "postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=16&charset=utf8"
@@ -22,7 +23,6 @@ services:
       - "5173:5173"
     volumes:
       - ./front:/app
-      - /app/node_modules
   
   quality:
     build: 
@@ -32,17 +32,21 @@ services:
       - .:/app
     working_dir: /app
     profiles: ["tools"]
+    stdin_open: true
+    tty: true
 
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
+    env_file:
+      - ./back/.env.local
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       timeout: 5s
       retries: 5
       start_period: 10s 

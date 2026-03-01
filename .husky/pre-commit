@@ -3,7 +3,7 @@
 echo "🐶 Husky vérifie la qualité et le style..."
 
 # --- 1. QUALITÉ FRONT (ESLint) ---
-docker compose run --rm quality eslint front/src || exit 1
+docker compose run --rm quality eslint front/src --fix || exit 1
 
 # --- 2. STYLE FRONT (Prettier) ---
 docker compose run --rm quality npx prettier --write front/src --log-level warn

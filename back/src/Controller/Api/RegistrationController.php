@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Repository\CompetitionRepository;
+use App\Repository\UserRepository;
 use App\Service\UserManager;
 use App\Service\ValidationHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,5 +80,16 @@ final class RegistrationController extends AbstractController
             'message' => 'Inscription réussie',
             'user' => $user->getUserIdentifier(),
         ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/check-username/{username}', name: 'check-username', methods: ['GET'])]
+    public function checkUsername(string $username, UserRepository $userRepository): JsonResponse
+    {
+        $exists = $userRepository->count(['username' => $username]) > 0;
+
+        return $this->json([
+            'available' => !$exists,
+            'username' => $username
+        ]);
     }
 }

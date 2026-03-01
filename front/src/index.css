@@ -1,3 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+    --color-gold: #d4af37;
+    --color-dark: #121212;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-dark);
+    color: white;
+    overflow: hidden;
+}
+
+#root {
+    display: flex;
+    max-width: none;
+    text-align: left;
+}
+
+@source "./**/*.{ts,tsx}";
