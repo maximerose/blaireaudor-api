@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\Api\Admin;
 
 use App\Factory\CompetitionFactory;
@@ -11,6 +13,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests fonctionnels pour la gestion administrative des compétitions.
+ * * Vérifie :
+ * - La création de compétitions (avec/sans date de fin).
+ * - La sécurité des accès (authentification requise).
+ * - La validation des données (formats de date, logique chronologique).
+ * - L'ajout massif de joueurs (existants et nouveaux).
+ * - La robustesse face aux doublons de noms.
+ */
 final class AdminCompetitionControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
@@ -296,7 +307,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
         PlayerFactory::assert()->notExists(['displayName' => '']);
     }
 
-    public function addNewPlayerWithSameNameThanExistingPlayer(): void
+    public function testAddNewPlayerWithSameNameThanExistingPlayer(): void
     {
         $client = static::createClient();
 

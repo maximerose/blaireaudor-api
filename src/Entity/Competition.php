@@ -18,6 +18,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+/**
+ * Représente une compétition du Blaireau d'Or.
+ * * Gère le cycle de vie de la compétition (dates, statut) et centralise
+ * les participations des joueurs ainsi que les actions de jeu.
+ */
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
 #[UniqueEntity(fields: ['slug'])]
 #[Assert\Expression(
@@ -58,6 +63,7 @@ class Competition
     private ?bool $isFinished = false;
 
     /**
+     * Liste des participations (joueurs inscrits et leurs scores).
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true)]
@@ -65,6 +71,7 @@ class Competition
     private Collection $participations;
 
     /**
+     * Liste des actions enregistrées durant cette compétition.
      * @var Collection<int, Action>
      */
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true)]
@@ -208,9 +215,13 @@ class Competition
         return $this;
     }
 
+    /**
+     * Extrait la liste des profils joueurs à partir des participations.
+     * @return Collection<int, Player>
+     */
     #[Groups(['competition:read'])]
-    public function getPlayers(): array
+    public function getPlayers(): Collection
     {
-        return $this->participations->map(fn(Participation $p) => $p->getPlayer())->toArray();
+        return $this->participations->map(fn(Participation $p) => $p->getPlayer());
     }
 }

@@ -8,12 +8,23 @@ use App\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Trait permettant le traçage automatique de l'auteur des modifications.
+ * * Nécessite l'activation du BlameableListener de Gedmo pour remplir 
+ * automatiquement 'createdBy' et 'updatedBy' avec l'utilisateur connecté.
+ */
 trait BlameableTrait {
+    /**
+     * @var User|null L'utilisateur ayant créé l'enregistrement.
+     */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $createdBy = null;
 
+    /**
+     * @var User|null Le dernier utilisateur ayant modifié l'enregistrement.
+     */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]

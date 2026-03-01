@@ -13,6 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests fonctionnels pour la consultation publique des compétitions via joinCode.
+ * * Vérifie :
+ * - La récupération correcte des données via le code d'invitation.
+ * - La structure du JSON (incluant la liste des joueurs).
+ * - La distinction correcte entre joueurs membres et joueurs invités (has_account).
+ * - La gestion d'erreur 404 pour les codes invalides.
+ */
 final class CompetitionControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;

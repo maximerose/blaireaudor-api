@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository gérant l'accès aux données des Compétitions.
  * @extends ServiceEntityRepository<Competition>
  */
 class CompetitionRepository extends ServiceEntityRepository
@@ -18,6 +19,14 @@ class CompetitionRepository extends ServiceEntityRepository
         parent::__construct($registry, Competition::class);
     }
 
+    /**
+     * Récupère une compétition par son code avec toutes ses relations chargées.
+     * * Optimisation : Utilise des jointures (Eager Loading) pour récupérer en une 
+     * seule requête SQL : la compétition, les participations, les profils joueurs 
+     * et les comptes utilisateurs associés.
+     * @param string $code Le code d'invitation (joinCode).
+     * @return Competition|null
+     */
     public function findByCodeWithAllPlayers(string $code): ?Competition
     {
         return $this->createQueryBuilder('c')

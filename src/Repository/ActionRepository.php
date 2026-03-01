@@ -9,6 +9,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository gérant l'accès aux données des Actions de jeu.
+ * * Contient les méthodes de récupération personnalisées pour les statistiques
+ * et les historiques d'actions par joueur ou compétition.
  * @extends ServiceEntityRepository<Action>
  */
 class ActionRepository extends ServiceEntityRepository

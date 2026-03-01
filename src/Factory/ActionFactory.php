@@ -9,6 +9,7 @@ use App\Enum\ActionStatus;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
+ * Factory pour générer des actions de jeu dans les tests.
  * @extends PersistentObjectFactory<Action>
  */
 final class ActionFactory extends PersistentObjectFactory
@@ -27,7 +28,10 @@ final class ActionFactory extends PersistentObjectFactory
     }
     
     /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     * Définit les valeurs par défaut pour une Action.
+     * * Par défaut, l'action est créée avec le statut PENDING et 
+     * génère automatiquement une nouvelle Competition et un nouveau Player
+     * via leurs factories respectives si aucune valeur n'est fournie.
      */
     #[\Override]
     protected function defaults(): array|callable

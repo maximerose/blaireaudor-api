@@ -10,6 +10,11 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Service de gestion des joueurs.
+ * * Gère la création des profils (invités ou membres) et facilite l'importation 
+ * par lots (batch) de nouveaux participants dans une compétition.
+ */
 class PlayerManager
 {    
     public function __construct(
@@ -33,6 +38,10 @@ class PlayerManager
         return $player;
     }
 
+    /**
+     * Crée un joueur et l'inscrit immédiatement à une compétition.
+     * @return Player Le joueur créé et inscrit.
+     */
     public function createPlayerAndJoin(
         string $displayName, 
         Competition $competition, 
@@ -44,6 +53,13 @@ class PlayerManager
         return $player;
     }
 
+    /**
+     * Importe une liste de noms de joueurs dans une compétition.
+     * * Nettoie les noms (trim), valide les contraintes d'entité, et gère les erreurs 
+     * pour chaque ligne sans interrompre le processus global.
+     * @param array<string> $rawNames Liste des noms à importer.
+     * @return array{successes: array, errors: array} Un résumé du traitement.
+     */
     public function createPlayersBatch(array $rawNames, Competition $competition, User $user): array
     {
         $results = ['successes' => [], 'errors' => []];

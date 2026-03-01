@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests fonctionnels pour la sécurité (Authentification et Session).
+ * * Vérifie :
+ * - Le succès du login avec retour des infos utilisateur (JSON).
+ * - L'échec du login (401 Unauthorized).
+ * - La déconnexion (204 No Content via le LogoutListener).
+ * - La récupération du profil de l'utilisateur connecté (/api/me).
+ */
 final class SecurityControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;

@@ -8,6 +8,7 @@ use App\Entity\User;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
+ * Factory pour générer les comptes utilisateurs (User).
  * @extends PersistentObjectFactory<User>
  */
 final class UserFactory extends PersistentObjectFactory
@@ -26,13 +27,14 @@ final class UserFactory extends PersistentObjectFactory
     }
 
     /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     * Définit les attributs par défaut d'un compte utilisateur.
+     * * Le mot de passe est généré en clair (plainPassword) pour être
+     * ensuite haché automatiquement par le UserPasswordHasherListener.
      */
     #[\Override]
     protected function defaults(): array|callable
     {
         return [
-            'isActive' => self::faker()->boolean(),
             'plainPassword' => self::faker()->text(),
             'roles' => [],
             'username' => self::faker()->text(180),

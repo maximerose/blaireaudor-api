@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Participation;
 use App\Entity\Player;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Entité gérant l'authentification et les accès utilisateur.
+ * * Cette classe respecte les contrats Symfony UserInterface et PasswordAuthenticatedUserInterface.
+ * Elle est liée de manière unique à un profil Player pour la partie jeu.
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
@@ -27,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidTrait, TimestampableTrait;
     
+    /**
+     * @var string|null Identifiant unique de connexion.
+     */
     #[ORM\Column(length: 180)]
     private ?string $username = null;
 
@@ -36,6 +42,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    /**
+     * @var string|null Mot de passe non haché, utilisé uniquement lors 
+     * de la soumission de formulaires ou de l'inscription.
+     */
     private ?string $plainPassword = null;
 
     /**
@@ -43,15 +53,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
-
-    #[ORM\Column(options: ['default' => false])]
-    private ?bool $isActive = false;
-
-    /**
-     * @var Collection<int, Participation>
-     */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'player', orphanRemoval: true)]
-    private Collection $participations;
 
     #[ORM\OneToOne(mappedBy: 'associatedUser', cascade: ['persist', 'remove'])]
     #[Assert\Valid]
@@ -81,6 +82,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     * Retourne les rôles de l'utilisateur.
+     * * Ajoute systématiquement ROLE_USER pour garantir un accès de base.
      */
     public function getRoles(): array
     {
@@ -139,23 +142,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
-    public function isActive(): ?bool
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive(bool $isActive): static
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
     public function getPlayer(): ?Player
     {
         return $this->player;
     }
 
+    /**
+     * @param Player|null $player Le profil joueur à lier.
+     * * Gère la synchronisation bidirectionnelle de la relation OneToOne.
+     */
     public function setPlayer(?Player $player): static
     {
         // unset the owning side of the relation if necessary

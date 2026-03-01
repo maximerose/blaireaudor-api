@@ -14,6 +14,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Représente une action de jeu effectuée par un joueur.
+ * * Chaque action rapporte un nombre de points défini et est liée 
+ * à une compétition spécifique. Elle possède un cycle de vie via son statut.
+ */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
 #[ApiResource]
 class Action
@@ -31,15 +36,24 @@ class Action
     #[Groups(['action:read'])]
     private ?int $points = null;
 
+    /**
+     * @var Player|null Le joueur ayant réalisé l'action.
+     */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['action:read'])]
     private ?Player $player = null;
 
+    /**
+     * @var Competition|null La compétition dans laquelle l'action a eu lieu.
+     */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Competition $competition = null;
 
+    /**
+     * @var ActionStatus État actuel de l'action (par défaut : PENDING).
+     */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
     private ActionStatus $status = ActionStatus::PENDING;
 
@@ -93,7 +107,7 @@ class Action
 
     public function getStatus(): ActionStatus
     {
-        return $this->getStatus();
+        return $this->status;
     }
 
     public function setStatus(ActionStatus $status): static

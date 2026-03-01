@@ -9,6 +9,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests unitaires et d'intégration pour l'entité Competition.
+ * * Vérifie :
+ * - La génération automatique du slug à partir du nom.
+ * - La création automatique du code d'invitation (joinCode).
+ * - La gestion de l'unicité des slugs (incrémentation en cas de doublon).
+ */
 class CompetitionTest extends KernelTestCase
 {
     use ResetDatabase, Factories;

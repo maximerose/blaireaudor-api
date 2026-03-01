@@ -15,6 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests fonctionnels pour la gestion des actions de jeu par les utilisateurs.
+ * * Vérifie :
+ * - Qu'un participant peut déclarer une action pour un autre joueur (en attente).
+ * - Que le système de sécurité (Voter) bloque les utilisateurs externes à la compétition.
+ * - La bonne application des statuts ActionStatus.
+ */
 final class ActionControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;

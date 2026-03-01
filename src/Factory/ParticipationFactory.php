@@ -8,7 +8,8 @@ use App\Entity\Participation;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Participation>
+ * Factory pour générer les inscriptions des joueurs aux compétitions.
+ * * @extends PersistentObjectFactory<Participation>
  */
 final class ParticipationFactory extends PersistentObjectFactory
 {
@@ -26,7 +27,9 @@ final class ParticipationFactory extends PersistentObjectFactory
     }
 
     /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     * Définit les valeurs par défaut d'une participation.
+     * * Génère automatiquement une Competition et un Player associés.
+     * * Le score est initialisé de manière aléatoire (utile pour tester les classements).
      */
     #[\Override]
     protected function defaults(): array|callable

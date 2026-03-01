@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Gestion administrative des compétitions.
+ * * Permet la création de compétitions et l'inscription massive de joueurs 
+ * (existants ou nouveaux comptes invités)
+ */
 #[Route('/api/admin/competition', name: 'api.admin.competition.')]
 final class AdminCompetitionController extends AbstractController
 {
@@ -31,6 +36,11 @@ final class AdminCompetitionController extends AbstractController
         private EntityManagerInterface $entityManager,
     ) { }
 
+    /**
+     * Crée une nouvelle compétition.
+     * * Si l'option 'participate' est à true, le créateur est automatiquement 
+     * inscrit en tant que joueur à la copétition créée.
+     */
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
@@ -93,6 +103,14 @@ final class AdminCompetitionController extends AbstractController
         );
     }
 
+    /**
+     * Ajoute des joueurs à une compétition existante.
+     * * Gère deux types d'entrées :
+     * 1. 'existing_players_ids': Liste d'IDs de joueurs déjà enregistrés
+     * 2. 'new_players': Liste de noms pour créer de nouveaux profils à la volée.
+     * @return JsonResponse Retourne un rapport détaillé (successes/errors) avec un code 207 (Multi-Status)
+     * si au moins une erreur survient.
+     */
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
     public function addPlayers(
         Competition $competition,

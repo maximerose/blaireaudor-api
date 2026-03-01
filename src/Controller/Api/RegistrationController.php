@@ -15,6 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Gestion de l'inscription des nouveaux utilisateurs.
+ * * Permet de créer un compte utilisateur complet et, optionnellement, 
+ * d'inscrire immédiatement le nouveau joueur à une compétition via son code.
+ */
 #[Route('/api', name: 'api.')]
 final class RegistrationController extends AbstractController 
 {
@@ -26,6 +31,14 @@ final class RegistrationController extends AbstractController
     ) {
     }
 
+    /**
+     * Inscrit un nouvel utilisateur et son profil joueur.
+     * * Si un 'join_code' est fourni, le système vérifie l'existence de la compétition
+     * avant de procéder à la création du compte pour lier le joueur dès son inscription.
+     * @param Request $request Contient username, plain_password, display_name et optionnellement join_code.
+     * @param UserManager $userManager Service gérant la logique de création User/Player.
+     * @return JsonResponse Message de succès (201) ou erreurs de validation (422).
+     */
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(Request $request, UserManager $userManager): JsonResponse
     {

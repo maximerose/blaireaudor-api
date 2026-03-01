@@ -8,6 +8,7 @@ use App\Entity\Competition;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
+ * Factory pour générer des compétitions dans les tests.
  * @extends PersistentObjectFactory<Competition>
  */
 final class CompetitionFactory extends PersistentObjectFactory
@@ -26,7 +27,9 @@ final class CompetitionFactory extends PersistentObjectFactory
     }
 
     /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     * Définit les réglages par défaut d'une compétition de test.
+     * * Génère un code d'invitation (joinCode) au format Alphanumérique (ex: AB12C3).
+     * * Lie automatiquement un créateur (User) via la UserFactory.
      */
     #[\Override]
     protected function defaults(): array|callable

@@ -12,6 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * Tests fonctionnels pour l'inscription des utilisateurs.
+ * * Vérifie :
+ * - Le workflow complet d'inscription (User + Player + Participation via code).
+ * - La gestion des erreurs de validation (doublons de username).
+ * - La logique de "slugification" et d'incrémentation automatique des noms d'utilisateurs.
+ */
 final class RegistrationControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
