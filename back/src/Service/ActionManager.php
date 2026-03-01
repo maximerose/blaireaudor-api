@@ -21,7 +21,8 @@ final class ActionManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     /**
      * Crée et persiste une nouvelle Action à partir des données de la requête.

@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Gestion administrative des compétitions.
- * * Permet la création de compétitions et l'inscription massive de joueurs 
- * (existants ou nouveaux comptes invités)
+ * * Permet la création de compétitions et l'inscription massive de joueurs
+ * (existants ou nouveaux comptes invités).
  */
 #[Route('/api/admin/competition', name: 'api.admin.competition.')]
 final class AdminCompetitionController extends AbstractController
@@ -34,11 +34,12 @@ final class AdminCompetitionController extends AbstractController
         private ParticipationManager $participationManager,
         private ValidationHelper $validationHelper,
         private EntityManagerInterface $entityManager,
-    ) { }
+    ) {
+    }
 
     /**
      * Crée une nouvelle compétition.
-     * * Si l'option 'participate' est à true, le créateur est automatiquement 
+     * * Si l'option 'participate' est à true, le créateur est automatiquement
      * inscrit en tant que joueur à la copétition créée.
      */
     #[Route('', name: 'create', methods: ['POST'])]
@@ -46,7 +47,7 @@ final class AdminCompetitionController extends AbstractController
     {
         $data = $request->toArray();
         $user = $this->getUser();
-        
+
         if (!$user instanceof User) {
             return $this->json([
                 'error' => 'Non autorisé',
@@ -83,7 +84,7 @@ final class AdminCompetitionController extends AbstractController
 
         if (isset($data['participate']) && true === $data['participate']) {
             $player = $user->getPlayer();
-            
+
             if (!$player) {
                 return $this->json([
                     'error' => 'Profil joueur manquant',
@@ -96,7 +97,7 @@ final class AdminCompetitionController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(
-            $competition, 
+            $competition,
             Response::HTTP_CREATED,
             [],
             ['groups' => ['competition:read']]
@@ -109,7 +110,7 @@ final class AdminCompetitionController extends AbstractController
      * 1. 'existing_players_ids': Liste d'IDs de joueurs déjà enregistrés
      * 2. 'new_players': Liste de noms pour créer de nouveaux profils à la volée.
      * @return JsonResponse Retourne un rapport détaillé (successes/errors) avec un code 207 (Multi-Status)
-     * si au moins une erreur survient.
+     *                      si au moins une erreur survient.
      */
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
     public function addPlayers(
@@ -117,8 +118,7 @@ final class AdminCompetitionController extends AbstractController
         Request $request,
         ParticipationRepository $participationRepository,
         PlayerRepository $playerRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user = $this->getUser();
 
         if ($competition->getCreatedBy() !== $user) {
@@ -149,9 +149,9 @@ final class AdminCompetitionController extends AbstractController
 
                 $currentPlayer = $playersById[$idStr];
 
-                 $isAlreadyIn = $participationRepository->findOneBy([
-                    'competition' => $competition,
-                    'player' => $currentPlayer
+                $isAlreadyIn = $participationRepository->findOneBy([
+                   'competition' => $competition,
+                   'player' => $currentPlayer
                 ]);
 
                 if ($isAlreadyIn) {
@@ -188,7 +188,7 @@ final class AdminCompetitionController extends AbstractController
                 ],
                 'successes' => $successes,
                 'errors' => $errors
-            ], 
+            ],
             count($errors) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED,
             [],
             ['groups' => ['competition:read']]

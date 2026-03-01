@@ -11,18 +11,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Service gérant l'inscription et l'engagement des joueurs dans les compétitions.
- * * Agit comme une fabrique pour l'entité de liaison Participation, assurant 
+ * * Agit comme une fabrique pour l'entité de liaison Participation, assurant
  * la cohérence entre un Player et une Competition.
  */
 class ParticipationManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     /**
      * Inscrit un joueur à une compétition donnée.
-     * * Crée une nouvelle instance de Participation, l'initialise avec le joueur 
+     * * Crée une nouvelle instance de Participation, l'initialise avec le joueur
      * et la compétition, puis la persiste en base de données.
      * @param Player $player Le joueur qui rejoint.
      * @param Competition $competition La compétition concernée.

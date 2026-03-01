@@ -18,7 +18,8 @@ class UserManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PlayerManager $playerManager
-    ) {}
+    ) {
+    }
 
     /**
      * Enregistre un nouvel utilisateur complet.
@@ -31,9 +32,9 @@ class UserManager
      * @return User L'entité utilisateur créée.
      */
     public function registerUser(
-        string $username, 
-        string $plainPassword, 
-        string $displayName, 
+        string $username,
+        string $plainPassword,
+        string $displayName,
         ?Competition $competition = null
     ): User {
         $user = new User();

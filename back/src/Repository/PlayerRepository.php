@@ -10,7 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Repository gérant l'accès aux données des profils Joueurs.
- * * Fournit les méthodes pour rechercher des participants par leur nom d'affichage 
+ * * Fournit les méthodes pour rechercher des participants par leur nom d'affichage
  * ou pour gérer les liaisons avec les comptes utilisateurs.
  * @extends ServiceEntityRepository<Player>
  */

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Competition;
-use App\Entity\Player;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\ParticipationRepository;
@@ -25,7 +23,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource]
 class Participation
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     /**
      * @var Competition|null La compétition concernée.
@@ -36,7 +35,7 @@ class Participation
 
     /**
      * Score cumulé du joueur pour cette compétition.
-     * * Note : Cette valeur est une dénormalisation (somme des points des actions) 
+     * * Note : Cette valeur est une dénormalisation (somme des points des actions)
      * utilisée pour optimiser les performances de l'affichage du classement.
      * Elle doit être mise à jour à chaque fois qu'une Action est validée ou modifiée.
      * @var int Le score total du joueur dans cette compétition (0 par défaut).

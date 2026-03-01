@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Service de gestion du cycle de vie des compétitions.
- * * Responsable de l'instanciation des compétitions et de la garantie 
+ * * Responsable de l'instanciation des compétitions et de la garantie
  * d'unicité des codes d'accès (joinCode).
  */
 class CompetitionManager
@@ -19,11 +19,12 @@ class CompetitionManager
         private CompetitionRepository $competitionRepository,
         private CodeGenerator $codeGenerator,
         private EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     /**
      * Crée une nouvelle compétition avec les paramètres fournis.
-     * * Si aucun code d'invitation n'est fourni, un code sécurisé et unique 
+     * * Si aucun code d'invitation n'est fourni, un code sécurisé et unique
      * est automatiquement généré.
      */
     public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate, ?string $customJoinCode = null): Competition
@@ -47,7 +48,7 @@ class CompetitionManager
 
     /**
      * Génère un code d'invitation unique.
-     * * Boucle jusqu'à trouver un code qui n'existe pas encore en base de données 
+     * * Boucle jusqu'à trouver un code qui n'existe pas encore en base de données
      * pour éviter les collisions.
      */
     private function generateSafeJoinCode(): string
@@ -57,12 +58,12 @@ class CompetitionManager
 
         while (!$unique) {
             $code = $this->codeGenerator->generateRandomCode();
-            
+
             if (!$this->competitionRepository->findOneBy(['joinCode' => $code])) {
                 $unique = true;
             }
         }
-        
+
         return $code;
     }
 }

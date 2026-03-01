@@ -28,7 +28,7 @@ final class PlayerFactory extends PersistentObjectFactory
 
     /**
      * Définit les attributs par défaut d'un joueur.
-     * * Génère un nom d'affichage unique via Faker et lie le profil 
+     * * Génère un nom d'affichage unique via Faker et lie le profil
      * à un utilisateur créateur par défaut.
      */
     #[\Override]
@@ -53,12 +53,12 @@ final class PlayerFactory extends PersistentObjectFactory
 
     /**
      * Force la création d'un joueur sans nom d'utilisateur.
-     * * Utile pour tester le comportement des profils "invités" qui n'ont 
+     * * Utile pour tester le comportement des profils "invités" qui n'ont
      * pas encore de compte User lié.
      */
     public function withoutUsername(): static
     {
-        return $this->afterInstantiate(function(Player $player) {
+        return $this->afterInstantiate(function (Player $player) {
             $player->setUsername(null);
         });
     }

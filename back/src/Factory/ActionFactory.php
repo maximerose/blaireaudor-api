@@ -26,10 +26,10 @@ final class ActionFactory extends PersistentObjectFactory
     {
         return Action::class;
     }
-    
+
     /**
      * Définit les valeurs par défaut pour une Action.
-     * * Par défaut, l'action est créée avec le statut PENDING et 
+     * * Par défaut, l'action est créée avec le statut PENDING et
      * génère automatiquement une nouvelle Competition et un nouveau Player
      * via leurs factories respectives si aucune valeur n'est fournie.
      */

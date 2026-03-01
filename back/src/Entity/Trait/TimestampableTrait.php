@@ -27,7 +27,7 @@ trait TimestampableTrait
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
-    
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;

@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Entity\Trait;
 
 use App\Entity\User;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Trait permettant le traçage automatique de l'auteur des modifications.
- * * Nécessite l'activation du BlameableListener de Gedmo pour remplir 
+ * * Nécessite l'activation du BlameableListener de Gedmo pour remplir
  * automatiquement 'createdBy' et 'updatedBy' avec l'utilisateur connecté.
  */
-trait BlameableTrait {
+trait BlameableTrait
+{
     /**
      * @var User|null L'utilisateur ayant créé l'enregistrement.
      */
@@ -38,7 +39,7 @@ trait BlameableTrait {
     public function setCreatedBy(?User $user): static
     {
         $this->createdBy = $user;
-        
+
         return $this;
     }
 

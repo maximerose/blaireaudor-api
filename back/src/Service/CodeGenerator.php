@@ -13,7 +13,7 @@ class CodeGenerator
 {
     /**
      * Génère une chaîne de caractères aléatoire et alphanumérique.
-     * * Utilise random_bytes() pour une sécurité cryptographique, garantissant 
+     * * Utilise random_bytes() pour une sécurité cryptographique, garantissant
      * que les codes ne sont pas prévisibles par les joueurs.
      * @param int $length La longueur du code souhaitée (défaut: 6).
      * @return string Le code généré en majuscules.

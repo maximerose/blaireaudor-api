@@ -24,7 +24,7 @@ final class ActionController extends AbstractController
     /**
      * Enregistre une nouvelle action pour une compétition donnée.
      * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
-     * @IsGranted("ACTION_CREATE", subject="competition") 
+     * @IsGranted("ACTION_CREATE", subject="competition")
      * * Vérifie via le Voter si l'utilisateur a le droit de poster dans cette compétition.
      * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'.
      */
@@ -43,9 +43,9 @@ final class ActionController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $action, 
-            Response::HTTP_CREATED, 
-            [], 
+            $action,
+            Response::HTTP_CREATED,
+            [],
             ['groups' => ['action:read']]
         );
     }

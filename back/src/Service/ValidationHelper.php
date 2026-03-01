@@ -8,7 +8,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Service utilitaire pour la gestion des erreurs de validation.
- * * Standardise le format des violations de contraintes pour les rendre 
+ * * Standardise le format des violations de contraintes pour les rendre
  * facilement exploitables par les réponses API (JSON).
  */
 class ValidationHelper

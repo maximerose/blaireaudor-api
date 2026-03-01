@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,8 +18,8 @@ trait UuidTrait
 {
     /**
      * @var Uuid|null L'identifiant unique de l'enregistrement.
-     * * Expose l'ID dans les contextes de lecture des compétitions, 
-     * des actions et des profils joueurs.
+     *                * Expose l'ID dans les contextes de lecture des compétitions,
+     *                des actions et des profils joueurs.
      */
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]

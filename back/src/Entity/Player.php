@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Participation;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
-use App\Entity\User;
 use App\Repository\PlayerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Représente le profil d'un participant au jeu.
  * * Un joueur peut être autonome (lié à un compte User) ou être un profil "invité"
- * créé par un administrateur. Il centralise ses participations aux compétitions 
+ * créé par un administrateur. Il centralise ses participations aux compétitions
  * et l'historique de ses actions.
  */
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
@@ -31,7 +29,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource]
 class Player
 {
-    use UuidTrait, TimestampableTrait, BlameableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
+    use BlameableTrait;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -40,7 +40,7 @@ class Player
 
     /**
      * @var string|null Nom d'utilisateur unique utilisé pour le slug et l'identification.
-     * * Est synchronisé avec le username de l'User associé s'il existe.
+     *                  * Est synchronisé avec le username de l'User associé s'il existe.
      */
     #[Gedmo\Slug(fields: ['displayName'], unique: true)]
     #[ORM\Column(length: 255)]

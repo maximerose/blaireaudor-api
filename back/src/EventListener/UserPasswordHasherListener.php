@@ -23,7 +23,8 @@ class UserPasswordHasherListener
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
-    ) {}
+    ) {
+    }
 
     public function prePersist(User $user, PrePersistEventArgs $event): void
     {
@@ -37,7 +38,7 @@ class UserPasswordHasherListener
 
     /**
      * Hache le mot de passe s'il a été modifié.
-     * * Récupère le texte brut, génère un hash sécurisé via l'algorithme configuré 
+     * * Récupère le texte brut, génère un hash sécurisé via l'algorithme configuré
      * (généralement Argon2id ou Bcrypt), puis vide le champ brut par sécurité.
      */
     private function hashPassword(User $user): void

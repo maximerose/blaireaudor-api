@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Participation;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
@@ -13,10 +12,10 @@ use App\Repository\CompetitionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Représente une compétition du Blaireau d'Or.
@@ -32,7 +31,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource]
 class Competition
 {
-    use UuidTrait, TimestampableTrait, BlameableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
+    use BlameableTrait;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -222,6 +223,6 @@ class Competition
     #[Groups(['competition:read'])]
     public function getPlayers(): Collection
     {
-        return $this->participations->map(fn(Participation $p) => $p->getPlayer());
+        return $this->participations->map(fn (Participation $p) => $p->getPlayer());
     }
 }

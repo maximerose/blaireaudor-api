@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Player;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\UserRepository;
@@ -28,8 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use UuidTrait, TimestampableTrait;
-    
+    use UuidTrait;
+    use TimestampableTrait;
+
     /**
      * @var string|null Identifiant unique de connexion.
      */
@@ -43,8 +43,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string|null Mot de passe non haché, utilisé uniquement lors 
-     * de la soumission de formulaires ou de l'inscription.
+     * @var string|null Mot de passe non haché, utilisé uniquement lors
+     *                  de la soumission de formulaires ou de l'inscription.
      */
     private ?string $plainPassword = null;
 
@@ -149,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param Player|null $player Le profil joueur à lier.
-     * * Gère la synchronisation bidirectionnelle de la relation OneToOne.
+     *                            * Gère la synchronisation bidirectionnelle de la relation OneToOne.
      */
     public function setPlayer(?Player $player): static
     {

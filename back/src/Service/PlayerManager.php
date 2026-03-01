@@ -12,11 +12,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Service de gestion des joueurs.
- * * Gère la création des profils (invités ou membres) et facilite l'importation 
+ * * Gère la création des profils (invités ou membres) et facilite l'importation
  * par lots (batch) de nouveaux participants dans une compétition.
  */
 class PlayerManager
-{    
+{
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
@@ -28,7 +28,7 @@ class PlayerManager
     {
         $player = new Player();
         $player->setDisplayName($displayName);
-        
+
         if ($createdBy) {
             $player->setCreatedBy($createdBy);
         }
@@ -43,8 +43,8 @@ class PlayerManager
      * @return Player Le joueur créé et inscrit.
      */
     public function createPlayerAndJoin(
-        string $displayName, 
-        Competition $competition, 
+        string $displayName,
+        Competition $competition,
         ?User $createdBy = null
     ): Player {
         $player = $this->createPlayer($displayName, $createdBy);
@@ -55,7 +55,7 @@ class PlayerManager
 
     /**
      * Importe une liste de noms de joueurs dans une compétition.
-     * * Nettoie les noms (trim), valide les contraintes d'entité, et gère les erreurs 
+     * * Nettoie les noms (trim), valide les contraintes d'entité, et gère les erreurs
      * pour chaque ligne sans interrompre le processus global.
      * @param array<string> $rawNames Liste des noms à importer.
      * @return array{successes: array, errors: array} Un résumé du traitement.
@@ -63,7 +63,7 @@ class PlayerManager
     public function createPlayersBatch(array $rawNames, Competition $competition, User $user): array
     {
         $results = ['successes' => [], 'errors' => []];
-        
+
         foreach ($rawNames as $name) {
             $trimmedName = trim($name);
 
@@ -72,7 +72,7 @@ class PlayerManager
                     'name' => '',
                     'message' => 'Le nom du joueur ne peut pas être vide'
                 ];
-                
+
                 continue;
             };
 

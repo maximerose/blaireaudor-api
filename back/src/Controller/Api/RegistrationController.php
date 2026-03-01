@@ -17,11 +17,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Gestion de l'inscription des nouveaux utilisateurs.
- * * Permet de créer un compte utilisateur complet et, optionnellement, 
+ * * Permet de créer un compte utilisateur complet et, optionnellement,
  * d'inscrire immédiatement le nouveau joueur à une compétition via son code.
  */
 #[Route('/api', name: 'api.')]
-final class RegistrationController extends AbstractController 
+final class RegistrationController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -49,7 +49,7 @@ final class RegistrationController extends AbstractController
 
         if ($joinCode) {
             $competition = $this->competitionRepository->findOneBy(['joinCode' => $joinCode]);
-            
+
             if (null === $competition) {
                 return $this->json([
                     'message' => 'La compétition n\'existe pas.'

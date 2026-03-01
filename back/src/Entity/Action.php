@@ -16,14 +16,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Représente une action de jeu effectuée par un joueur.
- * * Chaque action rapporte un nombre de points défini et est liée 
+ * * Chaque action rapporte un nombre de points défini et est liée
  * à une compétition spécifique. Elle possède un cycle de vie via son statut.
  */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
 #[ApiResource]
 class Action
 {
-    use UuidTrait, BlameableTrait, TimestampableTrait;
+    use UuidTrait;
+    use BlameableTrait;
+    use TimestampableTrait;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]

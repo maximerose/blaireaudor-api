@@ -21,8 +21,8 @@ class CompetitionRepository extends ServiceEntityRepository
 
     /**
      * Récupère une compétition par son code avec toutes ses relations chargées.
-     * * Optimisation : Utilise des jointures (Eager Loading) pour récupérer en une 
-     * seule requête SQL : la compétition, les participations, les profils joueurs 
+     * * Optimisation : Utilise des jointures (Eager Loading) pour récupérer en une
+     * seule requête SQL : la compétition, les participations, les profils joueurs
      * et les comptes utilisateurs associés.
      * @param string $code Le code d'invitation (joinCode).
      * @return Competition|null
