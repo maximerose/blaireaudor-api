@@ -1,0 +1,19 @@
+#!/bin/sh
+echo "🐶 Husky vérifie le style de ton code PHP..."
+
+# 1. On lance le fixeur normalement (il va modifier les fichiers)
+docker compose exec -T php vendor/bin/php-cs-fixer fix src --diff --ansi
+
+# 2. On demande à Git s'il y a des modifications non indexées dans le dossier src
+# --quiet renvoie un code d'erreur (1) s'il y a des différences
+git diff --exit-code back/src > /dev/null
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ Le code a été formaté automatiquement."
+    echo "👉 Les changements sont visibles ci-dessus."
+    echo "👉 Fais un 'git add back/src' pour les valider, puis recommence ton commit."
+    exit 1
+fi
+
+echo "✅ Style impeccable, commit autorisé !"
