@@ -2,7 +2,8 @@
   "name": "blaireaudor-root",
   "private": true,
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "prettier": "3.8.1"
   },
   "version": "1.0.0",
   "main": "index.js",

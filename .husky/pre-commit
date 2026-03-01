@@ -1,19 +1,22 @@
 #!/bin/sh
-echo "🐶 Husky vérifie le style de ton code PHP..."
+echo "🐶 Husky vérifie le style du projet..."
 
-# 1. On lance le fixeur normalement (il va modifier les fichiers)
+# --- Partie BACK-END (PHP) ---
 docker compose exec -T php vendor/bin/php-cs-fixer fix src --diff --ansi
 
-# 2. On demande à Git s'il y a des modifications non indexées dans le dossier src
-# --quiet renvoie un code d'erreur (1) s'il y a des différences
-git diff --exit-code back/src > /dev/null
+# --- Partie FRONT-END (React) ---
+# On utilise --loglevel warn pour ne voir que les messages importants
+docker compose run --rm quality npx prettier --write front/src --log-level warn
+
+# --- VÉRIFICATION GLOBALE ---
+# On demande à Git si des fichiers ont été modifiés (Back ou Front)
+git diff --exit-code > /dev/null
 
 if [ $? -ne 0 ]; then
     echo ""
-    echo "❌ Le code a été formaté automatiquement."
-    echo "👉 Les changements sont visibles ci-dessus."
-    echo "👉 Fais un 'git add back/src' pour les valider, puis recommence ton commit."
+    echo "❌ Le code a été formaté automatiquement (PHP ou React)."
+    echo "👉 Vérifie les changements, fais un 'git add .' et recommence ton commit."
     exit 1
 fi
 
-echo "✅ Style impeccable, commit autorisé !"
+echo "✅ Tout est parfait, commit autorisé !"
