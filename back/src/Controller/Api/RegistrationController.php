@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Service\UserManager;
 use App\Service\ValidationHelper;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ final class RegistrationController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private CompetitionRepository $competitionRepository,
+        private JWTTokenManagerInterface $jwtManager,
         private ValidatorInterface $validator,
         private ValidationHelper $validationHelper
     ) {
@@ -76,8 +78,11 @@ final class RegistrationController extends AbstractController
 
         $this->entityManager->flush();
 
+        $token = $this->jwtManager->create($user);
+
         return $this->json([
             'message' => 'Inscription réussie',
+            'token' => $token,
             'user' => $user->getUserIdentifier(),
         ], Response::HTTP_CREATED);
     }
