@@ -1,3 +1,4 @@
+import { ROUTES } from '../constants/routes';
 import { useRegistration } from '../hooks/useRegistration';
 
 const RegistrationForm = () => {
@@ -14,7 +15,7 @@ const RegistrationForm = () => {
     handleUsernameBlur,
     handlePasswordChange,
     handleSubmit,
-  } = useRegistration('/dashboard');
+  } = useRegistration(ROUTES.DASHBOARD);
 
   // Avant le return
   let buttonClass =

@@ -12,8 +12,43 @@ export const authService = {
     });
 
     const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem('token', data.token);
+    }
+
     return { ok: response.ok, data };
   },
+
+  /**
+   * Identifie l'utilisateur et stocke le Token JWT
+   */
+  login: async (credentials: any) => {
+    const response = await apiFetch('/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem('token', data.token);
+    }
+
+    return { ok: response.ok, data };
+  },
+
+  /**
+   * Déconnexion : Nettoie le stockage local
+   */
+  logout: () => {
+    localStorage.removeItem('token');
+  },
+
+  /**
+   * Récupère le token stocké
+   */
+  getToken: () => localStorage.getItem('token'),
 
   /**
    * Vérifie si un nom d'utilisateur est déjà pris
