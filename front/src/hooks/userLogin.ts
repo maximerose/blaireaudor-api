@@ -24,7 +24,6 @@ export const useLogin = () => {
 
     try {
       const response = await authService.login(credentials);
-
       if (response.ok) {
         navigate(ROUTES.DASHBOARD);
       } else {

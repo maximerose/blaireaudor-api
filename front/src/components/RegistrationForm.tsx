@@ -17,7 +17,6 @@ const RegistrationForm = () => {
     handleSubmit,
   } = useRegistration(ROUTES.DASHBOARD);
 
-  // Avant le return
   let buttonClass =
     'w-full py-3 font-bold rounded-lg transition-all shadow-lg shadow-gold/20 ';
   let buttonText = "S'inscrire au Blaireau d'Or";
@@ -60,7 +59,7 @@ const RegistrationForm = () => {
             Nom d'utilisateur
           </label>
           <div className="relative flex items-center">
-            <span className="absolute left-4 text-gold/50 pointer-events-none">
+            <span className="absolute left-4 text-gold/50 pointer-events-none text-sm">
               @
             </span>
             <input

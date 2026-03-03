@@ -41,8 +41,19 @@ export const authService = {
   /**
    * Déconnexion : Nettoie le stockage local
    */
-  logout: () => {
-    localStorage.removeItem('token');
+  logout: async () => {
+    try {
+      await apiFetch('/logout', {
+        method: 'GET',
+      });
+    } catch (error) {
+      console.error(
+        'Erreur lors de la notification de déconnexion au serveur',
+        error,
+      );
+    } finally {
+      localStorage.removeItem('token');
+    }
   },
 
   /**

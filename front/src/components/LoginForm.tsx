@@ -6,66 +6,72 @@ const LoginForm = () => {
   const { credentials, error, isLoading, handleChange, handleSubmit } =
     useLogin();
 
+  let buttonClass =
+    'w-full py-3 font-bold rounded-lg transition-all shadow-lg shadow-gold/20 ';
+  let buttonText = 'Se connecter';
+
+  if (isLoading) {
+    buttonClass += 'bg-gold/50 cursor-not-allowed opacity-70';
+    buttonText = 'Connexion en cours...';
+  } else {
+    buttonClass +=
+      'bg-gold text-dark hover:bg-gold/90 active:scale-95 cursor-pointer';
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark px-4 font-sans">
-      <div className="max-w-md w-full space-y-8 p-10 bg-dark-lighter rounded-xl border border-gold/10 shadow-2xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gold uppercase tracking-widest italic">
-            Le Blaireau d'Or
-          </h2>
-          <p className="mt-2 text-sm text-gold/60">
-            Identifiez-vous pour entrer dans l'arène
-          </p>
-        </div>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-gold/20 shadow-2xl w-full"
+    >
+      <h2 className="text-3xl font-bold text-gold mb-6 text-center">
+        Le Blaireau d'Or
+      </h2>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] p-3 rounded text-center uppercase tracking-tighter">
-              {error}
-            </div>
-          )}
+      <div className="space-y-4">
+        <p className="text-sm text-gold/60">
+          Identifiez-vous pour entrer dans l'arène
+        </p>
 
-          <div className="space-y-4">
-            <div className="relative flex items-center">
-              <span className="absolute left-4 text-gold/40 pointer-events-none text-sm">
-                @
-              </span>
-              <input
-                name="username"
-                type="text"
-                required
-                className="w-full bg-dark/50 border border-gold/20 text-gold rounded-lg pl-8 pr-4 py-3 focus:outline-none focus:border-gold transition-all placeholder-gold/10"
-                placeholder="pseudo"
-                value={credentials.username}
-                onChange={handleChange}
-              />
-            </div>
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] p-3 rounded text-center uppercase tracking-tighter">
+            {error}
+          </div>
+        )}
 
+        <div>
+          <div className="relative flex items-center">
+            <span className="absolute left-4 text-gold/40 pointer-events-none text-sm">
+              @
+            </span>
             <input
-              name="password"
-              type="password"
+              name="username"
+              type="text"
               required
-              className="w-full bg-dark/50 border border-gold/20 text-gold rounded-lg px-4 py-3 focus:outline-none focus:border-gold transition-all placeholder-gold/10"
-              placeholder="mot de passe"
-              value={credentials.password}
+              className="w-full bg-dark border text-gold border-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:border-gold transition-colors text-center"
+              placeholder="Nom d'utilisateur"
+              aria-label="Nom d'utilisateur"
+              value={credentials.username}
               onChange={handleChange}
             />
           </div>
+        </div>
+        <div>
+          <input
+            name="password"
+            type="password"
+            required
+            className="w-full bg-dark border text-gold border-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:border-gold transition-colors text-center"
+            placeholder="Mot de passe"
+            value={credentials.password}
+            onChange={handleChange}
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-dark bg-gold hover:bg-gold-light focus:outline-none transition-all tracking-widest ${
-              isLoading
-                ? 'opacity-50 cursor-wait'
-                : 'cursor-pointer active:scale-95'
-            }`}
-          >
-            {isLoading ? 'VÉRIFICATION...' : 'SE CONNECTER'}
-          </button>
-        </form>
+        <button type="submit" disabled={isLoading} className={buttonClass}>
+          {buttonText}
+        </button>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <Link
             to={ROUTES.REGISTER}
             className="text-[10px] text-gold/30 hover:text-gold uppercase tracking-widest transition-colors"
@@ -74,7 +80,7 @@ const LoginForm = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

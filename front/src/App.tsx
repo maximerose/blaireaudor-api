@@ -8,6 +8,7 @@ import './App.css';
 import RegistrationForm from './components/RegistrationForm';
 import { ROUTES } from './constants/routes';
 import LoginForm from './components/LoginForm';
+import LogoutHandler from './components/LogoutHandler';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               element={<Navigate to={ROUTES.LOGIN} replace />}
             />
             <Route path={ROUTES.REGISTER} element={<RegistrationForm />} />
+            <Route path={ROUTES.LOGOUT} element={<LogoutHandler />} />
             <Route
               path={ROUTES.DASHBOARD}
               element={<div>Bienvenue sur le Dashboard ! 🏆</div>}
