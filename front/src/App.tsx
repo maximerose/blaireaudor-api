@@ -67,16 +67,16 @@ function App() {
                     </div>
 
                     {/* LE DUMP VISUEL */}
-                    <div className="bg-black/40 border border-gold/20 rounded-xl p-4 overflow-auto max-h-96 shadow-inner">
+                    <div className="text-left bg-black/40 border border-gold/20 rounded-xl p-4 overflow-auto max-h-96 shadow-inner">
                       <pre className="text-[10px] text-gold/80 font-mono leading-tight">
                         {JSON.stringify(user, null, 2)}
                       </pre>
                     </div>
 
                     <p className="text-center text-gold font-medium">
-                      Salut,{' '}
+                      Salut{' '}
                       <span className="underline decoration-gold/30">
-                        {user.display_name}
+                        {user.player?.display_name || user.username}
                       </span>{' '}
                       !
                     </p>

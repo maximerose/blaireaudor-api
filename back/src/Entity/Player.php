@@ -44,13 +44,14 @@ class Player
      */
     #[Gedmo\Slug(fields: ['displayName'], unique: true)]
     #[ORM\Column(length: 255)]
-    #[Groups(['competition:read', 'action:read'])]
+    #[Groups(['competition:read', 'action:read', 'user:read'])]
     private ?string $username = null;
 
     /**
      * @var Collection<int, Participation> Liste des compétitions auxquelles le joueur participe.
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'player', orphanRemoval: true)]
+    #[Groups(['user:read'])]
     private Collection $participations;
 
     /**

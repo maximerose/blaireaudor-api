@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,12 +35,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null Identifiant unique de connexion.
      */
     #[ORM\Column(length: 180)]
+    #[Groups(['user:read'])]
     private ?string $username = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**
@@ -56,6 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'associatedUser', cascade: ['persist', 'remove'])]
     #[Assert\Valid]
+    #[Groups(['user:read'])]
     private ?Player $player = null;
 
     public function getUsername(): ?string

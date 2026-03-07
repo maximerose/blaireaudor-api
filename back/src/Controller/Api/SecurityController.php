@@ -66,8 +66,11 @@ final class SecurityController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->json([
-            'user' => $user,
-        ]);
+        return $this->json(
+            $user,
+            200,
+            [],
+            ['groups' => ['user:read']]
+        );
     }
 }
