@@ -57,6 +57,33 @@ export const authService = {
   },
 
   /**
+   * Récupère les informations de l'utilisateur connecté via le Token
+   */
+  me: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const response = await apiFetch('/me', { method: 'GET' });
+
+      if (!response.ok) {
+        localStorage.removeItem('token');
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      console.log(error);
+      localStorage.removeItem('token');
+      return null;
+    }
+  },
+
+  /**
+   * Vérification rapide de la connexion
+   */
+  isLoggedIn: () => !!localStorage.getItem('token'),
+
+  /**
    * Récupère le token stocké
    */
   getToken: () => localStorage.getItem('token'),
