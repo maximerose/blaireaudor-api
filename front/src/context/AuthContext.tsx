@@ -10,6 +10,7 @@ export interface Competition {
 
 export interface Participation {
   score: number;
+  rank?: number;
   competition: Competition;
 }
 

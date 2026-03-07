@@ -1,21 +1,30 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode, useRef } from 'react';
 import { authService } from '../api/authService';
 import { AuthContext, type User } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const isInitilialized = useRef(false);
 
   useEffect(() => {
+    if (isInitilialized.current) return;
+    isInitilialized.current = true;
+
     const initAuth = async () => {
-      if (authService.getToken()) {
-        const userData = await authService.me();
-        if (userData) {
-          setUser(userData);
+      const token = authService.getToken();
+      if (token) {
+        try {
+          const userData = await authService.me();
+          if (userData) setUser(userData);
+        } catch (e) {
+          console.log(e);
+          authService.logout();
         }
       }
       setLoading(false);
     };
+
     initAuth();
   }, []);
 

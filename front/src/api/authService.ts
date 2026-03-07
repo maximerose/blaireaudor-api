@@ -42,6 +42,9 @@ export const authService = {
    * Déconnexion : Nettoie le stockage local
    */
   logout: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
     try {
       await apiFetch('/logout', {
         method: 'GET',

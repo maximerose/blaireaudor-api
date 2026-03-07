@@ -53,6 +53,12 @@ class Participation
     #[Groups(['competition:read'])]
     private ?Player $player = null;
 
+    /**
+     * @var int|null Rang calculé dynamiquement
+     */
+    #[Groups(['user:read', 'competition:read'])]
+    private ?int $rank = null;
+
     public function getCompetition(): ?Competition
     {
         return $this->competition;
@@ -86,6 +92,17 @@ class Participation
     {
         $this->player = $player;
 
+        return $this;
+    }
+
+    public function getRank(): ?int
+    {
+        return $this->rank;
+    }
+
+    public function setRank(?int $rank): static
+    {
+        $this->rank = $rank;
         return $this;
     }
 }
