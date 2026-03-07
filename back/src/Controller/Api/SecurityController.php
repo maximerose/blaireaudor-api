@@ -45,13 +45,11 @@ final class SecurityController extends AbstractController
 
     /**
      * Point de déconnexion.
-     * * Cette route est interceptée par le firewall avant l'exécution du contrôleur.
-     * @throws \LogicException Cette méthode ne doit jamais être appelée.
      */
     #[Route('/logout', name: 'logout', methods: ['GET'])]
-    public function logout(): void
+    public function logout(): JsonResponse
     {
-        throw new \LogicException('Cette méthode peut rester vide, elle sera interceptée par le logout du firewall.');
+        return $this->json(['message' => 'Logged out successfully']);
     }
 
     /**

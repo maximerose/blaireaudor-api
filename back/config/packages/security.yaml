@@ -26,10 +26,6 @@ security:
         password_path: password
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
-      logout:
-        path: api.logout
-        # where to redirect after logout
-        # target: app_any_route
     api:
       pattern: ^/api
       stateless: true
@@ -37,10 +33,6 @@ security:
     main:
       lazy: true
       provider: app_user_provider
-      logout:
-        path: api.logout
-        # where to redirect after logout
-        # target: app_any_route
 
       # Activate different ways to authenticate:
       # https://symfony.com/doc/current/security.html#the-firewall

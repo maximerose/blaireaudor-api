@@ -10,18 +10,14 @@ import { ROUTES } from './constants/routes';
 import LoginForm from './components/LoginForm';
 import LogoutHandler from './components/LogoutHandler';
 import { useAuth } from './hooks/useAuth';
+import { LoadingScreen } from './components/UI/LoadingScreen';
 
 function App() {
   const { user, loading } = useAuth();
+  const isLogoutRoute = window.location.pathname === ROUTES.LOGOUT;
 
-  if (loading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center bg-dark text-gold">
-        <div className="animate-pulse italic uppercase tracking-widest">
-          Initialisation de l'arène...
-        </div>
-      </div>
-    );
+  if (loading && !isLogoutRoute) {
+    return <LoadingScreen message="Initialisation de l'arène" />;
   }
 
   return (

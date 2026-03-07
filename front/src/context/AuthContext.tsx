@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 export interface User {
   username: string;
@@ -9,6 +9,7 @@ export interface User {
 
 export interface AuthContextType {
   user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
   loading: boolean;
   // eslint-disable-next-line no-unused-vars
   login: (credentials: any) => Promise<{ ok: boolean; data: any }>;
