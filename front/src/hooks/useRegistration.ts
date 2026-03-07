@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '../utils/stringUtils';
 import { authService } from '../api/authService';
+import { useAuth } from './useAuth';
 
 export const useRegistration = (redirectUrl: string) => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ export const useRegistration = (redirectUrl: string) => {
   );
   const [checkLoading, setCheckLoading] = useState(false);
   const [showUsernameHint, setShowUsernameHint] = useState(false);
-
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,9 +96,12 @@ export const useRegistration = (redirectUrl: string) => {
     try {
       const { ok, data } = await authService.register(formData);
 
-      if (ok) {
-        localStorage.setItem('token', data.token);
-        setMessage('🏆 Inscription réussie !');
+      if (ok && data.token) {
+        await login({
+          username: formData.username,
+          password: formData.plain_password,
+        });
+
         navigate(redirectUrl);
       } else {
         setMessage(data.message || '❌ Une erreur est survenue.');

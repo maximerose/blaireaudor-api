@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLogout } from '../hooks/userLogout';
+import { useLogout } from '../hooks/useLogout';
 
 const LogoutHandler = () => {
   const { handleLogout } = useLogout();

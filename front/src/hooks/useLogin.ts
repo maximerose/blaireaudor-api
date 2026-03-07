@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../api/authService';
 import { ROUTES } from '../constants/routes';
+import { useAuth } from './useAuth';
 
 export const useLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -11,12 +11,10 @@ export const useLogin = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, logout } = useAuth();
 
   useEffect(() => {
-    if (authService.getToken()) {
-      localStorage.removeItem('token');
-      authService.logout();
-    }
+    logout();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +28,7 @@ export const useLogin = () => {
     setError('');
 
     try {
-      const response = await authService.login(credentials);
+      const response = await login(credentials);
       if (response.ok) {
         navigate(ROUTES.DASHBOARD);
       } else {
