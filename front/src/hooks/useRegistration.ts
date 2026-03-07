@@ -42,6 +42,12 @@ export const useRegistration = (redirectUrl: string) => {
     return () => clearTimeout(timer);
   }, [formData.username]);
 
+  const getSubmitButtonText = () => {
+    if (isLoading) return 'Inscription en cours...';
+    if (checkLoading) return 'Vérification du pseudo...';
+    return "S'inscrire au Blaireau d'Or";
+  };
+
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setUsernameAvailable(null);
@@ -112,6 +118,8 @@ export const useRegistration = (redirectUrl: string) => {
     checkLoading,
     showUsernameHint,
     setFormData,
+    submitButtonText: getSubmitButtonText(),
+    isSubmitDisabled: isLoading || checkLoading,
     handleDisplayNameChange,
     handleUsernameChange,
     handleUsernameFocus,
