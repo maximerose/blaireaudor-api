@@ -29,12 +29,32 @@ function App() {
       <div className="h-full w-full flex items-center justify-center bg-dark">
         <div className="w-full max-w-md p-6">
           <Routes>
-            <Route path={ROUTES.LOGIN} element={<LoginForm />} />
+            <Route
+              path={ROUTES.LOGIN}
+              element={
+                user ? (
+                  <Navigate to={ROUTES.DASHBOARD} replace />
+                ) : (
+                  <LoginForm />
+                )
+              }
+            />
             <Route
               path={ROUTES.HOME}
-              element={<Navigate to={ROUTES.LOGIN} replace />}
+              element={
+                <Navigate to={user ? ROUTES.DASHBOARD : ROUTES.LOGIN} replace />
+              }
             />
-            <Route path={ROUTES.REGISTER} element={<RegistrationForm />} />
+            <Route
+              path={ROUTES.REGISTER}
+              element={
+                user ? (
+                  <Navigate to={ROUTES.DASHBOARD} replace />
+                ) : (
+                  <RegistrationForm />
+                )
+              }
+            />
             <Route path={ROUTES.LOGOUT} element={<LogoutHandler />} />
             <Route
               path={ROUTES.DASHBOARD}

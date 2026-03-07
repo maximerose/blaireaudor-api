@@ -69,9 +69,7 @@ final class SecurityController extends AbstractController
         }
 
         return $this->json([
-            'user' => $user->getUserIdentifier(),
-            'roles' => $user->getRoles(),
-            'display_name' => $user->getPlayer()?->getDisplayName(),
+            'user' => $user,
         ]);
     }
 }

@@ -35,7 +35,7 @@ class Player
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'action:read'])]
+    #[Groups(['competition:read', 'action:read', 'user:read'])]
     private ?string $displayName = null;
 
     /**
