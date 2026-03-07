@@ -9,6 +9,7 @@ const RegistrationForm = () => {
     formData,
     message,
     usernameAvailable,
+    isLoading,
     checkLoading,
     showUsernameHint,
     submitButtonText,
@@ -28,6 +29,7 @@ const RegistrationForm = () => {
         type="text"
         value={formData.display_name || ''}
         onChange={handleDisplayNameChange}
+        disabled={isLoading}
         required
       />
 
@@ -40,6 +42,7 @@ const RegistrationForm = () => {
         onFocus={handleUsernameFocus}
         onBlur={handleUsernameBlur}
         placeholder="votre-pseudo"
+        disabled={isLoading}
         required
       />
 
@@ -70,6 +73,7 @@ const RegistrationForm = () => {
         type="password"
         value={formData.plain_password || ''}
         onChange={handlePasswordChange}
+        disabled={isLoading}
         required
       />
 

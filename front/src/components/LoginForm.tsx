@@ -27,6 +27,7 @@ const LoginForm = () => {
         placeholder="Nom d'utilisateur"
         value={credentials.username}
         onChange={handleChange}
+        disabled={isLoading}
         required
       />
 
@@ -36,6 +37,7 @@ const LoginForm = () => {
         placeholder="Mot de passe"
         value={credentials.password}
         onChange={handleChange}
+        disabled={isLoading}
         required
       />
 

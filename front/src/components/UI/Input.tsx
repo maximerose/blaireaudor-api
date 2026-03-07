@@ -24,7 +24,7 @@ export const Input = ({
         )}
         <input
           {...props}
-          className={`w-full bg-dark border text-gold border-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:border-gold transition-colors text-center placeholder-gold/20 ${className}`}
+          className={`w-full bg-dark border text-gold border-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:border-gold transition-colors text-center placeholder-gold/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-gold/10 ${className}`}
         />
       </div>
     </div>
