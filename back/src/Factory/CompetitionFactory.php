@@ -41,6 +41,7 @@ final class CompetitionFactory extends PersistentObjectFactory
             'name' => self::faker()->words(3, true),
             'startDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'joinCode' => strtoupper(self::faker()->bothify('??##?#')),
+            'fogOfWar' => true,
         ];
     }
 

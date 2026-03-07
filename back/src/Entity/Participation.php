@@ -31,6 +31,7 @@ class Participation
      */
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user:read'])]
     private ?Competition $competition = null;
 
     /**
@@ -41,7 +42,7 @@ class Participation
      * @var int Le score total du joueur dans cette compétition (0 par défaut).
      */
     #[ORM\Column(options: ['default' => 0])]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'user:read'])]
     private int $score = 0;
 
     /**

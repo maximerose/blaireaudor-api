@@ -28,7 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     "this.getEndDate() == null || this.getEndDate() >= this.getStartDate()",
     message: "La date de fin doit être postérieure à la date de début"
 )]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['competition:read']],
+    denormalizationContext: ['groups' => ['competition:write']]
+)]
 class Competition
 {
     use UuidTrait;
@@ -37,7 +40,7 @@ class Competition
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'action:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read', 'action:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -47,21 +50,25 @@ class Competition
 
     #[ORM\Column(length: 10, unique: true)]
     #[Assert\Length(max: 10)]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?string $joinCode = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column(options: ['default' => false])]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'user:read'])]
     private ?bool $isFinished = false;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    private ?bool $fogOfWar = true;
 
     /**
      * Liste des participations (joueurs inscrits et leurs scores).
@@ -224,5 +231,17 @@ class Competition
     public function getPlayers(): Collection
     {
         return $this->participations->map(fn (Participation $p) => $p->getPlayer());
+    }
+
+    public function hasFogOfWar(): ?bool
+    {
+        return $this->fogOfWar;
+    }
+
+    public function setFogOfWar(bool $fogOfWar): static
+    {
+        $this->fogOfWar = $fogOfWar;
+
+        return $this;
     }
 }
