@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { apiFetch } from "../api/config";
 import { ROUTES } from "../constants/routes";
+import { useAuth } from "./useAuth";
 
 export const useCreateCompetition = () => {
   const [loading, setLoading] = useState(false);
+  const { refreshUser } = useAuth();
 
   const create = async (data: any) => {
     setLoading(true);
@@ -29,6 +31,8 @@ export const useCreateCompetition = () => {
         console.error("Détails de l'erreur Symfony:", result);
         return null;
       }
+
+      await refreshUser();
 
       return result;
     } catch (error) {

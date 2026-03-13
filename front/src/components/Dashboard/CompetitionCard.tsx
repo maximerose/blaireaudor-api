@@ -1,12 +1,12 @@
-// front/src/components/Dashboard/CompetitionCard.tsx
-
 import { type Participation } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
 import { Link } from 'react-router-dom';
 import {
   getIsFinished,
   getDisplayDateText,
-  canRevealScores
+  canRevealScores,
+  getCompetitionStatus,
+  CompetitionStatus
 } from '../../utils/competitionHelper';
 
 interface CompetitionCardProps {
@@ -19,31 +19,37 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const isFinished = getIsFinished(competition.end_date);
   const dateText = getDisplayDateText(competition.start_date, competition.end_date);
   const shouldReveal = canRevealScores(competition, isFinished);
+  const status = getCompetitionStatus(competition.start_date, competition.end_date);
+
+  const statusConfig = {
+    [CompetitionStatus.ACTIVE]: { label: 'En cours', css: 'bg-green-500/20 text-green-500 animate-pulse' },
+    [CompetitionStatus.UPCOMING]: { label: 'À venir', css: 'bg-blue-500/20 text-blue-400' },
+    [CompetitionStatus.FINISHED]: { label: 'Terminé', css: 'bg-red-500/20 text-red-500' },
+  };
+
+  const currentStatus = statusConfig[status];
 
   return (
     <div className="bg-black/40 border border-gold/20 rounded-2xl p-5 hover:border-gold/50 transition-all group shadow-lg">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h3 className="text-gold font-bold text-lg leading-tight uppercase tracking-tight">
+          <h3 className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0" title={competition.name}>
             {competition.name}
           </h3>
-          {/* 📅 Affichage des dates */}
           <p className="text-gold/60 text-[10px] mt-1 font-medium">
             {dateText}
           </p>
         </div>
         <span
-          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${isFinished
-            ? 'bg-red-500/20 text-red-500'
-            : 'bg-green-500/20 text-green-500 animate-pulse'
+          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${currentStatus.css}
             }`}
         >
-          {isFinished ? 'Terminé' : 'En cours'}
+          {currentStatus.label}
         </span>
       </div>
 
-      <p className="text-gold/30 text-[9px] font-mono tracking-widest uppercase mb-4">
-        ID: {competition.join_code}
+      <p className="text-gold/30 text-[11px] font-mono tracking-widest uppercase mb-4">
+        CODE: {competition.join_code}
       </p>
 
       <div className="flex items-end justify-between mt-4">

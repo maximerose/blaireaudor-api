@@ -41,7 +41,7 @@ const LoginForm = () => {
         required
       />
 
-      <Button isLoading={isLoading}>
+      <Button isLoading={isLoading} fullWidth>
         {isLoading ? 'Connexion en cours...' : 'Se connecter'}
       </Button>
 

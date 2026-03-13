@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { apiFetch } from "../api/config";
 import { ROUTES } from "../constants/routes";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./useAuth";
 
 export const useEnrollment = (competitionId: string, initialParticipants: any[]) => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ export const useEnrollment = (competitionId: string, initialParticipants: any[])
 
     const existingIds = participants.filter(p => !p.isNew).map(p => p.id);
     const newNames = participants.filter(p => p.isNew).map(p => p.display_name);
+    const { refreshUser } = useAuth();
 
     try {
       const response = await apiFetch(ROUTES.ADD_PLAYERS(competitionId), {
@@ -83,6 +85,7 @@ export const useEnrollment = (competitionId: string, initialParticipants: any[])
       });
 
       if (response.ok) {
+        await refreshUser();
         navigate(ROUTES.DASHBOARD);
       } else {
         const errorData = await response.json();

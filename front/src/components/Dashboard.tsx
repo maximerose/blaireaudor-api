@@ -3,35 +3,38 @@ import { useAuth } from '../hooks/useAuth';
 import { CompetitionCard } from './Dashboard/CompetitionCard';
 import { Navbar } from './UI/Navbar';
 import { ROUTES } from '../constants/routes';
+import { CompetitionStatus, getCompetitionStatus, getStatusWeight } from '../utils/competitionHelper';
+import { Button } from './UI/Button';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const participations = user?.player?.participations || [];
-  const now = new Date();
-  const activeParticipations = participations.filter(
-    (p) => !p.competition.end_date || new Date(p.competition.end_date) >= now,
-  );
+  const stats = participations.reduce((acc, p) => {
+    const status = getCompetitionStatus(p.competition.start_date, p.competition.end_date);
+    if (status === CompetitionStatus.ACTIVE) acc.active++;
+    if (status === CompetitionStatus.FINISHED) acc.finished++;
+    if (status === CompetitionStatus.UPCOMING) acc.upcoming++;
+    return acc;
+  }, { active: 0, finished: 0, upcoming: 0 });
 
-  const finishedParticipations = participations.filter(
-    (p) => p.competition.end_date && new Date(p.competition.end_date) < now,
-  );
+  const sortedParticipations = [...participations].sort((a, b) => {
+    const weightA = getStatusWeight(getCompetitionStatus(a.competition.start_date, a.competition.end_date));
+    const weightB = getStatusWeight(getCompetitionStatus(b.competition.start_date, b.competition.end_date));
+
+    if (weightA !== weightB) return weightA - weightB;
+    return new Date(a.competition.start_date).getTime() - new Date(b.competition.start_date).getTime();
+  });
 
   const getStatusMessage = () => {
-    if (participations.length === 0)
-      return "Tu n'as pas encore rejoint de concours.";
+    if (participations.length === 0) return "Tu n'as pas encore rejoint de concours.";
 
     const parts = [];
-    if (activeParticipations.length > 0) {
-      parts.push(`${activeParticipations.length} en cours`);
-    }
-    if (finishedParticipations.length > 0) {
-      parts.push(
-        `${finishedParticipations.length} terminée${finishedParticipations.length > 1 ? 's' : ''}`,
-      );
-    }
+    if (stats.active > 0) parts.push(`${stats.active} en cours`);
+    if (stats.upcoming > 0) parts.push(`${stats.upcoming} à venir`);
+    if (stats.finished > 0) parts.push(`${stats.finished} terminée${stats.finished > 1 ? 's' : ''}`);
 
-    return `Tu as ${participations.length} participation${participations.length > 1 ? 's' : ''} au total : ${parts.join(' et ')}.`;
+    return `Tu as ${participations.length} participation${participations.length > 1 ? 's' : ''} au total : ${parts.join(', ')}.`;
   };
 
   return (
@@ -39,7 +42,6 @@ const Dashboard = () => {
       <Navbar />
 
       <div className="flex-1 space-y-8 animate-fade-in">
-        {/* Header Section */}
         <section className="text-center py-4">
           <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic">
             Salut,{' '}
@@ -50,10 +52,9 @@ const Dashboard = () => {
           </p>
         </section>
 
-        {/* Grille des compétitions */}
         <section className="grid gap-4">
           {participations.length > 0 ? (
-            [...activeParticipations, ...finishedParticipations].map(
+            sortedParticipations.map(
               (p, idx) => <CompetitionCard key={idx} participation={p} />,
             )
           ) : (
@@ -65,17 +66,17 @@ const Dashboard = () => {
           )}
         </section>
 
-        {/* Action Buttons */}
         <section className="grid gap-4">
-          <button
+          <Button
             onClick={() => navigate(ROUTES.CREATE_COMPETITION)}
-            className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
+            fullWidth
+          >
             + Créer une compétition
-          </button>
-          <button
+          </Button>
+          <Button
             className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
             + Rejoindre une compétition
-          </button>
+          </Button>
         </section>
       </div>
     </div>

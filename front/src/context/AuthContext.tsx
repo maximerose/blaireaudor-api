@@ -33,6 +33,7 @@ export interface AuthContextType {
   // eslint-disable-next-line no-unused-vars
   login: (credentials: any) => Promise<{ ok: boolean; data: any }>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
