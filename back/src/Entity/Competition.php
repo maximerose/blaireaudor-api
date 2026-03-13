@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
@@ -25,10 +28,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
 #[UniqueEntity(fields: ['slug'])]
 #[Assert\Expression(
-    "this.getEndDate() == null || this.getEndDate() >= this.getStartDate()",
+    "this.getEndDate() === null || this.getEndDate() >= this.getStartDate()",
     message: "La date de fin doit être postérieure à la date de début"
 )]
 #[ApiResource(
+    operations: [
+        new Post(
+            denormalizationContext: ['groups' => ['competition:write']]
+        ),
+        new Get(),
+        new GetCollection(),
+    ],
     normalizationContext: ['groups' => ['competition:read']],
     denormalizationContext: ['groups' => ['competition:write']]
 )]
@@ -75,7 +85,7 @@ class Competition
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true)]
-    #[Groups(['competition:read', 'action:read'])]
+    #[Groups(['competition:read', 'competition:write', 'action:read'])]
     private Collection $participations;
 
     /**

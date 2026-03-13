@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { CompetitionCard } from './Dashboard/CompetitionCard';
 import { Navbar } from './UI/Navbar';
+import { ROUTES } from '../constants/routes';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const participations = user?.player?.participations || [];
   const now = new Date();
   const activeParticipations = participations.filter(
@@ -64,7 +67,13 @@ const Dashboard = () => {
 
         {/* Action Buttons */}
         <section className="grid gap-4">
-          <button className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
+          <button
+            onClick={() => navigate(ROUTES.CREATE_COMPETITION)}
+            className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
+            + Créer une compétition
+          </button>
+          <button
+            className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
             + Rejoindre une compétition
           </button>
         </section>

@@ -4,7 +4,8 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('token');
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/ld+json',
+    'Accept': 'application/ld+json',
   };
 
   if (options.headers) {

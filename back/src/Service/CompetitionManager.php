@@ -23,23 +23,38 @@ class CompetitionManager
     }
 
     /**
-     * Crée une nouvelle compétition avec les paramètres fournis.
-     * * Si aucun code d'invitation n'est fourni, un code sécurisé et unique
-     * est automatiquement généré.
+     * Prépare une instance de compétition avant sa persistance.
+     * Cette méthode centralise la logique de configuration initiale, notamment
+     * la génération ou l'assignation du code d'accès unique.
+     *
+     * @param Competition $competition     L'instance de compétition à configurer.
+     * @param string|null $customJoinCode  Un code personnalisé optionnel (sera nettoyé et passé en majuscules).
+     * @return void
      */
-    public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate, ?string $customJoinCode = null): Competition
+    public function prepare(Competition $competition, ?string $customJoinCode = null): void
     {
-        $competition = new Competition();
-
-        $competition->setName($name);
-        $competition->setStartDate($startDate);
-        $competition->setEndDate($endDate ?? null);
-
         if ($customJoinCode !== null) {
             $competition->setJoinCode(strtoupper(trim($customJoinCode)));
         } else {
             $competition->setJoinCode($this->generateSafeJoinCode());
         }
+    }
+
+    /**
+     * Crée une nouvelle compétition avec les paramètres fournis.
+     * * Si aucun code d'invitation n'est fourni, un code sécurisé et unique
+     * est automatiquement généré.
+     */
+    public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate = null, ?string $customJoinCode = null, ?bool $fogOfWar = false): Competition
+    {
+        $competition = new Competition();
+
+        $competition->setName($name);
+        $competition->setStartDate($startDate);
+        $competition->setEndDate($endDate);
+        $competition->setFogOfWar($fogOfWar);
+
+        $this->prepare($competition, $customJoinCode);
 
         $this->entityManager->persist($competition);
 

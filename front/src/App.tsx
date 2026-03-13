@@ -12,12 +12,13 @@ import LogoutHandler from './components/LogoutHandler';
 import { useAuth } from './hooks/useAuth';
 import { LoadingScreen } from './components/UI/LoadingScreen';
 import Dashboard from './components/Dashboard';
+import { CreateCompetitionPage } from './pages/CreateCompetitionPage';
 
 function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <LoadingScreen message="Initialisation de l'espace joueur..." />;
+    return <LoadingScreen />;
   }
 
   return (
@@ -56,6 +57,10 @@ function App() {
                   <RegistrationForm />
                 )
               }
+            />
+            <Route
+              path={ROUTES.CREATE_COMPETITION}
+              element={user ? <CreateCompetitionPage /> : <Navigate to={ROUTES.LOGIN} />}
             />
             <Route path={ROUTES.LOGOUT} element={<LogoutHandler />} />
           </Routes>

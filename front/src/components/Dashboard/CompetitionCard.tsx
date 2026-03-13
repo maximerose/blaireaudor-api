@@ -3,6 +3,11 @@
 import { type Participation } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
 import { Link } from 'react-router-dom';
+import {
+  getIsFinished,
+  getDisplayDateText,
+  canRevealScores
+} from '../../utils/competitionHelper';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -11,21 +16,9 @@ interface CompetitionCardProps {
 export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const { competition, score, rank } = participation;
 
-  const startDate = new Date(competition.start_date);
-  const endDate = new Date(competition.end_date);
-  const isFinished = endDate < new Date();
-
-  // Formatage des dates en français (ex: 12 juin 2024)
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
-
-  // Condition : on révèle si c'est fini OU si le brouillard est OFF
-  const shouldReveal = isFinished || !competition.fog_of_war;
+  const isFinished = getIsFinished(competition.end_date);
+  const dateText = getDisplayDateText(competition.start_date, competition.end_date);
+  const shouldReveal = canRevealScores(competition, isFinished);
 
   return (
     <div className="bg-black/40 border border-gold/20 rounded-2xl p-5 hover:border-gold/50 transition-all group shadow-lg">
@@ -36,15 +29,14 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           </h3>
           {/* 📅 Affichage des dates */}
           <p className="text-gold/60 text-[10px] mt-1 font-medium">
-            Du {formatDate(startDate)} au {formatDate(endDate)}
+            {dateText}
           </p>
         </div>
         <span
-          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${
-            isFinished
-              ? 'bg-red-500/20 text-red-500'
-              : 'bg-green-500/20 text-green-500 animate-pulse'
-          }`}
+          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${isFinished
+            ? 'bg-red-500/20 text-red-500'
+            : 'bg-green-500/20 text-green-500 animate-pulse'
+            }`}
         >
           {isFinished ? 'Terminé' : 'En cours'}
         </span>
@@ -84,7 +76,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           to={`${ROUTES.DASHBOARD}/${competition.join_code}`}
           className="bg-gold text-dark text-[10px] font-black px-4 py-2 rounded-lg hover:bg-white transition-colors uppercase tracking-widest shadow-md"
         >
-          {isFinished ? 'Voir le classement' : 'Participer'}
+          {isFinished ? 'Voir le classement' : 'Détails'}
         </Link>
       </div>
     </div>

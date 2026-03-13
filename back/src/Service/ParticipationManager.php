@@ -34,6 +34,7 @@ class ParticipationManager
         $participation = new Participation();
         $participation->setPlayer($player);
         $participation->setCompetition($competition);
+        $competition->addParticipation($participation);
 
         $this->entityManager->persist($participation);
 

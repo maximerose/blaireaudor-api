@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
@@ -23,10 +25,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * créé par un administrateur. Il centralise ses participations aux compétitions
  * et l'historique de ses actions.
  */
+#[ApiFilter(SearchFilter::class, properties: ['displayName' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PLAYER_USERNAME', fields: ['username'])]
 #[UniqueEntity(fields: ['username'], message: 'Ce nom d\'utiliateur est déjà utilisé.')]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['competition:read']],
+    forceEager: true,
+)]
 class Player
 {
     use UuidTrait;
