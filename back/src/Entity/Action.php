@@ -10,6 +10,7 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,6 +27,11 @@ class Action
     use UuidTrait;
     use BlameableTrait;
     use TimestampableTrait;
+
+    public function __construct()
+    {
+        $this->dateAction = new DateTimeImmutable();
+    }
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -58,6 +64,9 @@ class Action
      */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
     private ActionStatus $status = ActionStatus::PENDING;
+
+    #[ORM\Column(nullable: false)]
+    private DateTimeImmutable $dateAction;
 
     public function getDescription(): ?string
     {
@@ -115,6 +124,18 @@ class Action
     public function setStatus(ActionStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getDateAction(): DateTimeImmutable
+    {
+        return $this->dateAction;
+    }
+
+    public function setDateAction(DateTimeImmutable $dateAction): static
+    {
+        $this->dateAction = $dateAction;
 
         return $this;
     }

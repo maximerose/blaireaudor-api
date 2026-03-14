@@ -6,7 +6,7 @@ import {
   getDisplayDateText,
   canRevealScores,
   getCompetitionStatus,
-  CompetitionStatus
+  CompetitionStatus,
 } from '../../utils/competitionHelper';
 
 interface CompetitionCardProps {
@@ -17,14 +17,29 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const { competition, score, rank } = participation;
 
   const isFinished = getIsFinished(competition.end_date);
-  const dateText = getDisplayDateText(competition.start_date, competition.end_date);
+  const dateText = getDisplayDateText(
+    competition.start_date,
+    competition.end_date,
+  );
   const shouldReveal = canRevealScores(competition, isFinished);
-  const status = getCompetitionStatus(competition.start_date, competition.end_date);
+  const status = getCompetitionStatus(
+    competition.start_date,
+    competition.end_date,
+  );
 
   const statusConfig = {
-    [CompetitionStatus.ACTIVE]: { label: 'En cours', css: 'bg-green-500/20 text-green-500 animate-pulse' },
-    [CompetitionStatus.UPCOMING]: { label: 'À venir', css: 'bg-blue-500/20 text-blue-400' },
-    [CompetitionStatus.FINISHED]: { label: 'Terminé', css: 'bg-red-500/20 text-red-500' },
+    [CompetitionStatus.ACTIVE]: {
+      label: 'En cours',
+      css: 'bg-green-500/20 text-green-500 animate-pulse',
+    },
+    [CompetitionStatus.UPCOMING]: {
+      label: 'À venir',
+      css: 'bg-blue-500/20 text-blue-400',
+    },
+    [CompetitionStatus.FINISHED]: {
+      label: 'Terminé',
+      css: 'bg-red-500/20 text-red-500',
+    },
   };
 
   const currentStatus = statusConfig[status];
@@ -33,7 +48,10 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
     <div className="bg-black/40 border border-gold/20 rounded-2xl p-5 hover:border-gold/50 transition-all group shadow-lg">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h3 className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0" title={competition.name}>
+          <h3
+            className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0"
+            title={competition.name}
+          >
             {competition.name}
           </h3>
           <p className="text-gold/60 text-[10px] mt-1 font-medium">

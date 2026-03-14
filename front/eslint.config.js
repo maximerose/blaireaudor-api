@@ -35,13 +35,23 @@ export default defineConfig([
     rules: {
       ...js.configs.recommended.rules,
       ...tseslint.configs.recommended[1].rules,
-      
+
       'indent': ['error', 2],
       'react/jsx-indent': ['error', 2],
       'react/jsx-indent-props': ['error', 2],
-      
-      '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
-      
+      // 1. DÉSACTIVER la règle de base (JS) pour éviter les doublons et conflits
+      'no-unused-vars': 'off',
+
+      // 2. CONFIGURER la règle TypeScript pour accepter le "_"
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          'argsIgnorePattern': '^_', // Ignore les arguments de fonction commençant par _
+          'varsIgnorePattern': '^_', // Ignore les variables locales commençant par _
+          'caughtErrorsIgnorePattern': '^_' // Ignore les erreurs de catch commençant par _
+        }
+      ],
+
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

@@ -4,7 +4,7 @@ import { Input } from '../UI/Input';
 import { Button } from '../UI/Button';
 
 interface Props {
-  onSuccess: (competition: any) => void;
+  onSuccess: { (_competition: any): void };
 }
 
 export const CreateCompetitionView = ({ onSuccess }: Props) => {
@@ -33,7 +33,9 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
           <h2 className="text-2xl font-black text-white uppercase italic tracking-tighter">
             Étape 1 : <span className="text-gold">La compétition</span>
           </h2>
-          <p className="text-gold/40 text-[10px] uppercase tracking-widest font-bold">Configuration de base</p>
+          <p className="text-gold/40 text-[10px] uppercase tracking-widest font-bold">
+            Configuration de base
+          </p>
         </div>
 
         <Input
@@ -49,7 +51,9 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
           placeholder="Ex: BLAIREAU2026"
           maxLength={10}
           value={formData.joinCode}
-          onChange={(e) => setFormData({ ...formData, joinCode: e.target.value.toUpperCase() })}
+          onChange={(e) =>
+            setFormData({ ...formData, joinCode: e.target.value.toUpperCase() })
+          }
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -57,25 +61,39 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
             label="Début"
             type="date"
             required
-            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, startDate: e.target.value })
+            }
           />
           <Input
             label="Fin (Optionnel)"
             type="date"
-            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, endDate: e.target.value })
+            }
           />
         </div>
 
         <div
-          onClick={() => setFormData({ ...formData, fogOfWar: !formData.fogOfWar })}
+          onClick={() =>
+            setFormData({ ...formData, fogOfWar: !formData.fogOfWar })
+          }
           className="flex items-center justify-between p-4 bg-dark/50 border border-gold/10 rounded-xl cursor-pointer hover:bg-gold/5 transition-colors"
         >
           <div className="flex flex-col">
-            <span className="text-[10px] text-gold uppercase font-black">Brouillard de guerre</span>
-            <span className="text-[9px] text-white/30 italic">Scores cachés pendant le tournoi</span>
+            <span className="text-[10px] text-gold uppercase font-black">
+              Brouillard de guerre
+            </span>
+            <span className="text-[9px] text-white/30 italic">
+              Scores cachés pendant le tournoi
+            </span>
           </div>
-          <div className={`w-10 h-5 rounded-full relative transition-colors ${formData.fogOfWar ? 'bg-gold' : 'bg-white/10'}`}>
-            <div className={`absolute top-1 w-3 h-3 bg-dark rounded-full transition-all ${formData.fogOfWar ? 'left-6' : 'left-1'}`} />
+          <div
+            className={`w-10 h-5 rounded-full relative transition-colors ${formData.fogOfWar ? 'bg-gold' : 'bg-white/10'}`}
+          >
+            <div
+              className={`absolute top-1 w-3 h-3 bg-dark rounded-full transition-all ${formData.fogOfWar ? 'left-6' : 'left-1'}`}
+            />
           </div>
         </div>
 
@@ -84,17 +102,20 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
             type="checkbox"
             id="participate"
             checked={formData.participate}
-            onChange={(e) => setFormData({ ...formData, participate: e.target.checked })}
+            onChange={(e) =>
+              setFormData({ ...formData, participate: e.target.checked })
+            }
             className="w-4 h-4 accent-gold"
           />
-          <label htmlFor="participate" className="text-[10px] text-white/60 uppercase font-bold cursor-pointer">
+          <label
+            htmlFor="participate"
+            className="text-[10px] text-white/60 uppercase font-bold cursor-pointer"
+          >
             M'inscrire automatiquement à cette compétition
           </label>
         </div>
 
-        <Button
-          disabled={loading}
-        >
+        <Button disabled={loading}>
           {loading ? 'Instanciation...' : 'Valider & Recruter'}
         </Button>
       </form>

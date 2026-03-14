@@ -1,6 +1,6 @@
-import { useState } from "react"
-import { apiFetch } from "../api/config";
-import { ROUTES } from "../constants/routes";
+import { useState } from 'react';
+import { apiFetch } from '../api/config';
+import { ROUTES } from '../constants/routes';
 
 export const usePlayerSearch = () => {
   const [results, setResults] = useState<any[]>([]);
@@ -19,11 +19,11 @@ export const usePlayerSearch = () => {
       const data = await response.json();
       setResults(data['hydra:member'] || data || []);
     } catch (error) {
-      console.error("Erreur recherche", error);
+      console.error('Erreur recherche', error);
     } finally {
       setSearching(false);
     }
+  };
 
-    return { search, results, searching }
-  }
-}
+  return { search, results, searching };
+};

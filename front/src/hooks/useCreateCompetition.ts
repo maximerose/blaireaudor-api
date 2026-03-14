@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { apiFetch } from "../api/config";
-import { ROUTES } from "../constants/routes";
-import { useAuth } from "./useAuth";
+import { useState } from 'react';
+import { apiFetch } from '../api/config';
+import { ROUTES } from '../constants/routes';
+import { useAuth } from './useAuth';
 
 export const useCreateCompetition = () => {
   const [loading, setLoading] = useState(false);
@@ -10,8 +10,12 @@ export const useCreateCompetition = () => {
   const create = async (data: any) => {
     setLoading(true);
 
-    const formattedStartDate = data.startDate ? new Date(data.startDate).toISOString() : null;
-    const formattedEndDate = data.endDate ? new Date(data.endDate).toISOString() : null;
+    const formattedStartDate = data.startDate
+      ? new Date(data.startDate).toISOString()
+      : null;
+    const formattedEndDate = data.endDate
+      ? new Date(data.endDate).toISOString()
+      : null;
 
     try {
       const response = await apiFetch(ROUTES.CREATE_COMPETITION, {
@@ -36,7 +40,7 @@ export const useCreateCompetition = () => {
 
       return result;
     } catch (error) {
-      console.error("Erreur réseau:", error);
+      console.error('Erreur réseau:', error);
       return null;
     } finally {
       setLoading(false);
@@ -44,4 +48,4 @@ export const useCreateCompetition = () => {
   };
 
   return { create, loading };
-}
+};

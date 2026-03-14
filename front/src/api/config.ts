@@ -5,7 +5,7 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/ld+json',
-    'Accept': 'application/ld+json',
+    Accept: 'application/ld+json',
   };
 
   if (options.headers) {

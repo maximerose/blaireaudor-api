@@ -27,8 +27,8 @@ class CompetitionManager
      * Cette méthode centralise la logique de configuration initiale, notamment
      * la génération ou l'assignation du code d'accès unique.
      *
-     * @param Competition $competition     L'instance de compétition à configurer.
-     * @param string|null $customJoinCode  Un code personnalisé optionnel (sera nettoyé et passé en majuscules).
+     * @param Competition $competition L'instance de compétition à configurer.
+     * @param string|null $customJoinCode Un code personnalisé optionnel (sera nettoyé et passé en majuscules).
      * @return void
      */
     public function prepare(Competition $competition, ?string $customJoinCode = null): void

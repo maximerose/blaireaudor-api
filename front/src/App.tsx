@@ -60,7 +60,13 @@ function App() {
             />
             <Route
               path={ROUTES.CREATE_COMPETITION}
-              element={user ? <CreateCompetitionPage /> : <Navigate to={ROUTES.LOGIN} />}
+              element={
+                user ? (
+                  <CreateCompetitionPage />
+                ) : (
+                  <Navigate to={ROUTES.LOGIN} />
+                )
+              }
             />
             <Route path={ROUTES.LOGOUT} element={<LogoutHandler />} />
           </Routes>

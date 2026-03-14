@@ -12,13 +12,15 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
     addNewPlayer,
     saveEnrollment,
     loading,
-    isSearching
+    isSearching,
   } = useEnrollment(competition.id, competition.players || []);
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-black text-white uppercase italic">Recrutement</h2>
+        <h2 className="text-xl font-black text-white uppercase italic">
+          Recrutement
+        </h2>
         <p className="text-gold/40 text-[10px] font-bold uppercase tracking-widest">
           Arène : {competition.name}
         </p>
@@ -56,7 +58,7 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
 
         {searchResults.length > 0 && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-black border border-gold/30 rounded-xl shadow-2xl z-50 overflow-hidden">
-            {searchResults.map(p => (
+            {searchResults.map((p) => (
               <div
                 key={p.id}
                 onClick={() => addExistingPlayer(p)}
@@ -68,7 +70,9 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
                   </span>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <span className="text-gold/30 text-[9px] font-bold italic">@{p.username || 'Joueur externe'}</span>
+                  <span className="text-gold/30 text-[9px] font-bold italic">
+                    @{p.username || 'Joueur externe'}
+                  </span>
                 </div>
               </div>
             ))}
@@ -77,8 +81,11 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
       </div>
 
       <div className="flex flex-wrap gap-2 min-h-15 p-4 bg-dark/30 rounded-2xl border border-white/5">
-        {participants.map(p => (
-          <div key={p.id} className="bg-gold/10 border border-gold/30 text-gold px-3 py-1 rounded-full text-[10px] font-bold animate-fade-in">
+        {participants.map((p) => (
+          <div
+            key={p.id}
+            className="bg-gold/10 border border-gold/30 text-gold px-3 py-1 rounded-full text-[10px] font-bold animate-fade-in"
+          >
             {p.display_name || p.displayName}
           </div>
         ))}

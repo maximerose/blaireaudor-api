@@ -30,8 +30,7 @@ export interface AuthContextType {
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
   loading: boolean;
-  // eslint-disable-next-line no-unused-vars
-  login: (credentials: any) => Promise<{ ok: boolean; data: any }>;
+  login: (_credentials: any) => Promise<{ ok: boolean; data: any }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }

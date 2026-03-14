@@ -47,12 +47,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userData = await authService.me();
       if (userData) setUser(userData);
     } catch (error) {
-      console.error("Erreur lors du rafraîchissement utilisateur", error);
+      console.error('Erreur lors du rafraîchissement utilisateur', error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider
+      value={{ user, setUser, loading, login, logout, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
