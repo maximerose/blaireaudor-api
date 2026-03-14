@@ -27,20 +27,8 @@ final class SecurityController extends AbstractController
      * @return JsonResponse Les informations de base du profil et les rôles.
      */
     #[Route('/login', name: 'login', methods: ['POST'])]
-    public function login(#[CurrentUser] ?User $user): JsonResponse
+    public function login(): void
     {
-        if (null === $user) {
-            return $this->json([
-                'message' => 'Identifiants invalides ou format JSON incorrect.',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        return $this->json([
-            'user' => $user->getUserIdentifier(),
-            'roles' => $user->getRoles(),
-            'display_name' => $user->getPlayer()?->getDisplayName(),
-            'id' => $user->getId(),
-        ]);
     }
 
     /**
@@ -49,7 +37,7 @@ final class SecurityController extends AbstractController
     #[Route('/logout', name: 'logout', methods: ['GET'])]
     public function logout(): JsonResponse
     {
-        return $this->json(['message' => 'Logged out successfully']);
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

@@ -41,7 +41,7 @@ class Player
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'action:read', 'user:read'])]
+    #[Groups(['competition:read', 'action:read', 'user:read', 'player:read'])]
     private ?string $displayName = null;
 
     /**
@@ -50,7 +50,7 @@ class Player
      */
     #[Gedmo\Slug(fields: ['displayName'], unique: true)]
     #[ORM\Column(length: 255)]
-    #[Groups(['competition:read', 'action:read', 'user:read'])]
+    #[Groups(['competition:read', 'action:read', 'user:read', 'player:read'])]
     private ?string $username = null;
 
     /**

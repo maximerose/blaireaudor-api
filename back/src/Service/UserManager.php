@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Competition;
 use App\Entity\User;
+use App\Repository\PlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -17,7 +18,9 @@ class UserManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private PlayerManager $playerManager
+        private PlayerManager $playerManager,
+        private PlayerRepository $playerRepository,
+        private ParticipationManager $participationManager
     ) {
     }
 
@@ -35,20 +38,36 @@ class UserManager
         string $username,
         string $plainPassword,
         string $displayName,
-        ?Competition $competition = null
+        ?Competition $competition = null,
+        ?string $playerId = null
     ): User {
         $user = new User();
         $user->setUsername($username);
         $user->setPlainPassword($plainPassword);
 
-        if ($competition) {
-            $player = $this->playerManager->createPlayerAndJoin($displayName, $competition);
-        } else {
+        $player = null;
+
+        if ($playerId) {
+            $player = $this->playerRepository->find($playerId);
+
+            if ($player && null === $player->getAssociatedUser()) {
+                $player->setDisplayName($displayName);
+            } else {
+                $player = null;
+            }
+        }
+
+        if (!$player) {
             $player = $this->playerManager->createPlayer($displayName);
         }
 
         $player->setAssociatedUser($user);
         $user->setPlayer($player);
+
+        if ($competition) {
+            $this->participationManager->joinCompetition($player, $competition);
+        }
+
 
         $this->entityManager->persist($user);
         $this->entityManager->persist($player);

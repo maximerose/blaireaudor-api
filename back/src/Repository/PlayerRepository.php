@@ -20,4 +20,18 @@ class PlayerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Player::class);
     }
+
+    public function searchByName(string $query, bool $unlinkedOnly = false): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.displayName LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('p.displayName', 'ASC');
+
+        if ($unlinkedOnly) {
+            $qb->andWhere('p.associatedUser IS NULL');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

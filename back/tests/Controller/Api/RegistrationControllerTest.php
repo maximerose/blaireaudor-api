@@ -9,6 +9,7 @@ use App\Factory\ParticipationFactory;
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -136,5 +137,39 @@ final class RegistrationControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertFalse($data['available']);
+    }
+
+    public function testRegisterByLinkingHistoricalPlayer(): void
+    {
+        $client = static::createClient();
+
+        $historicalPlayer = PlayerFactory::createOne([
+            'displayName' => 'Ancien Nom',
+            'username' => 'ancien-nom'
+        ]);
+        $playerId = $historicalPlayer->getId()->toString();
+
+        $client->request(
+            'POST',
+            '/api/register',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'username' => 'nouveau-pseudo',
+                'display_name' => 'Nouveau Nom',
+                'plain_password' => 'password',
+                'player_id' => $playerId,
+            ])
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        $user = UserFactory::find(['username' => 'nouveau-pseudo']);
+        // $historicalPlayer->refresh();
+
+        $this->assertSame($historicalPlayer, $user->getPlayer());
+        $this->assertSame('Nouveau Nom', $historicalPlayer->getDisplayName());
+        $this->assertSame('nouveau-pseudo', $historicalPlayer->getUsername());
     }
 }

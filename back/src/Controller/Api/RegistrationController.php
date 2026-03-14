@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Repository\CompetitionRepository;
+use App\Repository\PlayerRepository;
 use App\Repository\UserRepository;
 use App\Service\UserManager;
 use App\Service\ValidationHelper;
@@ -48,6 +49,7 @@ final class RegistrationController extends AbstractController
         $data = $request->toArray();
 
         $joinCode = $data['join_code'] ?? null;
+        $playerId = $data['player_id'] ?? null;
         $competition = null;
 
         if ($joinCode) {
@@ -64,7 +66,8 @@ final class RegistrationController extends AbstractController
             $data['username'] ?? '',
             $data['plain_password'] ?? '',
             $data['display_name'] ?? '',
-            $competition
+            $competition,
+            $playerId
         );
 
         $errors = $this->validator->validate($user);
@@ -95,6 +98,23 @@ final class RegistrationController extends AbstractController
         return $this->json([
             'available' => !$exists,
             'username' => $username
+        ]);
+    }
+
+    #[Route('/check-player/{username}', name: 'check-player', methods: ['GET'])]
+    public function checkPlayer(string $username, PlayerRepository $playerRepository): JsonResponse
+    {
+        // On cherche le joueur par son username unique (le slug)
+        // et on vérifie qu'il n'est pas déjà lié à un compte User
+        $player = $playerRepository->findOneBy([
+            'username' => $username,
+            'associatedUser' => null
+        ]);
+
+        return $this->json([
+            'exists' => null !== $player,
+            'playerId' => $player?->getId(),
+            'displayName' => $player?->getDisplayName()
         ]);
     }
 }

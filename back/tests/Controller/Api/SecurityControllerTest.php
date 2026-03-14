@@ -49,13 +49,10 @@ final class SecurityControllerTest extends WebTestCase
         );
 
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('Content-Type', 'application/json');
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        
-        $this->assertSame('admin', $data['user']);
-        $this->assertSame('Prénom Nom', $data['display_name']);
-        $this->assertContains('ROLE_USER', $data['roles']);
+
+        $this->assertArrayHasKey('token', $data);
     }
 
     public function testLoginFailure(): void
@@ -72,7 +69,7 @@ final class SecurityControllerTest extends WebTestCase
             json_encode(['username' => 'admin', 'password' => 'wrong'])
         );
 
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testLogout(): void
@@ -99,6 +96,6 @@ final class SecurityControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame('martin', $data['user']);
+        $this->assertSame('martin', $data['username']);
     }
 }

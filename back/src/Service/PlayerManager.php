@@ -39,21 +39,6 @@ class PlayerManager
     }
 
     /**
-     * Crée un joueur et l'inscrit immédiatement à une compétition.
-     * @return Player Le joueur créé et inscrit.
-     */
-    public function createPlayerAndJoin(
-        string $displayName,
-        Competition $competition,
-        ?User $createdBy = null
-    ): Player {
-        $player = $this->createPlayer($displayName, $createdBy);
-        $this->participationManager->joinCompetition($player, $competition);
-
-        return $player;
-    }
-
-    /**
      * Importe une liste de noms de joueurs dans une compétition.
      * * Nettoie les noms (trim), valide les contraintes d'entité, et gère les erreurs
      * pour chaque ligne sans interrompre le processus global.
