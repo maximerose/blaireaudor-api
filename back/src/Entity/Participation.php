@@ -105,4 +105,17 @@ class Participation
         $this->rank = $rank;
         return $this;
     }
+
+    public function updateScore(): void
+    {
+        $total = 0;
+
+        foreach ($this->getPlayer()->getActions() as $action) {
+            if ($action->getCompetition() === $this->getCompetition()) {
+                $total += $action->getPoints();
+            }
+        }
+
+        $this->setScore($total);
+    }
 }

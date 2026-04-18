@@ -57,6 +57,8 @@ class AppFixtures extends Fixture
         $allUniqueNames = array_unique(array_merge($list2025, $list2026));
         $players = [];
 
+        $allParticipations = [];
+
         foreach ($allUniqueNames as $name) {
             $player = new Player();
             $player->setDisplayName($name);
@@ -70,6 +72,7 @@ class AppFixtures extends Fixture
                 $p25->setPlayer($player);
                 $p25->setCompetition($comp2025);
                 $manager->persist($p25);
+                $allParticipations[] = $p25;
             }
 
             // Inscription sélective 2026
@@ -78,6 +81,7 @@ class AppFixtures extends Fixture
                 $p26->setPlayer($player);
                 $p26->setCompetition($comp2026);
                 $manager->persist($p26);
+                $allParticipations[] = $p26;
             }
         }
 
@@ -812,6 +816,10 @@ class AppFixtures extends Fixture
             $this->createAction($manager, $players[$data[0]], $comp2026, $data[1], $data[2], $data[3]);
         }
 
+        foreach ($allParticipations as $participation) {
+            $participation->updateScore();
+        }
+
         $manager->flush();
     }
 
@@ -824,6 +832,7 @@ class AppFixtures extends Fixture
         $action->setCompetition($comp);
         $action->setDateAction(new \DateTimeImmutable($date));
         $action->setStatus(ActionStatus::VALIDATED);
+        $player->addAction($action);
         $manager->persist($action);
     }
 }
