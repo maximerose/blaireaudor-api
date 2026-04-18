@@ -3,13 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '../utils/stringUtils';
 import { authService } from '../api/authService';
 import { useAuth } from './useAuth';
+import { usePlayerSearch } from './usePlayerSearch';
 
 export const useRegistration = (redirectUrl: string) => {
-  const [formData, setFormData] = useState({
-    display_name: '',
-    username: '',
-    plain_password: '',
-  });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
@@ -20,9 +16,42 @@ export const useRegistration = (redirectUrl: string) => {
   const [showUsernameHint, setShowUsernameHint] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { search, results, searching } = usePlayerSearch();
+
+  const [formData, setFormData] = useState({
+    display_name: '',
+    username: '',
+    plain_password: '',
+    player_id: null as string | null,
+  });
+
+  const handlePlayerSelect = (player: any) => {
+    setIsUsernameCustomized(true);
+    setFormData((prev) => ({
+      ...prev,
+      display_name: player.display_name,
+      username: player.username,
+      player_id: player.id,
+    }));
+    setUsernameAvailable(true);
+  };
+
+  const handleClearPlayer = () => {
+    setIsUsernameCustomized(false);
+    setFormData((prev) => ({
+      ...prev,
+      player_id: null,
+      display_name: '',
+      username: '',
+    }));
+    setUsernameAvailable(null);
+  };
 
   useEffect(() => {
-    const { username } = formData;
+    const { username, player_id } = formData;
+
+    if (player_id) return;
+
     if (!username || username.length < 3) {
       setUsernameAvailable(null);
       return;
@@ -51,7 +80,10 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setUsernameAvailable(null);
+
+    if (!formData.player_id) {
+      setUsernameAvailable(null);
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -62,7 +94,9 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsUsernameCustomized(true);
-    setUsernameAvailable(null);
+    if (!formData.player_id) {
+      setUsernameAvailable(null);
+    }
     setFormData({ ...formData, username: slugify(e.target.value) });
   };
 
@@ -72,7 +106,9 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleUsernameBlur = () => {
     setShowUsernameHint(false);
-    cleanUsername();
+    if (!formData.player_id) {
+      cleanUsername();
+    }
   };
 
   const cleanUsername = () => {
@@ -121,9 +157,16 @@ export const useRegistration = (redirectUrl: string) => {
     usernameAvailable,
     checkLoading,
     showUsernameHint,
-    setFormData,
     submitButtonText: getSubmitButtonText(),
-    isSubmitDisabled: isLoading || checkLoading,
+    isSubmitDisabled: isLoading || (checkLoading && !formData.player_id),
+    playerSearch: {
+      search,
+      results,
+      searching,
+      onSelect: handlePlayerSelect,
+      onClear: handleClearPlayer,
+      isLinked: !!formData.player_id,
+    },
     handleDisplayNameChange,
     handleUsernameChange,
     handleUsernameFocus,

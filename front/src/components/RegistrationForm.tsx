@@ -1,5 +1,6 @@
 import { ROUTES } from '../constants/routes';
 import { useRegistration } from '../hooks/useRegistration';
+import { HistoricalPlayerSearch } from './Registration/HistoricalPlayerSearch';
 import { AuthCard } from './UI/AuthCard';
 import { Button } from './UI/Button';
 import { Input } from './UI/Input';
@@ -14,6 +15,7 @@ const RegistrationForm = () => {
     showUsernameHint,
     submitButtonText,
     isSubmitDisabled,
+    playerSearch,
     handleDisplayNameChange,
     handleUsernameChange,
     handleUsernameFocus,
@@ -24,6 +26,10 @@ const RegistrationForm = () => {
 
   return (
     <AuthCard title="S'inscrire" onSubmit={handleSubmit}>
+      <HistoricalPlayerSearch
+        searchProps={playerSearch}
+        selectedName={formData.display_name}
+      />
       <Input
         label="Nom d'affichage"
         type="text"
@@ -77,7 +83,7 @@ const RegistrationForm = () => {
         required
       />
 
-      <Button type="submit" isLoading={isSubmitDisabled}>
+      <Button type="submit" isLoading={isSubmitDisabled} fullWidth>
         {submitButtonText}
       </Button>
 

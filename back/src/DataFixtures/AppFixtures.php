@@ -8,8 +8,8 @@ use App\Entity\Action;
 use App\Entity\Competition;
 use App\Entity\Participation;
 use App\Entity\Player;
-use App\Entity\User;
 use App\Enum\ActionStatus;
+use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -17,7 +17,11 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $admin = new User();
+        $admin = UserFactory::createOne([
+            'username' => 'admin',
+            'plainPassword' => 'password',
+            'roles' => ['ROLE_ADMIN'],
+        ]);
 
         // --- 1. CRÉATION DES COMPÉTITIONS ---
         $comp2025 = new Competition();

@@ -15,7 +15,7 @@ export const usePlayerSearch = () => {
     setSearching(true);
 
     try {
-      const response = await apiFetch(`${ROUTES.PLAYERS}?displayName=${query}`);
+      const response = await apiFetch(ROUTES.SEARCH_PLAYERS(query));
       const data = await response.json();
       setResults(data['hydra:member'] || data || []);
     } catch (error) {
