@@ -8,6 +8,7 @@ export const ROUTES = {
   COMPETITION_VIEW: '/competitions/:code',
   COMPETITION_PAGE: (code: string) => `/competitions/${code}`,
   API_COMPETITION_GET: (code: string) => `/competitions/by-code/${code}`,
+  API_COMPETITION_DELETE: (id: string) => `/competitions/${id}`,
   COMPETITION_LEADERBOARD: (id: string) => `/competitions/${id}/leaderboard`,
   COMPETITION_ACTIONS: (id: string) => `/competitions/${id}/actions`,
   CREATE_COMPETITION: '/admin/competition',

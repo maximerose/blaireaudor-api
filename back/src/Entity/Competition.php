@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -46,6 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'get_by_code'
         ),
         new GetCollection(normalizationContext: ['groups' => 'competition:read']),
+        new Delete(),
     ],
 )]
 class Competition
@@ -90,7 +92,7 @@ class Competition
      * Liste des participations (joueurs inscrits et leurs scores).
      * @var Collection<int, Participation>
      */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
     #[Groups(['competition:read', 'competition:write', 'action:read'])]
     private Collection $participations;
 
@@ -98,7 +100,7 @@ class Competition
      * Liste des actions enregistrées durant cette compétition.
      * @var Collection<int, Action>
      */
-    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
     private Collection $actions;
 
     public function __construct()
