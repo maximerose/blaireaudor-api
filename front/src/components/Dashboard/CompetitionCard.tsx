@@ -49,7 +49,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
       <div className="flex justify-between items-start mb-2">
         <div>
           <h3
-            className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0"
+            className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0 text-left"
             title={competition.name}
           >
             {competition.name}
