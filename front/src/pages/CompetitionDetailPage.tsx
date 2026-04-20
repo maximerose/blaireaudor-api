@@ -5,12 +5,12 @@ import { Leaderboard } from '../components/Competition/Leaderboard';
 import { ActionTable } from '../components/Competition/ActionTable';
 import { ROUTES } from '../constants/routes';
 import { useCompetitionDelete } from '../hooks/useCompetitionDelete';
+import { InlineEnrollment } from '../components/Competition/InlineEnrollment';
 
 const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
-  const { competition, leaderboard, actions, loading } = useCompetitionData(
-    code || '',
-  );
+  const { competition, leaderboard, actions, loading, refresh } =
+    useCompetitionData(code || '');
   const { deleteCompetition } = useCompetitionDelete();
 
   if (loading) return <LoadingScreen message="Récupération du classement..." />;
@@ -61,6 +61,7 @@ const CompetitionDetailPage = () => {
             Leaderboard
           </h2>
           <Leaderboard data={leaderboard || []} />
+          <InlineEnrollment competition={competition} onRefresh={refresh} />
         </div>
 
         <div className="lg:col-span-8">

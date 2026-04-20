@@ -24,7 +24,7 @@ class PlayerRepository extends ServiceEntityRepository
     public function searchByName(string $query, bool $unlinkedOnly = false): array
     {
         $qb = $this->createQueryBuilder('p')
-            ->where('p.displayName LIKE :query')
+            ->where('unaccent(LOWER(p.displayName)) LIKE unaccent(LOWER(:query))')
             ->setParameter('query', '%' . $query . '%')
             ->orderBy('p.displayName', 'ASC');
 

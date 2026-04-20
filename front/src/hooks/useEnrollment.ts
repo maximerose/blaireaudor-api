@@ -7,6 +7,7 @@ import { useAuth } from './useAuth';
 export const useEnrollment = (
   competitionId: string,
   initialParticipants: any[],
+  onSuccess?: () => void,
 ) => {
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
@@ -97,7 +98,11 @@ export const useEnrollment = (
 
       if (response.ok) {
         await refreshUser();
-        navigate(ROUTES.DASHBOARD);
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate(ROUTES.DASHBOARD);
+        }
       } else {
         const errorData = await response.json();
         alert(
