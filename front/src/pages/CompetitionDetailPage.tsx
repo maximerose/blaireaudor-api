@@ -1,8 +1,9 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useCompetitionData } from '../hooks/useCompetitionData';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import { Leaderboard } from '../components/Competition/Leaderboard';
 import { ActionTable } from '../components/Competition/ActionTable';
+import { ROUTES } from '../constants/routes';
 
 const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
@@ -16,6 +17,14 @@ const CompetitionDetailPage = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 py-10 animate-fade-in">
+      <div className="mb-8">
+        <Link
+          to={ROUTES.DASHBOARD}
+          className="inline-flex items-center gap-2 text-gold/50 hover:text-gold transition-colors text-xs font-black uppercase tracking-widest"
+        >
+          ← Retour au profil
+        </Link>
+      </div>
       <header className="mb-12 text-center">
         <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-2">
           {competition.name}

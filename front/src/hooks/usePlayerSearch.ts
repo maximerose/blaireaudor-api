@@ -17,7 +17,10 @@ export const usePlayerSearch = () => {
     try {
       const response = await apiFetch(ROUTES.SEARCH_PLAYERS(query));
       const data = await response.json();
-      setResults(data['hydra:member'] || data || []);
+      const results = Array.isArray(data)
+        ? data
+        : data['hydra:member'] || data.member || [];
+      setResults(results);
     } catch (error) {
       console.error('Erreur recherche', error);
     } finally {

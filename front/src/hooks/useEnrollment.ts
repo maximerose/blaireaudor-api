@@ -9,6 +9,7 @@ export const useEnrollment = (
   initialParticipants: any[],
 ) => {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
   const [participants, setParticipants] = useState(initialParticipants);
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -39,8 +40,8 @@ export const useEnrollment = (
     try {
       const response = await apiFetch(ROUTES.SEARCH_PLAYERS(query), { signal });
       const data = await response.json();
-
-      setSearchResults(data.member || data['hydra:member'] || []);
+      const results = Array.isArray(data) ? data : data['hydra:member'] || [];
+      setSearchResults(results);
     } catch (error: any) {
       if (error.name === 'AbortError') {
         return;
@@ -84,7 +85,6 @@ export const useEnrollment = (
     const newNames = participants
       .filter((p) => p.isNew)
       .map((p) => p.display_name);
-    const { refreshUser } = useAuth();
 
     try {
       const response = await apiFetch(ROUTES.ADD_PLAYERS(competitionId), {
