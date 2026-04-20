@@ -1,12 +1,13 @@
+// front/src/pages/Dashboard.tsx
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useDashboardSort } from '../hooks/useDashboardSort';
 import { CompetitionCard } from './Dashboard/CompetitionCard';
 import { Navbar } from './UI/Navbar';
 import { ROUTES } from '../constants/routes';
 import {
   CompetitionStatus,
   getCompetitionStatus,
-  getStatusWeight,
 } from '../utils/competitionHelper';
 import { Button } from './UI/Button';
 
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const participations = user?.player?.participations || [];
+  const sortedParticipations = useDashboardSort(participations);
   const stats = participations.reduce(
     (acc, p) => {
       const status = getCompetitionStatus(
@@ -27,21 +29,6 @@ const Dashboard = () => {
     },
     { active: 0, finished: 0, upcoming: 0 },
   );
-
-  const sortedParticipations = [...participations].sort((a, b) => {
-    const weightA = getStatusWeight(
-      getCompetitionStatus(a.competition.start_date, a.competition.end_date),
-    );
-    const weightB = getStatusWeight(
-      getCompetitionStatus(b.competition.start_date, b.competition.end_date),
-    );
-
-    if (weightA !== weightB) return weightA - weightB;
-    return (
-      new Date(a.competition.start_date).getTime() -
-      new Date(b.competition.start_date).getTime()
-    );
-  });
 
   const getStatusMessage = () => {
     if (participations.length === 0)
@@ -73,8 +60,11 @@ const Dashboard = () => {
 
         <section className="grid gap-4">
           {participations.length > 0 ? (
-            sortedParticipations.map((p, idx) => (
-              <CompetitionCard key={idx} participation={p} />
+            sortedParticipations.map((p) => (
+              <CompetitionCard
+                key={p.competition.join_code}
+                participation={p}
+              />
             ))
           ) : (
             <div className="text-center p-12 border-2 border-dashed border-gold/10 rounded-3xl">

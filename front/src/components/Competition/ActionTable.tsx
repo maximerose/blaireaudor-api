@@ -1,4 +1,3 @@
-import React from 'react';
 import { useActionTable } from '../../hooks/useActionTable';
 import { DateNavigation } from './DateNavigation';
 
@@ -14,7 +13,7 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
   } = useActionTable(actions);
 
   const SortIcon = ({ field }: { field: string }) => {
-    if (sortField !== field) return null;
+    if (sortField !== field) return <span className="ml-1 opacity-20">↕</span>;
     return (
       <span className="ml-1 text-gold">{sortOrder === 'asc' ? '↑' : '↓'}</span>
     );
@@ -27,61 +26,70 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
         selectedDate={selectedDate}
         onSelect={setSelectedDate}
       />
-      <div className="overflow-x-auto rounded-2xl border border-white/5 bg-black/20 shadow-xl">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-gold/10 text-[10px] font-black uppercase text-gold/60 tracking-widest border-b border-gold/10">
-              <th
-                className="p-4 cursor-pointer hover:text-gold transition-colors"
-                onClick={() => handleSort('date_action')}
-              >
-                Date <SortIcon field="date_action" />
-              </th>
-              <th
-                className="p-4 cursor-pointer hover:text-gold transition-colors"
-                onClick={() => handleSort('player')}
-              >
-                Joueur <SortIcon field="player" />
-              </th>
-              <th className="p-4">Action</th>
-              <th
-                className="p-4 text-right cursor-pointer hover:text-gold transition-colors"
-                onClick={() => handleSort('points')}
-              >
-                Points <SortIcon field="points" />
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {sortedActions.map((action) => (
-              <tr
-                key={action.id}
-                className="hover:bg-white/5 transition-colors group"
-              >
-                <td className="p-4 text-[11px] font-mono text-white/40">
-                  {new Date(action.date_action).toLocaleDateString('fr-FR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                  })}
-                </td>
-                <td className="p-4 text-sm font-bold text-white tracking-tight">
+
+      {/* Header de Tri - Adapté pour être cliquable sur Mobile */}
+      <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-gold/10 rounded-t-2xl border border-white/5 text-[9px] font-black uppercase tracking-widest text-gold/60">
+        <button
+          className="col-span-3 md:col-span-2 text-left flex items-center hover:text-gold transition-colors"
+          onClick={() => handleSort('date_action')}
+        >
+          Date <SortIcon field="date_action" />
+        </button>
+        <button
+          className="col-span-6 md:col-span-3 text-left flex items-center hover:text-gold transition-colors"
+          onClick={() => handleSort('player')}
+        >
+          Joueur <SortIcon field="player" />
+        </button>
+        <div className="hidden md:block md:col-span-5">Action</div>
+        <button
+          className="col-span-3 md:col-span-2 text-right flex items-center justify-end hover:text-gold transition-colors"
+          onClick={() => handleSort('points')}
+        >
+          Points <SortIcon field="points" />
+        </button>
+      </div>
+
+      <div className="bg-black/20 border-x border-b border-white/5 rounded-b-2xl overflow-hidden shadow-xl">
+        <div className="divide-y divide-white/5">
+          {sortedActions.map((action) => (
+            <div
+              key={action.id}
+              className="grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-colors group"
+            >
+              <div className="col-span-3 md:col-span-2 text-[10px] font-mono text-white/40">
+                {new Date(action.date_action).toLocaleDateString('fr-FR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                })}
+              </div>
+
+              <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 md:gap-4 overflow-hidden">
+                <span className="text-xs md:text-sm font-bold text-white truncate md:col-span-3">
                   {action.player?.display_name || 'Anonyme'}
-                </td>
-                <td
-                  className="p-4 text-xs text-white/60 italic max-w-xs truncate"
+                </span>
+                <span
+                  className="text-[10px] md:text-xs text-white/50 italic truncate md:col-span-5 md:text-white/70"
                   title={action.description}
                 >
                   "{action.description}"
-                </td>
-                <td className="p-4 text-right">
-                  <span className="text-red-500 font-black text-sm">
-                    +{action.points}
+                </span>
+              </div>
+
+              <div className="col-span-3 md:col-span-2 text-right">
+                <span
+                  className={`text-sm md:text-base font-black font-mono ${action.points >= 0 ? 'text-gold' : 'text-red-500'}`}
+                >
+                  {action.points >= 0 ? `+${action.points}` : action.points}
+                  <span className="ml-0.5 text-[8px] opacity-40 uppercase">
+                    pts
                   </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {sortedActions.length === 0 && (
           <div className="p-10 text-center text-white/20 text-xs italic">
             Aucune action trouvée.

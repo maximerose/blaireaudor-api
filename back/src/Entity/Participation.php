@@ -121,4 +121,14 @@ class Participation
 
         $this->setScore($total);
     }
+
+    #[Groups(['competition:read'])]
+    public function getActions(): array
+    {
+        $currentCompetition = $this->getCompetition();
+
+        return $this->getPlayer()->getActions()->filter(function (Action $action) use ($currentCompetition) {
+            return $action->getCompetition() === $currentCompetition;
+        })->toArray();
+    }
 }

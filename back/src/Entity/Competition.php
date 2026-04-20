@@ -80,10 +80,6 @@ class Competition
     #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?\DateTimeImmutable $endDate = null;
 
-    #[ORM\Column(options: ['default' => false])]
-    #[Groups(['competition:read', 'user:read'])]
-    private ?bool $isFinished = false;
-
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?bool $fogOfWar = true;
@@ -169,16 +165,14 @@ class Competition
         return $this;
     }
 
-    public function isFinished(): ?bool
+    #[Groups(['competition:read', 'user:read'])]
+    public function getIsFinished(): ?bool
     {
-        return $this->isFinished;
-    }
+        if (null === $this->endDate) {
+            return false;
+        }
 
-    public function setIsFinished(bool $isFinished): static
-    {
-        $this->isFinished = $isFinished;
-
-        return $this;
+        return $this->endDate < new \DateTimeImmutable();
     }
 
     /**
@@ -261,5 +255,11 @@ class Competition
         $this->fogOfWar = $fogOfWar;
 
         return $this;
+    }
+
+    #[Groups(['competition:read', 'user:read'])]
+    public function getParticipantsCount(): int
+    {
+        return $this->participations->count();
     }
 }

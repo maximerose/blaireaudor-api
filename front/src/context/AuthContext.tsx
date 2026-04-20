@@ -5,7 +5,9 @@ export interface Competition {
   join_code: string;
   start_date: string;
   end_date: string;
+  is_finished: boolean;
   fog_of_war: boolean;
+  participants_count: number;
 }
 
 export interface Participation {

@@ -45,32 +45,49 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const currentStatus = statusConfig[status];
 
   return (
-    <div className="bg-black/40 border border-gold/20 rounded-2xl p-5 hover:border-gold/50 transition-all group shadow-lg">
+    <div className="bg-black/40 border border-gold/20 rounded-2xl p-5 hover:border-gold/50 transition-all group shadow-lg flex flex-col h-full">
       <div className="flex justify-between items-start mb-2">
         <div>
           <h3
-            className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[25ch] truncate shrink-0 text-left"
+            className="text-gold font-bold text-lg leading-tight uppercase tracking-tight max-w-[20ch] truncate shrink-0 text-left"
             title={competition.name}
           >
             {competition.name}
           </h3>
-          <p className="text-gold/60 text-[10px] mt-1 font-medium">
+          <p className="text-gold/60 text-[10px] mt-1 font-medium text-left">
             {dateText}
           </p>
         </div>
         <span
-          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${currentStatus.css}
-            }`}
+          className={`px-2 py-1 rounded text-[9px] font-bold uppercase tracking-tighter ${currentStatus.css}`}
         >
           {currentStatus.label}
         </span>
       </div>
 
-      <p className="text-gold/30 text-[11px] font-mono tracking-widest uppercase mb-4">
-        CODE: {competition.join_code}
-      </p>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-gold/30 text-[11px] font-mono tracking-widest uppercase">
+          CODE: {competition.join_code}
+        </p>
 
-      <div className="flex items-end justify-between mt-4">
+        {/* AJOUTÉ : Compteur de participants */}
+        <div className="flex items-center gap-1.5">
+          <div className="w-1 h-1 rounded-full bg-gold/30" />
+          <span
+            className={`text-[10px] font-black uppercase tracking-widest ${
+              competition.participants_count === 0
+                ? 'text-red-500/50'
+                : 'text-white/30'
+            }`}
+          >
+            {competition.participants_count === 0
+              ? 'Arène Vide'
+              : `${competition.participants_count} ${competition.participants_count > 1 ? 'Participants' : 'Participant'}`}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-end justify-between mt-4 pt-4 border-t border-white/5">
         <div className="flex flex-col gap-1">
           <span className="text-gold/30 text-[10px] uppercase font-semibold italic tracking-wider">
             {shouldReveal ? 'Résultats finaux' : 'Statut actuel'}
@@ -86,7 +103,11 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
                 </span>
               )}
             </span>
-
+            {shouldReveal && (
+              <span className="text-[10px] font-black uppercase text-gold/50 tracking-tighter">
+                pts
+              </span>
+            )}
             {shouldReveal && rank && (
               <span className="text-sm font-bold text-white/80 bg-gold/20 px-2 py-0.5 rounded border border-gold/30">
                 {rank}

@@ -188,4 +188,12 @@ class Player
     {
         return $this->associatedUser !== null;
     }
+
+    #[Groups(['competition:read', 'player:read'])]
+    public function getLastCompetitionName(): ?string
+    {
+        $lastParticipation = $this->participations->last();
+
+        return $lastParticipation ? $lastParticipation->getCompetition()->getName() : null;
+    }
 }

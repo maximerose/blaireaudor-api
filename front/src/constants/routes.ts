@@ -16,4 +16,5 @@ export const ROUTES = {
   PLAYERS: '/players',
   SEARCH_PLAYERS: (query: string) => `/search/players?displayName=${query}`,
   ADD_PLAYERS: (id: string) => `/admin/competition/${id}/add-players`,
+  API_PARTICIPATION_DELETE: (id: string) => `/participations/${id}`,
 };

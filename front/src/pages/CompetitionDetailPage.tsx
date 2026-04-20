@@ -57,15 +57,17 @@ const CompetitionDetailPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-4">
-          <h2 className="text-gold font-black uppercase text-xs tracking-[0.3em] mb-6 border-l-2 border-gold pl-3">
-            Leaderboard
+          <h2 className="text-gold font-black uppercase text-xs tracking-[0.3em] mb-6">
+            Classement
           </h2>
-          <Leaderboard data={leaderboard || []} />
-          <InlineEnrollment competition={competition} onRefresh={refresh} />
+          <Leaderboard data={leaderboard || []} onRefresh={refresh} />
+          {!competition.is_finished && (
+            <InlineEnrollment competition={competition} onRefresh={refresh} />
+          )}
         </div>
 
         <div className="lg:col-span-8">
-          <h2 className="text-white font-black uppercase text-xs tracking-[0.3em] mb-6 border-l-2 border-white pl-3">
+          <h2 className="text-white font-black uppercase text-xs tracking-[0.3em] mb-6">
             Actions
           </h2>
           <ActionTable actions={actions} />
