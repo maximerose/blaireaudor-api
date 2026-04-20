@@ -36,11 +36,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             denormalizationContext: ['groups' => ['competition:write']]
         ),
-        new Get(),
-        new GetCollection(),
+        new Get(normalizationContext: ['groups' => 'competition:read']),
+        new Get(
+            uriTemplate: '/competitions/by-code/{joinCode}',
+            uriVariables: [
+                'joinCode' => 'joinCode'
+            ],
+            normalizationContext: ['groups' => ['competition:read']],
+            name: 'get_by_code'
+        ),
+        new GetCollection(normalizationContext: ['groups' => 'competition:read']),
     ],
-    normalizationContext: ['groups' => ['competition:read']],
-    denormalizationContext: ['groups' => ['competition:write']]
 )]
 class Competition
 {

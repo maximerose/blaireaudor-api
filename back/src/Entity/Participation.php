@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
@@ -20,6 +22,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_participation', columns: ['player_id', 'competition_id'])]
 #[ORM\HasLifecycleCallbacks]
+#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource]
 class Participation
 {

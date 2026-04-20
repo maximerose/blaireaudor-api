@@ -57,7 +57,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto min-h-screen flex flex-col p-4">
+    <div className="w-full max-w-6xl mx-auto min-h-screen flex flex-col p-4">
       <Navbar />
 
       <div className="flex-1 space-y-8 animate-fade-in">

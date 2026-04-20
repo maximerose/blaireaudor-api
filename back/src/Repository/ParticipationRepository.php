@@ -33,4 +33,16 @@ class ParticipationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function findLeaderboard(Competition $competition): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.player', 'player')
+            ->addSelect('player')
+            ->where('p.competition = :competition')
+            ->setParameter('competition', $competition)
+            ->orderBy('p.score', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

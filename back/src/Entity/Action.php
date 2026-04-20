@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
@@ -21,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * à une compétition spécifique. Elle possède un cycle de vie via son statut.
  */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
+#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource]
 class Action
 {
@@ -35,13 +38,13 @@ class Action
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['action:read'])]
+    #[Groups(['action:read', 'competition:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\Type(type: 'integer')]
-    #[Groups(['action:read'])]
+    #[Groups(['action:read', 'competition:read'])]
     private ?int $points = null;
 
     /**
@@ -49,7 +52,7 @@ class Action
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:read'])]
+    #[Groups(['action:read', 'competition:read'])]
     private ?Player $player = null;
 
     /**
@@ -63,9 +66,11 @@ class Action
      * @var ActionStatus État actuel de l'action (par défaut : PENDING).
      */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
+    #[Groups(['action:read', 'competition:read'])]
     private ActionStatus $status = ActionStatus::PENDING;
 
     #[ORM\Column(nullable: false)]
+    #[Groups(['action:read', 'competition:read'])]
     private DateTimeImmutable $dateAction;
 
     public function getDescription(): ?string

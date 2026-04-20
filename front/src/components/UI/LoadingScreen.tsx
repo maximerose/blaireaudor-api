@@ -6,7 +6,7 @@ export const LoadingScreen = ({
   message = 'Chargement...',
 }: LoadingScreenProps) => {
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-dark text-gold">
+    <div className="h-screen flex items-center justify-center bg-dark text-gold">
       <div className="flex flex-col items-center gap-4">
         {/* Le Spinner */}
         <div className="animate-spin border-4 border-gold/20 border-t-gold rounded-full h-12 w-12" />

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Repository\ActionRepository;
 use App\Repository\CompetitionRepository;
+use App\Repository\ParticipationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -40,5 +43,34 @@ final class CompetitionController extends AbstractController
             [],
             ['groups' => ['competition:read']]
         );
+    }
+
+    #[Route('/{id}/leaderboard', name: 'leaderboard', methods: ['GET'])]
+    public function getLeaderboard(string $id, CompetitionRepository $competitionRepository, ParticipationRepository $participationRepository): JsonResponse
+    {
+        $competition = $competitionRepository->find($id);
+
+        if (!$competition) {
+            return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        $leaderboard = $participationRepository->findLeaderboard($competition);
+
+        return $this->json($leaderboard, Response::HTTP_OK, [], ['groups' => ['competition:read', 'player:read']]);
+    }
+
+    #[Route('/{id}/actions', name: 'actions', methods: ['GET'])]
+    public function getActions(string $id, Request $request, CompetitionRepository $competitionRepository, ActionRepository $actionRepository): JsonResponse
+    {
+        $competition = $competitionRepository->find($id);
+
+        if (!$competition) {
+            return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        $sortBy = $request->query->get('sort', 'dateAction');
+        $actions = $actionRepository->findByCompetition($competition, $sortBy);
+
+        return $this->json($actions, Response::HTTP_OK, [], ['groups' => ['action:read', 'competition:read', 'player:read']]);
     }
 }
