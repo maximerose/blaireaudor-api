@@ -17,6 +17,7 @@ export interface Participation {
 }
 
 export interface Player {
+  id: string;
   display_name: string;
   username: string;
   participations: Participation[];

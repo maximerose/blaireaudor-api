@@ -10,25 +10,30 @@ import {
   getCompetitionStatus,
 } from '../utils/competitionHelper';
 import { Button } from './UI/Button';
+import { useMemo, useState } from 'react';
+import { JoinCompetitionModal } from './Dashboard/JoinCompetitionModal';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const participations = user?.player?.participations || [];
   const sortedParticipations = useDashboardSort(participations);
-  const stats = participations.reduce(
-    (acc, p) => {
-      const status = getCompetitionStatus(
-        p.competition.start_date,
-        p.competition.end_date,
-      );
-      if (status === CompetitionStatus.ACTIVE) acc.active++;
-      if (status === CompetitionStatus.FINISHED) acc.finished++;
-      if (status === CompetitionStatus.UPCOMING) acc.upcoming++;
-      return acc;
-    },
-    { active: 0, finished: 0, upcoming: 0 },
-  );
+  const stats = useMemo(() => {
+    return participations.reduce(
+      (acc, p) => {
+        const status = getCompetitionStatus(
+          p.competition.start_date,
+          p.competition.end_date,
+        );
+        if (status === CompetitionStatus.ACTIVE) acc.active++;
+        if (status === CompetitionStatus.FINISHED) acc.finished++;
+        if (status === CompetitionStatus.UPCOMING) acc.upcoming++;
+        return acc;
+      },
+      { active: 0, finished: 0, upcoming: 0 },
+    );
+  }, [participations]);
 
   const getStatusMessage = () => {
     if (participations.length === 0)
@@ -79,10 +84,23 @@ const Dashboard = () => {
           <Button onClick={() => navigate(ROUTES.CREATE_COMPETITION)} fullWidth>
             + Créer une compétition
           </Button>
-          <Button className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all">
+          <Button
+            onClick={() => setIsJoinModalOpen(true)}
+            className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all"
+          >
             + Rejoindre une compétition
           </Button>
         </section>
+        {isJoinModalOpen && (
+          <JoinCompetitionModal
+            onClose={() => setIsJoinModalOpen(false)}
+            onJoined={(code) => {
+              setIsJoinModalOpen(false);
+              // Redirection immédiate vers la nouvelle arène
+              navigate(ROUTES.COMPETITION_PAGE(code));
+            }}
+          />
+        )}
       </div>
     </div>
   );
