@@ -25,6 +25,7 @@ const LoginForm = () => {
         name="username"
         icon="@"
         placeholder="Nom d'utilisateur"
+        autoComplete="username"
         value={credentials.username}
         onChange={handleChange}
         disabled={isLoading}
@@ -35,6 +36,7 @@ const LoginForm = () => {
         name="password"
         type="password"
         placeholder="Mot de passe"
+        autoComplete="current-password"
         value={credentials.password}
         onChange={handleChange}
         disabled={isLoading}

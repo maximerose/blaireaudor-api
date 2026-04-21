@@ -3,6 +3,7 @@ import { useEnrollment } from '../../hooks/useEnrollment';
 import { Input } from '../UI/Input';
 import { Button } from '../UI/Button';
 import { Card } from '../UI/Card';
+import { PlayerSearchResultItem } from '../UI/PlayerSearchResultItem';
 
 export const InlineEnrollment = ({
   competition,
@@ -53,36 +54,12 @@ export const InlineEnrollment = ({
 
       <div className="mt-2 space-y-1">
         {searchResults.map((p) => (
-          <button
+          <PlayerSearchResultItem
             key={p.id}
-            onClick={() => addExistingPlayer(p)}
-            className="w-full text-left p-2 hover:bg-gold/10 rounded-lg text-xs text-white/60 flex justify-between items-center transition-colors"
-          >
-            <div className="flex flex-col gap-0.5 overflow-hidden">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-white font-bold truncate">
-                  {p.display_name || p.displayName}
-                </span>
-                <span className="text-[9px] text-gold/40 font-mono italic truncate">
-                  @{p.username}
-                </span>
-              </div>
-              {p.last_competition_name ? (
-                <span className="text-[8px] text-white/30 uppercase tracking-tighter truncate">
-                  Dernièrement vu : {p.last_competition_name}
-                </span>
-              ) : (
-                <span className="text-[8px] text-blue-400/40 uppercase tracking-tighter">
-                  Nouveau joueur 🐣
-                </span>
-              )}
-            </div>
-            <div className="ml-2 shrink-0 opacity-30 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
-              <span className="text-[10px] bg-white/10 text-white px-2 py-1 rounded uppercase font-black">
-                +
-              </span>
-            </div>
-          </button>
+            player={p}
+            onClick={addExistingPlayer}
+            actionIcon="Ajouter"
+          />
         ))}
 
         {searchTerm.trim().length >= 2 &&

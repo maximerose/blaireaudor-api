@@ -33,6 +33,7 @@ const RegistrationForm = () => {
       <Input
         label="Nom d'affichage"
         type="text"
+        autoComplete="name"
         value={formData.display_name || ''}
         onChange={handleDisplayNameChange}
         disabled={isLoading}
@@ -43,6 +44,7 @@ const RegistrationForm = () => {
         label="Nom d'utilisateur"
         icon="@"
         type="text"
+        autoComplete="username"
         value={formData.username || ''}
         onChange={handleUsernameChange}
         onFocus={handleUsernameFocus}
@@ -77,6 +79,7 @@ const RegistrationForm = () => {
       <Input
         label="Mot de passe"
         type="password"
+        autoComplete="new-password"
         value={formData.plain_password || ''}
         onChange={handlePasswordChange}
         disabled={isLoading}

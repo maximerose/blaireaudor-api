@@ -61,6 +61,7 @@ class UserManager
             $player = $this->playerManager->createPlayer($displayName);
         }
 
+        $player->setUsername($username);
         $player->setAssociatedUser($user);
         $user->setPlayer($player);
 

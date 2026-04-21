@@ -14,7 +14,22 @@ export interface EnrichedLeaderboardItem {
 
 export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
   return useMemo(() => {
-    const scoreCounts = data.reduce(
+    const sortedData = [...data].sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const nameA = (
+        a.player.display_name ||
+        a.player.displayName ||
+        ''
+      ).toLowerCase();
+      const nameB = (
+        b.player.display_name ||
+        b.player.displayName ||
+        ''
+      ).toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+
+    const scoreCounts = sortedData.reduce(
       (acc, item) => {
         acc[item.score] = (acc[item.score] || 0) + 1;
         return acc;
@@ -25,21 +40,15 @@ export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
     let currentRank = 0;
     let lastScore = -1;
 
-    return data.map((item, index) => {
+    return sortedData.map((item, index) => {
       if (item.score !== lastScore) {
         currentRank = index + 1;
       }
       lastScore = item.score;
 
-      let medal;
-      if (currentRank === 1) medal = { icon: '🥇', label: 'Or' };
-      else if (currentRank === 2) medal = { icon: '🥈', label: 'Argent' };
-      else if (currentRank === 3) medal = { icon: '🥉', label: 'Bronze' };
-
       return {
         ...item,
         rank: currentRank,
-        medal,
         isMe: currentUser?.player?.username === item.player.username,
         isExAequo: scoreCounts[item.score] > 1,
       } as EnrichedLeaderboardItem;

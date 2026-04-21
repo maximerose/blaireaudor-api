@@ -28,5 +28,5 @@ export const usePlayerSearch = () => {
     }
   };
 
-  return { search, results, searching };
+  return { search, results, searching, setResults };
 };

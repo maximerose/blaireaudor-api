@@ -14,9 +14,10 @@ export const useRegistration = (redirectUrl: string) => {
   );
   const [checkLoading, setCheckLoading] = useState(false);
   const [showUsernameHint, setShowUsernameHint] = useState(false);
+
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { search, results, searching } = usePlayerSearch();
+  const { search, results, searching, setResults } = usePlayerSearch();
 
   const [formData, setFormData] = useState({
     display_name: '',
@@ -24,6 +25,8 @@ export const useRegistration = (redirectUrl: string) => {
     plain_password: '',
     player_id: null as string | null,
   });
+
+  const filteredResults = results.filter((p) => p.has_account === false);
 
   const handlePlayerSelect = (player: any) => {
     setIsUsernameCustomized(true);
@@ -33,7 +36,10 @@ export const useRegistration = (redirectUrl: string) => {
       username: player.username,
       player_id: player.id,
     }));
-    setUsernameAvailable(true);
+  };
+
+  const handleClearSearch = () => {
+    setResults([]);
   };
 
   const handleClearPlayer = () => {
@@ -45,29 +51,31 @@ export const useRegistration = (redirectUrl: string) => {
       username: '',
     }));
     setUsernameAvailable(null);
+    setResults([]);
   };
 
   useEffect(() => {
-    const { username, player_id } = formData;
-
-    if (player_id) return;
+    const { username } = formData;
 
     if (!username || username.length < 3) {
       setUsernameAvailable(null);
+      setCheckLoading(false);
       return;
     }
 
+    setCheckLoading(true);
+
     const timer = setTimeout(async () => {
-      setCheckLoading(true);
       try {
         const data = await authService.checkUsername(username);
         setUsernameAvailable(data.available);
       } catch (e) {
         console.error('Erreur check username', e);
+        setUsernameAvailable(false);
       } finally {
         setCheckLoading(false);
       }
-    }, 300);
+    }, 400);
 
     return () => clearTimeout(timer);
   }, [formData.username]);
@@ -75,16 +83,12 @@ export const useRegistration = (redirectUrl: string) => {
   const getSubmitButtonText = () => {
     if (isLoading) return 'Inscription en cours...';
     if (checkLoading) return 'Vérification du pseudo...';
+    if (usernameAvailable === false) return 'Pseudo indisponible';
     return "S'inscrire au Blaireau d'Or";
   };
 
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-
-    if (!formData.player_id) {
-      setUsernameAvailable(null);
-    }
-
     setFormData((prev) => ({
       ...prev,
       display_name: val,
@@ -93,22 +97,16 @@ export const useRegistration = (redirectUrl: string) => {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUsername = slugify(e.target.value);
     setIsUsernameCustomized(true);
-    if (!formData.player_id) {
-      setUsernameAvailable(null);
-    }
-    setFormData({ ...formData, username: slugify(e.target.value) });
+    setUsernameAvailable(null);
+    setFormData({ ...formData, username: newUsername });
   };
 
-  const handleUsernameFocus = () => {
-    setShowUsernameHint(true);
-  };
-
+  const handleUsernameFocus = () => setShowUsernameHint(true);
   const handleUsernameBlur = () => {
     setShowUsernameHint(false);
-    if (!formData.player_id) {
-      cleanUsername();
-    }
+    if (!formData.player_id) cleanUsername();
   };
 
   const cleanUsername = () => {
@@ -124,27 +122,25 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading || checkLoading || usernameAvailable === false) return;
 
-    if (isLoading) return;
     setIsLoading(true);
     setMessage('');
 
     try {
       const { ok, data } = await authService.register(formData);
-
       if (ok && data.token) {
         await login({
           username: formData.username,
           password: formData.plain_password,
         });
-
         navigate(redirectUrl);
       } else {
         setMessage(data.message || '❌ Une erreur est survenue.');
       }
     } catch (error) {
-      console.error("Erreur d'inscription :", error);
       setMessage('📡 Erreur de connexion au serveur.');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -158,14 +154,20 @@ export const useRegistration = (redirectUrl: string) => {
     checkLoading,
     showUsernameHint,
     submitButtonText: getSubmitButtonText(),
-    isSubmitDisabled: isLoading || (checkLoading && !formData.player_id),
+    isSubmitDisabled:
+      isLoading ||
+      checkLoading ||
+      usernameAvailable === false ||
+      formData.username.length < 3,
     playerSearch: {
       search,
-      results,
+      results: filteredResults,
       searching,
       onSelect: handlePlayerSelect,
+      onCloseSearch: handleClearSearch,
       onClear: handleClearPlayer,
       isLinked: !!formData.player_id,
+      hasResults: filteredResults.length > 0,
     },
     handleDisplayNameChange,
     handleUsernameChange,

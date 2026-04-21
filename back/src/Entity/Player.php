@@ -183,7 +183,7 @@ class Player
      * Indique si le joueur possède un compte utilisateur actif pour se connecter.
      * * Utilisé par l'API pour différencier les profils invités des membres.
      */
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'player:read'])]
     public function getHasAccount(): bool
     {
         return $this->associatedUser !== null;

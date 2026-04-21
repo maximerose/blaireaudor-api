@@ -44,13 +44,18 @@ final class RegistrationController extends AbstractController
      * @return JsonResponse Message de succès (201) ou erreurs de validation (422).
      */
     #[Route('/register', name: 'register', methods: ['POST'])]
-    public function register(Request $request, UserManager $userManager): JsonResponse
+    public function register(Request $request, UserManager $userManager, UserRepository $userRepository): JsonResponse
     {
         $data = $request->toArray();
 
+        $username = $data['username'] ?? '';
         $joinCode = $data['join_code'] ?? null;
         $playerId = $data['player_id'] ?? null;
         $competition = null;
+
+        if ($userRepository->count(['username' => $username]) > 0) {
+            return $this->json(['message' => 'Ce pseudo est déjà utilisé'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         if ($joinCode) {
             $competition = $this->competitionRepository->findOneBy(['joinCode' => $joinCode]);
@@ -91,13 +96,18 @@ final class RegistrationController extends AbstractController
     }
 
     #[Route('/check-username/{username}', name: 'check-username', methods: ['GET'])]
-    public function checkUsername(string $username, UserRepository $userRepository): JsonResponse
+    public function checkUsername(string $username, UserRepository $userRepository, PlayerRepository $playerRepository): JsonResponse
     {
-        $exists = $userRepository->count(['username' => $username]) > 0;
+        $userExists = $userRepository->count(['username' => $username]) > 0;
+        $player = $playerRepository->findOneBy(['username' => $username]);
+        $playerIsClaimed = ($player !== null && $player->getAssociatedUser() !== null);
+
+        $available = !$userExists && !$playerIsClaimed;
 
         return $this->json([
-            'available' => !$exists,
-            'username' => $username
+            'available' => $available,
+            'username' => $username,
+            'is_guest_profile' => ($player !== null && !$playerIsClaimed)
         ]);
     }
 
