@@ -22,7 +22,7 @@ const RegistrationForm = () => {
     handleUsernameBlur,
     handlePasswordChange,
     handleSubmit,
-  } = useRegistration(ROUTES.DASHBOARD);
+  } = useRegistration(ROUTES.NAV_DASHBOARD);
 
   return (
     <AuthCard title="S'inscrire" onSubmit={handleSubmit}>

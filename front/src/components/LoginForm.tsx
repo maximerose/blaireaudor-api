@@ -47,7 +47,7 @@ const LoginForm = () => {
 
       <div className="text-center mt-4">
         <Link
-          to={ROUTES.REGISTER}
+          to={ROUTES.NAV_REGISTER}
           className="text-[10px] text-gold/30 hover:text-gold uppercase tracking-widest transition-colors"
         >
           Pas encore de compte ? S'incrire ici

@@ -10,6 +10,7 @@ import {
 import { StatusBadge } from '../Competition/StatusBadge';
 import { RankedScore } from '../UI/RankedScore';
 import { RankBadge } from '../UI/RankBadge';
+import { Card } from '../UI/Card';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -30,7 +31,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   );
 
   return (
-    <div className="bg-black/40 border border-gold/20 rounded-2xl p-4 sm:p-5 hover:border-gold/50 transition-all group shadow-lg flex flex-col h-full">
+    <Card isHoverable className="p-4 sm:p-5 flex flex-col h-full group">
       <div className="flex justify-between items-start gap-3 mb-3">
         <div className="min-w-0 flex-1">
           <h3
@@ -103,6 +104,6 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           {isFinished ? 'Classement final' : "Entrer dans l'arène"}
         </Link>
       </div>
-    </div>
+    </Card>
   );
 };

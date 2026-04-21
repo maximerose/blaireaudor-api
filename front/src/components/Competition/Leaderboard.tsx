@@ -9,6 +9,7 @@ import { ROUTES } from '../../constants/routes';
 import { Badge } from '../UI/Badge';
 import { RankedScore } from '../UI/RankedScore';
 import { getMedalStyle } from '../../utils/rankStyles';
+import { Card } from '../UI/Card';
 
 interface LeaderboardProps {
   data: any[];
@@ -23,7 +24,7 @@ export const Leaderboard = ({ data, onRefresh }: LeaderboardProps) => {
   const enrichedData = useLeaderboardLogic(data, user);
 
   return (
-    <div className="bg-black/20 border border-gold/10 rounded-2xl overflow-hidden shadow-2xl">
+    <Card variant="dark" className="overflow-hidden shadow-2xl">
       <div className="divide-y divide-white/5">
         {enrichedData.map((item: EnrichedLeaderboardItem) => (
           <LeaderboardRow
@@ -40,7 +41,7 @@ export const Leaderboard = ({ data, onRefresh }: LeaderboardProps) => {
           />
         ))}
       </div>
-    </div>
+    </Card>
   );
 };
 

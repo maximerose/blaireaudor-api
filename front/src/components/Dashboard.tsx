@@ -11,6 +11,7 @@ import {
 import { Button } from './UI/Button';
 import { useMemo, useState } from 'react';
 import { JoinCompetitionModal } from './Dashboard/JoinCompetitionModal';
+import { Card } from './UI/Card';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -52,14 +53,19 @@ const Dashboard = () => {
       <Navbar />
 
       <div className="flex-1 space-y-8 animate-fade-in">
-        <section className="text-center py-4">
-          <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic">
-            Salut,{' '}
-            <span className="text-gold">{user?.player?.display_name}</span> !
-          </h2>
-          <p className="text-gold/50 text-xs mt-2 uppercase tracking-widest">
-            {getStatusMessage()}
-          </p>
+        <section>
+          <Card
+            variant="dark"
+            className="text-center py-2 px-4 border-dashed border-gold/30 bg-transparent"
+          >
+            <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic">
+              Salut,{' '}
+              <span className="text-gold">{user?.player?.display_name}</span> !
+            </h2>
+            <p className="text-gold/50 text-xs mt-2 uppercase tracking-widest">
+              {getStatusMessage()}
+            </p>
+          </Card>
         </section>
 
         <section className="grid gap-4">

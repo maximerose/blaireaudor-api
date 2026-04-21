@@ -1,4 +1,5 @@
 import { useActionTable } from '../../hooks/useActionTable';
+import { Card } from '../UI/Card';
 import { DateNavigation } from './DateNavigation';
 
 export const ActionTable = ({ actions }: { actions: any[] }) => {
@@ -27,8 +28,7 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
         onSelect={setSelectedDate}
       />
 
-      {/* Header de Tri - Adapté pour être cliquable sur Mobile */}
-      <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-gold/10 rounded-t-2xl border border-white/5 text-[9px] font-black uppercase tracking-widest text-gold/60">
+      <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-gold/10 rounded-t-2xl border border-gold/10 text-[9px] font-black uppercase tracking-widest text-gold/60 mb-0">
         <button
           className="col-span-3 md:col-span-2 text-left flex items-center hover:text-gold transition-colors"
           onClick={() => handleSort('date_action')}
@@ -50,7 +50,7 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
         </button>
       </div>
 
-      <div className="bg-black/20 border-x border-b border-white/5 rounded-b-2xl overflow-hidden shadow-xl">
+      <Card variant="dark" className="rounded-t-none border-t-0 shadow-xl">
         <div className="divide-y divide-white/5">
           {sortedActions.map((action) => {
             const isPending = action.status?.toUpperCase() === 'PENDING';
@@ -103,7 +103,7 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
             Aucune action trouvée.
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };
