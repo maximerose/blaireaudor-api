@@ -17,7 +17,7 @@ const LoginForm = () => {
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] p-3 rounded text-center uppercase tracking-tighter">
-          {error}
+          ⚠️ {error}
         </div>
       )}
 
@@ -41,8 +41,8 @@ const LoginForm = () => {
         required
       />
 
-      <Button isLoading={isLoading} fullWidth>
-        {isLoading ? 'Connexion en cours...' : 'Se connecter'}
+      <Button type="submit" isLoading={isLoading} fullWidth>
+        Se connecter
       </Button>
 
       <div className="text-center mt-4">

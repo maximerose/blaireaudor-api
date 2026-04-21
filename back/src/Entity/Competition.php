@@ -175,6 +175,12 @@ class Competition
         return $this->endDate < new \DateTimeImmutable();
     }
 
+    #[Groups(['competition:read', 'user:read'])]
+    public function getHasStarted(): ?bool
+    {
+        return $this->startDate <= new \DateTimeImmutable();
+    }
+
     /**
      * @return Collection<int, Participation>
      */

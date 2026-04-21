@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { Input } from '../UI/Input';
 import { Button } from '../UI/Button';
+import { Card } from '../UI/Card';
 
 export const InlineEnrollment = ({
   competition,
@@ -29,17 +30,14 @@ export const InlineEnrollment = ({
 
   if (!isOpen) {
     return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="w-full mt-4 py-3 border-2 border-dashed border-white/5 rounded-xm text-white/20 hover:border-gold/30 hover:text-gold transition-all text-[10px] font-black uppercase tracking-widest"
-      >
+      <Button variant="ghost" fullWidth onClick={() => setIsOpen(true)}>
         + Ajouter un joueur
-      </button>
+      </Button>
     );
   }
 
   return (
-    <div className="mt-4 p-4 bg-white/5 rounded-2xl border border-gold/20 animate-slide-up">
+    <Card variant="dark" className="mt-4 p-4 border-gold/20 animate-slide-up">
       <div className="relative">
         <Input
           autoFocus
@@ -79,7 +77,7 @@ export const InlineEnrollment = ({
                 </span>
               )}
             </div>
-            <div className="ml-2 flex-shrink-0 opacity-30 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
+            <div className="ml-2 shrink-0 opacity-30 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
               <span className="text-[10px] bg-white/10 text-white px-2 py-1 rounded uppercase font-black">
                 +
               </span>
@@ -93,12 +91,15 @@ export const InlineEnrollment = ({
               (p.display_name || p.displayName).toLowerCase() ===
               searchTerm.toLowerCase(),
           ) && (
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
+              fullWidth
               onClick={() => addNewPlayer(searchTerm)}
-              className="w-full text-left p-2 bg-gold/5 hover:bg-gold/10 rounded-lg text-xs text-gold font-bold transition-all"
+              className="mt-2"
             >
               + Créer "{searchTerm}"
-            </button>
+            </Button>
           )}
       </div>
 
@@ -120,21 +121,17 @@ export const InlineEnrollment = ({
       )}
 
       <div className="mt-4 flex gap-2">
-        <Button
-          fullWidth
-          onClick={saveEnrollment}
-          isLoading={loading}
-          className="text-[10px] py-2"
-        >
+        <Button fullWidth onClick={saveEnrollment} isLoading={loading}>
           Valider le recrutement
         </Button>
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsOpen(false)}
-          className="px-3 text-white/20 hover:text-white transition-colors text-[9px] font-bold uppercase"
+          className="px-3"
         >
           Annuler
-        </button>
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 };

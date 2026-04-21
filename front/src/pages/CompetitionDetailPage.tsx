@@ -9,7 +9,13 @@ import { InlineEnrollment } from '../components/Competition/InlineEnrollment';
 import { ReportActionForm } from '../components/Competition/ReportActionForm';
 import { useMemo, useState } from 'react';
 import { useReportDateLimits } from '../hooks/useReportDateLimits';
-import { getDisplayDateText } from '../utils/competitionHelper';
+import {
+  getDisplayDateText,
+  getDaysUntilStart,
+} from '../utils/competitionHelper';
+import { Button } from '../components/UI/Button';
+import { Badge } from '../components/UI/Badge';
+import { Card } from '../components/UI/Card';
 
 const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
@@ -42,7 +48,9 @@ const CompetitionDetailPage = () => {
         </Link>
 
         {!actions || actions.length === 0 ? (
-          <button
+          <Button
+            variant="danger"
+            size="sm"
             onClick={() =>
               deleteCompetition(
                 competition.id,
@@ -50,14 +58,13 @@ const CompetitionDetailPage = () => {
                 actions?.length || 0,
               )
             }
-            className="text-red-500/20 hover:text-red-500 transition-all text-[10px] font-black uppercase tracking-[0.2em] border border-red-500/10 hover:border-red-500/50 px-3 py-1.5 rounded-lg"
           >
             Supprimer la compétition
-          </button>
+          </Button>
         ) : (
-          <span className="text-[9px] font-black uppercase tracking-widest text-white/10 italic">
+          <Badge variant="ghost" className="opacity-20 italic">
             Historique protégé
-          </span>
+          </Badge>
         )}
       </div>
       <header className="mb-12 text-center">
@@ -84,25 +91,48 @@ const CompetitionDetailPage = () => {
         </div>
         {!competition.is_finished && (
           <div className="space-y-6">
-            {!isReporting ? (
-              <button
-                onClick={() => setIsReporting(true)}
-                className="w-full bg-red-600/10 border border-red-500/20 text-red-500 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all group"
-              >
-                🚨 Dénoncer un adversaire
-              </button>
+            {competition.has_started ? (
+              <div className="space-y-6">
+                {!isReporting ? (
+                  <Button
+                    variant="danger"
+                    fullWidth
+                    size="lg"
+                    icon="🚨"
+                    onClick={() => setIsReporting(true)}
+                  >
+                    Dénoncer un adversaire
+                  </Button>
+                ) : (
+                  <ReportActionForm
+                    competitionId={competition.id}
+                    players={potentialTargets}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    onCancel={() => setIsReporting(false)}
+                    onSuccess={() => {
+                      setIsReporting(false);
+                      refresh();
+                    }}
+                  />
+                )}
+              </div>
             ) : (
-              <ReportActionForm
-                competitionId={competition.id}
-                players={potentialTargets}
-                minDate={minDate}
-                maxDate={maxDate}
-                onCancel={() => setIsReporting(false)}
-                onSuccess={() => {
-                  setIsReporting(false);
-                  refresh();
-                }}
-              />
+              <Card
+                variant="dark"
+                className="p-4 text-center border-dashed border-gold/20 bg-gold/5"
+              >
+                <span className="text-2xl block mb-2 animate-pulse">⏳</span>
+                <h3 className="text-gold/50 font-black uppercase text-[10px] tracking-[0.2em] mb-1">
+                  L'heure de la délation n'a pas sonné
+                </h3>
+                <p className="text-white font-bold text-sm">
+                  Ouverture du tournoi{' '}
+                  <span className="text-gold">
+                    {getDaysUntilStart(competition.start_date)}
+                  </span>
+                </p>
+              </Card>
             )}
           </div>
         )}

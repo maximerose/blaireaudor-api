@@ -83,7 +83,12 @@ const RegistrationForm = () => {
         required
       />
 
-      <Button type="submit" isLoading={isSubmitDisabled} fullWidth>
+      <Button
+        type="submit"
+        isLoading={isLoading}
+        disabled={isSubmitDisabled}
+        fullWidth
+      >
         {submitButtonText}
       </Button>
 

@@ -90,3 +90,18 @@ export const getStatusWeight = (status: CompetitionStatusType): number => {
       return 3;
   }
 };
+
+export const getDaysUntilStart = (startDate: string): string => {
+  const now = new Date();
+  const start = new Date(startDate);
+
+  now.setHours(0, 0, 0, 0);
+  start.setHours(0, 0, 0, 0);
+
+  const diffTime = start.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return 'très bientôt';
+  if (diffDays === 1) return 'demain';
+  return `dans ${diffDays} jours`;
+};

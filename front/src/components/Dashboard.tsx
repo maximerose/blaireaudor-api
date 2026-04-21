@@ -89,12 +89,14 @@ const Dashboard = () => {
           <Button
             onClick={() => navigate(ROUTES.NAV_ADMIN_CREATE_COMPETITION)}
             fullWidth
+            variant="primary"
           >
             + Créer une compétition
           </Button>
           <Button
             onClick={() => setIsJoinModalOpen(true)}
-            className="bg-gold/5 border border-gold/20 text-gold py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold/10 transition-all"
+            fullWidth
+            variant="secondary"
           >
             + Rejoindre une compétition
           </Button>
