@@ -12,7 +12,7 @@ export const useCompetitionData = (code: string) => {
     if (!code) return;
 
     try {
-      const compRes = await apiFetch(ROUTES.API_COMPETITION_GET(code));
+      const compRes = await apiFetch(ROUTES.API_COMPETITION_GET_BY_CODE(code));
       const compData = await compRes.json();
       setCompetition(compData);
 

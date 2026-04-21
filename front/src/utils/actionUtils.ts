@@ -4,6 +4,7 @@ export interface Action {
   points: number;
   date_action: string;
   player?: { display_name: string };
+  status: string;
 }
 
 /**

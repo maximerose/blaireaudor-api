@@ -6,8 +6,11 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   COMPETITIONS: '/competitions',
   COMPETITION_VIEW: '/competitions/:code',
+  API_GET_PLAYER: (id: string) => `/api/players/${id}`,
+  API_GET_COMPETITION: (id: string) => `/api/competitions/${id}`,
   COMPETITION_PAGE: (code: string) => `/competitions/${code}`,
-  API_COMPETITION_GET: (code: string) => `/competitions/by-code/${code}`,
+  API_COMPETITION_GET_BY_CODE: (code: string) =>
+    `/competitions/by-code/${code}`,
   API_COMPETITION_DELETE: (id: string) => `/competitions/${id}`,
   COMPETITION_LEADERBOARD: (id: string) => `/competitions/${id}/leaderboard`,
   COMPETITION_ACTIONS: (id: string) => `/competitions/${id}/actions`,
@@ -17,4 +20,5 @@ export const ROUTES = {
   SEARCH_PLAYERS: (query: string) => `/search/players?displayName=${query}`,
   ADD_PLAYERS: (id: string) => `/admin/competition/${id}/add-players`,
   API_PARTICIPATION_DELETE: (id: string) => `/participations/${id}`,
+  ACTIONS: '/actions',
 };
