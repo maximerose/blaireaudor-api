@@ -26,7 +26,7 @@ export const Navbar = () => {
           </p>
         </div>
         <Link
-          to={ROUTES.LOGOUT}
+          to={ROUTES.NAV_LOGOUT}
           className="text-[10px] bg-red-500/10 border border-red-500/50 text-red-500 px-3 py-1.5 rounded-md hover:bg-red-500 hover:text-white transition-all uppercase font-bold"
         >
           Quitter
