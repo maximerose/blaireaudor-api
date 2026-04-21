@@ -9,8 +9,11 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
+use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
+use App\Validator\IsNotFinished;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
@@ -22,6 +25,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_participation', columns: ['player_id', 'competition_id'])]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(
+    fields: ['player', 'competition'],
+    message: 'ALREADY_JOINED',
+    errorPath: 'competition'
+)]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource]
 class Participation
@@ -35,6 +43,7 @@ class Participation
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['user:read'])]
+    #[IsNotFinished]
     private ?Competition $competition = null;
 
     /**
@@ -114,7 +123,7 @@ class Participation
         $total = 0;
 
         foreach ($this->getPlayer()->getActions() as $action) {
-            if ($action->getCompetition() === $this->getCompetition()) {
+            if ($action->getCompetition() === $this->getCompetition() && $action->getStatus() === ActionStatus::VALIDATED->value) {
                 $total += $action->getPoints();
             }
         }

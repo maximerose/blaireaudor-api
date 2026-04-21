@@ -3,7 +3,7 @@ import { useAuth } from './useAuth';
 import { apiFetch } from '../api/config';
 import { ROUTES } from '../constants/routes';
 
-export const useJoinCompetition = (onSuccess: (code: string) => void) => {
+export const useJoinByCode = (onSuccess: (code: string) => void) => {
   const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,8 +17,8 @@ export const useJoinCompetition = (onSuccess: (code: string) => void) => {
     try {
       const checkRes = await apiFetch(ROUTES.API_COMPETITION_BY_CODE(joinCode));
 
-      if (!checkRes.ok) {
-        throw new Error('Code invalide ou arène introuvable');
+      if (checkRes.status === 404) {
+        throw new Error("Cette arène n'existe pas. Vérifie ton code !");
       }
 
       const competition = await checkRes.json();
@@ -33,15 +33,22 @@ export const useJoinCompetition = (onSuccess: (code: string) => void) => {
 
       if (!joinRes.ok) {
         const errorData = await joinRes.json();
-        throw new Error(
-          errorData['hydra:description'] || "Erreur lors de l'inscription",
-        );
+        const violation = errorData.violations?.[0]?.message;
+
+        switch (violation) {
+          case 'ALREADY_JOINED':
+            throw new Error('Tu es déjà dans le tournoi !');
+          case 'COMPETITION_FINISHED':
+            throw new Error('Trop tard, ce tournoi est terminé.');
+          default:
+            throw new Error('Impossible de rejoindre cette compétition.');
+        }
       }
 
       await refreshUser();
       onSuccess(joinCode);
     } catch (error: any) {
-      alert(error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useJoinCompetition } from '../../hooks/useJoinCompetition';
+import { useJoinByCode } from '../../hooks/useJoinByCode';
 import { Button } from '../UI/Button';
 import { Input } from '../UI/Input';
 
@@ -10,7 +10,7 @@ interface Props {
 
 export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
   const [code, setCode] = useState('');
-  const { joinByCode, loading, error } = useJoinCompetition(onJoined);
+  const { joinByCode, loading, error } = useJoinByCode(onJoined);
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
