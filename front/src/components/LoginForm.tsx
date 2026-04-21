@@ -16,7 +16,7 @@ const LoginForm = () => {
       </p>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] p-3 rounded text-center uppercase tracking-tighter">
+        <div className="bg-red-950/10 border border-red-500/50 text-red-500 text-[10px] p-3 rounded text-center uppercase tracking-tighter">
           ⚠️ {error}
         </div>
       )}
@@ -48,12 +48,9 @@ const LoginForm = () => {
       </Button>
 
       <div className="text-center mt-4">
-        <Link
-          to={ROUTES.NAV_REGISTER}
-          className="text-[10px] text-gold/30 hover:text-gold uppercase tracking-widest transition-colors"
-        >
+        <Button as={Link} to={ROUTES.NAV_REGISTER} variant="ghost">
           Pas encore de compte ? S'incrire ici
-        </Link>
+        </Button>
       </div>
     </AuthCard>
   );

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../hooks/useAuth';
+import { Button } from './Button';
 
 export const Navbar = () => {
   const { user } = useAuth();
@@ -25,12 +26,9 @@ export const Navbar = () => {
             {user?.player?.display_name || user?.username}
           </p>
         </div>
-        <Link
-          to={ROUTES.NAV_LOGOUT}
-          className="text-[10px] bg-red-500/10 border border-red-500/50 text-red-500 px-3 py-1.5 rounded-md hover:bg-red-500 hover:text-white transition-all uppercase font-bold"
-        >
+        <Button as={Link} to={ROUTES.NAV_LOGOUT} variant="danger" size="sm">
           Quitter
-        </Link>
+        </Button>
       </div>
     </nav>
   );

@@ -40,12 +40,9 @@ const CompetitionDetailPage = () => {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 py-10 animate-fade-in">
       <div className="mb-8 flex justify-between items-center">
-        <Link
-          to={ROUTES.NAV_DASHBOARD}
-          className="inline-flex items-center gap-2 text-gold/50 hover:text-gold transition-colors text-xs font-black uppercase tracking-widest"
-        >
+        <Button as={Link} to={ROUTES.NAV_DASHBOARD} variant="ghost">
           ← Retour au profil
-        </Link>
+        </Button>
 
         {!actions || actions.length === 0 ? (
           <Button
@@ -62,7 +59,7 @@ const CompetitionDetailPage = () => {
             Supprimer la compétition
           </Button>
         ) : (
-          <Badge variant="ghost" className="opacity-20 italic">
+          <Badge variant="ghost" className="opacity-70 italic">
             Historique protégé
           </Badge>
         )}

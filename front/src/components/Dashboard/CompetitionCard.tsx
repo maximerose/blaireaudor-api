@@ -11,6 +11,7 @@ import { StatusBadge } from '../Competition/StatusBadge';
 import { RankedScore } from '../UI/RankedScore';
 import { RankBadge } from '../UI/RankBadge';
 import { Card } from '../UI/Card';
+import { Button } from '../UI/Button';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -90,19 +91,15 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           </div>
         </div>
 
-        <Link
+        <Button
+          as={Link}
           to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
-          className={`
-            text-center text-[10px] font-black px-4 py-3 sm:py-2 rounded-xl transition-all uppercase tracking-widest shadow-md
-            ${
-              isFinished
-                ? 'bg-gold text-dark hover:bg-white'
-                : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
-            }
-          `}
+          variant={isFinished ? 'primary' : 'secondary'}
+          fullWidth
+          className="sm:w-auto"
         >
           {isFinished ? 'Classement final' : "Entrer dans l'arène"}
-        </Link>
+        </Button>
       </div>
     </Card>
   );

@@ -1,3 +1,4 @@
+// front/src/components/UI/Button.tsx
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,6 +7,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   fullWidth?: boolean;
   icon?: React.ReactNode;
+  as?: any;
+  to?: string;
 }
 
 export const Button = ({
@@ -17,17 +20,19 @@ export const Button = ({
   icon,
   className = '',
   disabled,
+  as: Component = 'button',
   ...props
 }: ButtonProps) => {
   const baseStyles =
     'inline-flex items-center justify-center font-black uppercase tracking-widest transition-all duration-300 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed active:scale-95';
 
   const variants = {
-    primary: 'bg-gold text-black hover:bg-white shadow-lg shadow-gold/10',
+    primary:
+      'bg-gold text-black hover:bg-[#ffed94] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] shadow-lg shadow-gold/10',
     secondary:
-      'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white',
+      'bg-white/5 border border-white/10 text-white/70 hover:bg-white/15 hover:text-white hover:border-white/20',
     danger:
-      'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white',
+      'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-600/20 hover:text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]',
     ghost:
       'text-gold/50 hover:text-gold hover:bg-gold/5 border border-transparent',
   };
@@ -41,7 +46,7 @@ export const Button = ({
   const widthStyle = fullWidth ? 'w-full' : '';
 
   return (
-    <button
+    <Component
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthStyle} ${className}`}
       disabled={isLoading || disabled}
       {...props}
@@ -72,6 +77,6 @@ export const Button = ({
           {children}
         </div>
       )}
-    </button>
+    </Component>
   );
 };

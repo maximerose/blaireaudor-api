@@ -5,6 +5,20 @@
   --color-dark: #121212;
 }
 
+@layer base {
+  body {
+    cursor: default;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    cursor: pointer;
+  }
+}
+
 html,
 body {
   margin: 0;
