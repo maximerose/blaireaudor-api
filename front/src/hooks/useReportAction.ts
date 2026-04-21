@@ -32,14 +32,14 @@ export const useReportAction = (
 
     setLoading(true);
     try {
-      const response = await apiFetch(ROUTES.ACTIONS, {
+      const response = await apiFetch(ROUTES.API_ACTIONS, {
         method: 'POST',
         body: JSON.stringify({
           description: formData.description,
           dateAction: formData.dateAction,
           points: Number(formData.points),
-          player: ROUTES.API_GET_PLAYER(formData.targetPlayerId),
-          competition: ROUTES.API_GET_COMPETITION(competitionId),
+          player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
+          competition: ROUTES.IRI_COMPETITION(competitionId),
         }),
       });
 

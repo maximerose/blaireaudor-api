@@ -15,9 +15,7 @@ export const useJoinCompetition = (onSuccess: (code: string) => void) => {
     setError(null);
 
     try {
-      const checkRes = await apiFetch(
-        ROUTES.API_COMPETITION_GET_BY_CODE(joinCode),
-      );
+      const checkRes = await apiFetch(ROUTES.API_COMPETITION_BY_CODE(joinCode));
 
       if (!checkRes.ok) {
         throw new Error('Code invalide ou arène introuvable');
@@ -25,11 +23,11 @@ export const useJoinCompetition = (onSuccess: (code: string) => void) => {
 
       const competition = await checkRes.json();
 
-      const joinRes = await apiFetch(ROUTES.PARTICIPATIONS, {
+      const joinRes = await apiFetch(ROUTES.API_PARTICIPATIONS, {
         method: 'POST',
         body: JSON.stringify({
-          player: ROUTES.API_GET_PLAYER(user?.player?.id),
-          competition: ROUTES.API_GET_COMPETITION(competition.id),
+          player: ROUTES.IRI_PLAYER(user?.player?.id),
+          competition: ROUTES.IRI_COMPETITION(competition.id),
         }),
       });
 

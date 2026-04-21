@@ -39,7 +39,9 @@ export const useEnrollment = (
     setIsSearching(true);
 
     try {
-      const response = await apiFetch(ROUTES.SEARCH_PLAYERS(query), { signal });
+      const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(query), {
+        signal,
+      });
       const data = await response.json();
       const results = Array.isArray(data) ? data : data['hydra:member'] || [];
       setSearchResults(results);
@@ -88,20 +90,23 @@ export const useEnrollment = (
       .map((p) => p.display_name);
 
     try {
-      const response = await apiFetch(ROUTES.ADD_PLAYERS(competitionId), {
-        method: 'POST',
-        body: JSON.stringify({
-          existing_players_ids: existingIds,
-          new_players: newNames,
-        }),
-      });
+      const response = await apiFetch(
+        ROUTES.API_ADD_PLAYERS_TO_COMP(competitionId),
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            existing_players_ids: existingIds,
+            new_players: newNames,
+          }),
+        },
+      );
 
       if (response.ok) {
         await refreshUser();
         if (onSuccess) {
           onSuccess();
         } else {
-          navigate(ROUTES.DASHBOARD);
+          navigate(ROUTES.NAV_DASHBOARD);
         }
       } else {
         const errorData = await response.json();

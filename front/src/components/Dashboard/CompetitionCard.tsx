@@ -118,7 +118,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
         </div>
 
         <Link
-          to={ROUTES.COMPETITION_PAGE(competition.join_code)}
+          to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
           className="bg-gold text-dark text-[10px] font-black px-4 py-2 rounded-lg hover:bg-white transition-colors uppercase tracking-widest shadow-md"
         >
           {isFinished ? 'Voir le classement' : 'Détails'}

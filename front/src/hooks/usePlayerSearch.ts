@@ -15,7 +15,7 @@ export const usePlayerSearch = () => {
     setSearching(true);
 
     try {
-      const response = await apiFetch(ROUTES.SEARCH_PLAYERS(query));
+      const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(query));
       const data = await response.json();
       const results = Array.isArray(data)
         ? data

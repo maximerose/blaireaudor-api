@@ -1,4 +1,3 @@
-// front/src/pages/Dashboard.tsx
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useDashboardSort } from '../hooks/useDashboardSort';
@@ -81,7 +80,10 @@ const Dashboard = () => {
         </section>
 
         <section className="grid gap-4">
-          <Button onClick={() => navigate(ROUTES.CREATE_COMPETITION)} fullWidth>
+          <Button
+            onClick={() => navigate(ROUTES.NAV_ADMIN_CREATE_COMPETITION)}
+            fullWidth
+          >
             + Créer une compétition
           </Button>
           <Button
@@ -97,7 +99,7 @@ const Dashboard = () => {
             onJoined={(code) => {
               setIsJoinModalOpen(false);
               // Redirection immédiate vers la nouvelle arène
-              navigate(ROUTES.COMPETITION_PAGE(code));
+              navigate(ROUTES.NAV_COMPETITION_DETAIL(code));
             }}
           />
         )}

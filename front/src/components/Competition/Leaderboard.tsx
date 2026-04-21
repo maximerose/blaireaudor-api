@@ -33,7 +33,7 @@ export const Leaderboard = ({ data, onRefresh }: LeaderboardProps) => {
                 item.player.display_name,
                 false,
               );
-              if (item.isMe) navigate(ROUTES.DASHBOARD);
+              if (item.isMe) navigate(ROUTES.NAV_DASHBOARD);
             }}
           />
         ))}

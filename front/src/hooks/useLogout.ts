@@ -16,7 +16,7 @@ export const useLogout = () => {
     } finally {
       localStorage.removeItem('token');
       setUser(null);
-      navigate(ROUTES.LOGIN, { replace: true });
+      navigate(ROUTES.NAV_LOGIN, { replace: true });
     }
   }, [setUser, navigate]);
 

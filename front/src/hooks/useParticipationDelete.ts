@@ -21,7 +21,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
 
     try {
       const response = await apiFetch(
-        ROUTES.API_PARTICIPATION_DELETE(participatoinId),
+        ROUTES.API_PARTICIPATION_DETAIL(participatoinId),
         {
           method: 'DELETE',
         },

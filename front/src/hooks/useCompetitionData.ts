@@ -12,14 +12,14 @@ export const useCompetitionData = (code: string) => {
     if (!code) return;
 
     try {
-      const compRes = await apiFetch(ROUTES.API_COMPETITION_GET_BY_CODE(code));
+      const compRes = await apiFetch(ROUTES.API_COMPETITION_BY_CODE(code));
       const compData = await compRes.json();
       setCompetition(compData);
 
       if (compData.id) {
         const [lbRes, actRes] = await Promise.all([
-          apiFetch(ROUTES.COMPETITION_LEADERBOARD(compData.id)),
-          apiFetch(ROUTES.COMPETITION_ACTIONS(compData.id)),
+          apiFetch(ROUTES.API_COMPETITION_LEADERBOARD(compData.id)),
+          apiFetch(ROUTES.API_COMPETITION_ACTIONS(compData.id)),
         ]);
 
         setLeaderboard(await lbRes.json());

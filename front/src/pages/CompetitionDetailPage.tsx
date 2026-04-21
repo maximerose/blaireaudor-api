@@ -35,7 +35,7 @@ const CompetitionDetailPage = () => {
     <div className="w-full max-w-5xl mx-auto px-4 py-10 animate-fade-in">
       <div className="mb-8 flex justify-between items-center">
         <Link
-          to={ROUTES.DASHBOARD}
+          to={ROUTES.NAV_DASHBOARD}
           className="inline-flex items-center gap-2 text-gold/50 hover:text-gold transition-colors text-xs font-black uppercase tracking-widest"
         >
           ← Retour au profil

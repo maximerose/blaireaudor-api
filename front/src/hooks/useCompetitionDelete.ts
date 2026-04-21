@@ -19,13 +19,13 @@ export const useCompetitionDelete = () => {
     if (!window.confirm(`Supprimer définitivement "${name}" ?`)) return false;
 
     try {
-      const response = await apiFetch(ROUTES.API_COMPETITION_DELETE(id), {
+      const response = await apiFetch(ROUTES.API_COMPETITION_DETAIL(id), {
         method: 'DELETE',
       });
 
       if (response.ok) {
         await refreshUser();
-        navigate(ROUTES.DASHBOARD);
+        navigate(ROUTES.NAV_DASHBOARD);
         return true;
       }
     } catch (error) {
