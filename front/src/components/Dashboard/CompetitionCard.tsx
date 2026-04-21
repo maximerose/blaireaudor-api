@@ -6,8 +6,10 @@ import {
   getDisplayDateText,
   canRevealScores,
   getCompetitionStatus,
-  CompetitionStatus,
 } from '../../utils/competitionHelper';
+import { StatusBadge } from '../Competition/StatusBadge';
+import { RankedScore } from '../UI/RankedScore';
+import { RankBadge } from '../UI/RankBadge';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -27,23 +29,6 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
     competition.end_date,
   );
 
-  const statusConfig = {
-    [CompetitionStatus.ACTIVE]: {
-      label: 'En cours',
-      css: 'bg-green-500/20 text-green-500 animate-pulse',
-    },
-    [CompetitionStatus.UPCOMING]: {
-      label: 'À venir',
-      css: 'bg-blue-500/20 text-blue-400',
-    },
-    [CompetitionStatus.FINISHED]: {
-      label: 'Terminé',
-      css: 'bg-red-500/20 text-red-500',
-    },
-  };
-
-  const currentStatus = statusConfig[status];
-
   return (
     <div className="bg-black/40 border border-gold/20 rounded-2xl p-4 sm:p-5 hover:border-gold/50 transition-all group shadow-lg flex flex-col h-full">
       <div className="flex justify-between items-start gap-3 mb-3">
@@ -58,11 +43,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
             {dateText}
           </p>
         </div>
-        <span
-          className={`px-2 py-1 rounded text-[8px] sm:text-[9px] font-black uppercase tracking-tighter shrink-0 ${currentStatus.css}`}
-        >
-          {currentStatus.label}
-        </span>
+        <StatusBadge status={status} />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-y-2 mb-4">
@@ -94,24 +75,12 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
             {shouldReveal ? 'Résultats finaux' : 'Statut actuel'}
           </span>
 
-          <div className="flex items-baseline justify-between">
+          <div className="flex items-baseline">
             {shouldReveal ? (
-              <>
-                <div>
-                  <span className="text-2xl sm:text-3xl font-black text-white leading-none mr-2">
-                    {score}
-                  </span>
-                  <span className="text-[10px] font-black uppercase text-white/20 tracking-tighter">
-                    pts
-                  </span>
-                </div>
-                {rank && (
-                  <span className="ml-2 text-xs font-black text-gold bg-gold/10 px-2 py-0.5 rounded border border-gold/20">
-                    {rank}
-                    {rank === 1 ? 'er' : 'ème'}
-                  </span>
-                )}
-              </>
+              <div className="flex items-center justify-between w-full">
+                <RankedScore score={score} rank={rank} />
+                <RankBadge rank={rank} />
+              </div>
             ) : (
               <span className="text-xs sm:text-sm opacity-30 italic font-bold text-white uppercase tracking-tight">
                 Score masqué 🌫️

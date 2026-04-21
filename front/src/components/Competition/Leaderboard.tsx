@@ -1,4 +1,3 @@
-// front/src/components/Competition/Leaderboard.tsx
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useParticipationDelete } from '../../hooks/useParticipationDelete';
@@ -7,6 +6,9 @@ import {
   type EnrichedLeaderboardItem,
 } from '../../hooks/useLeaderboardLogic';
 import { ROUTES } from '../../constants/routes';
+import { Badge } from '../UI/Badge';
+import { RankedScore } from '../UI/RankedScore';
+import { getMedalStyle } from '../../utils/rankStyles';
 
 interface LeaderboardProps {
   data: any[];
@@ -59,11 +61,13 @@ const LeaderboardRow = ({
     >
       <div className="col-span-2 flex justify-center">
         {item.medal ? (
-          <span className="text-xl" title={item.medal.label}>
+          <span className={getMedalStyle(item.rank)} title={item.medal.label}>
             {item.medal.icon}
           </span>
         ) : (
-          <span className="font-black text-gold/40 text-xs">{item.rank}</span>
+          <Badge variant="ghost" className="opacity-40">
+            {item.rank}
+          </Badge>
         )}
       </div>
 
@@ -75,11 +79,7 @@ const LeaderboardRow = ({
             >
               {item.player.display_name}
             </span>
-            {item.isMe && (
-              <span className="text-[7px] bg-gold text-dark px-1 py-0.5 rounded font-black uppercase tracking-tighter">
-                Moi
-              </span>
-            )}
+            {item.isMe && <Badge variant="gold">Moi</Badge>}
           </div>
           {item.isExAequo && (
             <span className="text-[8px] text-white/20 uppercase font-bold text-left">
@@ -99,14 +99,7 @@ const LeaderboardRow = ({
       </div>
 
       <div className="col-span-3 flex items-baseline justify-end gap-1 font-mono font-bold">
-        <span
-          className={`text-sm md:text-base ${item.medal ? 'text-white' : 'text-gold/80'}`}
-        >
-          {item.score}
-        </span>
-        <span className="text-[8px] md:text-[10px] opacity-30 uppercase tracking-tighter text-white">
-          pts
-        </span>
+        <RankedScore score={item.score} rank={item.rank} />
       </div>
     </div>
   );

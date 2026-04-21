@@ -76,7 +76,7 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
                     </span>
                   )}
                   <span
-                    className="text-[10px] md:text-xs text-white/50 italic truncate md:col-span-5 md:text-white/70"
+                    className="text-[10px] md:text-xs text-white/50 italic md:col-span-5 md:text-white/70"
                     title={action.description}
                   >
                     "{action.description}"

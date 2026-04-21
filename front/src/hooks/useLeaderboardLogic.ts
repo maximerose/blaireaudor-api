@@ -14,6 +14,14 @@ export interface EnrichedLeaderboardItem {
 
 export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
   return useMemo(() => {
+    const scoreCounts = data.reduce(
+      (acc, item) => {
+        acc[item.score] = (acc[item.score] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
+
     let currentRank = 0;
     let lastScore = -1;
 
@@ -21,8 +29,6 @@ export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
       if (item.score !== lastScore) {
         currentRank = index + 1;
       }
-
-      const isExAequo = item.score === lastScore;
       lastScore = item.score;
 
       let medal;
@@ -35,7 +41,7 @@ export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
         rank: currentRank,
         medal,
         isMe: currentUser?.player?.username === item.player.username,
-        isExAequo: isExAequo,
+        isExAequo: scoreCounts[item.score] > 1,
       } as EnrichedLeaderboardItem;
     });
   }, [data, currentUser]);
