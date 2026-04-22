@@ -103,11 +103,15 @@ final class RegistrationController extends AbstractController
         $playerIsClaimed = ($player !== null && $player->getAssociatedUser() !== null);
 
         $available = !$userExists && !$playerIsClaimed;
+        $isGuest = ($player !== null && !$playerIsClaimed);
 
         return $this->json([
             'available' => $available,
             'username' => $username,
-            'is_guest_profile' => ($player !== null && !$playerIsClaimed)
+            'is_guest_profile' => $isGuest,
+            'guest_id' => $isGuest ? $player->getId() : null,
+            'guest_name' => $isGuest ? $player->getDisplayName() : null,
+            'player' => $player,
         ]);
     }
 

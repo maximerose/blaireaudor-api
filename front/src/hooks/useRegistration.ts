@@ -9,9 +9,14 @@ export const useRegistration = (redirectUrl: string) => {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
-  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
-    null,
-  );
+  const [usernameStatus, setUsernameStatus] = useState<
+    'available' | 'taken' | 'guest_exists' | null
+  >(null);
+  const [foundGuest, setFoundGuest] = useState<{
+    id: string;
+    name: string;
+    last_competition_name: string;
+  } | null>(null);
   const [checkLoading, setCheckLoading] = useState(false);
   const [showUsernameHint, setShowUsernameHint] = useState(false);
 
@@ -50,15 +55,15 @@ export const useRegistration = (redirectUrl: string) => {
       display_name: '',
       username: '',
     }));
-    setUsernameAvailable(null);
+    setUsernameStatus(null);
     setResults([]);
   };
 
   useEffect(() => {
-    const { username } = formData;
+    const { username, player_id } = formData;
 
     if (!username || username.length < 3) {
-      setUsernameAvailable(null);
+      setUsernameStatus(null);
       setCheckLoading(false);
       return;
     }
@@ -68,10 +73,25 @@ export const useRegistration = (redirectUrl: string) => {
     const timer = setTimeout(async () => {
       try {
         const data = await authService.checkUsername(username);
-        setUsernameAvailable(data.available);
+        if (!data.available) {
+          setUsernameStatus('taken');
+        } else if (data.is_guest_profile) {
+          if (player_id === data.guest_id) {
+            setUsernameStatus('available');
+          } else {
+            setUsernameStatus('guest_exists');
+            setFoundGuest({
+              id: data.guest_id,
+              name: data.guest_name,
+              last_competition_name: data.player.last_competition_name,
+            });
+          }
+        } else {
+          setUsernameStatus('available');
+        }
       } catch (e) {
         console.error('Erreur check username', e);
-        setUsernameAvailable(false);
+        setUsernameStatus('taken');
       } finally {
         setCheckLoading(false);
       }
@@ -80,10 +100,24 @@ export const useRegistration = (redirectUrl: string) => {
     return () => clearTimeout(timer);
   }, [formData.username]);
 
+  const linkFoundGuest = () => {
+    if (!foundGuest) return;
+    setIsUsernameCustomized(true);
+    setFormData((prev) => ({
+      ...prev,
+      player_id: foundGuest.id,
+      display_name: foundGuest.name,
+    }));
+    setUsernameStatus('available');
+    setFoundGuest(null);
+    setShowUsernameHint(false);
+  };
+
   const getSubmitButtonText = () => {
     if (isLoading) return 'Inscription en cours...';
     if (checkLoading) return 'Vérification du pseudo...';
-    if (usernameAvailable === false) return 'Pseudo indisponible';
+    if (usernameStatus === 'taken') return 'Pseudo indisponible';
+    if (usernameStatus === 'guest_exists') return 'Profil existant';
     return "S'inscrire au Blaireau d'Or";
   };
 
@@ -99,14 +133,19 @@ export const useRegistration = (redirectUrl: string) => {
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUsername = slugify(e.target.value);
     setIsUsernameCustomized(true);
-    setUsernameAvailable(null);
+    setUsernameStatus(null);
     setFormData({ ...formData, username: newUsername });
   };
 
   const handleUsernameFocus = () => setShowUsernameHint(true);
   const handleUsernameBlur = () => {
     setShowUsernameHint(false);
-    if (!formData.player_id) cleanUsername();
+    cleanUsername();
+  };
+  const handleDisplayNameBlur = () => {
+    if (!isUsernameCustomized) {
+      cleanUsername();
+    }
   };
 
   const cleanUsername = () => {
@@ -122,7 +161,7 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isLoading || checkLoading || usernameAvailable === false) return;
+    if (isLoading || checkLoading || usernameStatus === 'taken') return;
 
     setIsLoading(true);
     setMessage('');
@@ -150,14 +189,14 @@ export const useRegistration = (redirectUrl: string) => {
     formData,
     message,
     isLoading,
-    usernameAvailable,
+    usernameStatus,
     checkLoading,
     showUsernameHint,
     submitButtonText: getSubmitButtonText(),
     isSubmitDisabled:
       isLoading ||
       checkLoading ||
-      usernameAvailable === false ||
+      usernameStatus === 'taken' ||
       formData.username.length < 3,
     playerSearch: {
       search,
@@ -173,7 +212,10 @@ export const useRegistration = (redirectUrl: string) => {
     handleUsernameChange,
     handleUsernameFocus,
     handleUsernameBlur,
+    handleDisplayNameBlur,
     handlePasswordChange,
     handleSubmit,
+    foundGuest,
+    linkFoundGuest,
   };
 };

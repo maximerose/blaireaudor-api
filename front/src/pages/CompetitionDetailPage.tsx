@@ -88,7 +88,7 @@ const CompetitionDetailPage = () => {
             {getDisplayDateText(competition.start_date, competition.end_date)}
           </Text>
 
-          {timeRemaining && (
+          {competition.has_started && timeRemaining && (
             <div className="mt-1">
               <span className="text-sm font-black uppercase tracking-widest text-white/30 italic">
                 Termine{' '}

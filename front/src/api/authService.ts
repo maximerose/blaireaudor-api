@@ -1,3 +1,4 @@
+import { ROUTES } from '../constants/routes';
 import { apiFetch } from './config';
 
 export const authService = {
@@ -95,7 +96,7 @@ export const authService = {
    * Vérifie si un nom d'utilisateur est déjà pris
    */
   checkUsername: async (username: string) => {
-    const response = await apiFetch(`/check-username/${username}`);
+    const response = await apiFetch(ROUTES.API_CHECK_USERNAME(username));
     return await response.json();
   },
 };

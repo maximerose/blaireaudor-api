@@ -32,6 +32,7 @@ export const ROUTES = {
     `/admin/competition/${id}/add-players`,
   API_PARTICIPATION_DETAIL: (id: string) => `/participations/${id}`,
   API_COMPETITION_DETAIL: (id: string) => `/competitions/${id}`,
+  API_CHECK_USERNAME: (username: string) => `/check-username/${username}`,
 
   // ---------------------------------------------------------
   // 3. GÉNÉRATEURS D'IRI (Pour les relations dans le JSON body)

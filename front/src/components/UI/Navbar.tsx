@@ -18,13 +18,13 @@ export const Navbar = () => {
           as="span"
           className="text-xl sm:text-2xl leading-none group-hover:text-gold-light transition-colors"
         >
-          BLAIREAU D'OR
+          Le BLAIREAU D'OR
         </Text>
         <Text
           variant="caption"
           className="text-[7px] sm:text-[8px] tracking-[0.4em] mt-0.5 opacity-60 uppercase"
         >
-          Compétition & Arènes
+          Espace joueur
         </Text>
       </Link>
 

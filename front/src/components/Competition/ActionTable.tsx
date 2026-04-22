@@ -3,6 +3,7 @@ import { Card } from '../UI/Card';
 import { Badge } from '../UI/Badge';
 import { Text } from '../UI/Typography';
 import { DateNavigation } from './DateNavigation';
+import { EmptyState } from '../UI/EmptyState';
 
 export const ActionTable = ({ actions }: { actions: any[] }) => {
   const {
@@ -127,9 +128,12 @@ export const ActionTable = ({ actions }: { actions: any[] }) => {
         </div>
 
         {sortedActions.length === 0 && (
-          <div className="p-12 text-center text-white/10 text-[10px] italic uppercase tracking-widest">
-            Aucune action à signaler.
-          </div>
+          <EmptyState
+            layout="card"
+            icon="📜"
+            title="Casier vierge"
+            message="Aucune action à signaler."
+          />
         )}
       </Card>
     </div>

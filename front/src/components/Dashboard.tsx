@@ -12,6 +12,7 @@ import {
 import { Button } from '../components/UI/Button';
 import { JoinCompetitionModal } from '../components/Dashboard/JoinCompetitionModal';
 import { Text } from '../components/UI/Typography';
+import { EmptyState } from './UI/EmptyState';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -118,7 +119,7 @@ const Dashboard = () => {
             variant="secondary"
             size="md"
           >
-            Rejoindre une arène
+            Rejoindre une compétition
           </Button>
         </section>
 
@@ -142,11 +143,12 @@ const Dashboard = () => {
                 />
               ))
             ) : (
-              <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[2.5rem]">
-                <p className="text-white/10 italic text-xs uppercase tracking-[0.2em]">
-                  C'est bien calme ici...
-                </p>
-              </div>
+              <EmptyState
+                layout="dashed"
+                icon="🏜️"
+                title="Aucune arène en vue"
+                message="C'est bien calme ici... trop calme. Crée ou rejoins une compétition pour commencer."
+              />
             )}
           </div>
         </section>

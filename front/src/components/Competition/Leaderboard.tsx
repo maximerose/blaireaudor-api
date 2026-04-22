@@ -6,6 +6,7 @@ import { ROUTES } from '../../constants/routes';
 import { Card } from '../UI/Card';
 import { LeaderboardRow } from './LeaderboardRow';
 import { canManageCompetition } from '../../utils/permissions';
+import { EmptyState } from '../UI/EmptyState';
 
 interface LeaderboardProps {
   data: any[];
@@ -48,9 +49,12 @@ export const Leaderboard = ({
       </div>
 
       {enrichedData.length === 0 && (
-        <div className="p-10 text-center text-white/20 text-xs italic">
-          Aucun joueur dans cette arène.
-        </div>
+        <EmptyState
+          layout="card"
+          icon="👤"
+          title="No man's land"
+          message="Aucun joueur inscrit à ce tournoi."
+        />
       )}
     </Card>
   );
