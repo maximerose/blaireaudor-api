@@ -66,8 +66,8 @@ class Competition
     #[Groups(['competition:read'])]
     private ?string $slug = null;
 
-    #[ORM\Column(length: 10, unique: true)]
-    #[Assert\Length(max: 10)]
+    #[ORM\Column(length: 25, unique: true)]
+    #[Assert\Length(max: 25)]
     #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?string $joinCode = null;
 

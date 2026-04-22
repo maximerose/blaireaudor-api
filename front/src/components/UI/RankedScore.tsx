@@ -1,41 +1,53 @@
-interface RankedScoreProps {
+import type React from 'react';
+import { Text } from './Typography';
+import { cn } from '../../utils/cn';
+
+interface RankedScoreProps extends React.HTMLAttributes<HTMLDivElement> {
   score: number | string;
   rank: number;
 }
 
-export const RankedScore = ({ score, rank }: RankedScoreProps) => {
-  const sizes = {
-    sm: 'text-sm md:text-base',
-    md: 'text-xl md:text-2xl',
-    lg: 'text-2xl md:text-3xl',
-  };
+const rankSizes: Record<number, string> = {
+  1: 'text-2xl md:text-3xl',
+  2: 'text-xl md:text-2xl',
+  3: 'text-xl md:text-2xl',
+};
 
-  const finalSize = rank === 1 ? sizes.lg : rank <= 3 ? sizes.md : sizes.sm;
+const rankStyles: Record<number, string> = {
+  1: 'text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.4)] animate-pulse-subtle',
+  2: 'text-silver drop-shadow-[0_0_8px_rgba(168,168,168,0.3)]',
+  3: 'text-bronze drop-shadow-[0_0_8px_rgba(140,89,59,0.3)]',
+};
 
-  const getRankStyle = (r: number) => {
-    if (r === 1)
-      return 'text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.4)] animate-pulse-subtle';
-    if (r === 2)
-      return 'text-silver drop-shadow-[0_0_8px_rgba(168,168,168,0.3)]';
-    if (r === 3) return 'text-bronze drop-shadow-[0_0_8px_rgba(140,89,59,0.3)]';
-    return 'text-white/80';
-  };
+export const RankedScore = ({
+  score,
+  rank,
+  className,
+  ...props
+}: RankedScoreProps) => {
+  const finalSize = rankSizes[rank] || 'text-sm md:text-base';
+  const finalStyle = rankStyles[rank] || 'text-white/80';
 
   return (
-    <div className="flex items-baseline gap-1 font-mono font-black tabular-nums">
-      <span
-        className={`
-          transition-all duration-700
-          ${getRankStyle(rank)}
-          ${finalSize}
-        `}
+    <div
+      className={cn('flex items-baseline gap-1 tabular-nums', className)}
+      {...props}
+    >
+      <Text
+        as="span"
+        variant="mono"
+        className={cn(
+          'font-black transition-all duration-700',
+          finalStyle,
+          finalSize,
+        )}
       >
         {score}
-      </span>
+      </Text>
 
-      <span className="uppercase tracking-[0.2em] text-white/20 text-[7px] md:text-[9px] font-bold">
+      <Text as="span" variant="micro" className="text-white/20">
         pts
-      </span>
+      </Text>
     </div>
   );
 };

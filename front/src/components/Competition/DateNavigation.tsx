@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { formatLongDate } from '../../utils/actionUtils';
 import { Button } from '../UI/Button';
+import { cn } from '../../utils/cn';
 
 interface DateNavigationProps {
   dates: string[];
@@ -42,7 +43,10 @@ export const DateNavigation = ({
           variant={selectedDate === null ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => onSelect(null)}
-          className={`whitespace-nowrap ${selectedDate === null ? '' : 'opacity-60'}`}
+          className={cn(
+            'whitespace-nowrap transition-opacity',
+            selectedDate !== null && 'opacity-40 hover:opacity-80',
+          )}
         >
           Toutes les dates
         </Button>
@@ -53,19 +57,22 @@ export const DateNavigation = ({
             variant={selectedDate === date ? 'primary' : 'secondary'}
             size="sm"
             onClick={() => onSelect(date)}
-            className={`whitespace-nowrap ${selectedDate === date ? '' : 'opacity-60'}`}
+            className={cn(
+              'whitespace-nowrap transition-opacity',
+              selectedDate !== date && 'opacity-40 hover:opacity-80',
+            )}
           >
             {formatLongDate(date)}
           </Button>
         ))}
       </div>
+
       <div
-        className={`
-          absolute right-0 top-0 bottom-4 w-20 pointer-events-none 
-          bg-linear-to-r from-transparent to-dark
-          transition-opacity duration-500 ease-in-out
-          ${showMask ? 'opacity-100' : 'opacity-0'}
-        `}
+        className={cn(
+          'absolute right-0 top-0 bottom-4 w-24 pointer-events-none transition-opacity duration-500 ease-in-out',
+          'bg-linear-to-r from-transparent to-dark',
+          showMask ? 'opacity-100' : 'opacity-0',
+        )}
       />
     </div>
   );

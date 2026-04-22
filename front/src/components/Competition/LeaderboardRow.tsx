@@ -2,6 +2,8 @@ import { Badge } from '../UI/Badge';
 import { RankedScore } from '../UI/RankedScore';
 import { getMedalStyle, getRankMedal } from '../../utils/rankStyles';
 import { Text } from '../UI/Typography';
+import { Button } from '../UI/Button';
+import { cn } from '../../utils/cn';
 
 interface LeaderboardRowProps {
   item: any;
@@ -19,20 +21,21 @@ export const LeaderboardRow = ({
 
   return (
     <div
-      className={`grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/2 transition-colors group ${
-        item.rank <= 3 ? 'bg-white/1' : ''
-      }`}
+      className={cn(
+        'grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-all duration-300 group',
+        item.rank <= 3 ? 'bg-white/2' : 'bg-transparent',
+      )}
     >
       <div className="col-span-2 flex justify-center">
         {medal ? (
           <span
-            className={`${getMedalStyle(item.rank)} text-2xl`}
+            className={cn(getMedalStyle(item.rank), 'text-2xl animate-fade-in')}
             title={`Rang ${item.rank}`}
           >
             {medal}
           </span>
         ) : (
-          <Badge variant="ghost" className="opacity-60">
+          <Badge variant="ghost" className="opacity-40">
             {item.rank}
           </Badge>
         )}
@@ -44,32 +47,41 @@ export const LeaderboardRow = ({
             <Text
               variant="h3"
               as="span"
-              className={`truncate ${item.isMe ? 'text-gold' : 'text-white'}`}
+              className={cn(
+                'truncate normal-case italic',
+                item.isMe ? 'text-gold' : 'text-white/90',
+              )}
             >
               {item.player.display_name || item.player.displayName}
             </Text>
-            {item.isMe && <Badge variant="gold">Moi</Badge>}
+            {item.isMe && (
+              <Badge variant="gold" isPulse>
+                Moi
+              </Badge>
+            )}
           </div>
 
           {item.isExAequo && (
-            <Text variant="caption" className="text-[8px] text-white/20">
+            <Text variant="micro" className="text-white/20 italic">
               Ex-æquo
             </Text>
           )}
         </div>
 
         {canDelete && (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onDelete}
-            className="ml-2 p-3 -mr-2 text-danger-bright/20 hover:text-danger-bright  rounded-full transition-all active:scale-90"
+            className="text-danger-bright/20 hover:text-danger-bright hover:bg-danger/10 px-2"
             title="Supprimer la participation"
           >
-            <span className="text-lg leading-none">✕</span>
-          </button>
+            ✕
+          </Button>
         )}
       </div>
 
-      <div className="col-span-3 flex items-baseline justify-end gap-1">
+      <div className="col-span-3 flex items-center justify-end">
         <RankedScore score={item.score} rank={item.rank} />
       </div>
     </div>

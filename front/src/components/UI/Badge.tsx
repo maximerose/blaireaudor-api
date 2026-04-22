@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '../../utils/cn';
 
 export type BadgeVariant =
   | 'gold'
@@ -10,7 +11,7 @@ export type BadgeVariant =
   | 'warning'
   | 'ghost';
 
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   variant?: BadgeVariant;
   className?: string;
@@ -22,6 +23,7 @@ export const Badge = ({
   variant = 'gold',
   className = '',
   isPulse = false,
+  ...props
 }: BadgeProps) => {
   const variants: Record<BadgeVariant, string> = {
     gold: 'bg-gold/10 text-gold border-gold/20',
@@ -36,12 +38,13 @@ export const Badge = ({
 
   return (
     <span
-      className={`
-        px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tighter shrink-0 transition-all
-        ${variants[variant]}
-        ${isPulse ? 'animate-pulse' : ''}
-        ${className}
-      `}
+      className={cn(
+        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tighter shrink-0 transition-all',
+        variants[variant],
+        isPulse && 'animate-pulse',
+        className,
+      )}
+      {...props}
     >
       {children}
     </span>

@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useCompetitionData } from '../hooks/useCompetitionData';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import { Leaderboard } from '../components/Competition/Leaderboard';
@@ -47,7 +47,7 @@ const CompetitionDetailPage = () => {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
       <div className="mb-10 flex justify-between items-center">
-        <Button as={Link} to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
+        <Button to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
           ← Retour
         </Button>
 

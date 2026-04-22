@@ -4,6 +4,7 @@ import { useReportAction } from '../../hooks/useReportAction';
 import { Card } from '../UI/Card';
 import { Text } from '../UI/Typography';
 import { preventDefault } from '../../utils/form';
+import { cn } from '../../utils/cn';
 
 interface ReportActionFormProps {
   competitionId: string;
@@ -38,15 +39,19 @@ export const ReportActionForm = ({
     selectPlayer,
   } = useReportAction(competitionId, players, onSuccess);
 
+  const highContrastInput =
+    'bg-white/[0.08] border-white/20 placeholder:text-white/20 focus:bg-white/[0.12] focus:border-gold';
+
   return (
     <div className={isExiting ? 'animate-shrink-fade-out' : 'animate-slide-up'}>
       <Card
         variant="dark"
-        className={`transition-all duration-700 ease-in-out border-danger-bright/20 ${
+        className={cn(
+          'transition-all duration-700 ease-in-out border-danger-bright/20 shadow-2xl relative overflow-hidden',
           isSuccess
             ? 'bg-success/10 border-success-bright/20 p-8'
-            : 'bg-danger-dark/10 p-5 sm:p-8 shadow-danger/5'
-        } shadow-2xl relative overflow-hidden`}
+            : 'bg-danger-dark/10 p-5 sm:p-8 shadow-danger/5',
+        )}
       >
         {isSuccess ? (
           <div className="text-center animate-fade-in py-4">
@@ -60,10 +65,7 @@ export const ReportActionForm = ({
             >
               C'est envoyé !
             </Text>
-            <Text
-              variant="caption"
-              className="opacity-40 mt-3 block tracking-widest uppercase text-[9px]"
-            >
+            <Text variant="micro" className="mt-3 block text-white">
               L'arbitre va trancher... Préparez les mouchoirs.
             </Text>
           </div>
@@ -72,29 +74,20 @@ export const ReportActionForm = ({
             <header className="text-center space-y-1">
               <div className="flex items-center justify-center gap-3">
                 <span className="text-2xl animate-pulse">🚨</span>
-                <Text
-                  variant="h2"
-                  className="text-danger-bright italic lowercase"
-                >
+                <Text variant="h2" className="text-danger-bright italic">
                   Balance ton blaireau
                 </Text>
-                <span
-                  className="text-2xl opacity-0 shrink-0 pointer-events-none select-none"
-                  aria-hidden="true"
-                >
+                <span className="text-2xl opacity-0" aria-hidden="true">
                   🚨
                 </span>
               </div>
-              <Text
-                variant="caption"
-                className="text-white/20 tracking-[0.2em] uppercase"
-              >
+              <Text variant="caption" className="text-white">
                 Signalement de méfait
               </Text>
             </header>
 
             <div className="space-y-4">
-              <div className="relative space-y-1" ref={searchContainerRef}>
+              <div className="relative" ref={searchContainerRef}>
                 <Input
                   label="Le coupable"
                   placeholder="Chercher un blaireau..."
@@ -105,33 +98,41 @@ export const ReportActionForm = ({
                     setSearch(e.target.value);
                     setShowDropdown(true);
                   }}
+                  className={highContrastInput}
                   align="center"
                   icon={showDropdown ? '🔍' : '👤'}
                 />
 
                 {showDropdown && (
-                  <div className="absolute z-50 w-full mt-1 bg-dark border border-gold/30 rounded-xl max-h-48 overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.8)] no-scrollbar backdrop-blur-xl animate-fade-in">
+                  <Card
+                    variant="dark"
+                    className="absolute z-50 w-full mt-1 border-gold/30 max-h-48 overflow-y-auto shadow-2xl bg-black/95 backdrop-blur-xl animate-fade-in no-scrollbar"
+                  >
                     {filteredPlayers.length > 0 ? (
                       filteredPlayers.map((p) => (
                         <button
                           key={p.id}
                           type="button"
-                          className="w-full p-3 text-xs text-center hover:bg-gold/10 text-gold border-b border-white/5 transition-all font-bold italic group"
-                          onClick={() => {
-                            selectPlayer(p.id, p.display_name);
-                          }}
+                          className="w-full p-3 text-center hover:bg-gold/10 text-gold border-b border-white/5 transition-all font-bold italic group"
+                          onClick={() => selectPlayer(p.id, p.display_name)}
                         >
-                          <span className="group-hover:text-gold transition-colors">
+                          <Text
+                            variant="body"
+                            as="span"
+                            className="group-hover:text-gold transition-colors font-bold"
+                          >
                             {p.display_name}
-                          </span>
+                          </Text>
                         </button>
                       ))
                     ) : (
-                      <div className="p-4 text-[10px] text-white/20 italic text-center uppercase tracking-widest">
-                        Aucun blaireau trouvé
+                      <div className="p-4 text-center">
+                        <Text variant="micro" className="opacity-20 italic">
+                          Aucun blaireau trouvé
+                        </Text>
                       </div>
                     )}
-                  </div>
+                  </Card>
                 )}
               </div>
 
@@ -139,6 +140,7 @@ export const ReportActionForm = ({
                 label="Le méfait (description)"
                 placeholder="Il a encore fait n'importe quoi..."
                 value={formData.description}
+                className={highContrastInput}
                 onChange={(e: any) =>
                   handleChange('description', e.target.value)
                 }
@@ -152,6 +154,7 @@ export const ReportActionForm = ({
                   type="number"
                   icon="⚡"
                   value={formData.points}
+                  className={highContrastInput}
                   onChange={(e: any) => handleChange('points', e.target.value)}
                   required
                   align="center"
@@ -167,7 +170,7 @@ export const ReportActionForm = ({
                   }
                   required
                   align="center"
-                  className="scheme-dark"
+                  className={cn('scheme-dark', highContrastInput)}
                 />
               </div>
             </div>
@@ -180,7 +183,7 @@ export const ReportActionForm = ({
                 isLoading={loading}
                 size="md"
               >
-                Lancer l'alerte
+                Dénoncer l'action
               </Button>
               <Button
                 variant="ghost"
@@ -188,7 +191,6 @@ export const ReportActionForm = ({
                 type="button"
                 onClick={onCancel}
                 size="sm"
-                className="opacity-40 hover:opacity-100"
               >
                 Finalement, je pardonne
               </Button>

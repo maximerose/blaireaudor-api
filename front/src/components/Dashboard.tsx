@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useDashboardSort } from '../hooks/useDashboardSort';
 import { CompetitionCard } from '../components/Dashboard/CompetitionCard';
@@ -16,7 +15,6 @@ import { EmptyState } from './UI/EmptyState';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   const participations = user?.player?.participations || [];
@@ -44,25 +42,20 @@ const Dashboard = () => {
 
       <main className="flex-1 space-y-6 sm:space-y-10 animate-fade-in mt-4">
         <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 px-1">
-            <div className="space-y-1">
-              <Text
-                variant="caption"
-                className="text-gold tracking-[0.3em] opacity-50 uppercase"
-              >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+            <div className="space-y-4">
+              <Text variant="caption" className="text-gold">
                 Tableau de bord
               </Text>
-              <h2 className="text-2xl sm:text-4xl font-black text-white uppercase italic tracking-tighter leading-none">
+
+              <Text variant="h1" className="text-white normal-case">
                 Salut,{' '}
                 <span className="text-gold">{user?.player?.display_name}</span>
-              </h2>
+              </Text>
             </div>
 
-            <div className="pt-4 border-t border-white/3 text-center">
-              <Text
-                variant="caption"
-                className="text-white/20 italic text-[8px] sm:text-[9px] tracking-widest uppercase"
-              >
+            <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
+              <Text variant="caption" className="text-white/20">
                 {participations.length > 0
                   ? `${participations.length} participation${participations.length > 1 ? 's' : ''} au total`
                   : 'Aucune compétition active'}
@@ -87,18 +80,15 @@ const Dashboard = () => {
                   color: 'text-white/20',
                 },
               ].map((s) => (
-                <div
-                  key={s.label}
-                  className="flex flex-col items-center sm:items-end"
-                >
+                <div key={s.label} className="flex flex-col items-center">
                   <span
                     className={`text-lg sm:text-xl font-black leading-none ${s.color}`}
                   >
                     {s.val}
                   </span>
-                  <span className="text-[7px] sm:text-[8px] uppercase font-bold tracking-widest opacity-30">
+                  <Text variant="micro" className="mt-0.5">
                     {s.label}
-                  </span>
+                  </Text>
                 </div>
               ))}
             </div>
@@ -107,7 +97,7 @@ const Dashboard = () => {
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Button
-            onClick={() => navigate(ROUTES.NAV_ADMIN_CREATE_COMPETITION)}
+            to={ROUTES.NAV_ADMIN_CREATE_COMPETITION}
             variant="primary"
             size="md"
             className="shadow-gold/10"
@@ -125,10 +115,7 @@ const Dashboard = () => {
 
         <section className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <Text
-              variant="caption"
-              className="uppercase font-black tracking-widest opacity-20"
-            >
+            <Text variant="caption" className="opacity-20">
               Tes Participations
             </Text>
             <div className="h-px flex-1 bg-white/5 ml-4" />
@@ -158,7 +145,7 @@ const Dashboard = () => {
             onClose={() => setIsJoinModalOpen(false)}
             onJoined={(code) => {
               setIsJoinModalOpen(false);
-              navigate(ROUTES.NAV_COMPETITION_DETAIL(code));
+              window.location.href = ROUTES.NAV_COMPETITION_DETAIL(code);
             }}
           />
         )}

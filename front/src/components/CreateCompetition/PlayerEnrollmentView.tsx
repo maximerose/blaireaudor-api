@@ -1,6 +1,10 @@
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { Button } from '../UI/Button';
 import { Input } from '../UI/Input';
+import { Card } from '../UI/Card';
+import { Text } from '../UI/Typography';
+import { Badge } from '../UI/Badge';
+import { cn } from '../../utils/cn';
 
 export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
   const {
@@ -17,31 +21,30 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-xl font-black text-white uppercase italic">
+      <div className="text-center space-y-1">
+        <Text variant="h2" className="italic">
           Recrutement
-        </h2>
-        <p className="text-gold/40 text-[10px] font-bold uppercase tracking-widest">
+        </Text>
+        <Text variant="caption" className="text-gold opacity-40">
           Arène : {competition.name}
-        </p>
+        </Text>
       </div>
 
-      <div className="relative">
-        <label className="text-gold/80 text-sm ml-1 italic font-bold">
-          Chercher un joueur
-        </label>
-        <div className="flex gap-2 items-center">
+      <div className="relative space-y-2">
+        <div className="flex gap-2 items-end">
           <div className="relative flex-1">
             <Input
+              label="Chercher un joueur"
               icon="🔍"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Ex: Martin..."
-              className="pl-10 text-left"
+              align="left"
+              className="pr-10"
             />
             {isSearching && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <div className="w-3 h-3 border-2 border-gold/20 border-t-gold rounded-full animate-spin"></div>
+              <div className="absolute right-3 bottom-3">
+                <div className="w-3 h-3 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
               </div>
             )}
           </div>
@@ -49,7 +52,8 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
           {searchTerm.trim().length >= 2 && (
             <Button
               onClick={() => addNewPlayer(searchTerm)}
-              className="uppercase text-[10px] h-[38px] px-3"
+              size="sm"
+              className="h-10.5 px-4"
             >
               Nouveau
             </Button>
@@ -57,56 +61,68 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
         </div>
 
         {searchResults.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-black border border-gold/30 rounded-xl shadow-2xl z-50 overflow-hidden">
-            {searchResults.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => addExistingPlayer(p)}
-                className="p-3 hover:bg-gold/10 cursor-pointer text-xs text-white border-b border-white/5 last:border-0 flex justify-between"
-              >
-                <div className="flex flex-col">
-                  <span className="font-bold group-hover:text-gold transition-colors">
+          <Card
+            variant="dark"
+            className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden border-gold/30 bg-black/95 backdrop-blur-xl shadow-2xl"
+          >
+            <div className="max-h-60 overflow-y-auto no-scrollbar divide-y divide-white/5">
+              {searchResults.map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => addExistingPlayer(p)}
+                  className="p-3 hover:bg-gold/10 cursor-pointer flex justify-between items-center group transition-colors"
+                >
+                  <Text
+                    variant="body"
+                    className="font-bold group-hover:text-gold"
+                  >
                     {p.display_name || p.displayName}
-                  </span>
+                  </Text>
+                  <Text variant="mono" className="text-gold/30 text-[9px]">
+                    @{p.username || 'externe'}
+                  </Text>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="text-gold/30 text-[9px] font-bold italic">
-                    @{p.username || 'Joueur externe'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Card>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2 min-h-15 p-4 bg-dark/30 rounded-2xl border border-white/5">
-        {participants.map((p) => (
-          <div
-            key={p.id}
-            className="bg-gold/10 border border-gold/30 text-gold px-3 py-1 rounded-full text-[10px] font-bold animate-fade-in"
-          >
-            {p.display_name || p.displayName}
-          </div>
-        ))}
+      <div
+        className={cn(
+          'flex flex-wrap gap-2 min-h-16 p-4 rounded-2xl border transition-all',
+          participants.length > 0
+            ? 'bg-gold/5 border-gold/20'
+            : 'bg-dark/30 border-white/5',
+        )}
+      >
+        {participants.length > 0 ? (
+          participants.map((p) => (
+            <Badge
+              key={p.id}
+              variant="gold"
+              className="animate-fade-in py-1 px-3"
+            >
+              {p.display_name || p.displayName}
+            </Badge>
+          ))
+        ) : (
+          <Text variant="micro" className="m-auto opacity-20">
+            Aucun joueur sélectionné
+          </Text>
+        )}
       </div>
 
-      <Button
-        onClick={saveEnrollment}
-        disabled={loading}
-        fullWidth
-        className="text-sm py-3"
-      >
-        {loading ? 'Ajout des joueurs...' : 'Ajouter les joueurs'}
-      </Button>
-      <a
-        href={`http://localhost:8080/api/competitions/${competition.id}`}
-        target="_blank"
-        rel="noreferrer"
-        className="text-center text-gold/30 text-[9px] uppercase hover:text-gold transition-colors"
-      >
-        Ouvrir la donnée brute (JSON)
-      </a>
+      <div className="flex flex-col gap-4">
+        <Button
+          onClick={saveEnrollment}
+          isLoading={loading}
+          fullWidth
+          size="lg"
+        >
+          {loading ? 'Ajout des joueurs...' : 'Ajouter les joueurs'}
+        </Button>
+      </div>
     </div>
   );
 };

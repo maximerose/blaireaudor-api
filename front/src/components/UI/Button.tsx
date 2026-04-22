@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { cn } from '../../utils/cn';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -9,7 +11,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   fullWidth?: boolean;
   icon?: React.ReactNode;
-  as?: any;
   to?: string;
 }
 
@@ -22,7 +23,7 @@ export const Button = ({
   icon,
   className = '',
   disabled,
-  as: Component = 'button',
+  to,
   ...props
 }: ButtonProps) => {
   const baseStyles =
@@ -45,25 +46,46 @@ export const Button = ({
     lg: 'px-8 py-4 text-xs',
   };
 
-  const widthStyle = fullWidth ? 'w-full' : '';
+  const combinedClasses = cn(
+    baseStyles,
+    variants[variant],
+    sizes[size],
+    fullWidth && 'w-full',
+    className,
+  );
+
+  const content = isLoading ? (
+    <div className="flex items-center gap-2">
+      <div className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" />
+      <span>Chargement...</span>
+    </div>
+  ) : (
+    <div className="flex items-center gap-2">
+      {icon && <span className="text-base">{icon}</span>}
+      {children}
+    </div>
+  );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className={combinedClasses}
+        onClick={disabled || isLoading ? (e) => e.preventDefault() : undefined}
+      >
+        {content}
+      </Link>
+    );
+  }
 
   return (
-    <Component
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthStyle} ${className}`}
+    <button
+      type={props.type || 'button'}
+      className={combinedClasses}
       disabled={isLoading || disabled}
       {...props}
     >
-      {isLoading ? (
-        <div className="flex items-center gap-2">
-          <div className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" />
-          <span>Chargement...</span>
-        </div>
-      ) : (
-        <div className="flex items-center gap-2">
-          {icon && <span className="text-base">{icon}</span>}
-          {children}
-        </div>
-      )}
-    </Component>
+      {content}
+    </button>
   );
 };

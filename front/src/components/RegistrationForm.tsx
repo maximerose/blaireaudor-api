@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { useRegistration } from '../hooks/useRegistration';
 import { HistoricalPlayerSearch } from './Registration/HistoricalPlayerSearch';
@@ -6,6 +5,8 @@ import { AuthCard } from './UI/AuthCard';
 import { Button } from './UI/Button';
 import { Input } from './UI/Input';
 import { Badge } from './UI/Badge';
+import { Text } from './UI/Typography';
+import { cn } from '../utils/cn';
 
 const RegistrationForm = () => {
   const {
@@ -35,78 +36,104 @@ const RegistrationForm = () => {
         searchProps={playerSearch}
         selectedName={formData.display_name}
       />
-      <Input
-        label="Nom d'affichage"
-        type="text"
-        autoComplete="name"
-        value={formData.display_name || ''}
-        onChange={handleDisplayNameChange}
-        onBlur={handleDisplayNameBlur}
-        disabled={isLoading}
-        required
-      />
 
-      <Input
-        label="Nom d'utilisateur"
-        icon="@"
-        type="text"
-        autoComplete="username"
-        value={formData.username || ''}
-        onChange={handleUsernameChange}
-        onFocus={handleUsernameFocus}
-        onBlur={handleUsernameBlur}
-        placeholder="votre-pseudo"
-        disabled={isLoading}
-        required
-      />
+      <div className="space-y-4">
+        <Input
+          label="Nom d'affichage"
+          type="text"
+          autoComplete="name"
+          value={formData.display_name || ''}
+          onChange={handleDisplayNameChange}
+          onBlur={handleDisplayNameBlur}
+          disabled={isLoading}
+          required
+        />
 
-      {showUsernameHint && (
-        <p className="text-[10px] text-gold/60 px-1 italic">
-          💡 Minuscules, chiffres et tirets uniquement.
-        </p>
-      )}
+        <div className="space-y-1">
+          <Input
+            label="Nom d'utilisateur"
+            icon="@"
+            type="text"
+            autoComplete="username"
+            value={formData.username || ''}
+            onChange={handleUsernameChange}
+            onFocus={handleUsernameFocus}
+            onBlur={handleUsernameBlur}
+            placeholder="votre-pseudo"
+            disabled={isLoading}
+            required
+          />
+
+          {showUsernameHint && (
+            <Text variant="micro" className="px-1 italic text-gold/60">
+              💡 Minuscules, chiffres et tirets uniquement.
+            </Text>
+          )}
+        </div>
+      </div>
 
       {formData.username.length >= 3 && usernameStatus !== 'guest_exists' && (
-        <div className="text-[11px] text-center font-medium">
-          {checkLoading && (
-            <span className="text-gold animate-pulse">
+        <div className="py-1">
+          {checkLoading ? (
+            <Text
+              variant="micro"
+              className="text-gold animate-pulse text-center"
+            >
               Vérification en cours...
-            </span>
-          )}
-          {!checkLoading && usernameStatus === 'available' && (
-            <span className="text-green-500">✅ Pseudo disponible !</span>
-          )}
-          {!checkLoading && usernameStatus === 'taken' && (
-            <span className="text-red-500">❌ Ce pseudo est déjà pris.</span>
+            </Text>
+          ) : (
+            <Text
+              variant="micro"
+              className={cn(
+                'text-center',
+                usernameStatus === 'available'
+                  ? 'text-success-bright'
+                  : 'text-danger-bright',
+              )}
+            >
+              {usernameStatus === 'available'
+                ? '✅ Pseudo disponible !'
+                : '❌ Ce pseudo est déjà pris.'}
+            </Text>
           )}
         </div>
       )}
 
       {!checkLoading && usernameStatus === 'guest_exists' && foundGuest && (
         <div className="flex flex-col items-center gap-2 mt-3 p-4 bg-info/10 border border-info-bright/20 rounded-2xl animate-slide-up">
-          <span className="text-info-bright text-[10px] uppercase font-black tracking-widest text-center">
+          <Text
+            variant="micro"
+            className="text-info-bright text-center opacity-100"
+          >
             👀 Un blaireau existe déjà
-          </span>
-          <span className="text-white/70 text-xs text-center leading-tight">
+          </Text>
+
+          <Text
+            variant="body"
+            className="text-white/70 text-[11px] text-center leading-tight"
+          >
             Le pseudo{' '}
-            <span className="font-mono text-white">@{formData.username}</span>{' '}
+            <Text variant="mono" as="span" className="text-white text-[11px]">
+              @{formData.username}
+            </Text>{' '}
             appartient à{' '}
             <span className="text-white font-bold">{foundGuest.name}</span>.
-          </span>
+          </Text>
+
           {foundGuest.last_competition_name ? (
             <div className="flex items-center gap-1 mt-1 overflow-hidden">
-              <span className="text-[9px] text-white/20 italic font-light shrink-0">
+              <Text variant="micro" className="italic shrink-0 opacity-20">
                 Dernier tournoi :
-              </span>
-              <span className="text-[9px] text-info-bright/60 italic font-medium truncate">
+              </Text>
+              <Text
+                variant="micro"
+                className="text-info-bright/60 italic truncate opacity-100"
+              >
                 {foundGuest.last_competition_name}
-              </span>
+              </Text>
             </div>
           ) : (
-            <Badge
-              variant="info"
-              className="text-[7px] py-0 px-1.5 mt-1 w-fit opacity-60"
-            >
+            <Badge variant="info" className="mt-1 opacity-60">
               Nouveau joueur 🐣
             </Badge>
           )}
@@ -138,22 +165,24 @@ const RegistrationForm = () => {
         isLoading={isLoading}
         disabled={isSubmitDisabled}
         fullWidth
+        className="mt-2"
       >
         {submitButtonText}
       </Button>
 
       {message && (
-        <p className="mt-2 text-center text-sm text-white font-medium animate-fade-in">
-          {message}
-        </p>
-      )}
-      <div className="flex justify-center mt-4">
-        <Link
-          to={ROUTES.NAV_LOGIN}
-          className="text-[9px] font-black uppercase text-gold/40 hover:text-gold transition-colors tracking-[0.2em]"
+        <Text
+          variant="body"
+          className="mt-2 text-center text-white font-medium animate-fade-in"
         >
+          {message}
+        </Text>
+      )}
+
+      <div className="flex justify-center mt-4 pt-4 border-t border-white/5">
+        <Button to={ROUTES.NAV_LOGIN} variant="ghost" size="sm">
           Déjà inscrit ?
-        </Link>
+        </Button>
       </div>
     </AuthCard>
   );

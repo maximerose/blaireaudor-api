@@ -8,7 +8,7 @@ export const Navbar = () => {
   const { user } = useAuth();
 
   return (
-    <nav className="w-full flex items-center justify-between py-6 mb-8 border-b border-gold/10 animate-fade-in">
+    <nav className="w-full flex items-center justify-between py-6 border-b border-gold/10 animate-fade-in">
       <Link
         to={ROUTES.NAV_DASHBOARD}
         className="flex flex-col group transition-transform active:scale-95"
@@ -20,10 +20,7 @@ export const Navbar = () => {
         >
           Le BLAIREAU D'OR
         </Text>
-        <Text
-          variant="caption"
-          className="text-[7px] sm:text-[8px] tracking-[0.4em] mt-0.5 opacity-60 uppercase"
-        >
+        <Text variant="micro" className="mt-1">
           Espace joueur
         </Text>
       </Link>
@@ -33,7 +30,7 @@ export const Navbar = () => {
           <Text
             variant="h3"
             as="span"
-            className="text-xs sm:text-sm font-black italic tracking-tighter text-gold group-hover:text-gold-light transition-colors"
+            className="text-xs sm:text-sm italic tracking-tighter group-hover:text-gold-light transition-colors"
           >
             {user?.player?.display_name || user?.username}
           </Text>
@@ -41,7 +38,6 @@ export const Navbar = () => {
         </div>
 
         <Button
-          as={Link}
           to={ROUTES.NAV_LOGOUT}
           variant="danger"
           size="sm"

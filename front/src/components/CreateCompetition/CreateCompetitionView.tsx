@@ -1,5 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import { useCreateCompetitionForm } from '../../hooks/useCreateCompetitionForm';
 import { ROUTES } from '../../constants/routes';
 import { Input } from '../UI/Input';
@@ -8,6 +6,7 @@ import { Text } from '../UI/Typography';
 import { Card } from '../UI/Card';
 import { Badge } from '../UI/Badge';
 import { PlayerSearchResultItem } from '../UI/PlayerSearchResultItem';
+import { cn } from '../../utils/cn';
 
 interface Props {
   onSuccess: (_competition: any) => void;
@@ -27,19 +26,27 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
 
   return (
     <div className="w-full max-w-md mx-auto animate-fade-in space-y-8">
-      <div className="flex justify-between items-center">
-        <Button as={Link} to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
+      <div className="flex justify-between items-center px-1">
+        <Button to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
           ← Annuler
         </Button>
         <div className="flex items-center gap-2">
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${step === 1 ? 'bg-gold text-dark' : 'bg-success text-white'}`}
+            className={cn(
+              'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-colors',
+              step === 1 ? 'bg-gold text-dark' : 'bg-success text-white',
+            )}
           >
             {step === 1 ? '1' : '✓'}
           </div>
           <div className="w-4 h-px bg-white/10" />
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border ${step === 2 ? 'bg-gold text-dark border-gold' : 'border-white/10 text-white/20'}`}
+            className={cn(
+              'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border transition-colors',
+              step === 2
+                ? 'bg-gold text-dark border-gold'
+                : 'border-white/10 text-white/20',
+            )}
           >
             2
           </div>
@@ -48,11 +55,11 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
 
       {step === 1 ? (
         <div className="space-y-6 animate-slide-up">
-          <div className="text-center">
-            <Text variant="h2" className="italic lowercase">
+          <div className="text-center space-y-1">
+            <Text variant="h2" className="italic">
               L'Arène
             </Text>
-            <Text variant="caption" className="opacity-30 tracking-[0.2em]">
+            <Text variant="caption" className="opacity-30">
               Configuration initiale
             </Text>
           </div>
@@ -71,6 +78,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
               value={formData.joinCode}
               onChange={handleJoinCodeChange}
               align="center"
+              placeholder="EX: BLAIR-2026"
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -80,66 +88,67 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
                 value={formData.startDate}
                 onChange={(e: any) => updateField('startDate', e.target.value)}
                 required
-                align="center"
               />
               <Input
                 label="Fin"
                 type="date"
                 value={formData.endDate}
                 onChange={(e: any) => updateField('endDate', e.target.value)}
-                align="center"
               />
             </div>
 
-            <Card
-              variant="dark"
-              onClick={() => updateField('fogOfWar', !formData.fogOfWar)}
-              className="flex items-center justify-between py-2 px-4"
-            >
-              <div className="flex flex-col text-left">
-                <Text variant="caption" className="text-gold">
-                  Brouillard de guerre
-                </Text>
-                <span className="text-[9px] text-white/20 italic leading-none mt-1">
-                  Scores cachés pendant le tournoi
-                </span>
-              </div>
-              <div
-                className={`w-8 h-4 rounded-full relative transition-colors ${formData.fogOfWar ? 'bg-gold' : 'bg-white/10'}`}
-              >
-                <div
-                  className={`absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-all ${formData.fogOfWar ? 'left-4.5' : 'left-0.5'}`}
-                />
-              </div>
-            </Card>
-
-            <Card
-              variant="dark"
-              onClick={() => updateField('participate', !formData.participate)}
-              className="flex items-center justify-between py-2 px-4"
-            >
-              <div className="flex flex-col text-left">
-                <Text variant="caption" className="text-gold">
-                  Auto-inscription
-                </Text>
-                <span className="text-[9px] text-white/20 italic leading-none mt-1">
-                  Participer au tournoi
-                </span>
-              </div>
-              <div
-                className={`w-8 h-4 rounded-full relative transition-colors ${formData.participate ? 'bg-gold' : 'bg-white/10'}`}
-              >
-                <div
-                  className={`absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-all ${formData.participate ? 'left-4.5' : 'left-0.5'}`}
-                />
-              </div>
-            </Card>
+            <div className="space-y-3">
+              {[
+                {
+                  id: 'fogOfWar',
+                  label: 'Brouillard de guerre',
+                  sub: 'Scores cachés pendant le tournoi',
+                  active: formData.fogOfWar,
+                },
+                {
+                  id: 'participate',
+                  label: 'Auto-inscription',
+                  sub: 'Participer au tournoi en tant que joueur',
+                  active: formData.participate,
+                },
+              ].map((toggle) => (
+                <Card
+                  key={toggle.id}
+                  variant="dark"
+                  onClick={() => updateField(toggle.id as any, !toggle.active)}
+                  className="flex items-center justify-between py-3 px-4 group cursor-pointer hover:border-gold/30"
+                >
+                  <div className="flex flex-col text-left">
+                    <Text variant="caption" className="text-gold opacity-100">
+                      {toggle.label}
+                    </Text>
+                    <Text variant="micro" className="italic mt-1 opacity-20">
+                      {toggle.sub}
+                    </Text>
+                  </div>
+                  <div
+                    className={cn(
+                      'w-8 h-4 rounded-full relative transition-colors',
+                      toggle.active ? 'bg-gold' : 'bg-white/10',
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-all',
+                        toggle.active ? 'left-4.5' : 'left-0.5',
+                      )}
+                    />
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
 
           <Button
             fullWidth
             onClick={() => setStep(2)}
             disabled={!formData.name || !formData.startDate}
+            size="lg"
           >
             Continuer →
           </Button>
@@ -147,7 +156,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
       ) : (
         <div className="space-y-6 animate-slide-up">
           <div className="text-center">
-            <Text variant="h2" className="italic lowercase">
+            <Text variant="h2" className="italic">
               Recrutement
             </Text>
           </div>
@@ -166,66 +175,78 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
             />
 
             {players.searchTerm.length >= 1 && (
-              <div className="absolute top-full left-0 right-0 mt-1 z-50">
-                <Card
-                  variant="dark"
-                  className="overflow-hidden border-gold/20 shadow-2xl bg-black/95 max-h-64 overflow-y-auto no-scrollbar"
+              <Card
+                variant="dark"
+                className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden border-gold/30 bg-black/95 backdrop-blur-xl shadow-2xl max-h-64 overflow-y-auto no-scrollbar"
+              >
+                <div
+                  onClick={() => players.addNew(players.searchTerm)}
+                  className="p-4 border-b border-white/10 bg-gold/5 hover:bg-gold/10 cursor-pointer flex justify-between items-center group"
                 >
-                  <div
-                    onClick={() => players.addNew(players.searchTerm)}
-                    className="p-4 border-b border-white/10 bg-gold/5 hover:bg-gold/10 cursor-pointer flex justify-between items-center group"
-                  >
-                    <div className="flex flex-col text-left">
-                      <span className="text-[10px] text-gold font-black uppercase">
-                        Créer le profil "{players.searchTerm}"
-                      </span>
-                      <span className="text-[8px] text-white/30 italic">
-                        Nouveau joueur
-                      </span>
-                    </div>
-                    <div className="w-6 h-6 rounded-full border border-gold/20 flex items-center justify-center text-gold">
-                      +
-                    </div>
+                  <div className="flex flex-col text-left">
+                    <Text variant="micro" className="text-gold opacity-100">
+                      Créer le profil "{players.searchTerm}"
+                    </Text>
+                    <Text variant="micro" className="italic opacity-30">
+                      Nouveau joueur
+                    </Text>
                   </div>
+                  <div className="w-6 h-6 rounded-full border border-gold/20 flex items-center justify-center text-gold group-hover:scale-110 transition-transform">
+                    +
+                  </div>
+                </div>
 
-                  {players.results.map((p: any) => (
-                    <PlayerSearchResultItem
-                      key={p.id}
-                      player={p}
-                      onClick={players.add}
-                      actionIcon="+"
-                    />
-                  ))}
-                </Card>
-              </div>
+                {players.results.map((p: any) => (
+                  <PlayerSearchResultItem
+                    key={p.id}
+                    player={p}
+                    onClick={players.add}
+                    actionIcon="+"
+                  />
+                ))}
+              </Card>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 p-4 rounded-2xl border border-dashed border-white/10 min-h-20 items-start">
-            {formData.players.map((p: any) => (
-              <Badge
-                key={p.id}
-                variant="gold"
-                className="pl-3 pr-1.5 py-1 rounded-full flex items-center gap-2"
-              >
-                <span className="text-[9px] font-black uppercase">
-                  {p.display_name}
-                </span>
-                <button
-                  onClick={() => players.remove(p.id)}
-                  className="text-gold/40 hover:text-danger-bright"
+          <div
+            className={cn(
+              'flex flex-wrap gap-2 p-4 rounded-2xl border min-h-24 items-start transition-colors',
+              formData.players.length > 0
+                ? 'bg-gold/5 border-gold/20 border-solid'
+                : 'border-dashed border-white/10',
+            )}
+          >
+            {formData.players.length > 0 ? (
+              formData.players.map((p: any) => (
+                <Badge
+                  key={p.id}
+                  variant="gold"
+                  className="pl-3 pr-2 py-1 flex items-center gap-2 animate-fade-in"
                 >
-                  ✕
-                </button>
-              </Badge>
-            ))}
+                  {p.display_name}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      players.remove(p.id);
+                    }}
+                    className="text-gold/40 hover:text-danger-bright transition-colors text-[11px]"
+                  >
+                    ✕
+                  </button>
+                </Badge>
+              ))
+            ) : (
+              <Text variant="micro" className="m-auto opacity-20">
+                Aucun joueur pour le moment
+              </Text>
+            )}
           </div>
 
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={() => setStep(1)}>
+            <Button variant="ghost" onClick={() => setStep(1)} className="px-6">
               Précédent
             </Button>
-            <Button fullWidth onClick={submit} isLoading={loading}>
+            <Button fullWidth onClick={submit} isLoading={loading} size="lg">
               Créer l'arène
             </Button>
           </div>

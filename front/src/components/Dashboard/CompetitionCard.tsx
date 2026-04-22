@@ -1,6 +1,5 @@
 import { type Participation } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
-import { Link } from 'react-router-dom';
 import {
   getIsFinished,
   getDisplayDateText,
@@ -13,6 +12,7 @@ import { RankBadge } from '../UI/RankBadge';
 import { Card } from '../UI/Card';
 import { Button } from '../UI/Button';
 import { Text } from '../UI/Typography';
+import { cn } from '../../utils/cn';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -32,6 +32,8 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
     competition.end_date,
   );
 
+  const hasNoParticipants = competition.participants_count === 0;
+
   return (
     <Card
       variant="dark"
@@ -42,14 +44,11 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
         <div className="min-w-0 flex-1">
           <Text
             variant="h3"
-            className="text-white group-hover:text-gold transition-colors truncate text-base sm:text-lg leading-tight uppercase italic"
+            className="text-white group-hover:text-gold transition-colors truncate normal-case italic"
           >
             {competition.name}
           </Text>
-          <Text
-            variant="caption"
-            className="text-gold/40 text-[8px] sm:text-[9px] tracking-widest block mt-0.5"
-          >
+          <Text variant="micro" className="text-gold/40 mt-0.5">
             {dateText}
           </Text>
         </div>
@@ -58,44 +57,42 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
 
       <div className="flex items-center justify-between gap-2 mb-6">
         <div className="flex flex-col">
-          <span className="text-[7px] uppercase font-black text-white/10 tracking-[0.2em]">
+          <Text variant="micro" className="opacity-10 text-white">
             Accès
-          </span>
-          <span className="text-[10px] sm:text-xs font-mono text-gold/60 tracking-wider">
+          </Text>
+          <Text variant="mono" className="text-gold/60">
             {competition.join_code}
-          </span>
+          </Text>
         </div>
 
         <div
-          className={`flex flex-col items-end px-3 py-1 rounded-xl border ${
-            competition.participants_count === 0
+          className={cn(
+            'flex flex-col items-end px-3 py-1 rounded-xl border transition-colors',
+            hasNoParticipants
               ? 'border-danger-bright/20 bg-danger/5'
-              : 'border-white/5 bg-white/2'
-          }`}
+              : 'border-white/5 bg-white/2',
+          )}
         >
-          <span className="text-[7px] uppercase font-black text-white/10 tracking-[0.2em]">
+          <Text variant="micro" className="opacity-10 text-white">
             Participants
-          </span>
-          <span
-            className={`text-[9px] font-bold uppercase tracking-tighter ${
-              competition.participants_count === 0
-                ? 'text-danger-bright'
-                : 'text-gold/80'
-            }`}
+          </Text>
+          <Text
+            variant="micro"
+            className={cn(
+              'opacity-100 font-bold',
+              hasNoParticipants ? 'text-danger-bright' : 'text-gold/80',
+            )}
           >
-            {competition.participants_count === 0
+            {hasNoParticipants
               ? 'Arène vide'
               : `${competition.participants_count} ${competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'}`}
-          </span>
+          </Text>
         </div>
       </div>
 
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1 min-h-10 justify-center">
-          <Text
-            variant="caption"
-            className="text-white/20 text-[7px] sm:text-[8px] uppercase font-black tracking-[0.2em]"
-          >
+          <Text variant="micro" className="opacity-20 text-white">
             {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
           </Text>
 
@@ -106,20 +103,22 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
                 <RankBadge rank={rank} />
               </>
             ) : (
-              <span className="text-[10px] sm:text-xs opacity-40 italic font-bold text-white uppercase tracking-widest flex items-center gap-2">
+              <Text
+                variant="micro"
+                className="opacity-40 italic flex items-center gap-2 text-white"
+              >
                 Scores masqués <span className="text-xs">🌫️</span>
-              </span>
+              </Text>
             )}
           </div>
         </div>
 
         <Button
-          as={Link}
           to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
           variant={isFinished ? 'primary' : 'secondary'}
           size="sm"
           fullWidth
-          className="sm:w-auto text-[10px]"
+          className="sm:w-auto"
         >
           {isFinished ? 'Voir le classement' : "Entrer dans l'arène"}
         </Button>

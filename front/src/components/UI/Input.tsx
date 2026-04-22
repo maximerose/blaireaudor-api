@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useId } from 'react';
+import { Text } from './Typography';
+import { cn } from '../../utils/cn';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   align?: 'left' | 'center';
 }
 
@@ -11,35 +13,47 @@ export const Input = ({
   icon,
   align = 'center',
   className = '',
+  id,
   ...props
 }: InputProps) => {
+  const generatedId = useId();
+  const inputId = id || generatedId;
+
   return (
     <div className="w-full space-y-1">
       {label && (
-        <label
-          className={`block text-gold/50 text-[9px] font-black uppercase tracking-[0.2em] ml-1 ${align === 'center' ? 'text-center' : 'text-left'}`}
+        <Text
+          as="label"
+          htmlFor={inputId}
+          variant="caption"
+          className={cn(
+            'block text-gold ml-1 cursor-pointer',
+            align === 'center' ? 'text-center' : 'text-left',
+          )}
         >
           {label}
-        </label>
+        </Text>
       )}
       <div className="relative flex items-center group">
         {icon && (
-          <span className="absolute left-4 text-gold/30 group-focus-within:text-gold transition-colors text-xs">
+          <span className="absolute left-4 text-gold/30 group-focus-within:text-gold transition-colors text-xs pointer-events-none">
             {icon}
           </span>
         )}
+
         <input
+          id={inputId}
           {...props}
-          className={`
-            w-full bg-black/20 border border-gold/10 text-gold rounded-xl 
-            px-2 sm:px-4
-            py-2 sm:py-2.5
-            placeholder:text-gold/10 text-[11px] sm:text-sm transition-all duration-300 truncate text-ellipsis overflow-hidden
-            focus:outline-none focus:border-gold/40 focus:ring-4 focus:ring-gold/5
-            disabled:opacity-60
-            ${align === 'center' ? 'text-center' : 'text-left pl-10'}
-            ${className}
-          `}
+          className={cn(
+            'w-full bg-black/20 border border-gold/10 text-gold rounded-xl',
+            'py-2 sm:py-2.5 pr-2 sm:pr-4',
+            'placeholder:text-gold/10 text-[11px] sm:text-sm transition-all duration-300 truncate text-ellipsis overflow-hidden',
+            'focus:outline-none focus:border-gold/40 focus:ring-4 focus:ring-gold/5',
+            'disabled:opacity-60',
+            align === 'center' ? 'text-center' : 'text-left',
+            icon ? 'pl-10' : 'pl-2 sm:pl-4',
+            className,
+          )}
         />
       </div>
     </div>

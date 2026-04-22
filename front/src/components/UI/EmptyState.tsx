@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card } from './Card';
 import { Text } from './Typography';
+import { cn } from '../../utils/cn';
 
-interface EmptyStateProps {
+interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: string | React.ReactNode;
   title: string;
   message?: string;
@@ -19,6 +20,8 @@ export const EmptyState = ({
   message,
   action,
   layout = 'card',
+  className = '',
+  ...props
 }: EmptyStateProps) => {
   const content = (
     <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 animate-fade-in">
@@ -26,17 +29,14 @@ export const EmptyState = ({
         {icon}
       </div>
 
-      <Text
-        variant="caption"
-        className="text-white/40 uppercase tracking-[0.2em] font-black"
-      >
+      <Text variant="caption" className="text-white/40">
         {title}
       </Text>
 
       {message && (
         <Text
           variant="body"
-          className="text-white/20 text-[10px] sm:text-xs italic mt-2"
+          className="text-white/20 text-[10px] sm:text-xs italic mt-2 leading-tight"
         >
           {message}
         </Text>
@@ -50,7 +50,10 @@ export const EmptyState = ({
 
   if (layout === 'dashed') {
     return (
-      <div className="border-2 border-dashed border-white/5 rounded-[2.5rem] bg-dark-lighter/20">
+      <div
+        className={`border-2 border-dashed border-white/5 rounded-[2.5rem] bg-dark-lighter/20 ${className}`}
+        {...props}
+      >
         {content}
       </div>
     );
@@ -59,7 +62,11 @@ export const EmptyState = ({
   return (
     <Card
       variant="dark"
-      className="border-dashed border-white/5 bg-transparent shadow-none"
+      className={cn(
+        'border-dashed border-white/5 bg-transparent shadow-none',
+        className,
+      )}
+      {...props}
     >
       {content}
     </Card>

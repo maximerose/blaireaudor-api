@@ -1,54 +1,56 @@
+import type React from 'react';
 import { getRankMedal } from '../../utils/rankStyles';
 import { Badge, type BadgeVariant } from './Badge';
+import { cn } from '../../utils/cn';
 
-interface RankBadgeProps {
+interface RankBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   rank: number;
 }
 
-export const RankBadge = ({ rank }: RankBadgeProps) => {
+const rankVariants: Record<number, BadgeVariant> = {
+  1: 'gold',
+  2: 'silver',
+  3: 'bronze',
+};
+
+const badgeShadows: Record<number, string> = {
+  1: 'shadow-[0_0_12px_rgba(212,175,55,0.25)] border-gold/30',
+  2: 'shadow-[0_0_10px_rgba(168,168,168,0.20)] border-silver/30',
+  3: 'shadow-[0_0_10px_rgba(140,89,59,0.20)] border-bronze/30',
+};
+
+const medalShadows: Record<number, string> = {
+  1: 'drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]',
+  2: 'drop-shadow-[0_0_8px_rgba(168,168,168,0.4)]',
+  3: 'drop-shadow-[0_0_8px_rgba(140,89,59,0.4)]',
+};
+
+export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
   const medal = getRankMedal(rank);
   const suffix = rank === 1 ? 'er' : 'ème';
 
-  const getRankVariant = (r: number): BadgeVariant => {
-    if (r === 1) return 'gold';
-    if (r === 2) return 'silver';
-    if (r === 3) return 'bronze';
-    return 'ghost';
-  };
-
-  const getRankShadow = (r: number) => {
-    if (r === 1)
-      return 'shadow-[0_0_12px_rgba(212,175,55,0.25)] border-gold/30';
-    if (r === 2)
-      return 'shadow-[0_0_10px_rgba(168,168,168,0.20)] border-silver/30';
-    if (r === 3)
-      return 'shadow-[0_0_10px_rgba(140,89,59,0.20)] border-bronze/30';
-    return 'opacity-60 border-white/5';
-  };
+  const variant = rankVariants[rank] || 'ghost';
+  const badgeShadow = badgeShadows[rank] || 'opacity-60 border-white/5';
+  const medalShadow = medalShadows[rank] || '';
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn('flex items-center gap-2', className)} {...props}>
       {medal && (
         <span
-          className={`
-            text-2xl animate-bounce-subtle
-            ${rank === 1 ? 'drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]' : ''}
-            ${rank === 2 ? 'drop-shadow-[0_0_8px_rgba(168,168,168,0.4)]' : ''}
-            ${rank === 3 ? 'drop-shadow-[0_0_8px_rgba(140,89,59,0.4)]' : ''}
-          `}
+          className={cn('text-2xl animate-bounce-subtle', medalShadow)}
           role="img"
-          aria-label={`médaille ${getRankVariant(rank)}`}
+          aria-label={`médaille ${variant}`}
         >
           {medal}
         </span>
       )}
 
       <Badge
-        variant={getRankVariant(rank)}
-        className={`
-          px-2.5 py-0.5 text-[10px] font-black italic transition-all duration-500
-          ${getRankShadow(rank)}
-        `}
+        variant={variant}
+        className={cn(
+          'px-2.5 py-0.5 text-[10px] font-black italic transition-all duration-500',
+          badgeShadow,
+        )}
       >
         <span className="flex items-baseline">
           {rank}

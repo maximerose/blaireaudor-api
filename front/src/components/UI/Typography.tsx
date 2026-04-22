@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '../../utils/cn';
 
 export type TextVariant =
   | 'h1' // Très gros titres (Dashboard, Detail)
@@ -14,6 +15,9 @@ interface TextProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   className?: string;
   as?: React.ElementType;
+  htmlFor?: string;
+  href?: string;
+  target?: string;
 }
 
 const styles: Record<TextVariant, string> = {
@@ -47,7 +51,7 @@ export const Text = ({
 }: TextProps) => {
   const Component = as || defaultTags[variant];
   return (
-    <Component className={`${styles[variant]} ${className}`} {...props}>
+    <Component className={cn(styles[variant], className)} {...props}>
       {children}
     </Component>
   );

@@ -27,7 +27,7 @@ export const Leaderboard = ({
   const enrichedData = useLeaderboardLogic(data, user);
 
   return (
-    <Card variant="dark" className="overflow-hidden shadow-2xl">
+    <Card variant="dark" className="overflow-hidden shadow-2xl border-white/5">
       <div className="divide-y divide-white/5">
         {enrichedData.map((item) => (
           <LeaderboardRow
@@ -51,9 +51,9 @@ export const Leaderboard = ({
       {enrichedData.length === 0 && (
         <EmptyState
           layout="card"
-          icon="👤"
+          icon="🏜️"
           title="No man's land"
-          message="Aucun joueur inscrit à ce tournoi."
+          message="L'arène est déserte... Aucun blaireau n'a osé relever le défi pour le moment."
         />
       )}
     </Card>

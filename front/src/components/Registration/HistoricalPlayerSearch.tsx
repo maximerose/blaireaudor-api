@@ -52,19 +52,16 @@ export const HistoricalPlayerSearch = ({
     return (
       <Card
         variant="glass"
-        className="mb-8 p-5 border-success-bright/20 flex justify-between items-center bg-success/3 animate-fade-in"
+        className="mb-8 p-5 border-success-bright/20 flex justify-between items-center bg-success/5 animate-fade-in"
       >
         <div className="flex flex-col gap-1 text-left">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-success-bright animate-pulse" />
-            <Text
-              variant="caption"
-              className="text-success-bright tracking-[0.2em]"
-            >
+            <Text variant="caption" className="text-success-bright">
               Profil lié
             </Text>
           </div>
-          <Text variant="h3" as="p" className="text-white capitalize text-xl">
+          <Text variant="h2" className="text-white normal-case">
             {selectedName}
           </Text>
         </div>
@@ -80,7 +77,7 @@ export const HistoricalPlayerSearch = ({
     <div className="relative mb-8" ref={searchContainerRef}>
       <Input
         label="Déjà participé ?"
-        placeholder="Ton nom..."
+        placeholder="Ton nom d'affichage..."
         onChange={(e) => search(e.target.value)}
         icon={searching ? '⏳' : '🔍'}
         align="center"
@@ -105,9 +102,11 @@ export const HistoricalPlayerSearch = ({
           <button
             type="button"
             onClick={onCloseSearch}
-            className="w-full p-3 bg-white/ hover:bg-white/5 text-[9px] font-black uppercase tracking-widest text-gold hover:text-gold-dark transition-all border-t border-white/5"
+            className="w-full p-3 hover:bg-white/5 transition-all border-t border-white/5 flex justify-center"
           >
-            ✕ Je ne suis pas dans cette liste
+            <Text variant="micro" className="text-gold opacity-100">
+              ✕ Je ne suis pas dans cette liste
+            </Text>
           </button>
         </Card>
       )}
