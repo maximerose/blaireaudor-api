@@ -1,4 +1,3 @@
-// front/src/hooks/useDashboardSort.ts
 import { useMemo } from 'react';
 import { type Participation } from '../context/AuthContext';
 import {

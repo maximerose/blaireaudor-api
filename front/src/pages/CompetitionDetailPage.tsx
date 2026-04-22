@@ -12,10 +12,13 @@ import { useReportDateLimits } from '../hooks/useReportDateLimits';
 import {
   getDisplayDateText,
   getDaysUntilStart,
+  getTimeRemaining,
+  getIsUrgent,
 } from '../utils/competitionHelper';
 import { Button } from '../components/UI/Button';
 import { Badge } from '../components/UI/Badge';
 import { Card } from '../components/UI/Card';
+import { Text } from '../components/UI/Typography';
 
 const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
@@ -24,6 +27,7 @@ const CompetitionDetailPage = () => {
   const { deleteCompetition } = useCompetitionDelete();
   const [isReporting, setIsReporting] = useState(false);
   const { minDate, maxDate } = useReportDateLimits(competition);
+
   const potentialTargets = useMemo(
     () =>
       leaderboard?.map((item) => ({
@@ -37,11 +41,14 @@ const CompetitionDetailPage = () => {
   if (!competition)
     return <div className="text-white p-10">Compétition non trouvée.</div>;
 
+  const timeRemaining = getTimeRemaining(competition.end_date);
+  const isUrgent = getIsUrgent(competition.end_date);
+
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 py-10 animate-fade-in">
-      <div className="mb-8 flex justify-between items-center">
-        <Button as={Link} to={ROUTES.NAV_DASHBOARD} variant="ghost">
-          ← Retour au profil
+    <div className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
+      <div className="mb-10 flex justify-between items-center">
+        <Button as={Link} to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
+          ← Retour
         </Button>
 
         {!actions || actions.length === 0 ? (
@@ -56,89 +63,133 @@ const CompetitionDetailPage = () => {
               )
             }
           >
-            Supprimer la compétition
+            Supprimer l'arène
           </Button>
         ) : (
-          <Badge variant="ghost" className="opacity-70 italic">
+          <Badge variant="ghost" className="opacity-70 italic text-[8px]">
             Historique protégé
           </Badge>
         )}
       </div>
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-2">
-          {competition.name}
-        </h1>
-        <p className="text-gold font-mono text-xs tracking-widest opacity-60">
-          CODE: {competition.join_code}
-        </p>
-        <p className="text-white/20 text-[9px] uppercase tracking-tighter font-medium">
-          {getDisplayDateText(competition.start_date, competition.end_date)}
-        </p>
-      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-4">
-          <h2 className="text-gold font-black uppercase text-xs tracking-[0.3em] mb-6">
-            Classement
-          </h2>
-          <Leaderboard data={leaderboard || []} onRefresh={refresh} />
-          {!competition.is_finished && (
-            <InlineEnrollment competition={competition} onRefresh={refresh} />
+      <header className="mb-10 text-center space-y-2">
+        <Text variant="h1" className="text-3xl sm:text-5xl">
+          {competition.name}
+        </Text>
+        <div className="flex flex-col items-center gap-1">
+          <Text
+            variant="mono"
+            className="text-gold/50 tracking-[0.4em] uppercase text-sm"
+          >
+            CODE : {competition.join_code}
+          </Text>
+
+          <Text variant="caption" className="opacity-60">
+            {getDisplayDateText(competition.start_date, competition.end_date)}
+          </Text>
+
+          {timeRemaining && (
+            <div className="mt-1">
+              <span className="text-sm font-black uppercase tracking-widest text-white/30 italic">
+                Termine{' '}
+              </span>
+              <span
+                className={`text-sm font-black uppercase tracking-widest ${isUrgent ? 'text-danger animate-pulse' : 'text-gold'}`}
+              >
+                {timeRemaining}
+              </span>
+            </div>
           )}
         </div>
-        {!competition.is_finished && (
-          <div className="space-y-6">
-            {competition.has_started ? (
-              <div className="space-y-6">
-                {!isReporting ? (
-                  <Button
-                    variant="danger"
-                    fullWidth
-                    size="lg"
-                    icon="🚨"
-                    onClick={() => setIsReporting(true)}
-                  >
-                    Dénoncer un adversaire
-                  </Button>
-                ) : (
-                  <ReportActionForm
-                    competitionId={competition.id}
-                    players={potentialTargets}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    onCancel={() => setIsReporting(false)}
-                    onSuccess={() => {
-                      setIsReporting(false);
-                      refresh();
-                    }}
-                  />
-                )}
-              </div>
-            ) : (
-              <Card
-                variant="dark"
-                className="p-4 text-center border-dashed border-gold/20 bg-gold/5"
-              >
-                <span className="text-2xl block mb-2 animate-pulse">⏳</span>
-                <h3 className="text-gold/50 font-black uppercase text-[10px] tracking-[0.2em] mb-1">
-                  L'heure de la délation n'a pas sonné
-                </h3>
-                <p className="text-white font-bold text-sm">
-                  Ouverture du tournoi{' '}
-                  <span className="text-gold">
-                    {getDaysUntilStart(competition.start_date)}
-                  </span>
-                </p>
-              </Card>
-            )}
-          </div>
-        )}
+      </header>
 
-        <div className="lg:col-span-8">
-          <h2 className="text-white font-black uppercase text-xs tracking-[0.3em] mb-6">
-            Actions
-          </h2>
-          <ActionTable actions={actions} />
+      {!competition.is_finished && (
+        <section className="mb-10 max-w-2xl mx-auto animate-slide-up">
+          {competition.has_started ? (
+            <>
+              {!isReporting ? (
+                <Button
+                  variant="danger"
+                  fullWidth
+                  size="md"
+                  className="shadow-2xl shadow-danger/10 border border-danger/20 group hover:scale-[1.02] transition-transform"
+                  onClick={() => setIsReporting(true)}
+                >
+                  <span className="text-xl mr-4 group-hover:animate-bounce">
+                    🚨
+                  </span>
+                  <span className="tracking-widest">
+                    Dénoncer un adversaire
+                  </span>
+                </Button>
+              ) : (
+                <ReportActionForm
+                  competitionId={competition.id}
+                  players={potentialTargets}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  onCancel={() => setIsReporting(false)}
+                  onSuccess={() => {
+                    setIsReporting(false);
+                    refresh();
+                  }}
+                />
+              )}
+            </>
+          ) : (
+            <Card
+              variant="dark"
+              className="text-center p-4 border-dashed border-gold/10 bg-gold/2 max-w-md mx-auto"
+            >
+              <Text
+                variant="h2"
+                className="text-gold/30 lowercase italic font-medium"
+              >
+                l'heure de la délation n'a pas sonné...
+              </Text>
+              <Text variant="body" className="mt-2 opacity-60">
+                Ouverture{' '}
+                <span className="text-gold font-bold">
+                  {getDaysUntilStart(competition.start_date)}
+                </span>
+              </Text>
+            </Card>
+          )}
+        </section>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="lg:col-span-4 space-y-6">
+          <div className="flex items-center gap-4 px-1">
+            <Text variant="caption" className="whitespace-nowrap">
+              Classement
+            </Text>
+            <div className="h-px w-full bg-white/5" />
+          </div>
+          <Leaderboard
+            data={leaderboard || []}
+            competition={competition}
+            onRefresh={refresh}
+          />
+
+          {!competition.is_finished && (
+            <div className="mt-6">
+              <InlineEnrollment competition={competition} onRefresh={refresh} />
+            </div>
+          )}
+        </div>
+
+        <div className="lg:col-span-8 space-y-6">
+          <div className="flex items-center gap-4 px-1">
+            <Text variant="caption" className="whitespace-nowrap">
+              Journal des actions
+            </Text>
+            <div className="h-px w-full bg-white/5" />
+            <Badge variant="ghost" className="opacity-60 text-[8px]">
+              {actions?.length || 0} entrées
+            </Badge>
+          </div>
+          <ActionTable actions={actions || []} />
         </div>
       </div>
     </div>

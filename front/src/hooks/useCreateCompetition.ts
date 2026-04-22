@@ -18,7 +18,7 @@ export const useCreateCompetition = () => {
       : null;
 
     try {
-      const response = await apiFetch(ROUTES.API_COMPETITIONS, {
+      const response = await apiFetch(ROUTES.API_COMPETITION_CREATE, {
         method: 'POST',
         body: JSON.stringify({
           name: data.name,

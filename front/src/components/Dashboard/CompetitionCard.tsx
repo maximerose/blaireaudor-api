@@ -12,6 +12,7 @@ import { RankedScore } from '../UI/RankedScore';
 import { RankBadge } from '../UI/RankBadge';
 import { Card } from '../UI/Card';
 import { Button } from '../UI/Button';
+import { Text } from '../UI/Typography';
 
 interface CompetitionCardProps {
   participation: Participation;
@@ -32,60 +33,81 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   );
 
   return (
-    <Card isHoverable className="p-4 sm:p-5 flex flex-col h-full group">
-      <div className="flex justify-between items-start gap-3 mb-3">
+    <Card
+      variant="dark"
+      isHoverable
+      className="p-4 sm:p-5 flex flex-col h-full group border-white/5 hover:border-gold/20 transition-all duration-500"
+    >
+      <div className="flex justify-between items-start gap-3 mb-4">
         <div className="min-w-0 flex-1">
-          <h3
-            className="text-gold font-black text-base sm:text-lg leading-tight uppercase tracking-tight truncate"
-            title={competition.name}
+          <Text
+            variant="h3"
+            className="text-white group-hover:text-gold transition-colors truncate text-base sm:text-lg leading-tight uppercase italic"
           >
             {competition.name}
-          </h3>
-          <p className="text-gold/60 text-[9px] sm:text-[10px] mt-1 font-medium uppercase tracking-tighter">
+          </Text>
+          <Text
+            variant="caption"
+            className="text-gold/40 text-[8px] sm:text-[9px] tracking-widest block mt-0.5"
+          >
             {dateText}
-          </p>
+          </Text>
         </div>
         <StatusBadge status={status} />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-y-2 mb-4">
-        <p className="text-gold/30 text-[9px] sm:text-[11px] font-mono tracking-widest uppercase">
-          CODE: {competition.join_code}
-        </p>
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex flex-col">
+          <span className="text-[7px] uppercase font-black text-white/10 tracking-[0.2em]">
+            Accès
+          </span>
+          <span className="text-[10px] sm:text-xs font-mono text-gold/60 tracking-wider">
+            {competition.join_code}
+          </span>
+        </div>
 
-        <div className="flex items-center gap-1.5 bg-white/3 px-2 py-0.5 rounded-full border border-white/5">
-          <div
-            className={`w-1 h-1 rounded-full ${competition.participants_count === 0 ? 'bg-red-500' : 'bg-gold/40'}`}
-          />
+        <div
+          className={`flex flex-col items-end px-3 py-1 rounded-xl border ${
+            competition.participants_count === 0
+              ? 'border-danger-bright/20 bg-danger/5'
+              : 'border-white/5 bg-white/2'
+          }`}
+        >
+          <span className="text-[7px] uppercase font-black text-white/10 tracking-[0.2em]">
+            Participants
+          </span>
           <span
-            className={`text-[9px] font-bold uppercase tracking-widest ${
+            className={`text-[9px] font-bold uppercase tracking-tighter ${
               competition.participants_count === 0
-                ? 'text-red-500/50'
-                : 'text-white/30'
+                ? 'text-danger-bright'
+                : 'text-gold/80'
             }`}
           >
             {competition.participants_count === 0
-              ? 'Vide'
-              : `${competition.participants_count} ${competition.participants_count > 1 ? 'Joueurs' : 'Joueur'}`}
+              ? 'Arène vide'
+              : `${competition.participants_count} ${competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'}`}
           </span>
         </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <span className="text-gold/30 text-[8px] sm:text-[10px] uppercase font-black italic tracking-widest">
-            {shouldReveal ? 'Résultats finaux' : 'Statut actuel'}
-          </span>
+      <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1 min-h-10 justify-center">
+          <Text
+            variant="caption"
+            className="text-white/20 text-[7px] sm:text-[8px] uppercase font-black tracking-[0.2em]"
+          >
+            {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
+          </Text>
 
-          <div className="flex items-baseline">
+          <div className="flex items-center gap-4">
             {shouldReveal ? (
-              <div className="flex items-center justify-between w-full">
+              <>
                 <RankedScore score={score} rank={rank} />
                 <RankBadge rank={rank} />
-              </div>
+              </>
             ) : (
-              <span className="text-xs sm:text-sm opacity-30 italic font-bold text-white uppercase tracking-tight">
-                Score masqué 🌫️
+              <span className="text-[10px] sm:text-xs opacity-40 italic font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                Scores masqués <span className="text-xs">🌫️</span>
               </span>
             )}
           </div>
@@ -95,10 +117,11 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           as={Link}
           to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
           variant={isFinished ? 'primary' : 'secondary'}
+          size="sm"
           fullWidth
-          className="sm:w-auto"
+          className="sm:w-auto text-[10px]"
         >
-          {isFinished ? 'Classement final' : "Entrer dans l'arène"}
+          {isFinished ? 'Voir le classement' : "Entrer dans l'arène"}
         </Button>
       </div>
     </Card>

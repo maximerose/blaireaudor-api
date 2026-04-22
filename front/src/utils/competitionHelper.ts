@@ -10,7 +10,7 @@ export type CompetitionStatusType =
   (typeof CompetitionStatus)[keyof typeof CompetitionStatus];
 
 /**
- * Formate une date en français (ex: 12 mars 2026)
+ * Formate une date en français
  */
 export const formatFrenchDate = (
   dateStr: string | null | undefined,
@@ -27,18 +27,21 @@ export const formatFrenchDate = (
 };
 
 /**
- * Détermine si une compétition est terminée
+ * Détermine si une compétition est terminée (Après 23:59:59 du jour de fin)
  */
 export const getIsFinished = (
   endDateStr: string | null | undefined,
 ): boolean => {
   if (!endDateStr) return false;
   const endDate = new Date(endDateStr);
-  return !isNaN(endDate.getTime()) && endDate < new Date();
+  if (isNaN(endDate.getTime())) return false;
+
+  endDate.setHours(23, 59, 59, 999);
+  return endDate < new Date();
 };
 
 /**
- * Génère le libellé de la période de compétition
+ * Génère le libellé de la période
  */
 export const getDisplayDateText = (
   startDateStr: string,
@@ -57,9 +60,6 @@ export const getDisplayDateText = (
   return 'Date inconnue';
 };
 
-/**
- * Détermine si les scores doivent être révélés
- */
 export const canRevealScores = (
   competition: Competition,
   isFinished: boolean,
@@ -67,6 +67,9 @@ export const canRevealScores = (
   return isFinished || !competition.fog_of_war;
 };
 
+/**
+ * Détermine le statut (Cohérence avec la fin de journée forcée)
+ */
 export const getCompetitionStatus = (
   startDateStr: string,
   endDateStr: string | null,
@@ -76,7 +79,11 @@ export const getCompetitionStatus = (
   const end = endDateStr ? new Date(endDateStr) : null;
 
   if (now < start) return CompetitionStatus.UPCOMING;
-  if (end && now > end) return CompetitionStatus.FINISHED;
+  if (end) {
+    end.setHours(23, 59, 59, 999);
+    if (now > end) return CompetitionStatus.FINISHED;
+  }
+
   return CompetitionStatus.ACTIVE;
 };
 
@@ -88,13 +95,14 @@ export const getStatusWeight = (status: CompetitionStatusType): number => {
       return 2;
     case CompetitionStatus.FINISHED:
       return 3;
+    default:
+      return 4;
   }
 };
 
 export const getDaysUntilStart = (startDate: string): string => {
   const now = new Date();
   const start = new Date(startDate);
-
   now.setHours(0, 0, 0, 0);
   start.setHours(0, 0, 0, 0);
 
@@ -104,4 +112,34 @@ export const getDaysUntilStart = (startDate: string): string => {
   if (diffDays <= 0) return 'très bientôt';
   if (diffDays === 1) return 'demain';
   return `dans ${diffDays} jours`;
+};
+
+export const getTimeRemaining = (
+  endDateStr: string | null | undefined,
+): string | null => {
+  if (!endDateStr) return null;
+  const now = new Date();
+  const end = new Date(endDateStr);
+  end.setHours(23, 59, 59, 999);
+
+  const diffTime = end.getTime() - now.getTime();
+  if (diffTime <= 0) return null;
+
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays >= 2) return `dans ${diffDays} jours`;
+  if (diffDays === 1) return `demain`;
+  return `aujourd'hui`;
+};
+
+export const getIsUrgent = (endDateStr: string | null | undefined): boolean => {
+  if (!endDateStr) return false;
+  const now = new Date();
+  const end = new Date(endDateStr);
+  end.setHours(23, 59, 59, 999);
+
+  const diffTime = end.getTime() - now.getTime();
+  const diffHours = diffTime / (1000 * 60 * 60);
+
+  return diffHours > 0 && diffHours < 24;
 };

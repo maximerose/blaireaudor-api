@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { useRegistration } from '../hooks/useRegistration';
 import { HistoricalPlayerSearch } from './Registration/HistoricalPlayerSearch';
@@ -100,6 +101,14 @@ const RegistrationForm = () => {
           {message}
         </p>
       )}
+      <div className="flex justify-center mt-4">
+        <Link
+          to={ROUTES.NAV_LOGIN}
+          className="text-[9px] font-black uppercase text-gold/40 hover:text-gold transition-colors tracking-[0.2em]"
+        >
+          Déjà inscrit ?
+        </Link>
+      </div>
     </AuthCard>
   );
 };

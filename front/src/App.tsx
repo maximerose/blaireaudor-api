@@ -14,6 +14,7 @@ import { LoadingScreen } from './components/UI/LoadingScreen';
 import Dashboard from './components/Dashboard';
 import { CreateCompetitionPage } from './pages/CreateCompetitionPage';
 import CompetitionDetailPage from './pages/CompetitionDetailPage';
+import { ScrollToTop } from './components/UI/ScrollToTop';
 
 function App() {
   const { user, loading } = useAuth();
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen w-full bg-dark">
         <Routes>
           <Route

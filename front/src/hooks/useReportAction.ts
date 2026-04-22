@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '../api/config';
 import { ROUTES } from '../constants/routes';
 
@@ -11,9 +11,11 @@ interface ReportData {
 
 export const useReportAction = (
   competitionId: string,
+  players: { id: string; display_name: string }[],
   onSuccess: () => void,
 ) => {
   const [loading, setLoading] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState<ReportData>({
     targetPlayerId: '',
@@ -22,8 +24,37 @@ export const useReportAction = (
     dateAction: new Date().toISOString().split('T')[0],
   });
 
+  const [search, setSearch] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const filteredPlayers = useMemo(() => {
+    return players.filter((p) =>
+      p.display_name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [players, search]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleChange = (field: keyof ReportData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const selectPlayer = (id: string, name: string) => {
+    handleChange('targetPlayerId', id);
+    setSearch(name);
+    setShowDropdown(false);
   };
 
   const submitReport = async () => {
@@ -52,9 +83,13 @@ export const useReportAction = (
           points: 0,
         }));
         setTimeout(() => {
-          onSuccess();
-          setIsSuccess(false);
-        }, 2000);
+          setIsExiting(true);
+          setTimeout(() => {
+            onSuccess();
+            setIsSuccess(false);
+            setIsExiting(false);
+          }, 500);
+        }, 2500);
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout d'une action", error);
@@ -63,5 +98,19 @@ export const useReportAction = (
     }
   };
 
-  return { formData, loading, handleChange, submitReport, isSuccess };
+  return {
+    formData,
+    loading,
+    handleChange,
+    submitReport,
+    isSuccess,
+    isExiting,
+    search,
+    setSearch,
+    showDropdown,
+    setShowDropdown,
+    searchContainerRef,
+    filteredPlayers,
+    selectPlayer,
+  };
 };

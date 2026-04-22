@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { useAuth } from './useAuth';
+import { slugify } from '../utils/stringUtils';
 
 export const useLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -19,7 +20,8 @@ export const useLogin = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+    const processedValue = name === 'username' ? slugify(value) : value;
+    setCredentials((prev) => ({ ...prev, [name]: processedValue }));
   };
 
   const handleSubmit = async (e: React.SubmitEvent) => {
@@ -30,7 +32,7 @@ export const useLogin = () => {
     try {
       const response = await login(credentials);
       if (response.ok) {
-        navigate(ROUTES.DASHBOARD);
+        navigate(ROUTES.NAV_DASHBOARD);
       } else {
         setError('Identifiants invalides.');
       }

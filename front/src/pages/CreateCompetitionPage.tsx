@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CreateCompetitionView } from '../components/CreateCompetition/CreateCompetitionView';
-import { PlayerEnrollmentView } from '../components/CreateCompetition/PlayerEnrollmentView';
+import { ROUTES } from '../constants/routes';
+import { Card } from '../components/UI/Card';
 
 export const CreateCompetitionPage = () => {
-  const [createdCompetition, setCreatedCompetition] = useState<any>(null);
+  const navigate = useNavigate();
+
+  const handleSuccess = (competition: any) => {
+    navigate(ROUTES.NAV_COMPETITION_DETAIL(competition.join_code));
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-black/40 border border-gold/20 p-8 rounded-3xl backdrop-blur-md">
-        {!createdCompetition ? (
-          <CreateCompetitionView
-            onSuccess={(comp) => setCreatedCompetition(comp)}
-          />
-        ) : (
-          <PlayerEnrollmentView competition={createdCompetition} />
-        )}
-      </div>
+    <div className="min-h-[80vh] flex flex-col items-center justify-center p-4 animate-fade-in">
+      <Card
+        variant="glass"
+        className="w-full max-w-md p-8 rounded-[2.5rem] border-white/5 shadow-2xl"
+      >
+        <CreateCompetitionView onSuccess={handleSuccess} />
+      </Card>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import { Text } from './Typography';
+
 interface LoadingScreenProps {
   message?: string;
 }
@@ -6,13 +8,26 @@ export const LoadingScreen = ({
   message = 'Chargement...',
 }: LoadingScreenProps) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark text-gold">
-      <div className="flex flex-col items-center gap-4">
-        {/* Le Spinner */}
-        <div className="animate-spin border-4 border-gold/20 border-t-gold rounded-full h-12 w-12" />
-        {/* Le Message */}
-        <div className="animate-pulse italic uppercase tracking-widest text-sm text-center px-6">
-          {message}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark animate-fade-in">
+      <div className="flex flex-col items-center gap-8">
+        <div className="relative flex items-center justify-center">
+          <div className="w-16 h-16 border-2 border-gold/5 rounded-full" />
+          <div className="absolute w-16 h-16 border-2 border-transparent border-t-gold rounded-full animate-spin" />
+
+          <div className="absolute w-1 h-1 bg-gold/20 rounded-full" />
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <Text
+            variant="caption"
+            className="animate-pulse italic text-gold/60 tracking-[0.4em] text-center px-6"
+          >
+            {message}
+          </Text>
+
+          <div className="w-12 h-px bg-gold/10 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gold/40 animate-[loading-bar_1.5s_infinite_ease-in-out]" />
+          </div>
         </div>
       </div>
     </div>

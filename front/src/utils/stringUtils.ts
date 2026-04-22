@@ -18,3 +18,18 @@ export const slugify = (text: string) => {
 export const finalizeSlug = (text: string) => {
   return text.replace(/^-+|-+$/g, '');
 };
+
+/**
+ * Formate un code d'accès en temps réel : slugify + MAJUSCULES.
+ * On garde le tiret final si l'utilisateur est en train de taper.
+ */
+export const formatJoinCode = (text: string): string => {
+  return slugify(text).toUpperCase();
+};
+
+/**
+ * Nettoie définitivement le code : enlève les tirets qui traînent au début/fin.
+ */
+export const cleanJoinCode = (text: string): string => {
+  return finalizeSlug(text.toLowerCase()).toUpperCase();
+};

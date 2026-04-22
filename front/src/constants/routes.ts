@@ -25,6 +25,7 @@ export const ROUTES = {
   API_COMPETITION_BY_CODE: (code: string) => `/competitions/by-code/${code}`,
   API_COMPETITION_LEADERBOARD: (id: string) =>
     `/competitions/${id}/leaderboard`,
+  API_COMPETITION_CREATE: '/admin/competition',
   API_COMPETITION_ACTIONS: (id: string) => `/competitions/${id}/actions`,
   API_SEARCH_PLAYERS: (query: string) => `/search/players?displayName=${query}`,
   API_ADD_PLAYERS_TO_COMP: (id: string) =>

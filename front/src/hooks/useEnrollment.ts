@@ -24,7 +24,6 @@ export const useEnrollment = (
     }
 
     const controller = new AbortController();
-
     const delayDebounceFn = setTimeout(() => {
       executeSearch(searchTerm, controller.signal);
     }, 500);
@@ -37,23 +36,23 @@ export const useEnrollment = (
 
   const executeSearch = async (query: string, signal: AbortSignal) => {
     setIsSearching(true);
-
     try {
       const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(query), {
         signal,
       });
       const data = await response.json();
       const results = Array.isArray(data) ? data : data['hydra:member'] || [];
-      setSearchResults(results);
+
+      const filteredResults = results.filter(
+        (result: any) => !participants.some((p) => p.id === result.id),
+      );
+
+      setSearchResults(filteredResults);
     } catch (error: any) {
-      if (error.name === 'AbortError') {
-        return;
-      }
+      if (error.name === 'AbortError') return;
       console.error('Erreur recherche', error);
     } finally {
-      if (!signal.aborted) {
-        setIsSearching(false);
-      }
+      if (!signal.aborted) setIsSearching(false);
     }
   };
 
@@ -79,6 +78,10 @@ export const useEnrollment = (
       { id: tempId, display_name: name, isNew: true },
     ]);
     setSearchTerm('');
+  };
+
+  const removePlayer = (playerId: string) => {
+    setParticipants((prev) => prev.filter((p) => p.id !== playerId));
   };
 
   const saveEnrollment = async () => {
@@ -110,10 +113,7 @@ export const useEnrollment = (
         }
       } else {
         const errorData = await response.json();
-        alert(
-          errorData.error ||
-            "Une erreur est survenue lors de l'ajout des joueurs",
-        );
+        alert(errorData.error || 'Une erreur est survenue');
       }
     } catch (error) {
       console.error('Erreur technique', error);
@@ -130,6 +130,7 @@ export const useEnrollment = (
     setSearchTerm,
     addExistingPlayer,
     addNewPlayer,
+    removePlayer,
     saveEnrollment,
     loading,
     isSearching,

@@ -4,16 +4,23 @@ import { useParticipationDelete } from '../../hooks/useParticipationDelete';
 import { useLeaderboardLogic } from '../../hooks/useLeaderboardLogic';
 import { ROUTES } from '../../constants/routes';
 import { Card } from '../UI/Card';
-import { LeaderboardRow } from './LeaderboardRow'; // Nouvel import
+import { LeaderboardRow } from './LeaderboardRow';
+import { canManageCompetition } from '../../utils/permissions';
 
 interface LeaderboardProps {
   data: any[];
+  competition: any;
   onRefresh: () => void;
 }
 
-export const Leaderboard = ({ data, onRefresh }: LeaderboardProps) => {
+export const Leaderboard = ({
+  data,
+  competition,
+  onRefresh,
+}: LeaderboardProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAdmin = canManageCompetition(user, competition);
   const { deleteParticipation } = useParticipationDelete(onRefresh);
 
   const enrichedData = useLeaderboardLogic(data, user);
@@ -25,6 +32,7 @@ export const Leaderboard = ({ data, onRefresh }: LeaderboardProps) => {
           <LeaderboardRow
             key={item.id}
             item={item}
+            isAdmin={isAdmin}
             onDelete={async () => {
               const success = await deleteParticipation(
                 item.id,

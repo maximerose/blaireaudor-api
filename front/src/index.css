@@ -1,15 +1,57 @@
 @import 'tailwindcss';
 
 @theme {
+  /* --- COULEURS --- */
   --color-gold: #d4af37;
+  --color-gold-light: #f3e5ab;
+  --color-gold-dark: #996515;
+
+  --color-silver: #a8a8a8;
+  --color-silver-light: #d1d1d1;
+
+  --color-bronze: #8c593b;
+  --color-bronze-light: #b08d57;
+
   --color-dark: #121212;
+  --color-dark-lighter: #1a1a1a;
+
+  --color-danger: #b91c1c;
+  --color-danger-bright: #f87171;
+  --color-danger-dark: #450a0a;
+
+  --color-success: #064e3b;
+  --color-success-bright: #10b981;
+
+  --color-warning: #7c2d12;
+  --color-warning-bright: #fb923c;
+
+  --color-info: #1e3a8a;
+  --color-info-bright: #60a5fa;
+
+  /* --- ANIMATIONS --- */
+  --animate-fade-in: fade-in 0.4s ease-out;
+  --animate-slide-up: slide-up 0.5s cubic-bezier(0, 0, 0.2, 1);
+  --animate-bounce-subtle: bounce-subtle 2s infinite;
 }
 
 @layer base {
-  body {
+  html {
+    /* 16px par défaut -> passe à 14.4px sur mobile */
+    font-size: 90%;
+    @apply bg-dark text-white font-sans antialiased;
     cursor: default;
   }
 
+  @media (min-width: 640px) {
+    html {
+      font-size: 100%; /* Retour à la normale sur tablettes/desktop */
+    }
+  }
+
+  body {
+    @apply bg-dark text-white font-sans antialiased;
+    cursor: default;
+  }
   a,
   button,
   input,
@@ -17,23 +59,74 @@
   textarea {
     cursor: pointer;
   }
+
+  /* Barre de défilement stylisée */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-dark;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gold/20 rounded-full hover:bg-gold/40 transition-colors;
+  }
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--color-dark);
-  color: white;
-  overflow-x: hidden;
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-#root {
-  display: flex;
-  max-width: none;
-  text-align: left;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-@source "./**/*.{ts,tsx}";
+@keyframes shrink-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    max-height: 500px;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.animate-shrink-fade-out {
+  animation: shrink-fade-out 0.5s forwards ease-in-out;
+}
+
+@keyframes loading-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}

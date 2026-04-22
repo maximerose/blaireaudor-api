@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userData = await authService.me();
           if (userData) setUser(userData);
         } catch (e) {
-          console.log(e);
+          console.error(e);
           authService.logout();
         }
       }

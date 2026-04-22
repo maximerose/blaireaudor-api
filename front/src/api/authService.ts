@@ -75,7 +75,7 @@ export const authService = {
       }
       return await response.json();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       localStorage.removeItem('token');
       return null;
     }
