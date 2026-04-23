@@ -34,12 +34,19 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
   const medalShadow = medalShadows[rank] || '';
 
   return (
-    <div className={cn('flex items-center gap-2', className)} {...props}>
+    <div
+      className={cn('flex items-center gap-2', className)}
+      {...props}
+      role="group"
+      aria-label={`Rang : ${rank}${suffix}`}
+    >
       {medal && (
         <span
-          className={cn('text-2xl animate-bounce-subtle', medalShadow)}
-          role="img"
-          aria-label={`médaille ${variant}`}
+          className={cn(
+            'text-2xl animate-bounce-subtle motion-reduce:animate-none',
+            medalShadow,
+          )}
+          aria-hidden="true"
         >
           {medal}
         </span>
@@ -52,11 +59,14 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
           badgeShadow,
         )}
       >
-        <span className="flex items-baseline">
+        <span className="flex items-baseline" aria-hidden="true">
           {rank}
           <span className="text-[7px] lowercase ml-0.5 opacity-70 font-bold">
             {suffix}
           </span>
+        </span>
+        <span className="sr-only">
+          {rank === 1 ? 'premier' : `${rank}ième`}
         </span>
       </Badge>
     </div>

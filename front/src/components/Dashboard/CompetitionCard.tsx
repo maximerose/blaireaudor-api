@@ -18,6 +18,8 @@ interface CompetitionCardProps {
   participation: Participation;
 }
 
+// ... imports inchangés
+
 export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const { competition, score, rank } = participation;
 
@@ -38,17 +40,21 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
     <Card
       variant="dark"
       isHoverable
+      as="article"
+      aria-labelledby={`title-${competition.join_code}`}
       className="p-4 sm:p-5 flex flex-col h-full group border-white/5 hover:border-gold/20 transition-all duration-500"
     >
       <div className="flex justify-between items-start gap-3 mb-4">
         <div className="min-w-0 flex-1">
           <Text
+            id={`title-${competition.join_code}`}
             variant="h3"
             className="text-white group-hover:text-gold transition-colors truncate normal-case italic"
           >
             {competition.name}
           </Text>
           <Text variant="micro" className="text-gold/40 mt-0.5">
+            <span className="sr-only">Dates : </span>
             {dateText}
           </Text>
         </div>
@@ -57,10 +63,14 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
 
       <div className="flex items-center justify-between gap-2 mb-6">
         <div className="flex flex-col">
-          <Text variant="micro" className="opacity-10 text-white">
+          <Text
+            variant="micro"
+            className="opacity-10 text-white uppercase font-black"
+          >
             Accès
           </Text>
-          <Text variant="mono" className="text-gold/60">
+          <Text variant="mono" className="text-gold/60 uppercase">
+            <span className="sr-only">Code d'accès : </span>
             {competition.join_code}
           </Text>
         </div>
@@ -72,8 +82,12 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
               ? 'border-danger-bright/20 bg-danger/5'
               : 'border-white/5 bg-white/2',
           )}
+          aria-label={`${competition.participants_count} participants`}
         >
-          <Text variant="micro" className="opacity-10 text-white">
+          <Text
+            variant="micro"
+            className="opacity-10 text-white uppercase font-black"
+          >
             Participants
           </Text>
           <Text
@@ -85,29 +99,40 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           >
             {hasNoParticipants
               ? 'Arène vide'
-              : `${competition.participants_count} ${competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'}`}
+              : `${competition.participants_count} ${
+                  competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'
+                }`}
           </Text>
         </div>
       </div>
 
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1 min-h-10 justify-center">
-          <Text variant="micro" className="opacity-20 text-white">
+          <Text
+            variant="micro"
+            className="opacity-20 text-white uppercase font-black"
+          >
             {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
           </Text>
 
           <div className="flex items-center gap-4">
             {shouldReveal ? (
-              <>
+              <div
+                className="flex items-center gap-4"
+                aria-label={`Rang : ${rank}, Score : ${score}`}
+              >
                 <RankedScore score={score} rank={rank} />
                 <RankBadge rank={rank} />
-              </>
+              </div>
             ) : (
               <Text
                 variant="micro"
                 className="opacity-40 italic flex items-center gap-2 text-white"
               >
-                Scores masqués <span className="text-xs">🌫️</span>
+                Scores masqués{' '}
+                <span aria-hidden="true" className="text-xs">
+                  🌫️
+                </span>
               </Text>
             )}
           </div>
@@ -119,6 +144,7 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
           size="sm"
           fullWidth
           className="sm:w-auto"
+          aria-label={`Entrer dans l'arène ${competition.name}`}
         >
           {isFinished ? 'Voir le classement' : "Entrer dans l'arène"}
         </Button>

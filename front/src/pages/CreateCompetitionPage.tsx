@@ -11,13 +11,16 @@ export const CreateCompetitionPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center p-4 animate-fade-in">
+    <main
+      className="min-h-[80vh] flex flex-col items-center justify-center p-4 animate-fade-in motion-reduce:animate-none"
+      aria-label="Création d'une nouvelle arène"
+    >
       <Card
         variant="glass"
         className="w-full max-w-md p-8 rounded-[2.5rem] border-white/5 shadow-2xl"
       >
         <CreateCompetitionView onSuccess={handleSuccess} />
       </Card>
-    </div>
+    </main>
   );
 };

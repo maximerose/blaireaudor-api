@@ -11,13 +11,14 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = ({
+  as: Component = 'div',
   children,
   className = '',
   isHoverable = false,
   variant = 'default',
   onClick,
   ...props
-}: CardProps) => {
+}: CardProps & { as?: React.ElementType }) => {
   const variants: Record<CardVariant, string> = {
     default: 'bg-dark-lighter/40 border-gold/10',
     dark: 'bg-black/40 border-white/5',
@@ -32,13 +33,13 @@ export const Card = ({
     : '';
 
   return (
-    <div
+    <Component
       onClick={onClick}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
       onKeyDown={
         isClickable
-          ? (e) => {
+          ? (e: React.KeyboardEvent) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 onClick(e as any);
@@ -50,6 +51,6 @@ export const Card = ({
       {...props}
     >
       {children}
-    </div>
+    </Component>
   );
 };

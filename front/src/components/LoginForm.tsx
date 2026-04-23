@@ -16,12 +16,16 @@ const LoginForm = () => {
       </Text>
 
       {error && (
-        <div className="bg-danger/10 border border-danger-bright/20 p-3 rounded-xl animate-pulse">
+        <div
+          className="bg-danger/10 border border-danger-bright/20 p-3 rounded-xl animate-pulse motion-reduce:animate-none"
+          role="alert"
+        >
           <Text
             variant="micro"
             className="text-danger-bright text-center opacity-100"
           >
-            ⚠️ {error}
+            <span aria-hidden="true">⚠️ </span>
+            {error}
           </Text>
         </div>
       )}
@@ -29,8 +33,9 @@ const LoginForm = () => {
       <div className="space-y-4">
         <Input
           name="username"
+          label="Nom d'utilisateur"
           icon="@"
-          placeholder="Nom d'utilisateur"
+          placeholder="Ton pseudo..."
           autoComplete="username"
           value={credentials.username}
           onChange={handleChange}
@@ -41,9 +46,10 @@ const LoginForm = () => {
 
         <Input
           name="password"
+          label="Mot de passe"
           type="password"
           icon="🔑"
-          placeholder="Mot de passe"
+          placeholder="••••••••"
           autoComplete="current-password"
           value={credentials.password}
           onChange={handleChange}
@@ -66,6 +72,7 @@ const LoginForm = () => {
           variant="ghost"
           size="sm"
           className="text-gold"
+          aria-label="Créer un nouveau compte"
         >
           S'inscrire ici
         </Button>

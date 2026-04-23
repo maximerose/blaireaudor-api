@@ -41,7 +41,7 @@ export const Badge = ({
       className={cn(
         'inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tighter shrink-0 transition-all',
         variants[variant],
-        isPulse && 'animate-pulse',
+        isPulse && 'animate-pulse motion-reduce:animate-none',
         className,
       )}
       {...props}

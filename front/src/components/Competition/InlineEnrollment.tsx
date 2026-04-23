@@ -47,6 +47,7 @@ export const InlineEnrollment = ({
         fullWidth
         onClick={() => setIsOpen(true)}
         className="border-dashed border-white/5 py-4 mt-4"
+        aria-expanded="false"
       >
         + Ajouter un joueur
       </Button>
@@ -61,6 +62,8 @@ export const InlineEnrollment = ({
     <Card
       variant="dark"
       className="mt-4 p-4 border-gold/20 animate-slide-up relative"
+      role="section"
+      aria-label="Formulaire de recrutement"
     >
       <div className="flex justify-center items-center mb-4">
         <Text variant="caption" className="text-gold">
@@ -72,15 +75,22 @@ export const InlineEnrollment = ({
         <Input
           autoFocus
           align="center"
-          placeholder="Chercher ou créer un blaireau..."
+          label="Chercher un joueur"
+          placeholder="Nom du blaireau..."
           value={searchTerm}
           onChange={(e: any) => setSearchTerm(e.target.value)}
           icon={isSearching ? '⏳' : '🔍'}
           className="bg-black/40"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={searchResults.length > 0}
+          aria-controls="search-results-list"
         />
 
         {searchResults.length > 0 && (
           <Card
+            id="search-results-list"
+            role="listbox"
             variant="dark"
             className="absolute top-full left-0 right-0 mt-1 z-50 overflow-hidden border-gold/30 shadow-2xl backdrop-blur-xl bg-black/95 max-h-56 overflow-y-auto no-scrollbar"
           >
@@ -88,6 +98,7 @@ export const InlineEnrollment = ({
               <PlayerSearchResultItem
                 key={p.id}
                 player={p}
+                role="option"
                 onClick={addExistingPlayer}
                 actionIcon="Ajouter"
               />
@@ -107,6 +118,7 @@ export const InlineEnrollment = ({
               fullWidth
               onClick={() => addNewPlayer(searchTerm)}
               className="border-dashed border-white/10 italic normal-case"
+              aria-label={`Créer le nouveau joueur ${searchTerm}`}
             >
               <Text variant="micro" className="opacity-100">
                 + créer "{searchTerm}"
@@ -116,10 +128,15 @@ export const InlineEnrollment = ({
       </div>
 
       {newPlayers.length > 0 && (
-        <div className="flex flex-wrap gap-2 py-3 border-t border-white/5">
+        <div
+          className="flex flex-wrap gap-2 py-3 border-t border-white/5"
+          role="list"
+          aria-label="Joueurs sélectionnés pour le recrutement"
+        >
           {newPlayers.map((p) => (
             <Badge
               key={p.id}
+              role="listitem"
               variant="gold"
               className="pl-3 pr-1 py-1 animate-fade-in flex items-center gap-2"
             >
@@ -129,10 +146,11 @@ export const InlineEnrollment = ({
               <button
                 type="button"
                 onClick={() => removePlayer(p.id)}
-                className="w-5 h-5 rounded-full flex items-center justify-center text-gold/40 hover:bg-danger/20 hover:text-danger-bright transition-all"
+                className="w-5 h-5 rounded-full flex items-center justify-center text-gold/40 hover:bg-danger/20 hover:text-danger-bright transition-all cursor-pointer"
+                aria-label={`Retirer ${p.display_name}`}
                 title="Retirer"
               >
-                ✕
+                <span aria-hidden="true">✕</span>
               </button>
             </Badge>
           ))}
@@ -145,6 +163,7 @@ export const InlineEnrollment = ({
           onClick={saveEnrollment}
           isLoading={loading}
           disabled={newPlayers.length === 0}
+          aria-live="polite"
         >
           Recruter ({newPlayers.length})
         </Button>
@@ -152,6 +171,7 @@ export const InlineEnrollment = ({
           variant="ghost"
           onClick={() => setIsOpen(false)}
           className="px-4"
+          aria-label="Annuler le recrutement"
         >
           Annuler
         </Button>

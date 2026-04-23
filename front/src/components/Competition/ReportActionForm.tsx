@@ -43,7 +43,11 @@ export const ReportActionForm = ({
     'bg-white/[0.08] border-white/20 placeholder:text-white/20 focus:bg-white/[0.12] focus:border-gold';
 
   return (
-    <div className={isExiting ? 'animate-shrink-fade-out' : 'animate-slide-up'}>
+    <div
+      className={isExiting ? 'animate-shrink-fade-out' : 'animate-slide-up'}
+      role="dialog"
+      aria-labelledby="report-form-title"
+    >
       <Card
         variant="dark"
         className={cn(
@@ -54,14 +58,15 @@ export const ReportActionForm = ({
         )}
       >
         {isSuccess ? (
-          <div className="text-center animate-fade-in py-4">
-            <div className="relative inline-block mb-4">
+          <div className="text-center animate-fade-in py-4" role="status">
+            <div className="relative inline-block mb-4" aria-hidden="true">
               <span className="text-5xl block animate-bounce">📩</span>
               <div className="absolute -inset-2 bg-success-bright/20 blur-xl rounded-full animate-pulse" />
             </div>
             <Text
+              id="report-success-title"
               variant="h2"
-              className="text-success-bright italic lowercase text-2xl"
+              className="text-success-bright italic text-2xl"
             >
               C'est envoyé !
             </Text>
@@ -70,11 +75,21 @@ export const ReportActionForm = ({
             </Text>
           </div>
         ) : (
-          <form onSubmit={preventDefault(submitReport)} className="space-y-6">
+          <form
+            onSubmit={preventDefault(submitReport)}
+            className="space-y-6"
+            aria-label="Signaler un nouveau méfait"
+          >
             <header className="text-center space-y-1">
               <div className="flex items-center justify-center gap-3">
-                <span className="text-2xl animate-pulse">🚨</span>
-                <Text variant="h2" className="text-danger-bright italic">
+                <span className="text-2xl animate-pulse" aria-hidden="true">
+                  🚨
+                </span>
+                <Text
+                  id="report-form-title"
+                  variant="h2"
+                  className="text-danger-bright italic"
+                >
                   Balance ton blaireau
                 </Text>
                 <span className="text-2xl opacity-0" aria-hidden="true">
@@ -93,6 +108,11 @@ export const ReportActionForm = ({
                   placeholder="Chercher un blaireau..."
                   value={search}
                   autoComplete="off"
+                  required
+                  role="combobox"
+                  aria-expanded={showDropdown && filteredPlayers.length > 0}
+                  aria-controls="report-search-results"
+                  aria-haspopup="listbox"
                   onFocus={() => setShowDropdown(true)}
                   onChange={(e: any) => {
                     setSearch(e.target.value);
@@ -105,15 +125,18 @@ export const ReportActionForm = ({
 
                 {showDropdown && (
                   <Card
+                    id="report-search-results"
+                    role="listbox"
                     variant="dark"
-                    className="absolute z-50 w-full mt-1 border-gold/30 max-h-48 overflow-y-auto shadow-2xl bg-black/95 backdrop-blur-xl animate-fade-in no-scrollbar"
+                    className="absolute top-full left-0 right-0 mt-1 z-50 border-gold/30 max-h-48 overflow-y-auto shadow-2xl bg-black/95 backdrop-blur-xl animate-fade-in no-scrollbar"
                   >
                     {filteredPlayers.length > 0 ? (
                       filteredPlayers.map((p) => (
                         <button
                           key={p.id}
                           type="button"
-                          className="w-full p-3 text-center hover:bg-gold/10 text-gold border-b border-white/5 transition-all font-bold italic group"
+                          role="option"
+                          className="w-full p-3 text-center hover:bg-gold/10 text-gold border-b border-white/5 transition-all font-bold italic group cursor-pointer focus:bg-gold/10 focus:outline-none"
                           onClick={() => selectPlayer(p.id, p.display_name)}
                         >
                           <Text
@@ -127,7 +150,7 @@ export const ReportActionForm = ({
                       ))
                     ) : (
                       <div className="p-4 text-center">
-                        <Text variant="micro" className="opacity-20 italic">
+                        <Text variant="micro" className="opacity-40 italic">
                           Aucun blaireau trouvé
                         </Text>
                       </div>
@@ -191,6 +214,7 @@ export const ReportActionForm = ({
                 type="button"
                 onClick={onCancel}
                 size="sm"
+                aria-label="Annuler et fermer le formulaire"
               >
                 Finalement, je pardonne
               </Button>

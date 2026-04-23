@@ -9,21 +9,32 @@ interface AuthCardProps {
 
 export const AuthCard = ({ children, title, onSubmit }: AuthCardProps) => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-dark">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-dark">
       <div className="w-full max-w-md animate-slide-up">
         <form
           onSubmit={onSubmit}
-          className="bg-white/5 backdrop-blur-xl p-4 rounded-4xl border border-gold/20 shadow-2xl w-full relative overflow-hidden"
+          aria-labelledby="auth-title"
+          className="bg-white/5 backdrop-blur-xl p-6 sm:p-8 rounded-[2.5rem] border border-gold/20 shadow-2xl w-full relative overflow-hidden"
         >
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-3xl pointer-events-none" />
+          <div
+            className="absolute -top-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-3xl pointer-events-none"
+            aria-hidden="true"
+          />
 
-          <Text variant="h1" as="h1" className="mb-8 text-center">
-            {title}
-          </Text>
+          <header className="mb-8 relative z-10">
+            <Text
+              variant="h1"
+              as="h1"
+              id="auth-title"
+              className="text-center italic"
+            >
+              {title}
+            </Text>
+          </header>
 
           <div className="space-y-5 relative z-10">{children}</div>
         </form>
       </div>
-    </div>
+    </main>
   );
 };

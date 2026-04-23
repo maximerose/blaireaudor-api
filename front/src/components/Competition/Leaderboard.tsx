@@ -27,13 +27,19 @@ export const Leaderboard = ({
   const enrichedData = useLeaderboardLogic(data, user);
 
   return (
-    <Card variant="dark" className="overflow-hidden shadow-2xl border-white/5">
-      <div className="divide-y divide-white/5">
+    <Card
+      variant="dark"
+      className="overflow-hidden shadow-2xl border-white/5"
+      role="region"
+      aria-label={`Classement de la compétition : ${competition?.name || 'en cours'}`}
+    >
+      <div className="divide-y divide-white/5" role="list">
         {enrichedData.map((item) => (
           <LeaderboardRow
             key={item.id}
             item={item}
             isAdmin={isAdmin}
+            role="listitem"
             onDelete={async () => {
               const success = await deleteParticipation(
                 item.id,
@@ -54,6 +60,7 @@ export const Leaderboard = ({
           icon="🏜️"
           title="No man's land"
           message="L'arène est déserte... Aucun blaireau n'a osé relever le défi pour le moment."
+          role="status"
         />
       )}
     </Card>

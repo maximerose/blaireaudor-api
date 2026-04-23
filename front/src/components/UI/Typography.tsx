@@ -24,11 +24,11 @@ const styles: Record<TextVariant, string> = {
   h1: 'text-2xl sm:text-3xl font-black uppercase tracking-tighter italic text-gold',
   h2: 'text-lg sm:text-xl font-bold uppercase tracking-tight text-white',
   h3: 'text-sm sm:text-base font-bold text-gold/80 leading-tight',
-  body: 'text-sm text-white/80 leading-relaxed',
+  body: 'text-sm text-white/90 leading-relaxed',
   caption:
-    'text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] opacity-60',
+    'text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] opacity-80',
   micro:
-    'text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.3em] opacity-40',
+    'text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.3em] opacity-60',
   mono: 'font-mono uppercase tracking-widest text-sm',
 };
 
@@ -50,8 +50,12 @@ export const Text = ({
   ...props
 }: TextProps) => {
   const Component = as || defaultTags[variant];
+
   return (
-    <Component className={cn(styles[variant], className)} {...props}>
+    <Component
+      className={cn(styles[variant], 'wrap-break-word', className)}
+      {...props}
+    >
       {children}
     </Component>
   );

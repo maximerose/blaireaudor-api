@@ -35,13 +35,16 @@ export const PlayerSearchResultItem = ({
     <button
       type="button"
       onClick={() => onClick(player)}
+      role="option"
+      aria-label={`Sélectionner ${name}`}
       className={cn(
         'w-full text-left p-3 hover:bg-gold/5 rounded-xl transition-all flex justify-between items-center group border border-transparent hover:border-gold/10',
+        'focus:outline-none focus:bg-gold/10 focus:border-gold/20',
         className,
       )}
       {...props}
     >
-      <div className="flex flex-col min-w-0">
+      <div className="flex flex-col min-w-0 pointer-events-none">
         <Text
           as="span"
           className="text-sm text-gold font-bold truncate group-hover:text-gold transition-colors"
@@ -73,12 +76,12 @@ export const PlayerSearchResultItem = ({
           </div>
         ) : (
           <Badge variant="info" className="py-0 px-1.5 mt-1 w-fit opacity-60">
-            Nouveau joueur 🐣
+            Nouveau joueur <span aria-hidden="true">🐣</span>
           </Badge>
         )}
       </div>
 
-      <div className="ml-4 shrink-0">
+      <div className="ml-4 shrink-0" aria-hidden="true">
         <span className="text-[10px] font-black text-gold/20 group-hover:text-gold transition-colors">
           {actionIcon}
         </span>

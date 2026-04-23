@@ -47,6 +47,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
                 ? 'bg-gold text-dark border-gold'
                 : 'border-white/10 text-white/20',
             )}
+            aria-live="polite"
           >
             2
           </div>
@@ -115,11 +116,24 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
                 <Card
                   key={toggle.id}
                   variant="dark"
+                  role="switch"
+                  aria-checked={toggle.active}
+                  aria-label={toggle.label}
                   onClick={() => updateField(toggle.id as any, !toggle.active)}
-                  className="flex items-center justify-between py-3 px-4 group cursor-pointer hover:border-gold/30"
+                  className={cn(
+                    'flex items-center justify-between py-3 px-4 group cursor-pointer transition-all',
+                    'hover:border-gold/30 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none',
+                    toggle.active ? 'border-gold/30' : 'border-white/5',
+                  )}
                 >
                   <div className="flex flex-col text-left">
-                    <Text variant="caption" className="text-gold opacity-100">
+                    <Text
+                      variant="caption"
+                      className={cn(
+                        'transition-colors',
+                        toggle.active ? 'text-gold' : 'text-gold/50',
+                      )}
+                    >
                       {toggle.label}
                     </Text>
                     <Text variant="micro" className="italic mt-1 opacity-20">
@@ -127,6 +141,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
                     </Text>
                   </div>
                   <div
+                    aria-hidden="true"
                     className={cn(
                       'w-8 h-4 rounded-full relative transition-colors',
                       toggle.active ? 'bg-gold' : 'bg-white/10',
@@ -225,10 +240,12 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
                 >
                   {p.display_name}
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       players.remove(p.id);
                     }}
+                    aria-label={`Supprime ${p.display_name} de la liste`}
                     className="text-gold/40 hover:text-danger-bright transition-colors text-[11px]"
                   >
                     ✕

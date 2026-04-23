@@ -28,24 +28,40 @@ export const RankedScore = ({
   const finalSize = rankSizes[rank] || 'text-sm md:text-base';
   const finalStyle = rankStyles[rank] || 'text-white/80';
 
+  const getScoreAriaLabel = () => {
+    const pointsStr = `${score} points`;
+    if (rank === 1) return `Score exceptionnel de ${pointsStr}`;
+    if (rank <= 3) return `Top score de ${pointsStr}`;
+    return pointsStr;
+  };
+
   return (
     <div
       className={cn('flex items-baseline gap-1 tabular-nums', className)}
+      role="group"
+      aria-label={getScoreAriaLabel()}
       {...props}
     >
       <Text
         as="span"
         variant="mono"
+        aria-hidden="true"
         className={cn(
           'font-black transition-all duration-700',
           finalStyle,
           finalSize,
+          rank === 1 && 'motion-reduce:animate-none',
         )}
       >
         {score}
       </Text>
 
-      <Text as="span" variant="micro" className="text-white/20">
+      <Text
+        as="span"
+        variant="micro"
+        className="text-white/20"
+        aria-hidden="true"
+      >
         pts
       </Text>
     </div>

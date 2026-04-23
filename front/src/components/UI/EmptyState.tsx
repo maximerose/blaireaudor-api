@@ -25,11 +25,17 @@ export const EmptyState = ({
 }: EmptyStateProps) => {
   const content = (
     <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 animate-fade-in">
-      <div className="text-3xl sm:text-4xl opacity-30 mb-4 animate-bounce-subtle select-none">
+      <div
+        className="text-3xl sm:text-4xl opacity-30 mb-4 animate-bounce-subtle select-none"
+        aria-hidden="true"
+      >
         {icon}
       </div>
 
-      <Text variant="caption" className="text-white/40">
+      <Text
+        variant="caption"
+        className="text-white/40 font-bold uppercase tracking-widest"
+      >
         {title}
       </Text>
 
@@ -48,11 +54,20 @@ export const EmptyState = ({
     </div>
   );
 
+  const containerProps = {
+    ...props,
+    role: 'status',
+    'aria-label': `Information : ${title}`,
+  };
+
   if (layout === 'dashed') {
     return (
       <div
-        className={`border-2 border-dashed border-white/5 rounded-[2.5rem] bg-dark-lighter/20 ${className}`}
-        {...props}
+        className={cn(
+          'border-2 border-dashed border-white/5 rounded-[2.5rem] bg-dark-lighter/20',
+          className,
+        )}
+        {...containerProps}
       >
         {content}
       </div>
@@ -66,7 +81,7 @@ export const EmptyState = ({
         'border-dashed border-white/5 bg-transparent shadow-none',
         className,
       )}
-      {...props}
+      {...containerProps}
     >
       {content}
     </Card>

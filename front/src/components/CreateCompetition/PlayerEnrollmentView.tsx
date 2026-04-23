@@ -20,7 +20,11 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
   } = useEnrollment(competition.id, competition.players || []);
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      role="section"
+      aria-label="Recrutement des joueurs"
+    >
       <div className="text-center space-y-1">
         <Text variant="h2" className="italic">
           Recrutement
@@ -41,9 +45,13 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
               placeholder="Ex: Martin..."
               align="left"
               className="pr-10"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={searchResults.length > 0}
+              aria-controls="enrollment-search-results"
             />
             {isSearching && (
-              <div className="absolute right-3 bottom-3">
+              <div className="absolute right-3 bottom-3" aria-hidden="true">
                 <div className="w-3 h-3 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
               </div>
             )}
@@ -54,6 +62,7 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
               onClick={() => addNewPlayer(searchTerm)}
               size="sm"
               className="h-10.5 px-4"
+              aria-label={`Créer et ajouter le joueur ${searchTerm}`}
             >
               Nouveau
             </Button>
@@ -62,15 +71,19 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
 
         {searchResults.length > 0 && (
           <Card
+            id="enrollment-search-results"
+            role="listbox"
             variant="dark"
             className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden border-gold/30 bg-black/95 backdrop-blur-xl shadow-2xl"
           >
             <div className="max-h-60 overflow-y-auto no-scrollbar divide-y divide-white/5">
               {searchResults.map((p) => (
-                <div
+                <button
                   key={p.id}
+                  type="button"
+                  role="option"
                   onClick={() => addExistingPlayer(p)}
-                  className="p-3 hover:bg-gold/10 cursor-pointer flex justify-between items-center group transition-colors"
+                  className="w-full p-3 hover:bg-gold/10 cursor-pointer flex justify-between items-center group transition-colors focus:bg-gold/10 focus:outline-none"
                 >
                   <Text
                     variant="body"
@@ -81,7 +94,7 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
                   <Text variant="mono" className="text-gold/30 text-[9px]">
                     @{p.username || 'externe'}
                   </Text>
-                </div>
+                </button>
               ))}
             </div>
           </Card>
@@ -95,11 +108,15 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
             ? 'bg-gold/5 border-gold/20'
             : 'bg-dark/30 border-white/5',
         )}
+        role="list"
+        aria-live="polite"
+        aria-label="Joueurs sélectionnés"
       >
         {participants.length > 0 ? (
           participants.map((p) => (
             <Badge
               key={p.id}
+              role="listitem"
               variant="gold"
               className="animate-fade-in py-1 px-3"
             >
@@ -119,6 +136,7 @@ export const PlayerEnrollmentView = ({ competition }: { competition: any }) => {
           isLoading={loading}
           fullWidth
           size="lg"
+          aria-live="assertive"
         >
           {loading ? 'Ajout des joueurs...' : 'Ajouter les joueurs'}
         </Button>

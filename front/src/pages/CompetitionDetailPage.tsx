@@ -37,18 +37,25 @@ const CompetitionDetailPage = () => {
     [leaderboard],
   );
 
-  if (loading) return <LoadingScreen message="Récupération du classement..." />;
+  if (loading) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
-    return <div className="text-white p-10">Compétition non trouvée.</div>;
+    return (
+      <div className="text-white p-10" role="alert">
+        Compétition non trouvée.
+      </div>
+    );
 
   const timeRemaining = getTimeRemaining(competition.end_date);
   const isUrgent = getIsUrgent(competition.end_date);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
-      <div className="mb-10 flex justify-between items-center">
+    <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
+      <nav
+        className="mb-10 flex justify-between items-center"
+        aria-label="Actions de l'arène"
+      >
         <Button to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
-          ← Retour
+          <span aria-hidden="true">← </span>Retour
         </Button>
 
         {!actions || actions.length === 0 ? (
@@ -70,7 +77,7 @@ const CompetitionDetailPage = () => {
             Historique protégé
           </Badge>
         )}
-      </div>
+      </nav>
 
       <header className="mb-10 text-center space-y-2">
         <Text variant="h1" className="text-3xl sm:text-5xl">
@@ -81,20 +88,22 @@ const CompetitionDetailPage = () => {
             variant="mono"
             className="text-gold/50 tracking-[0.4em] uppercase text-sm"
           >
+            <span className="sr-only">Code d'accès : </span>
             CODE : {competition.join_code}
           </Text>
 
           <Text variant="caption" className="opacity-60">
+            <span className="sr-only">Dates : </span>
             {getDisplayDateText(competition.start_date, competition.end_date)}
           </Text>
 
           {competition.has_started && timeRemaining && (
-            <div className="mt-1">
+            <div className="mt-1" aria-live="polite">
               <span className="text-sm font-black uppercase tracking-widest text-white/30 italic">
                 Termine{' '}
               </span>
               <span
-                className={`text-sm font-black uppercase tracking-widest ${isUrgent ? 'text-danger animate-pulse' : 'text-gold'}`}
+                className={`text-sm font-black uppercase tracking-widest ${isUrgent ? 'text-danger animate-pulse motion-reduce:animate-none' : 'text-gold'}`}
               >
                 {timeRemaining}
               </span>
@@ -104,7 +113,10 @@ const CompetitionDetailPage = () => {
       </header>
 
       {!competition.is_finished && (
-        <section className="mb-10 max-w-2xl mx-auto animate-slide-up">
+        <section
+          className="mb-10 max-w-2xl mx-auto animate-slide-up"
+          aria-label="Zone de signalement"
+        >
           {competition.has_started ? (
             <>
               {!isReporting ? (
@@ -114,8 +126,12 @@ const CompetitionDetailPage = () => {
                   size="md"
                   className="shadow-2xl shadow-danger/10 border border-danger/20 group hover:scale-[1.02] transition-transform"
                   onClick={() => setIsReporting(true)}
+                  aria-expanded="false"
                 >
-                  <span className="text-xl mr-4 group-hover:animate-bounce">
+                  <span
+                    className="text-xl mr-4 group-hover:animate-bounce motion-reduce:animate-none"
+                    aria-hidden="true"
+                  >
                     🚨
                   </span>
                   <span className="tracking-widest">
@@ -123,29 +139,33 @@ const CompetitionDetailPage = () => {
                   </span>
                 </Button>
               ) : (
-                <ReportActionForm
-                  competitionId={competition.id}
-                  players={potentialTargets}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  onCancel={() => setIsReporting(false)}
-                  onSuccess={() => {
-                    setIsReporting(false);
-                    refresh();
-                  }}
-                />
+                <div role="region" aria-live="polite">
+                  <ReportActionForm
+                    competitionId={competition.id}
+                    players={potentialTargets}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    onCancel={() => setIsReporting(false)}
+                    onSuccess={() => {
+                      setIsReporting(false);
+                      refresh();
+                    }}
+                  />
+                </div>
               )}
             </>
           ) : (
             <Card
               variant="dark"
               className="text-center p-4 border-dashed border-gold/10 bg-gold/2 max-w-md mx-auto"
+              role="status"
             >
               <Text
+                as="h2"
                 variant="h2"
-                className="text-gold/30 lowercase italic font-medium"
+                className="text-gold/30 italic font-medium"
               >
-                l'heure de la délation n'a pas sonné...
+                L'heure de la délation n'a pas sonné...
               </Text>
               <Text variant="body" className="mt-2 opacity-60">
                 Ouverture{' '}
@@ -159,13 +179,22 @@ const CompetitionDetailPage = () => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        <div className="lg:col-span-4 space-y-6">
-          <div className="flex items-center gap-4 px-1">
-            <Text variant="caption" className="whitespace-nowrap">
+        <section
+          className="lg:col-span-4 space-y-6"
+          aria-labelledby="leaderboard-heading"
+        >
+          <header className="flex items-center gap-4 px-1">
+            <Text
+              as="h2"
+              id="leaderboard-heading"
+              variant="caption"
+              className="whitespace-nowrap font-bold uppercase tracking-widest"
+            >
               Classement
             </Text>
-            <div className="h-px w-full bg-white/5" />
-          </div>
+            <div className="h-px w-full bg-white/5" aria-hidden="true" />
+          </header>
+
           <Leaderboard
             data={leaderboard || []}
             competition={competition}
@@ -177,22 +206,36 @@ const CompetitionDetailPage = () => {
               <InlineEnrollment competition={competition} onRefresh={refresh} />
             </div>
           )}
-        </div>
+        </section>
 
-        <div className="lg:col-span-8 space-y-6">
-          <div className="flex items-center gap-4 px-1">
-            <Text variant="caption" className="whitespace-nowrap">
+        <section
+          className="lg:col-span-8 space-y-6"
+          aria-labelledby="actions-heading"
+        >
+          <header className="flex items-center gap-4 px-1">
+            <Text
+              as="h2"
+              id="actions-heading"
+              variant="caption"
+              className="whitespace-nowrap font-bold uppercase tracking-widest"
+            >
               Journal des actions
             </Text>
-            <div className="h-px w-full bg-white/5" />
-            <Badge variant="ghost" className="opacity-60 text-[8px]">
+            <div className="h-px w-full bg-white/5" aria-hidden="true" />
+
+            <Badge
+              variant="ghost"
+              className="opacity-60 text-[8px]"
+              aria-label={`${actions?.length || 0} actions enregistrées`}
+            >
               {actions?.length || 0} entrées
             </Badge>
-          </div>
+          </header>
+
           <ActionTable actions={actions || []} />
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 

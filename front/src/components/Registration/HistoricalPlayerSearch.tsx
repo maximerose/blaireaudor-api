@@ -52,12 +52,20 @@ export const HistoricalPlayerSearch = ({
     return (
       <Card
         variant="glass"
+        role="region"
+        aria-label="Profil joueur lié"
         className="mb-8 p-5 border-success-bright/20 flex justify-between items-center bg-success/5 animate-fade-in"
       >
         <div className="flex flex-col gap-1 text-left">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-success-bright animate-pulse" />
-            <Text variant="caption" className="text-success-bright">
+            <div
+              className="w-1.5 h-1.5 rounded-full bg-success-bright animate-pulse"
+              aria-hidden="true"
+            />
+            <Text
+              variant="caption"
+              className="text-success-bright font-bold uppercase tracking-wider"
+            >
               Profil lié
             </Text>
           </div>
@@ -66,7 +74,13 @@ export const HistoricalPlayerSearch = ({
           </Text>
         </div>
 
-        <Button variant="ghost" size="sm" type="button" onClick={onClear}>
+        <Button
+          variant="ghost"
+          size="sm"
+          type="button"
+          onClick={onClear}
+          aria-label={`Changer de joueur à lier, actuelle défini sur ${selectedName}`}
+        >
           Changer
         </Button>
       </Card>
@@ -81,10 +95,17 @@ export const HistoricalPlayerSearch = ({
         onChange={(e) => search(e.target.value)}
         icon={searching ? '⏳' : '🔍'}
         align="center"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={results.length > 0}
+        aria-haspopup="listbox"
+        aria-controls="historical-search-results"
       />
 
       {results.length > 0 && (
         <Card
+          id="historical-search-results"
+          role="listbox"
           variant="dark"
           className="absolute z-50 w-full mt-2 border-gold/30 shadow-2xl overflow-hidden animate-slide-up bg-black/95 backdrop-blur-xl"
         >
@@ -93,6 +114,7 @@ export const HistoricalPlayerSearch = ({
               <PlayerSearchResultItem
                 key={player.id}
                 player={player}
+                role="option"
                 onClick={onSelect}
                 actionIcon="C'EST MOI"
               />
@@ -102,10 +124,11 @@ export const HistoricalPlayerSearch = ({
           <button
             type="button"
             onClick={onCloseSearch}
-            className="w-full p-3 hover:bg-white/5 transition-all border-t border-white/5 flex justify-center"
+            className="w-full p-3 hover:bg-white/5 transition-all border-t border-white/5 flex justify-center cursor-pointer focus:bg-white/10 focus:outline-none"
+            aria-label="Fermer la liste de recherche"
           >
             <Text variant="micro" className="text-gold opacity-100">
-              ✕ Je ne suis pas dans cette liste
+              <span aria-hidden="true">✕</span> Je ne suis pas dans cette liste
             </Text>
           </button>
         </Card>

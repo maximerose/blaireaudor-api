@@ -27,7 +27,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-black uppercase tracking-widest transition-all duration-300 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95';
+    'inline-flex items-center justify-center font-black uppercase tracking-widest transition-all duration-300 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none';
 
   const variants: Record<ButtonVariant, string> = {
     primary:
@@ -54,15 +54,27 @@ export const Button = ({
     className,
   );
 
-  const content = isLoading ? (
+  const content = (
     <div className="flex items-center gap-2">
-      <div className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" />
-      <span>Chargement...</span>
-    </div>
-  ) : (
-    <div className="flex items-center gap-2">
-      {icon && <span className="text-base">{icon}</span>}
-      {children}
+      {isLoading ? (
+        <>
+          <div
+            className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+          <span className="sr-only">Action en cours...</span>
+          <span>Chargement...</span>
+        </>
+      ) : (
+        <>
+          {icon && (
+            <span className="text-base" aria-hidden="true">
+              {icon}
+            </span>
+          )}
+          {children}
+        </>
+      )}
     </div>
   );
 
@@ -71,7 +83,9 @@ export const Button = ({
       <Link
         to={to}
         className={combinedClasses}
+        aria-disabled={disabled || isLoading}
         onClick={disabled || isLoading ? (e) => e.preventDefault() : undefined}
+        role="link"
       >
         {content}
       </Link>
@@ -83,6 +97,7 @@ export const Button = ({
       type={props.type || 'button'}
       className={combinedClasses}
       disabled={isLoading || disabled}
+      aria-busy={isLoading}
       {...props}
     >
       {content}

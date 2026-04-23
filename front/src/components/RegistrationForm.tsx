@@ -1,5 +1,5 @@
-import { ROUTES } from '../constants/routes';
 import { useRegistration } from '../hooks/useRegistration';
+import { ROUTES } from '../constants/routes';
 import { HistoricalPlayerSearch } from './Registration/HistoricalPlayerSearch';
 import { AuthCard } from './UI/AuthCard';
 import { Button } from './UI/Button';
@@ -46,6 +46,7 @@ const RegistrationForm = () => {
           onChange={handleDisplayNameChange}
           onBlur={handleDisplayNameBlur}
           disabled={isLoading}
+          placeholder="Ex: Jean Dupont"
           required
         />
 
@@ -62,22 +63,28 @@ const RegistrationForm = () => {
             placeholder="votre-pseudo"
             disabled={isLoading}
             required
+            aria-describedby={showUsernameHint ? 'username-hint' : undefined}
           />
 
           {showUsernameHint && (
-            <Text variant="micro" className="px-1 italic text-gold/60">
-              💡 Minuscules, chiffres et tirets uniquement.
+            <Text
+              id="username-hint"
+              variant="micro"
+              className="px-1 italic text-gold/60"
+            >
+              <span aria-hidden="true">💡 </span>
+              Minuscules, chiffres et tirets uniquement.
             </Text>
           )}
         </div>
       </div>
 
       {formData.username.length >= 3 && usernameStatus !== 'guest_exists' && (
-        <div className="py-1">
+        <div className="py-1" aria-live="polite">
           {checkLoading ? (
             <Text
               variant="micro"
-              className="text-gold animate-pulse text-center"
+              className="text-gold animate-pulse text-center motion-reduce:animate-none"
             >
               Vérification en cours...
             </Text>
@@ -91,21 +98,28 @@ const RegistrationForm = () => {
                   : 'text-danger-bright',
               )}
             >
+              <span aria-hidden="true">
+                {usernameStatus === 'available' ? '✅ ' : '❌ '}
+              </span>
               {usernameStatus === 'available'
-                ? '✅ Pseudo disponible !'
-                : '❌ Ce pseudo est déjà pris.'}
+                ? 'Pseudo disponible !'
+                : 'Ce pseudo est déjà pris.'}
             </Text>
           )}
         </div>
       )}
 
       {!checkLoading && usernameStatus === 'guest_exists' && foundGuest && (
-        <div className="flex flex-col items-center gap-2 mt-3 p-4 bg-info/10 border border-info-bright/20 rounded-2xl animate-slide-up">
+        <div
+          className="flex flex-col items-center gap-2 mt-3 p-4 bg-info/10 border border-info-bright/20 rounded-2xl animate-slide-up"
+          role="alert"
+        >
           <Text
             variant="micro"
             className="text-info-bright text-center opacity-100"
           >
-            👀 Un blaireau existe déjà
+            <span aria-hidden="true">👀 </span>
+            Un blaireau existe déjà
           </Text>
 
           <Text
@@ -122,7 +136,10 @@ const RegistrationForm = () => {
 
           {foundGuest.last_competition_name ? (
             <div className="flex items-center gap-1 mt-1 overflow-hidden">
-              <Text variant="micro" className="italic shrink-0 opacity-20">
+              <Text
+                variant="micro"
+                className="italic shrink-0 opacity-20 font-bold"
+              >
                 Dernier tournoi :
               </Text>
               <Text
@@ -134,7 +151,7 @@ const RegistrationForm = () => {
             </div>
           ) : (
             <Badge variant="info" className="mt-1 opacity-60">
-              Nouveau joueur 🐣
+              Nouveau joueur <span aria-hidden="true">🐣</span>
             </Badge>
           )}
 
@@ -144,6 +161,7 @@ const RegistrationForm = () => {
             className="mt-2 w-full border-info-bright/30 hover:bg-info/20 text-info-bright"
             onClick={linkFoundGuest}
             type="button"
+            aria-label={`Lier le profil existant de ${foundGuest.name} à mon compte`}
           >
             C'est moi, lier ce profil
           </Button>
@@ -157,6 +175,7 @@ const RegistrationForm = () => {
         value={formData.plain_password || ''}
         onChange={handlePasswordChange}
         disabled={isLoading}
+        placeholder="••••••••"
         required
       />
 
@@ -166,21 +185,29 @@ const RegistrationForm = () => {
         disabled={isSubmitDisabled}
         fullWidth
         className="mt-2"
+        aria-disabled={isSubmitDisabled}
       >
         {submitButtonText}
       </Button>
 
       {message && (
-        <Text
-          variant="body"
-          className="mt-2 text-center text-white font-medium animate-fade-in"
-        >
-          {message}
-        </Text>
+        <div role="status" aria-live="polite">
+          <Text
+            variant="body"
+            className="mt-2 text-center text-white font-medium animate-fade-in"
+          >
+            {message}
+          </Text>
+        </div>
       )}
 
       <div className="flex justify-center mt-4 pt-4 border-t border-white/5">
-        <Button to={ROUTES.NAV_LOGIN} variant="ghost" size="sm">
+        <Button
+          to={ROUTES.NAV_LOGIN}
+          variant="ghost"
+          size="sm"
+          aria-label="Aller à la page de connexion"
+        >
           Déjà inscrit ?
         </Button>
       </div>

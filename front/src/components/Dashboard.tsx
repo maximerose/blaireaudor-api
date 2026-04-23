@@ -41,28 +41,39 @@ const Dashboard = () => {
       <Navbar />
 
       <main className="flex-1 space-y-6 sm:space-y-10 animate-fade-in mt-4">
-        <section className="space-y-4">
+        <section className="space-y-4" aria-labelledby="dashboard-title">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
             <div className="space-y-4">
-              <Text variant="caption" className="text-gold">
+              <Text
+                variant="caption"
+                className="text-gold uppercase font-bold tracking-widest"
+              >
                 Tableau de bord
               </Text>
 
-              <Text variant="h1" className="text-white normal-case">
+              <Text
+                id="dashboard-title"
+                variant="h1"
+                className="text-white normal-case"
+              >
                 Salut,{' '}
                 <span className="text-gold">{user?.player?.display_name}</span>
               </Text>
             </div>
 
             <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
-              <Text variant="caption" className="text-white/20">
+              <Text variant="caption" className="text-white/40">
                 {participations.length > 0
                   ? `${participations.length} participation${participations.length > 1 ? 's' : ''} au total`
                   : 'Aucune compétition active'}
               </Text>
             </div>
 
-            <div className="flex justify-center gap-3">
+            <div
+              className="flex justify-center gap-3"
+              role="list"
+              aria-label="Résumé de vos compétitions"
+            >
               {[
                 {
                   label: 'En cours',
@@ -80,22 +91,34 @@ const Dashboard = () => {
                   color: 'text-white/20',
                 },
               ].map((s) => (
-                <div key={s.label} className="flex flex-col items-center">
+                <div
+                  key={s.label}
+                  className="flex flex-col items-center"
+                  role="listitem"
+                >
                   <span
                     className={`text-lg sm:text-xl font-black leading-none ${s.color}`}
+                    aria-hidden="true"
                   >
                     {s.val}
                   </span>
-                  <Text variant="micro" className="mt-0.5">
+                  <Text variant="micro" className="mt-0.5" aria-hidden="true">
                     {s.label}
                   </Text>
+                  <span className="sr-only">
+                    {s.val} {s.val > 1 ? 'compétitions' : 'compétition'}{' '}
+                    {s.label.toLowerCase()}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <section
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+          aria-label="Actions rapides"
+        >
           <Button
             to={ROUTES.NAV_ADMIN_CREATE_COMPETITION}
             variant="primary"
@@ -108,26 +131,34 @@ const Dashboard = () => {
             onClick={() => setIsJoinModalOpen(true)}
             variant="secondary"
             size="md"
+            aria-haspopup="dialog"
           >
             Rejoindre une compétition
           </Button>
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-4" aria-labelledby="participations-title">
           <div className="flex items-center justify-between px-1">
-            <Text variant="caption" className="opacity-20">
+            <Text
+              as="h2"
+              id="participations-title"
+              variant="caption"
+              className="opacity-40 uppercase font-bold tracking-widest"
+            >
               Tes Participations
             </Text>
-            <div className="h-px flex-1 bg-white/5 ml-4" />
+            <div className="h-px flex-1 bg-white/5 ml-4" aria-hidden="true" />
           </div>
 
-          <div className="grid gap-3">
+          <div
+            className="grid gap-3"
+            role={participations.length > 0 ? 'list' : undefined}
+          >
             {participations.length > 0 ? (
               sortedParticipations.map((p) => (
-                <CompetitionCard
-                  key={p.competition.join_code}
-                  participation={p}
-                />
+                <div key={p.competition.join_code} role="listitem">
+                  <CompetitionCard participation={p} />
+                </div>
               ))
             ) : (
               <EmptyState
