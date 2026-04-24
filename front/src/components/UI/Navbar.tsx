@@ -1,28 +1,29 @@
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../constants/routes';
-import { useAuth } from '../../hooks/useAuth';
-import { Button } from './Button';
-import { Text } from './Typography';
+import { ROUTES } from '@/constants/routes';
+import { useNavbarUI } from '@/hooks';
+import { Button, Text } from '@/components/UI';
+
+const NAV_CONTAINER =
+  'w-full flex items-center justify-between py-6 border-b border-gold/10 animate-fade-in';
+const LOGO_LINK =
+  'flex flex-col group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none rounded-lg p-1';
+const LOGO_TEXT =
+  'text-xl sm:text-2xl leading-none group-hover:text-gold-light transition-colors';
+const USER_INFO_WRAPPER = 'text-right flex flex-col justify-center';
+const USER_NAME_TEXT =
+  'text-xs sm:text-sm italic tracking-tighter group-hover:text-gold-light transition-colors';
 
 export const Navbar = () => {
-  const { user } = useAuth();
+  const { displayName } = useNavbarUI();
 
   return (
-    <nav
-      className="w-full flex items-center justify-between py-6 border-b border-gold/10 animate-fade-in"
-      aria-label="Navigation principale"
-    >
+    <nav className={NAV_CONTAINER} aria-label="Navigation principale">
       <Link
         to={ROUTES.NAV_DASHBOARD}
-        className="flex flex-col group transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none rounded-lg p-1"
+        className={LOGO_LINK}
         aria-label="Retour au tableau de bord Le Blaireau d'Or"
       >
-        <Text
-          variant="h1"
-          as="span"
-          className="text-xl sm:text-2xl leading-none group-hover:text-gold-light transition-colors"
-          aria-hidden="true"
-        >
+        <Text variant="h1" as="span" className={LOGO_TEXT} aria-hidden="true">
           Le BLAIREAU D'OR
         </Text>
         <Text variant="micro" className="mt-1" aria-hidden="true">
@@ -32,17 +33,13 @@ export const Navbar = () => {
 
       <div className="flex items-center gap-4 sm:gap-6">
         <div
-          className="text-right flex flex-col justify-center"
+          className={USER_INFO_WRAPPER}
           role="status"
-          aria-label={`Connecté en tant que ${user?.player?.display_name || user?.username}`}
+          aria-label={`Connecté en tant que ${displayName}`}
         >
-          <Text
-            variant="h3"
-            as="span"
-            className="text-xs sm:text-sm italic tracking-tighter group-hover:text-gold-light transition-colors"
-          >
+          <Text variant="h3" as="span" className={USER_NAME_TEXT}>
             <span className="sr-only">Session de : </span>
-            {user?.player?.display_name || user?.username}
+            {displayName}
           </Text>
           <div
             className="h-px w-full bg-gold/10 self-end mt-0.5"
@@ -54,7 +51,7 @@ export const Navbar = () => {
           to={ROUTES.NAV_LOGOUT}
           variant="danger"
           size="sm"
-          className="px-4"
+          className="px-4 transition-default"
           aria-label="Se déconnecter de l'application"
         >
           Quitter

@@ -5,15 +5,15 @@ import {
   Navigate,
 } from 'react-router-dom';
 import './App.css';
-import RegistrationForm from './components/RegistrationForm';
+import RegistrationForm from './components/Auth/Registration/RegistrationForm';
 import { ROUTES } from './constants/routes';
-import LoginForm from './components/LoginForm';
-import LogoutHandler from './components/LogoutHandler';
-import { useAuth } from './hooks/useAuth';
+import LoginForm from './components/Auth/Login/LoginForm';
+import LogoutHandler from './components/Auth/Login/LogoutHandler';
+import { useAuth } from './hooks/auth/useAuth';
 import { LoadingScreen } from './components/UI/LoadingScreen';
-import Dashboard from './components/Dashboard';
-import { CreateCompetitionPage } from './pages/CreateCompetitionPage';
-import CompetitionDetailPage from './pages/CompetitionDetailPage';
+import Dashboard from './components/Dashboard/Dashboard';
+import { CreateCompetitionPage } from './components/Competition/CreateCompetition/CreateCompetitionPage';
+import CompetitionDetailPage from './components/Competition/Detail/CompetitionDetailPage';
 import { ScrollToTop } from './components/UI/ScrollToTop';
 
 function App() {

@@ -1,6 +1,6 @@
-import React, { useId } from 'react';
-import { Text } from './Typography';
-import { cn } from '../../utils/cn';
+import React from 'react';
+import { Text } from '@/components/UI';
+import { useInputUI } from '@/hooks';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -16,8 +16,11 @@ export const Input = ({
   id,
   ...props
 }: InputProps) => {
-  const generatedId = useId();
-  const inputId = id || generatedId;
+  const { inputId, labelClasses, inputClasses } = useInputUI(id, {
+    align,
+    icon,
+    className,
+  });
 
   return (
     <div className="w-full space-y-1">
@@ -26,10 +29,7 @@ export const Input = ({
           as="label"
           htmlFor={inputId}
           variant="caption"
-          className={cn(
-            'block text-gold ml-1 cursor-pointer font-bold uppercase tracking-wider',
-            align === 'center' ? 'text-center' : 'text-left',
-          )}
+          className={labelClasses}
         >
           {label}
           {props.required && (
@@ -39,30 +39,18 @@ export const Input = ({
           )}
         </Text>
       )}
+
       <div className="relative flex items-center group">
         {icon && (
           <span
-            className="absolute left-4 text-gold/30 group-focus-within:text-gold transition-colors text-xs pointer-events-none"
+            className="absolute left-4 text-gold/30 group-focus-within:text-gold transition-default text-xs pointer-events-none"
             aria-hidden="true"
           >
             {icon}
           </span>
         )}
 
-        <input
-          id={inputId}
-          {...props}
-          className={cn(
-            'w-full bg-black/20 border border-gold/10 text-gold rounded-xl',
-            'py-2 sm:py-2.5 pr-2 sm:pr-4',
-            'placeholder:text-gold/20 text-[11px] sm:text-sm transition-all duration-300 truncate text-ellipsis overflow-hidden',
-            'focus:outline-none focus:border-gold/40 focus:ring-4 focus:ring-gold/5',
-            'disabled:opacity-60 disabled:cursor-not-allowed',
-            align === 'center' ? 'text-center' : 'text-left',
-            icon ? 'pl-10' : 'pl-4',
-            className,
-          )}
-        />
+        <input id={inputId} {...props} className={inputClasses} />
       </div>
     </div>
   );

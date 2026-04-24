@@ -1,0 +1,81 @@
+import { useJoinCompetitionModal } from '@/hooks';
+import { Button, Input, Card, Text } from '@/components/UI';
+import { JoinModalHeader } from '@/components/Competition';
+
+const MODAL_OVERLAY =
+  'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
+const MODAL_CARD =
+  'w-full max-w-sm p-8 bg-[#161616] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_rgba(212,175,55,0.1)] border-gold/20 rounded-[2.5rem] space-y-8 animate-slide-up';
+
+interface Props {
+  onClose: () => void;
+  onJoined: (code: string) => void;
+}
+
+export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
+  const { code, loading, error, handleSubmit, handleCodeChange } =
+    useJoinCompetitionModal(onJoined);
+
+  return (
+    <div
+      className={MODAL_OVERLAY}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <Card variant="default" className={MODAL_CARD}>
+        <JoinModalHeader />
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-3">
+            <Input
+              label="Code de l'arène"
+              placeholder="BLAIR-2026"
+              value={code}
+              onChange={handleCodeChange}
+              className="text-center font-mono font-black tracking-[0.2em] text-xl uppercase"
+              autoFocus
+              required
+              align="center"
+              aria-invalid={!!error}
+              aria-describedby={error ? 'join-error' : undefined}
+            />
+
+            {error && (
+              <Text
+                id="join-error"
+                role="alert"
+                variant="micro"
+                className="text-danger-bright text-center animate-pulse"
+              >
+                ⚠️ {error}
+              </Text>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              isLoading={loading}
+              fullWidth
+              size="lg"
+              className="transition-default"
+            >
+              Entrer dans l'arène
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="text-white/20 hover:text-white/50 transition-default"
+              aria-label="Fermer la modale"
+            >
+              Fermer
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
+};

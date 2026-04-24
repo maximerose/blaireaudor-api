@@ -1,24 +1,18 @@
-import { type Participation } from '../../context/AuthContext';
-import { ROUTES } from '../../constants/routes';
+import { type Participation } from '@/context/AuthContext';
+import { ROUTES } from '@/constants/routes';
 import {
   getIsFinished,
   getDisplayDateText,
   canRevealScores,
   getCompetitionStatus,
-} from '../../utils/competitionHelper';
-import { StatusBadge } from '../Competition/StatusBadge';
-import { RankedScore } from '../UI/RankedScore';
-import { RankBadge } from '../UI/RankBadge';
-import { Card } from '../UI/Card';
-import { Button } from '../UI/Button';
-import { Text } from '../UI/Typography';
-import { cn } from '../../utils/cn';
+  cn,
+} from '@/utils';
+import { StatusBadge } from '@/components/Competition';
+import { RankedScore, RankBadge, Card, Button, Text } from '@/components/UI';
 
 interface CompetitionCardProps {
   participation: Participation;
 }
-
-// ... imports inchangés
 
 export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
   const { competition, score, rank } = participation;

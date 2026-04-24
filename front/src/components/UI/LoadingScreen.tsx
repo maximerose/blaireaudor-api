@@ -1,10 +1,17 @@
 import type React from 'react';
-import { Text } from './Typography';
-import { cn } from '../../utils/cn';
+import { Text } from '@/components/UI';
+import { cn } from '@/utils';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
 }
+
+const CONTAINER_BASE =
+  'fixed inset-0 z-50 flex items-center justify-center bg-dark transition-default animate-fade-in';
+const SPINNER_BASE = 'relative flex items-center justify-center';
+const BAR_CONTAINER = 'w-12 h-px bg-gold/10 relative overflow-hidden';
+const BAR_ANIMATION =
+  'absolute inset-0 bg-gold/40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden';
 
 export const LoadingScreen = ({
   message = 'Chargement...',
@@ -13,20 +20,14 @@ export const LoadingScreen = ({
 }: LoadingScreenProps) => {
   return (
     <div
-      className={cn(
-        'fixed inset-0 z-50 flex items-center justify-center bg-dark animate-fade-in',
-        className,
-      )}
+      className={cn(CONTAINER_BASE, className)}
       role="status"
       aria-live="polite"
       aria-busy="true"
       {...props}
     >
       <div className="flex flex-col items-center gap-8">
-        <div
-          className="relative flex items-center justify-center"
-          aria-hidden="true"
-        >
+        <div className={SPINNER_BASE} aria-hidden="true">
           <div className="w-16 h-16 border-2 border-gold/5 rounded-full" />
           <div className="absolute w-16 h-16 border-2 border-transparent border-t-gold rounded-full animate-spin motion-reduce:animate-none" />
           <div className="absolute w-1 h-1 bg-gold/20 rounded-full" />
@@ -40,11 +41,8 @@ export const LoadingScreen = ({
             {message}
           </Text>
 
-          <div
-            className="w-12 h-px bg-gold/10 relative overflow-hidden"
-            aria-hidden="true"
-          >
-            <div className="absolute inset-0 bg-gold/40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden" />
+          <div className={BAR_CONTAINER} aria-hidden="true">
+            <div className={BAR_ANIMATION} />
           </div>
         </div>
       </div>

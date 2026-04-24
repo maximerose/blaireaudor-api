@@ -1,4 +1,4 @@
-import { type Competition } from '../context/AuthContext';
+import { type Competition } from '@/context/AuthContext';
 
 export const CompetitionStatus = {
   ACTIVE: 'ACTIVE',
@@ -142,4 +142,13 @@ export const getIsUrgent = (endDateStr: string | null | undefined): boolean => {
   const diffHours = diffTime / (1000 * 60 * 60);
 
   return diffHours > 0 && diffHours < 24;
+};
+
+export const formatShortDate = (dateString: string | Date): string => {
+  return new Date(dateString)
+    .toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: 'short',
+    })
+    .replace('.', '');
 };

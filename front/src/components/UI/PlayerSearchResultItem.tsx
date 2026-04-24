@@ -1,7 +1,6 @@
 import type React from 'react';
-import { Badge } from './Badge';
-import { Text } from './Typography';
-import { cn } from '../../utils/cn';
+import { Badge, Text } from '@/components/UI';
+import { usePlayerSearchResultUI } from '@/hooks';
 
 interface Player {
   id: string;
@@ -28,8 +27,8 @@ export const PlayerSearchResultItem = ({
   className = '',
   ...props
 }: Props) => {
-  const name = player.display_name || player.displayName;
-  const lastComp = player.last_competition_name || player.lastCompetitionName;
+  const { name, lastComp, itemClasses, actionIconClasses } =
+    usePlayerSearchResultUI(player, className);
 
   return (
     <button
@@ -37,17 +36,13 @@ export const PlayerSearchResultItem = ({
       onClick={() => onClick(player)}
       role="option"
       aria-label={`Sélectionner ${name}`}
-      className={cn(
-        'w-full text-left p-3 hover:bg-gold/5 rounded-xl transition-all flex justify-between items-center group border border-transparent hover:border-gold/10',
-        'focus:outline-none focus:bg-gold/10 focus:border-gold/20',
-        className,
-      )}
+      className={itemClasses}
       {...props}
     >
       <div className="flex flex-col min-w-0 pointer-events-none">
         <Text
           as="span"
-          className="text-sm text-gold font-bold truncate group-hover:text-gold transition-colors"
+          className="text-sm text-gold font-bold truncate group-hover:text-gold transition-default"
         >
           {name}
         </Text>
@@ -82,9 +77,7 @@ export const PlayerSearchResultItem = ({
       </div>
 
       <div className="ml-4 shrink-0" aria-hidden="true">
-        <span className="text-[10px] font-black text-gold/20 group-hover:text-gold transition-colors">
-          {actionIcon}
-        </span>
+        <span className={actionIconClasses}>{actionIcon}</span>
       </div>
     </button>
   );
