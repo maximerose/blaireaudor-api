@@ -16,6 +16,8 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
     formData,
     updateField,
     handleJoinCodeChange,
+    generateCode,
+    canGoNext,
     players,
     submit,
     loading,
@@ -30,6 +32,8 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
           formData={formData}
           updateField={updateField}
           handleJoinCodeChange={handleJoinCodeChange}
+          onGenerateCode={generateCode}
+          canNext={canGoNext}
           onNext={() => setStep(2)}
         />
       ) : (

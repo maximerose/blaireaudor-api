@@ -6,16 +6,18 @@ interface ConfigStepProps {
   updateField: (field: string, value: any) => void;
   handleJoinCodeChange: (e: any) => void;
   onNext: () => void;
+  onGenerateCode: () => void;
+  canNext: boolean;
 }
 
 export const CompetitionConfigStep = ({
   formData,
   updateField,
   handleJoinCodeChange,
+  onGenerateCode,
   onNext,
+  canNext,
 }: ConfigStepProps) => {
-  const isNextDisabled = !formData.name || !formData.startDate;
-
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
@@ -36,13 +38,41 @@ export const CompetitionConfigStep = ({
           required
           align="center"
         />
-        <Input
-          label="Code d'accès"
-          value={formData.joinCode}
-          onChange={handleJoinCodeChange}
-          align="center"
-          placeholder="EX: BLAIR-2026"
-        />
+        <div className="space-y-1">
+          <div className="relative flex items-center group">
+            <Input
+              label="Code d'accès"
+              value={formData.joinCode}
+              onChange={handleJoinCodeChange}
+              align="center"
+              placeholder="Ex: BLAIR-2026"
+              renderRight={
+                <button
+                  type="button"
+                  onClick={onGenerateCode}
+                  className={cn(
+                    'flex items-center gap-2 py-1 px-2 rounded-lg',
+                    'bg-gold/5 border border-gold/10',
+                    'text-gold/60 hover:text-gold transition-all active:scale-95',
+                  )}
+                >
+                  <span className="text-xs font-bold uppercase tracking-tighter">
+                    Auto
+                  </span>
+                  <span className="text-sm">✨</span>
+                </button>
+              }
+            />
+          </div>
+          {!formData.joinCode && (
+            <Text
+              variant="micro"
+              className="italic opacity-30 text-center block"
+            >
+              Vide = génération automatique ✨
+            </Text>
+          )}
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <Input
@@ -121,7 +151,7 @@ export const CompetitionConfigStep = ({
         </div>
       </div>
 
-      <Button fullWidth onClick={onNext} disabled={isNextDisabled} size="lg">
+      <Button fullWidth onClick={onNext} disabled={!canNext} size="lg">
         Continuer →
       </Button>
     </div>

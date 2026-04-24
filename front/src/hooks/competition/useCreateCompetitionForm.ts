@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
-import { formatJoinCode, cleanJoinCode } from '@/utils';
+import { formatJoinCode, cleanJoinCode, generateClientSideCode } from '@/utils';
 import { apiFetch } from '@/api/config';
 import { ROUTES } from '@/constants/routes';
 
@@ -66,6 +66,15 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     }));
   };
 
+  const generateCode = () => {
+    const newCode = generateClientSideCode();
+    updateField('joinCode', newCode);
+  };
+
+  const canGoNext = useMemo(() => {
+    return !!(formData.name && formData.startDate);
+  }, [formData.name, formData.startDate]);
+
   const submit = async () => {
     const validatedCode = cleanJoinCode(formData.joinCode);
     const competition = await create({
@@ -108,6 +117,8 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     formData,
     updateField,
     handleJoinCodeChange,
+    generateCode,
+    canGoNext: canGoNext,
     players: {
       searchTerm,
       setSearchTerm,

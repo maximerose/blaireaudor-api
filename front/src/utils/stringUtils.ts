@@ -33,3 +33,10 @@ export const formatJoinCode = (text: string): string => {
 export const cleanJoinCode = (text: string): string => {
   return finalizeSlug(text.toLowerCase()).toUpperCase();
 };
+
+export const generateClientSideCode = () => {
+  const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: 6 }, () =>
+    alphabet.charAt(Math.floor(Math.random() * alphabet.length)),
+  ).join('');
+};
