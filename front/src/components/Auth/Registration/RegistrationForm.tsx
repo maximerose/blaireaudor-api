@@ -2,7 +2,7 @@ import { useRegistration } from '@/hooks';
 import { ROUTES } from '@/constants/routes';
 import { HistoricalPlayerSearch, GuestFoundAlert } from '@/components/Auth';
 import { AuthCard, Button, Input, Text } from '@/components/UI';
-import { cn } from '@/utils';
+import { cn, preventDefault } from '@/utils';
 
 const RegistrationForm = () => {
   const {
@@ -27,7 +27,7 @@ const RegistrationForm = () => {
   } = useRegistration(ROUTES.NAV_DASHBOARD);
 
   return (
-    <AuthCard title="S'inscrire" onSubmit={handleSubmit}>
+    <AuthCard title="S'inscrire" onSubmit={preventDefault(handleSubmit)}>
       {/* 1. Recherche historique (liaison de compte existant) */}
       <HistoricalPlayerSearch
         searchProps={playerSearch}

@@ -6,8 +6,7 @@ export const useJoinCompetitionModal = (onJoined: (code: string) => void) => {
   const [code, setCode] = useState('');
   const { joinByCode, loading, error } = useJoinByCode(onJoined);
 
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     joinByCode(code.trim());
   };
 

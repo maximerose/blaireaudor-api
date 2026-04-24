@@ -1,6 +1,7 @@
 import { useJoinCompetitionModal } from '@/hooks';
 import { Button, Input, Card, Text } from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
+import { preventDefault } from '@/utils';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
@@ -26,7 +27,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
       <Card variant="default" className={MODAL_CARD}>
         <JoinModalHeader />
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={preventDefault(handleSubmit)} className="space-y-8">
           <div className="space-y-3">
             <Input
               label="Code de l'arène"

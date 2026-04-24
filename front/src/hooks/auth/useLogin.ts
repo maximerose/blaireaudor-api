@@ -24,8 +24,7 @@ export const useLogin = () => {
     setCredentials((prev) => ({ ...prev, [name]: processedValue }));
   };
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsLoading(true);
     setError('');
 

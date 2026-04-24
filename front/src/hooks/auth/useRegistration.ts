@@ -158,8 +158,7 @@ export const useRegistration = (redirectUrl: string) => {
     setFormData((prev) => ({ ...prev, plain_password: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (isLoading || checkLoading || usernameStatus === 'taken') return;
 
     setIsLoading(true);

@@ -1,13 +1,14 @@
 import { useLogin } from '@/hooks';
 import { ROUTES } from '@/constants/routes';
 import { Input, Button, AuthCard, Text } from '@/components/UI';
+import { preventDefault } from '@/utils';
 
 const LoginForm = () => {
   const { credentials, error, isLoading, handleChange, handleSubmit } =
     useLogin();
 
   return (
-    <AuthCard title="Le Blaireau d'Or" onSubmit={handleSubmit}>
+    <AuthCard title="Le Blaireau d'Or" onSubmit={preventDefault(handleSubmit)}>
       <Text variant="caption" className="text-gold/50 mb-6 block text-center">
         Identifiez-vous pour entrer dans l'arène
       </Text>
