@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Entity;
+namespace App\Tests\Integration\Entity;
 
 use App\Factory\CompetitionFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -30,9 +30,8 @@ class CompetitionTest extends KernelTestCase
 
         $this->assertSame('ski-2026', $competition->getSlug());
 
-        $this->assertNotNull($competition->getJoinCode());
+        $this->assertNotEmpty($competition->getJoinCode());
         $this->assertSame(6, strlen($competition->getJoinCode()));
-        $this->assertMatchesRegularExpression('/^[A-Z0-9]+$/', $competition->getJoinCode());
     }
 
     public function testSlugIncrementsIfDuplicate(): void

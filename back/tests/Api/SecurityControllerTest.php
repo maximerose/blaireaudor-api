@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Api;
+namespace App\Tests\Api;
 
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;

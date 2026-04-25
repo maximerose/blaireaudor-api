@@ -11,6 +11,8 @@ namespace App\Service;
  */
 class CodeGenerator
 {
+    private const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+
     /**
      * Génère un code alphanumérique lisible.
      * * On exclut les caractères ambigus : 0, O, I, 1, L.
@@ -19,12 +21,11 @@ class CodeGenerator
      */
     public function generateRandomCode(int $length = 6): string
     {
-        $alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
         $code = '';
-        $max = strlen($alphabet) - 1;
+        $max = strlen(self::ALPHABET) - 1;
 
         for ($i = 0; $i < $length; $i++) {
-            $code .= $alphabet[random_int(0, $max)];
+            $code .= self::ALPHABET[random_int(0, $max)];
         }
 
         return $code;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Api\Admin;
+namespace App\Tests\Api\Admin;
 
 use App\Factory\CompetitionFactory;
 use App\Factory\ParticipationFactory;

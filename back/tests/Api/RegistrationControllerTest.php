@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Api;
+namespace App\Tests\Api;
 
 use App\Factory\CompetitionFactory;
 use App\Factory\ParticipationFactory;
@@ -77,7 +77,7 @@ final class RegistrationControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $user = UserFactory::createOne(['username' => 'deja-pris']);
+        UserFactory::createOne(['username' => 'deja-pris']);
         
         $client->request(
             'POST',
@@ -124,7 +124,7 @@ final class RegistrationControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $user = UserFactory::createOne([
+        UserFactory::createOne([
             'username' => 'pseudo-qui-existe-deja',
         ]);
 
@@ -138,10 +138,11 @@ final class RegistrationControllerTest extends WebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertFalse($data['available']);
     }
-
+    
     public function testRegisterByLinkingHistoricalPlayer(): void
     {
         $client = static::createClient();
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
 
         $historicalPlayer = PlayerFactory::createOne([
             'displayName' => 'Ancien Nom',
@@ -163,11 +164,12 @@ final class RegistrationControllerTest extends WebTestCase
             ])
         );
 
+        $entityManager->refresh($historicalPlayer);
+
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-
+        
         $user = UserFactory::find(['username' => 'nouveau-pseudo']);
-        // $historicalPlayer->refresh();
-
+        
         $this->assertSame($historicalPlayer, $user->getPlayer());
         $this->assertSame('Nouveau Nom', $historicalPlayer->getDisplayName());
         $this->assertSame('nouveau-pseudo', $historicalPlayer->getUsername());

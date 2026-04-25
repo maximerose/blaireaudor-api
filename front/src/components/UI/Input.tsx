@@ -1,13 +1,11 @@
-// src/components/UI/Input.tsx
 import React from 'react';
 import { Text } from '@/components/UI';
 import { useInputUI } from '@/hooks';
-import { cn } from '@/utils'; // Assure-toi d'importer cn ici
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   icon?: string | React.ReactNode;
-  renderRight?: React.ReactNode; // <-- La nouvelle prop magique
+  renderRight?: React.ReactNode;
   align?: 'left' | 'center';
 }
 
@@ -23,7 +21,7 @@ export const Input = ({
   const { inputId, labelClasses, inputClasses } = useInputUI(id, {
     align,
     icon,
-    className: cn(className),
+    className: className,
   });
 
   return (
@@ -57,7 +55,7 @@ export const Input = ({
         <input id={inputId} {...props} className={inputClasses} />
 
         {renderRight && (
-          <div className="absolute right-2 h-h-full top-1/2 -translate-y-1/2 flex items-center">
+          <div className="absolute right-2 h-full top-1/2 -translate-y-1/2 flex items-center">
             {renderRight}
           </div>
         )}
