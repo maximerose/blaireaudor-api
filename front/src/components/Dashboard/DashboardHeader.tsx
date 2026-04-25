@@ -33,7 +33,12 @@ export const DashboardHeader = ({
             variant="h1"
             className="text-white normal-case"
           >
-            Salut, <span className="text-gold">{displayName}</span>
+            Salut{' '}
+            {displayName && (
+              <>
+                , <span className="text-gold">{displayName}</span>
+              </>
+            )}
           </Text>
         </div>
 
