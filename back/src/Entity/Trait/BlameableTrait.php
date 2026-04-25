@@ -17,16 +17,16 @@ use Symfony\Component\Serializer\Attribute\Groups;
 trait BlameableTrait
 {
     /**
-     * @var User|null L'utilisateur ayant créé l'enregistrement.
+     * @var User|null L'utilisateur ayant créé l'enregistrement
      */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'user:read'])]
     private ?User $createdBy = null;
 
     /**
-     * @var User|null Le dernier utilisateur ayant modifié l'enregistrement.
+     * @var User|null le dernier utilisateur ayant modifié l'enregistrement
      */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\ManyToOne(targetEntity: User::class)]

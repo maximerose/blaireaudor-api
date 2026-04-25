@@ -9,6 +9,7 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * Factory pour générer les profils de joueurs.
+ *
  * @extends PersistentObjectFactory<Player>
  */
 final class PlayerFactory extends PersistentObjectFactory

@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository gérant l'accès aux données des Actions de jeu.
  * * Contient les méthodes de récupération personnalisées pour les statistiques
  * et les historiques d'actions par joueur ou compétition.
+ *
  * @extends ServiceEntityRepository<Action>
  */
 class ActionRepository extends ServiceEntityRepository
@@ -26,7 +27,7 @@ class ActionRepository extends ServiceEntityRepository
     {
         $allowedFields = ['dateAction', 'points', 'player'];
         $sortBy = in_array($sortBy, $allowedFields) ? "a.$sortBy" : 'a.dateAction';
-        $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
+        $order = 'ASC' === strtoupper($order) ? 'ASC' : 'DESC';
 
         return $this->createQueryBuilder('a')
             ->join('a.player', 'p')

@@ -15,8 +15,10 @@ class ValidationHelper
 {
     /**
      * Convertit une liste de violations en un tableau associatif simple.
-     * @param ConstraintViolationListInterface $violations La liste brute de Symfony.
-     * @return array<string, string> Un tableau au format ['champ' => 'message d'erreur'].
+     *
+     * @param ConstraintViolationListInterface $violations la liste brute de Symfony
+     *
+     * @return array<string, string> un tableau au format ['champ' => 'message d'erreur']
      */
     public function formatErrors(ConstraintViolationListInterface $violations): array
     {

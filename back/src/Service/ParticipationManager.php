@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ParticipationManager
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -25,9 +25,11 @@ class ParticipationManager
      * Inscrit un joueur à une compétition donnée.
      * * Crée une nouvelle instance de Participation, l'initialise avec le joueur
      * et la compétition, puis la persiste en base de données.
-     * @param Player $player Le joueur qui rejoint.
-     * @param Competition $competition La compétition concernée.
-     * @return Participation L'entité de liaison créée.
+     *
+     * @param Player $player le joueur qui rejoint
+     * @param Competition $competition la compétition concernée
+     *
+     * @return Participation L'entité de liaison créée
      */
     public function joinCompetition(Player $player, Competition $competition): Participation
     {

@@ -94,7 +94,7 @@ final class AdminCompetitionController extends AbstractController
 
         if (count($errors) > 0) {
             return $this->json([
-                'errors' => $this->validationHelper->formatErrors($errors)
+                'errors' => $this->validationHelper->formatErrors($errors),
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -125,8 +125,9 @@ final class AdminCompetitionController extends AbstractController
      * * Gère deux types d'entrées :
      * 1. 'existing_players_ids': Liste d'IDs de joueurs déjà enregistrés
      * 2. 'new_players': Liste de noms pour créer de nouveaux profils à la volée.
-     * @return JsonResponse Retourne un rapport détaillé (successes/errors) avec un code 207 (Multi-Status)
-     *                      si au moins une erreur survient.
+     *
+     * @return JsonResponse retourne un rapport détaillé (successes/errors) avec un code 207 (Multi-Status)
+     *                      si au moins une erreur survient
      */
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
     public function addPlayers(
@@ -166,22 +167,22 @@ final class AdminCompetitionController extends AbstractController
                 $currentPlayer = $playersById[$idStr];
 
                 $isAlreadyIn = $participationRepository->findOneBy([
-                   'competition' => $competition,
-                   'player' => $currentPlayer
+                    'competition' => $competition,
+                    'player' => $currentPlayer,
                 ]);
 
                 if ($isAlreadyIn) {
                     $errors[] = [
                         'id' => $id,
                         'name' => $currentPlayer->getDisplayName(),
-                        'message' => 'Déjà inscrit'
+                        'message' => 'Déjà inscrit',
                     ];
                 } else {
                     $this->participationManager->joinCompetition($currentPlayer, $competition);
 
-                    $successes[]  = [
+                    $successes[] = [
                         'id' => $id,
-                        'name' => $currentPlayer->getDisplayName()
+                        'name' => $currentPlayer->getDisplayName(),
                     ];
                 }
             }
@@ -203,7 +204,7 @@ final class AdminCompetitionController extends AbstractController
                     'error_count' => count($errors),
                 ],
                 'successes' => $successes,
-                'errors' => $errors
+                'errors' => $errors,
             ],
             count($errors) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED,
             [],

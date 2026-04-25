@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository gérant l'accès aux données des Participations.
  * * C'est ici que sera gérée la logique d'affichage du classement (Leaderboard)
  * en filtrant les scores par compétition.
+ *
  * @extends ServiceEntityRepository<Participation>
  */
 class ParticipationRepository extends ServiceEntityRepository

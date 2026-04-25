@@ -23,7 +23,7 @@ final class SearchController extends AbstractController
         $players = $playerRepository->searchByName($query, $unlinkedOnly);
 
         return $this->json($players, Response::HTTP_OK, [], [
-            'groups' => ['player:read']
+            'groups' => ['player:read'],
         ]);
     }
 }

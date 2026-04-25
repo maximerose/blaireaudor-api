@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * Repository gérant l'accès aux données des Utilisateurs (comptes de sécurité).
  * * Responsable de la récupération des identifiants et de la mise à jour
  * automatique des hashs de mots de passe pour maintenir un haut niveau de sécurité.
+ *
  * @extends ServiceEntityRepository<User>
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
@@ -29,7 +30,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * * Cette méthode est utilisée par Symfony pour "re-hasher" les mots de passe
      * de manière transparente si les paramètres de l'algorithme (coût, mémoire)
      * sont modifiés dans la configuration.
-     * @throws UnsupportedUserException Si l'objet utilisateur n'est pas une instance de App\Entity\User.
+     *
+     * @throws UnsupportedUserException si l'objet utilisateur n'est pas une instance de App\Entity\User
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {

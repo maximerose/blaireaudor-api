@@ -10,6 +10,7 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * Factory pour générer des actions de jeu dans les tests.
+ *
  * @extends PersistentObjectFactory<Action>
  */
 final class ActionFactory extends PersistentObjectFactory

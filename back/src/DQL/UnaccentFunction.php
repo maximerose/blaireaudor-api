@@ -16,7 +16,7 @@ class UnaccentFunction extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
-        return 'unaccent(' . $this->stringPrimary->dispatch($sqlWalker) . ')';
+        return 'unaccent('.$this->stringPrimary->dispatch($sqlWalker).')';
     }
 
     public function parse(Parser $parser): void

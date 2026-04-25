@@ -31,7 +31,7 @@ final class RegistrationController extends AbstractController
         private CompetitionRepository $competitionRepository,
         private JWTTokenManagerInterface $jwtManager,
         private ValidatorInterface $validator,
-        private ValidationHelper $validationHelper
+        private ValidationHelper $validationHelper,
     ) {
     }
 
@@ -39,9 +39,11 @@ final class RegistrationController extends AbstractController
      * Inscrit un nouvel utilisateur et son profil joueur.
      * * Si un 'join_code' est fourni, le système vérifie l'existence de la compétition
      * avant de procéder à la création du compte pour lier le joueur dès son inscription.
-     * @param Request $request Contient username, plain_password, display_name et optionnellement join_code.
-     * @param UserManager $userManager Service gérant la logique de création User/Player.
-     * @return JsonResponse Message de succès (201) ou erreurs de validation (422).
+     *
+     * @param Request $request contient username, plain_password, display_name et optionnellement join_code
+     * @param UserManager $userManager service gérant la logique de création User/Player
+     *
+     * @return JsonResponse message de succès (201) ou erreurs de validation (422)
      */
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(Request $request, UserManager $userManager, UserRepository $userRepository): JsonResponse
@@ -56,8 +58,8 @@ final class RegistrationController extends AbstractController
         if ($userRepository->count(['username' => $username]) > 0) {
             return $this->json([
                 'errors' => [
-                    'username' => 'Ce pseudo est déjà utilisé'
-                ]
+                    'username' => 'Ce pseudo est déjà utilisé',
+                ],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -66,7 +68,7 @@ final class RegistrationController extends AbstractController
 
             if (null === $competition) {
                 return $this->json([
-                    'message' => 'La compétition n\'existe pas.'
+                    'message' => 'La compétition n\'existe pas.',
                 ], Response::HTTP_NOT_FOUND);
             }
         }
@@ -83,9 +85,8 @@ final class RegistrationController extends AbstractController
 
         if (count($errors) > 0) {
             return $this->json([
-                'errors' => $this->validationHelper->formatErrors($errors)
+                'errors' => $this->validationHelper->formatErrors($errors),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
         }
 
         $this->entityManager->flush();
@@ -104,10 +105,10 @@ final class RegistrationController extends AbstractController
     {
         $userExists = $userRepository->count(['username' => $username]) > 0;
         $player = $playerRepository->findOneBy(['username' => $username]);
-        $playerIsClaimed = ($player !== null && $player->getAssociatedUser() !== null);
+        $playerIsClaimed = (null !== $player && null !== $player->getAssociatedUser());
 
         $available = !$userExists && !$playerIsClaimed;
-        $isGuest = ($player !== null && !$playerIsClaimed);
+        $isGuest = (null !== $player && !$playerIsClaimed);
 
         return $this->json([
             'available' => $available,
@@ -126,13 +127,13 @@ final class RegistrationController extends AbstractController
         // et on vérifie qu'il n'est pas déjà lié à un compte User
         $player = $playerRepository->findOneBy([
             'username' => $username,
-            'associatedUser' => null
+            'associatedUser' => null,
         ]);
 
         return $this->json([
             'exists' => null !== $player,
             'playerId' => $player?->getId(),
-            'displayName' => $player?->getDisplayName()
+            'displayName' => $player?->getDisplayName(),
         ]);
     }
 }

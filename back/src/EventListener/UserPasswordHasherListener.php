@@ -22,7 +22,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserPasswordHasherListener
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -45,7 +45,7 @@ class UserPasswordHasherListener
     {
         $plainPassword = $user->getPlainPassword();
 
-        if ($plainPassword === null) {
+        if (null === $plainPassword) {
             return;
         }
 

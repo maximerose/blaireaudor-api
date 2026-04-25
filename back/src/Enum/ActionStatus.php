@@ -21,7 +21,7 @@ enum ActionStatus: string
      */
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'En attente',
             self::VALIDATED => 'Validée',
             self::REJECTED => 'Refusée',

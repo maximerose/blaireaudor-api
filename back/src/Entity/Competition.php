@@ -29,8 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
 #[UniqueEntity(fields: ['slug'])]
 #[Assert\Expression(
-    "this.getEndDate() === null || this.getEndDate() >= this.getStartDate()",
-    message: "La date de fin doit être postérieure à la date de début"
+    'this.getEndDate() === null || this.getEndDate() >= this.getStartDate()',
+    message: 'La date de fin doit être postérieure à la date de début'
 )]
 #[ApiResource(
     operations: [
@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/competitions/by-code/{joinCode}',
             uriVariables: [
-                'joinCode' => 'joinCode'
+                'joinCode' => 'joinCode',
             ],
             normalizationContext: ['groups' => ['competition:read']],
             name: 'get_by_code'
@@ -87,6 +87,7 @@ class Competition
 
     /**
      * Liste des participations (joueurs inscrits et leurs scores).
+     *
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
@@ -95,14 +96,15 @@ class Competition
 
     /**
      * Liste des actions enregistrées durant cette compétition.
+     *
      * @var Collection<int, Action>
      */
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
     private Collection $actions;
 
-    #[ORM\ManyToOne(targetEntity: Player::class)]
+    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['competition:read', 'competition:admin', 'competition:write'])]
+    #[Groups(['competition:read', 'competition:admin', 'competition:write', 'user:read'])]
     private ?Player $referee = null;
 
     public function __construct()
@@ -249,6 +251,7 @@ class Competition
 
     /**
      * Extrait la liste des profils joueurs à partir des participations.
+     *
      * @return Collection<int, Player>
      */
     #[Groups(['competition:read'])]

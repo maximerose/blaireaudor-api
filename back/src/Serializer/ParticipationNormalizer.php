@@ -17,7 +17,7 @@ final class ParticipationNormalizer implements NormalizerInterface, NormalizerAw
     private const ALREADY_CALLED = 'PARTICIPATION_NORMALIZER_ALREADY_CALLED';
 
     public function __construct(
-        private readonly ParticipationRepository $repository
+        private readonly ParticipationRepository $repository,
     ) {
     }
 

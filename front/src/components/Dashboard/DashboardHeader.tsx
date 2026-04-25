@@ -3,7 +3,13 @@ import { Text } from '@/components/UI';
 interface DashboardHeaderProps {
   displayName?: string;
   totalParticipations: number;
-  stats: { active: number; upcoming: number; finished: number };
+  stats: {
+    active: number;
+    upcoming: number;
+    finished: number;
+    created: number;
+    refereed: number;
+  };
 }
 
 export const DashboardHeader = ({
@@ -14,20 +20,15 @@ export const DashboardHeader = ({
   const statItems = [
     { label: 'En cours', val: stats.active, color: 'text-success-bright' },
     { label: 'À venir', val: stats.upcoming, color: 'text-info-bright' },
-    { label: 'Terminées', val: stats.finished, color: 'text-white/20' },
+    { label: 'Terminées', val: stats.finished, color: 'text-danger-bright' },
+    { label: 'Créées', val: stats.created, color: 'text-gold' },
+    { label: 'Arbitrées', val: stats.refereed, color: 'text-info-bright' },
   ];
 
   return (
     <section className="space-y-4" aria-labelledby="dashboard-title">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+      <div className="flex flex-col md:flex-row sm:items-center justify-between gap-4 px-1">
         <div className="space-y-4">
-          <Text
-            variant="caption"
-            className="text-gold uppercase font-bold tracking-widest"
-          >
-            Tableau de bord
-          </Text>
-
           <Text
             id="dashboard-title"
             variant="h1"

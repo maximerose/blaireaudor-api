@@ -9,6 +9,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
+        '@Symfony' => true,
         'declare_strict_types' => true,
         'phpdoc_summary' => true,
         'phpdoc_align' => ['align' => 'left'],

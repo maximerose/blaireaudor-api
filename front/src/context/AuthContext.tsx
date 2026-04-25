@@ -1,6 +1,7 @@
 import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 export interface Competition {
+  id: string;
   name: string;
   join_code: string;
   start_date: string;
@@ -8,6 +9,8 @@ export interface Competition {
   is_finished: boolean;
   fog_of_war: boolean;
   participants_count: number;
+  created_by: User | string;
+  referee: Player | string;
 }
 
 export interface Participation {
@@ -21,6 +24,7 @@ export interface Player {
   display_name: string;
   username: string;
   participations: Participation[];
+  refereed_competitions: Competition[];
 }
 
 export interface User {
@@ -28,6 +32,7 @@ export interface User {
   username: string;
   roles: string[];
   player?: Player;
+  created_competitions: Competition[];
 }
 
 export interface AuthContextType {

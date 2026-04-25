@@ -37,13 +37,13 @@ class AppFixtures extends Fixture
         $list2025 = [
             'Aurélie', 'Baptist', 'Chloé', 'Christophe Robine', 'Christophe Rose',
             'David', 'Églantine', 'Élisa', 'Katia', 'Maxime', 'Sylvain',
-            'Tatie', 'Typhaine', 'Valérie', 'Victorien'
+            'Tatie', 'Typhaine', 'Valérie', 'Victorien',
         ];
 
         $list2026 = [
             'Andréa', 'Axel', 'Camille', 'Chloé', 'Christophe Robine', 'Christophe Rose',
             'David', 'Églantine', 'Élisa', 'Franck', 'Jeanne', 'Katia',
-            'Sylvain', 'Tatie', 'Typhaine', 'Valérie', 'Victorien'
+            'Sylvain', 'Tatie', 'Typhaine', 'Valérie', 'Victorien',
         ];
 
         $allUniqueNames = array_unique(array_merge($list2025, $list2026));
@@ -77,7 +77,6 @@ class AppFixtures extends Fixture
             'referee' => $players['Chloé'],
         ]);
 
-
         $comp2026 = CompetitionFactory::createOne([
             'name' => "Blaireau d'or 2026",
             'startDate' => new \DateTimeImmutable('2026-02-21'),
@@ -88,8 +87,8 @@ class AppFixtures extends Fixture
             'referee' => $players['Axel'],
         ]);
 
-        $io->note('2025 : ' . $comp2025->getName() . ' arbitré par ' . $comp2025->getReferee()->getDisplayName());
-        $io->note('2026 : ' . $comp2026->getName() . ' arbitré par ' . $comp2026->getReferee()->getDisplayName());
+        $io->note('2025 : '.$comp2025->getName().' arbitré par '.$comp2025->getReferee()->getDisplayName());
+        $io->note('2026 : '.$comp2026->getName().' arbitré par '.$comp2026->getReferee()->getDisplayName());
 
         // --- 4. Inscriptions aux compétitions (Participations) ---
         $allParticipations = [];
@@ -863,7 +862,7 @@ class AppFixtures extends Fixture
 
         foreach ($allParticipations as $participation) {
             $participation->updateScore();
-            $io->text('-> ' . $participation->getCompetition()->getName() . ': Calcul du score de ' . $participation->getPlayer()->getDisplayName() . '...');
+            $io->text('-> '.$participation->getCompetition()->getName().': Calcul du score de '.$participation->getPlayer()->getDisplayName().'...');
         }
 
         $manager->flush();

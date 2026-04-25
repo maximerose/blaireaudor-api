@@ -15,14 +15,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableTrait
 {
     /**
-     * @var \DateTimeImmutable|null Date de création (fixée automatiquement à l'insertion).
+     * @var \DateTimeImmutable|null date de création (fixée automatiquement à l'insertion)
      */
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
-     * @var \DateTimeImmutable|null Date de dernière modification (mise à jour automatiquement).
+     * @var \DateTimeImmutable|null date de dernière modification (mise à jour automatiquement)
      */
     #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column]

@@ -10,7 +10,6 @@ use App\Entity\Player;
 use App\Entity\User;
 use App\Enum\ActionStatus;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 
 /**
  * Service de gestion des actions de jeu.
@@ -20,17 +19,20 @@ use InvalidArgumentException;
 final class ActionManager
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
     /**
      * Crée et persiste une nouvelle Action à partir des données de la requête.
-     * @param Competition $competition La compétition concernée.
-     * @param User $author L'utilisateur qui tente de créer l'action.
-     * @param array $data Les données (description, points, IRI du joueur).
-     * @throws InvalidArgumentException Si le joueur spécifié est introuvable.
-     * @return Action L'entité Action créée et persistée.
+     *
+     * @param Competition $competition la compétition concernée
+     * @param User $author L'utilisateur qui tente de créer l'action
+     * @param array $data les données (description, points, IRI du joueur)
+     *
+     * @return Action L'entité Action créée et persistée
+     *
+     * @throws \InvalidArgumentException si le joueur spécifié est introuvable
      */
     public function createActionFromPayload(Competition $competition, User $author, array $data): Action
     {
@@ -38,7 +40,7 @@ final class ActionManager
         $player = $this->entityManager->getRepository(Player::class)->find($playerId);
 
         if (!$player) {
-            throw new InvalidArgumentException('Le joueur n\'existe pas');
+            throw new \InvalidArgumentException('Le joueur n\'existe pas');
         }
 
         $action = new Action();

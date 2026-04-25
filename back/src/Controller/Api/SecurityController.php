@@ -23,8 +23,8 @@ final class SecurityController extends AbstractController
      * Point d'entrée pour la connexion (JSON Login).
      * * L'authentification est gérée par le firewall Symfony via le 'json_login'.
      * Si les identifiants sont corrects, Symfony injecte l'objet User dans cette méthode.
-     * @param User|null $user L'utilisateur authentifié par le firewall.
-     * @return JsonResponse Les informations de base du profil et les rôles.
+     *
+     * @return JsonResponse les informations de base du profil et les rôles
      */
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(): void
@@ -43,7 +43,8 @@ final class SecurityController extends AbstractController
     /**
      * Récupère les informations de l'utilisateur actuellement connecté.
      * * Utile pour maintenir l'état du profil côté Front-end après un rafraîchissement.
-     * @return JsonResponse Identifiant, rôles et nom d'affichage du joueur.
+     *
+     * @return JsonResponse identifiant, rôles et nom d'affichage du joueur
      */
     #[Route('/me', name: 'me', methods: ['GET'])]
     public function me(#[CurrentUser] ?User $user): JsonResponse

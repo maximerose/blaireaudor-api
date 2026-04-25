@@ -9,6 +9,7 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * Factory pour générer les comptes utilisateurs (User).
+ *
  * @extends PersistentObjectFactory<User>
  */
 final class UserFactory extends PersistentObjectFactory

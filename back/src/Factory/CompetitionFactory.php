@@ -9,6 +9,7 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * Factory pour générer des compétitions dans les tests.
+ *
  * @extends PersistentObjectFactory<Competition>
  */
 final class CompetitionFactory extends PersistentObjectFactory

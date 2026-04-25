@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping\PostUpdate;
 class ActionScoreListener
 {
     public function __construct(
-        private ParticipationRepository $participationRepository
+        private ParticipationRepository $participationRepository,
     ) {
     }
 
@@ -46,8 +46,8 @@ class ActionScoreListener
         }
 
         $participation = $this->participationRepository->findOneBy([
-          'player' => $player,
-          'competition' => $competition
+            'player' => $player,
+            'competition' => $competition,
         ]);
 
         if ($participation) {

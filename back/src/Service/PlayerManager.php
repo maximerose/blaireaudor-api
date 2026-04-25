@@ -20,7 +20,7 @@ class PlayerManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
-        private ParticipationManager $participationManager
+        private ParticipationManager $participationManager,
     ) {
     }
 
@@ -42,8 +42,10 @@ class PlayerManager
      * Importe une liste de noms de joueurs dans une compétition.
      * * Nettoie les noms (trim), valide les contraintes d'entité, et gère les erreurs
      * pour chaque ligne sans interrompre le processus global.
-     * @param array<string> $rawNames Liste des noms à importer.
-     * @return array{successes: array, errors: array} Un résumé du traitement.
+     *
+     * @param array<string> $rawNames liste des noms à importer
+     *
+     * @return array{successes: array, errors: array} un résumé du traitement
      */
     public function createPlayersBatch(array $rawNames, Competition $competition, User $user): array
     {
@@ -55,11 +57,11 @@ class PlayerManager
             if (empty($trimmedName)) {
                 $results['errors'][] = [
                     'name' => '',
-                    'message' => 'Le nom du joueur ne peut pas être vide'
+                    'message' => 'Le nom du joueur ne peut pas être vide',
                 ];
 
                 continue;
-            };
+            }
 
             $player = $this->createPlayer($trimmedName, $user);
             $violations = $this->validator->validate($player);

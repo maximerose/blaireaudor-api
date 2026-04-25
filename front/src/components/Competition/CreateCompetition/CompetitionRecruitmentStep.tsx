@@ -69,10 +69,16 @@ export const CompetitionRecruitmentStep = ({
           variant="ghost"
           onClick={onBack}
           className="px-6 transition-default"
+          size="md"
         >
           Précédent
         </Button>
-        <Button fullWidth onClick={onSubmit} isLoading={loading} size="lg">
+        <Button
+          onClick={onSubmit}
+          isLoading={loading}
+          size="md"
+          className="flex-1"
+        >
           Créer l'arène
         </Button>
       </div>

@@ -9,6 +9,7 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * Factory pour générer les inscriptions des joueurs aux compétitions.
+ *
  * * @extends PersistentObjectFactory<Participation>
  */
 final class ParticipationFactory extends PersistentObjectFactory

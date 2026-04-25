@@ -1,4 +1,8 @@
-import { type Participation } from '@/context/AuthContext';
+import {
+  type Competition,
+  type Participation,
+  type User,
+} from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
 import {
   getIsFinished,
@@ -8,26 +12,47 @@ import {
   cn,
 } from '@/utils';
 import { StatusBadge } from '@/components/Competition';
-import { RankedScore, RankBadge, Card, Button, Text } from '@/components/UI';
+import {
+  RankedScore,
+  RankBadge,
+  Card,
+  Button,
+  Text,
+  RoleBadge,
+} from '@/components/UI';
 
 interface CompetitionCardProps {
-  participation: Participation;
+  participation?: Participation;
+  competition: Competition;
+  user: User;
 }
 
-export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
-  const { competition, score, rank } = participation;
+export const CompetitionCard = ({
+  participation,
+  competition,
+  user,
+}: CompetitionCardProps) => {
+  const getEntityId = (entity: any) =>
+    typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
+  const isCreator = user.id === getEntityId(competition.created_by);
+  const isReferee = user.player?.id === getEntityId(competition.referee);
+  const isParticipant = !!participation;
+  const isManager = isCreator || isReferee;
+
+  const score = participation?.score;
+  const rank = participation?.rank;
 
   const isFinished = getIsFinished(competition.end_date);
   const dateText = getDisplayDateText(
     competition.start_date,
     competition.end_date,
   );
-  const shouldReveal = canRevealScores(competition, isFinished);
   const status = getCompetitionStatus(
     competition.start_date,
     competition.end_date,
   );
 
+  const shouldReveal = canRevealScores(competition, isFinished);
   const hasNoParticipants = competition.participants_count === 0;
 
   return (
@@ -36,8 +61,17 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
       isHoverable
       as="article"
       aria-labelledby={`title-${competition.join_code}`}
-      className="p-4 sm:p-5 flex flex-col h-full group border-white/5 hover:border-gold/20 transition-all duration-500"
+      className={cn(
+        'relative p-4 sm:p-5 flex flex-col h-full group border-white/5 hover:border-gold/20 transition-all duration-500',
+      )}
     >
+      <div className="flex justify-between items-start gap-3 mb-4">
+        <div className="flex gap-2">
+          {isCreator && <RoleBadge role="creator" />}
+          {isReferee && <RoleBadge role="referee" />}
+        </div>
+        <StatusBadge status={status} />
+      </div>
       <div className="flex justify-between items-start gap-3 mb-4">
         <div className="min-w-0 flex-1">
           <Text
@@ -52,7 +86,6 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
             {dateText}
           </Text>
         </div>
-        <StatusBadge status={status} />
       </div>
 
       <div className="flex items-center justify-between gap-2 mb-6">
@@ -102,45 +135,64 @@ export const CompetitionCard = ({ participation }: CompetitionCardProps) => {
 
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1 min-h-10 justify-center">
-          <Text
-            variant="micro"
-            className="opacity-20 text-white uppercase font-black"
-          >
-            {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
-          </Text>
-
-          <div className="flex items-center gap-4">
-            {shouldReveal ? (
-              <div
-                className="flex items-center gap-4"
-                aria-label={`Rang : ${rank}, Score : ${score}`}
-              >
-                <RankedScore score={score} rank={rank} />
-                <RankBadge rank={rank} />
-              </div>
-            ) : (
+          {isParticipant ? (
+            <>
               <Text
                 variant="micro"
-                className="opacity-40 italic flex items-center gap-2 text-white"
+                className="opacity-20 text-white uppercase font-black"
               >
-                Scores masqués{' '}
-                <span aria-hidden="true" className="text-xs">
-                  🌫️
-                </span>
+                {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
               </Text>
-            )}
-          </div>
+              <div className="flex items-center gap-4">
+                {shouldReveal && score !== undefined && rank !== undefined ? (
+                  <div
+                    className="flex items-center gap-4"
+                    aria-label={`Rang : ${rank}, Score : ${score}`}
+                  >
+                    <RankedScore score={score} rank={rank} />
+                    <RankBadge rank={rank} />
+                  </div>
+                ) : (
+                  <Text
+                    variant="micro"
+                    className="opacity-40 italic flex items-center gap-2 text-white"
+                  >
+                    Scores masqués{' '}
+                    <span aria-hidden="true" className="text-xs">
+                      🌫️
+                    </span>
+                  </Text>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col">
+              <Text
+                variant="micro"
+                className="text-gold/40 uppercase font-black"
+              >
+                Rôle Officiel
+              </Text>
+              <Text variant="micro" className="text-white/30 italic">
+                Mode spectateur / gestion
+              </Text>
+            </div>
+          )}
         </div>
 
         <Button
           to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
-          variant={isFinished ? 'primary' : 'secondary'}
+          variant={isFinished || isManager ? 'primary' : 'secondary'}
           size="sm"
           fullWidth
           className="sm:w-auto"
           aria-label={`Entrer dans l'arène ${competition.name}`}
         >
-          {isFinished ? 'Voir le classement' : "Entrer dans l'arène"}
+          {isFinished
+            ? 'Voir le classement'
+            : isManager
+              ? 'Gérer le tournoi'
+              : 'Entrer dans le tournoi'}
         </Button>
       </div>
     </Card>

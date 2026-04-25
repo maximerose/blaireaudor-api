@@ -12,7 +12,6 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -33,7 +32,7 @@ class Action
 
     public function __construct()
     {
-        $this->dateAction = new DateTimeImmutable();
+        $this->dateAction = new \DateTimeImmutable();
     }
 
     #[ORM\Column(length: 255)]
@@ -48,7 +47,7 @@ class Action
     private ?int $points = null;
 
     /**
-     * @var Player|null Le joueur ayant réalisé l'action.
+     * @var Player|null le joueur ayant réalisé l'action
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -56,14 +55,14 @@ class Action
     private ?Player $player = null;
 
     /**
-     * @var Competition|null La compétition dans laquelle l'action a eu lieu.
+     * @var Competition|null la compétition dans laquelle l'action a eu lieu
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Competition $competition = null;
 
     /**
-     * @var ActionStatus État actuel de l'action (par défaut : PENDING).
+     * @var ActionStatus état actuel de l'action (par défaut : PENDING)
      */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
     #[Groups(['action:read', 'competition:read'])]
@@ -71,7 +70,7 @@ class Action
 
     #[ORM\Column(nullable: false)]
     #[Groups(['action:read', 'competition:read'])]
-    private DateTimeImmutable $dateAction;
+    private \DateTimeImmutable $dateAction;
 
     public function getDescription(): ?string
     {
@@ -135,12 +134,12 @@ class Action
         return $this;
     }
 
-    public function getDateAction(): DateTimeImmutable
+    public function getDateAction(): \DateTimeImmutable
     {
         return $this->dateAction;
     }
 
-    public function setDateAction(DateTimeImmutable $dateAction): static
+    public function setDateAction(\DateTimeImmutable $dateAction): static
     {
         $this->dateAction = $dateAction;
 

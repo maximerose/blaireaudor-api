@@ -54,14 +54,14 @@ class Player
     private ?string $username = null;
 
     /**
-     * @var Collection<int, Participation> Liste des compétitions auxquelles le joueur participe.
+     * @var Collection<int, Participation> liste des compétitions auxquelles le joueur participe
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'player', orphanRemoval: true)]
     #[Groups(['user:read'])]
     private Collection $participations;
 
     /**
-     * @var User|null Compte utilisateur lié à ce profil de jeu.
+     * @var User|null compte utilisateur lié à ce profil de jeu
      */
     #[ORM\OneToOne(inversedBy: 'player', cascade: ['persist', 'remove'])]
     #[Groups(['competition:read'])]
@@ -73,10 +73,15 @@ class Player
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'player', orphanRemoval: true)]
     private Collection $actions;
 
+    #[ORM\OneToMany(mappedBy: 'referee', targetEntity: Competition::class)]
+    #[Groups(['user:read'])]
+    private Collection $refereedCompetitions;
+
     public function __construct()
     {
         $this->participations = new ArrayCollection();
         $this->actions = new ArrayCollection();
+        $this->refereedCompetitions = new ArrayCollection();
     }
 
     public function getDisplayName(): ?string
@@ -186,7 +191,7 @@ class Player
     #[Groups(['competition:read', 'player:read'])]
     public function getHasAccount(): bool
     {
-        return $this->associatedUser !== null;
+        return null !== $this->associatedUser;
     }
 
     #[Groups(['competition:read', 'player:read'])]
@@ -195,5 +200,10 @@ class Player
         $lastParticipation = $this->participations->last();
 
         return $lastParticipation ? $lastParticipation->getCompetition()->getName() : null;
+    }
+
+    public function getRefereedCompetitions(): Collection
+    {
+        return $this->refereedCompetitions;
     }
 }

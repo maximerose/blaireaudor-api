@@ -19,7 +19,7 @@ class CompetitionManager
     public function __construct(
         private CompetitionRepository $competitionRepository,
         private CodeGenerator $codeGenerator,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -28,13 +28,12 @@ class CompetitionManager
      * Cette méthode centralise la logique de configuration initiale, notamment
      * la génération ou l'assignation du code d'accès unique.
      *
-     * @param Competition $competition L'instance de compétition à configurer.
-     * @param string|null $customJoinCode Un code personnalisé optionnel (sera nettoyé et passé en majuscules).
-     * @return void
+     * @param Competition $competition L'instance de compétition à configurer
+     * @param string|null $customJoinCode un code personnalisé optionnel (sera nettoyé et passé en majuscules)
      */
     public function prepare(Competition $competition, ?string $customJoinCode = null): void
     {
-        if ($customJoinCode !== null) {
+        if (null !== $customJoinCode) {
             $competition->setJoinCode(strtoupper(trim($customJoinCode)));
         } else {
             $competition->setJoinCode($this->generateSafeJoinCode());

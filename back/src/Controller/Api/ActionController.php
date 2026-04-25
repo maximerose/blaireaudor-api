@@ -23,10 +23,13 @@ final class ActionController extends AbstractController
 {
     /**
      * Enregistre une nouvelle action pour une compétition donnée.
+     *
      * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
+     *
      * @IsGranted("ACTION_CREATE", subject="competition")
      * * Vérifie via le Voter si l'utilisateur a le droit de poster dans cette compétition.
-     * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'.
+     *
+     * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
      */
     #[Route('/{id}/actions', name: 'create', methods: 'POST')]
     #[IsGranted('ACTION_CREATE', subject: 'competition')]
@@ -34,7 +37,7 @@ final class ActionController extends AbstractController
         Competition $competition,
         Request $request,
         EntityManagerInterface $entityManager,
-        ActionManager $actionManager
+        ActionManager $actionManager,
     ): JsonResponse {
         $data = $request->toArray();
 

@@ -13,8 +13,8 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        if ($this->getEnvironment() === 'dev') {
-            return '/tmp/blaireau_cache/' . $this->getEnvironment();
+        if ('dev' === $this->getEnvironment()) {
+            return '/tmp/blaireau_cache/'.$this->getEnvironment();
         }
 
         return parent::getCacheDir();
@@ -22,7 +22,7 @@ class Kernel extends BaseKernel
 
     public function getLogDir(): string
     {
-        if ($this->getEnvironment() === 'dev') {
+        if ('dev' === $this->getEnvironment()) {
             return '/tmp/blaireau_logs';
         }
 

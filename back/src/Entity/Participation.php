@@ -38,7 +38,7 @@ class Participation
     use TimestampableTrait;
 
     /**
-     * @var Competition|null La compétition concernée.
+     * @var Competition|null la compétition concernée
      */
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -51,14 +51,15 @@ class Participation
      * * Note : Cette valeur est une dénormalisation (somme des points des actions)
      * utilisée pour optimiser les performances de l'affichage du classement.
      * Elle doit être mise à jour à chaque fois qu'une Action est validée ou modifiée.
-     * @var int Le score total du joueur dans cette compétition (0 par défaut).
+     *
+     * @var int le score total du joueur dans cette compétition (0 par défaut)
      */
     #[ORM\Column(options: ['default' => 0])]
     #[Groups(['competition:read', 'user:read'])]
     private int $score = 0;
 
     /**
-     * @var Player|null Le profil du joueur participant.
+     * @var Player|null le profil du joueur participant
      */
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -115,6 +116,7 @@ class Participation
     public function setRank(?int $rank): static
     {
         $this->rank = $rank;
+
         return $this;
     }
 
@@ -123,7 +125,7 @@ class Participation
         $total = 0;
 
         foreach ($this->getPlayer()->getActions() as $action) {
-            if ($action->getCompetition() === $this->getCompetition() && $action->getStatus() === ActionStatus::VALIDATED) {
+            if ($action->getCompetition() === $this->getCompetition() && ActionStatus::VALIDATED === $action->getStatus()) {
                 $total += $action->getPoints();
             }
         }

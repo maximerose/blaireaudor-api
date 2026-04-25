@@ -26,13 +26,15 @@ final class ActionVoter extends Voter
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::CREATE && $subject instanceof Competition;
+        return self::CREATE === $attribute && $subject instanceof Competition;
     }
 
     /**
      * Logique de décision du droit de création.
-     * @param Competition $subject La compétition concernée.
-     * @return bool True si l'utilisateur est le créateur ou un participant inscrit.
+     *
+     * @param Competition $subject la compétition concernée
+     *
+     * @return bool true si l'utilisateur est le créateur ou un participant inscrit
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {

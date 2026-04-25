@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use TimestampableTrait;
 
     /**
-     * @var string|null Identifiant unique de connexion.
+     * @var string|null identifiant unique de connexion
      */
     #[ORM\Column(length: 180)]
     #[Groups(['user:read'])]
@@ -46,8 +48,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string|null Mot de passe non haché, utilisé uniquement lors
-     *                  de la soumission de formulaires ou de l'inscription.
+     * @var string|null mot de passe non haché, utilisé uniquement lors
+     *                  de la soumission de formulaires ou de l'inscription
      */
     private ?string $plainPassword = null;
 
@@ -61,6 +63,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Valid]
     #[Groups(['user:read'])]
     private ?Player $player = null;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Competition::class)]
+    #[Groups(['user:read'])]
+    private Collection $createdCompetitions;
+
+    public function __construct()
+    {
+        $this->createdCompetitions = new ArrayCollection();
+    }
 
     public function getUsername(): ?string
     {
@@ -158,17 +169,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlayer(?Player $player): static
     {
         // unset the owning side of the relation if necessary
-        if ($player === null && $this->player !== null) {
+        if (null === $player && null !== $this->player) {
             $this->player->setAssociatedUser(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($player !== null && $player->getAssociatedUser() !== $this) {
+        if (null !== $player && $player->getAssociatedUser() !== $this) {
             $player->setAssociatedUser($this);
         }
 
         $this->player = $player;
 
         return $this;
+    }
+
+    public function getCreatedCompetitions(): Collection
+    {
+        return $this->createdCompetitions;
     }
 }
