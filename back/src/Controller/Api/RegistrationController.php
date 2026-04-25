@@ -54,7 +54,11 @@ final class RegistrationController extends AbstractController
         $competition = null;
 
         if ($userRepository->count(['username' => $username]) > 0) {
-            return $this->json(['message' => 'Ce pseudo est déjà utilisé'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->json([
+                'errors' => [
+                    'username' => 'Ce pseudo est déjà utilisé'
+                ]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ($joinCode) {

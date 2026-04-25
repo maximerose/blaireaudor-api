@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Competition;
+use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -37,6 +38,13 @@ class CompetitionManager
             $competition->setJoinCode(strtoupper(trim($customJoinCode)));
         } else {
             $competition->setJoinCode($this->generateSafeJoinCode());
+        }
+
+        if (null === $competition->getReferee()) {
+            $owner = $competition->getCreatedBy();
+            if ($owner instanceof User && null !== $owner->getPlayer()) {
+                $competition->setReferee($owner->getPlayer());
+            }
         }
     }
 

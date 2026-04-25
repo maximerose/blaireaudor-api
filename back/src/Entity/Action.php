@@ -105,6 +105,7 @@ class Action
     public function setPlayer(?Player $player): static
     {
         $this->player = $player;
+        $player?->addAction($this);
 
         return $this;
     }
@@ -117,6 +118,7 @@ class Action
     public function setCompetition(?Competition $competition): static
     {
         $this->competition = $competition;
+        $competition?->addAction($this);
 
         return $this;
     }

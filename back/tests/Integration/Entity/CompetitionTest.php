@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Entity;
 
+use App\Entity\Competition;
+use App\Entity\Player;
+use App\Entity\User;
 use App\Factory\CompetitionFactory;
+use App\Factory\PlayerFactory;
+use App\Factory\UserFactory;
+use App\Service\CompetitionManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -43,5 +49,47 @@ class CompetitionTest extends KernelTestCase
 
         $this->assertSame('doublon', $comp1->getSlug());
         $this->assertSame('doublon-1', $comp2->getSlug());
+    }
+
+    public function testManagerSetsReferee(): void
+{
+    self::bootKernel();
+    $container = static::getContainer();
+    $manager = $container->get(CompetitionManager::class);
+    
+    $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
+    
+    // On crée l'objet manuellement
+    $comp = new Competition();
+    $comp->setName('Test Manager');
+    $comp->setStartDate(new \DateTimeImmutable());
+    $comp->setCreatedBy($admin); // On simule le Blameable
+
+    // ON APPELLE LE MANAGER
+    $manager->prepare($comp);
+
+    $this->assertSame($admin->getPlayer()->getId(), $comp->getReferee()->getId());
+}
+
+    public function testCompetitionSetsDefaultRefereeFromCreatorOnPersist(): void
+    {
+        self::bootKernel();
+
+        $admin = UserFactory::createOne([
+            'player' => PlayerFactory::createOne(['display_name' => 'Arbitre'])
+        ]);
+
+        $competition = CompetitionFactory::createOne([
+            'name' => 'Compétition arbitrée',
+            'createdBy' => $admin
+        ]);
+
+        $this->assertNotNull($competition->getReferee(), "L'arbitre ne doit pas être vide");
+        $this->assertInstanceOf(Player::class, $competition->getReferee());
+        $this->assertSame(
+            $admin->getPlayer()->getId(),
+            $competition->getReferee()->getId(),
+            "L'arbitre doit être le profil Player du créateur par défaut"
+        );
     }
 }

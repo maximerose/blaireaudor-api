@@ -37,11 +37,11 @@ final class CompetitionFactory extends PersistentObjectFactory
         return [
             'createdBy' => UserFactory::new(),
             'endDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'isFinished' => self::faker()->boolean(),
             'name' => self::faker()->words(3, true),
             'startDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'joinCode' => strtoupper(self::faker()->bothify('??##?#')),
             'fogOfWar' => true,
+            'referee' => null,
         ];
     }
 
@@ -52,7 +52,16 @@ final class CompetitionFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Competition $competition): void {})
+            ->afterPersist(function (Competition $competition): void {
+                if (null === $competition->getReferee()) {
+                    $owner = $competition->getCreatedBy();
+                    if ($owner && $owner->getPlayer()) {
+                        $competition->setReferee($owner->getPlayer());
+                    } else {
+                        $competition->setReferee(PlayerFactory::createOne());
+                    }
+                }
+            })
         ;
     }
 }

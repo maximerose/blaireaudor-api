@@ -32,6 +32,8 @@ final class AdminCompetitionControllerTest extends WebTestCase
 
         $user = UserFactory::createOne(['player' => PlayerFactory::new()]);
         $client->loginUser($user);
+        
+        $player = PlayerFactory::createOne();
 
         $client->request(
             'POST',
@@ -44,6 +46,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
                 'start_date' => '2026-02-21',
                 'end_date' => '2026-02-27',
                 'participate' => true,
+                'referee' => '/api/players/' . $player->getId(), 
             ])
         );
 

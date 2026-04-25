@@ -50,6 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Delete(),
     ],
 )]
+#[ORM\HasLifecycleCallbacks]
 class Competition
 {
     use UuidTrait;
@@ -98,6 +99,11 @@ class Competition
      */
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
     private Collection $actions;
+
+    #[ORM\ManyToOne(targetEntity: Player::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['competition:read', 'competition:admin', 'competition:write'])]
+    private ?Player $referee = null;
 
     public function __construct()
     {
@@ -267,5 +273,17 @@ class Competition
     public function getParticipantsCount(): int
     {
         return $this->participations->count();
+    }
+
+    public function getReferee(): ?Player
+    {
+        return $this->referee;
+    }
+
+    public function setReferee(?Player $referee): static
+    {
+        $this->referee = $referee;
+
+        return $this;
     }
 }

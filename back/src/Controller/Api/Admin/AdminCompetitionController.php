@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api\Admin;
 
 use App\Entity\Competition;
+use App\Entity\Player;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
@@ -58,6 +59,13 @@ final class AdminCompetitionController extends AbstractController
             return $this->json(['error' => 'La date de début est obligatoire'], Response::HTTP_BAD_REQUEST);
         }
 
+        $referee = null;
+
+        if (isset($data['referee'])) {
+            $refereeId = basename($data['referee']);
+            $referee = $this->entityManager->getRepository(Player::class)->find($refereeId);
+        }
+
         try {
             $startDate = new \DateTimeImmutable($data['start_date']);
             $endDate = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
@@ -73,6 +81,14 @@ final class AdminCompetitionController extends AbstractController
             $endDate,
             $data['join_code'] ?? null
         );
+
+        if ($referee) {
+            $competition->setReferee($referee);
+        } else {
+            if ($user->getPlayer()) {
+                $competition->setReferee($user->getPlayer());
+            }
+        }
 
         $errors = $validator->validate($competition);
 

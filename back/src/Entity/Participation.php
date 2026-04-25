@@ -123,7 +123,7 @@ class Participation
         $total = 0;
 
         foreach ($this->getPlayer()->getActions() as $action) {
-            if ($action->getCompetition() === $this->getCompetition() && $action->getStatus() === ActionStatus::VALIDATED->value) {
+            if ($action->getCompetition() === $this->getCompetition() && $action->getStatus() === ActionStatus::VALIDATED) {
                 $total += $action->getPoints();
             }
         }

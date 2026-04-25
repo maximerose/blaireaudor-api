@@ -4,43 +4,36 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Action;
-use App\Entity\Competition;
-use App\Entity\Participation;
-use App\Entity\Player;
 use App\Enum\ActionStatus;
+use App\Factory\ActionFactory;
+use App\Factory\CompetitionFactory;
+use App\Factory\ParticipationFactory;
+use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+        $io->title('Importation des données du Blaireau d\'Or');
+
+        // --- 1. Création du compte technique pour l'import ---
+        $io->section('Création du compte administrateur');
         $admin = UserFactory::createOne([
             'username' => 'admin',
             'plainPassword' => 'password',
             'roles' => ['ROLE_ADMIN'],
         ]);
+        $io->success('Admin créé');
 
-        // --- 1. CRÉATION DES COMPÉTITIONS ---
-        $comp2025 = new Competition();
-        $comp2025->setName("Blaireau d'Or 2025");
-        $comp2025->setStartDate(new \DateTimeImmutable('2025-02-15'));
-        $comp2025->setEndDate(new \DateTimeImmutable('2025-02-22'));
-        $comp2025->setJoinCode('BLR2025');
-        $comp2025->setFogOfWar(false);
-        $manager->persist($comp2025);
-
-        $comp2026 = new Competition();
-        $comp2026->setName("Blaireau d'Or 2026");
-        $comp2026->setStartDate(new \DateTimeImmutable('2026-02-21'));
-        $comp2026->setEndDate(new \DateTimeImmutable('2026-02-28'));
-        $comp2026->setJoinCode('BLR2026');
-        $comp2026->setFogOfWar(false);
-        $manager->persist($comp2026);
-
-        // --- 2. DÉFINITION DES GROUPES ---
+        // --- 2. Création de tous les joueurs ---
+        $io->section('Initialisation des profils joueurs');
         $list2025 = [
             'Aurélie', 'Baptist', 'Chloé', 'Christophe Robine', 'Christophe Rose',
             'David', 'Églantine', 'Élisa', 'Katia', 'Maxime', 'Sylvain',
@@ -53,39 +46,68 @@ class AppFixtures extends Fixture
             'Sylvain', 'Tatie', 'Typhaine', 'Valérie', 'Victorien'
         ];
 
-        // Création d'une liste unique de tous les noms pour créer les Players
         $allUniqueNames = array_unique(array_merge($list2025, $list2026));
+        sort($allUniqueNames);
+
+        $io->text('Création des profils pour :');
+        $io->listing($allUniqueNames);
+
         $players = [];
 
+        $io->progressStart(count($allUniqueNames));
+        foreach ($allUniqueNames as $name) {
+            $players[$name] = PlayerFactory::createOne([
+                'displayName' => $name,
+                'username' => strtolower(str_replace(' ', '.', $name)),
+            ]);
+            $io->progressAdvance();
+        }
+        $io->progressFinish();
+        $io->note(sprintf('%d joueurs créés', count($players)));
+
+        // --- 3. Création des compétitions ---
+        $io->section('Configuration des compétitions');
+        $comp2025 = CompetitionFactory::createOne([
+            'name' => "Blaireau d'or 2025",
+            'startDate' => new \DateTimeImmutable('2025-02-15'),
+            'endDate' => new \DateTimeImmutable('2025-02-22'),
+            'joinCode' => 'BLAIREAU25',
+            'fogOfWar' => false,
+            'createdBy' => $admin,
+            'referee' => $players['Chloé'],
+        ]);
+
+
+        $comp2026 = CompetitionFactory::createOne([
+            'name' => "Blaireau d'or 2026",
+            'startDate' => new \DateTimeImmutable('2026-02-21'),
+            'endDate' => new \DateTimeImmutable('2026-02-28'),
+            'joinCode' => 'BLAIREAU26',
+            'fogOfWar' => false,
+            'createdBy' => $admin,
+            'referee' => $players['Axel'],
+        ]);
+
+        $io->note('2025 : ' . $comp2025->getName() . ' arbitré par ' . $comp2025->getReferee()->getDisplayName());
+        $io->note('2026 : ' . $comp2026->getName() . ' arbitré par ' . $comp2026->getReferee()->getDisplayName());
+
+        // --- 4. Inscriptions aux compétitions (Participations) ---
         $allParticipations = [];
 
-        foreach ($allUniqueNames as $name) {
-            $player = new Player();
-            $player->setDisplayName($name);
-            $player->setUsername(strtolower(str_replace(' ', '.', $name)));
-            $manager->persist($player);
-            $players[$name] = $player;
-
+        foreach ($players as $name => $player) {
             // Inscription sélective 2025
             if (in_array($name, $list2025)) {
-                $p25 = new Participation();
-                $p25->setPlayer($player);
-                $p25->setCompetition($comp2025);
-                $manager->persist($p25);
-                $allParticipations[] = $p25;
+                $allParticipations[] = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2025]);
             }
 
             // Inscription sélective 2026
             if (in_array($name, $list2026)) {
-                $p26 = new Participation();
-                $p26->setPlayer($player);
-                $p26->setCompetition($comp2026);
-                $manager->persist($p26);
-                $allParticipations[] = $p26;
+                $allParticipations[] = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2026]);
             }
         }
 
-        // --- 3. LES ACTIONS (IMPORT TOTAL) ---
+        // --- 5. Import des Actions (Excel) ---
+        $io->section('Importation des actions historiques');
         $actions2025 = [
             // SAMEDI 15 FÉVRIER
             ['David', 10, 'Retard', '2025-02-15'],
@@ -355,10 +377,6 @@ class AppFixtures extends Fixture
             ['Typhaine', 10, 'Tentative meurtre arme blanche', '2025-02-20'],
             ['Christophe Robine', 10, 'Trompage fajitas', '2025-02-20'],
         ];
-
-        foreach ($actions2025 as $data) {
-            $this->createAction($manager, $players[$data[0]], $comp2025, $data[1], $data[2], $data[3]);
-        }
 
         $actions2026 = [
             // SAMEDI 21 FÉVRIER
@@ -812,27 +830,43 @@ class AppFixtures extends Fixture
             ['Andréa', 10, 'Cognage au portique', '2026-02-26'],
         ];
 
-        foreach ($actions2026 as $data) {
-            $this->createAction($manager, $players[$data[0]], $comp2026, $data[1], $data[2], $data[3]);
+        $io->progressStart(count($actions2025) + count($actions2026));
+
+        foreach ($actions2025 as $data) {
+            ActionFactory::createOne([
+                'player' => $players[$data[0]],
+                'competition' => $comp2025,
+                'points' => $data[1],
+                'description' => $data[2],
+                'dateAction' => new \DateTimeImmutable($data[3]),
+                'status' => ActionStatus::VALIDATED,
+            ]);
+            $io->progressAdvance();
         }
+
+        foreach ($actions2026 as $data) {
+            ActionFactory::createOne([
+                'player' => $players[$data[0]],
+                'competition' => $comp2026,
+                'points' => $data[1],
+                'description' => $data[2],
+                'dateAction' => new \DateTimeImmutable($data[3]),
+                'status' => ActionStatus::VALIDATED,
+            ]);
+            $io->progressAdvance();
+        }
+        $io->progressFinish();
+
+        // --- 6. Calcul des Scores ---
+        $io->section('Calcul final des scores');
+        $manager->flush();
 
         foreach ($allParticipations as $participation) {
             $participation->updateScore();
+            $io->text('-> ' . $participation->getCompetition()->getName() . ': Calcul du score de ' . $participation->getPlayer()->getDisplayName() . '...');
         }
 
         $manager->flush();
-    }
-
-    private function createAction($manager, $player, $comp, $pts, $desc, $date): void
-    {
-        $action = new Action();
-        $action->setPlayer($player);
-        $action->setPoints($pts);
-        $action->setDescription($desc);
-        $action->setCompetition($comp);
-        $action->setDateAction(new \DateTimeImmutable($date));
-        $action->setStatus(ActionStatus::VALIDATED);
-        $player->addAction($action);
-        $manager->persist($action);
+        $io->success('Base de données synchronisée et scores calculés !');
     }
 }
