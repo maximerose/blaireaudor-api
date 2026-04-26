@@ -26,7 +26,6 @@ export const useInputUI = (
     'focus:outline-none focus:border-gold/40 focus:ring-4 focus:ring-gold/5',
     'disabled:opacity-60 disabled:cursor-not-allowed',
     align === 'center' ? 'text-center' : 'text-left',
-    icon ? 'pl-10' : 'pl-4',
     align === 'center' && icon ? 'pr-10' : 'pr-4',
     className,
   );

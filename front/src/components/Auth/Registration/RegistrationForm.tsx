@@ -130,7 +130,6 @@ const RegistrationForm = () => {
         disabled={isLoading}
         placeholder="••••••••"
         required
-        className="mt-4"
       />
 
       {/* 7. Bouton d'action principal */}

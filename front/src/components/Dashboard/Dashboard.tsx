@@ -49,7 +49,7 @@ const Dashboard = () => {
                 variant="caption"
                 className="text-gold uppercase font-bold tracking-widest opacity-60"
               >
-                🛡️ Gestion des arènes
+                🛡️ Gestion des compétitions
               </Text>
               <div className="h-px flex-1 bg-gold/10 ml-4" />
             </div>
@@ -91,7 +91,7 @@ const Dashboard = () => {
               <EmptyState
                 layout="dashed"
                 icon="🏜️"
-                title="Aucune arène en vue"
+                title="Aucune compétition en vue"
                 message="Crée ou rejoins une compétition pour commencer."
               />
             )}
