@@ -102,15 +102,15 @@ class Competition
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
     private Collection $actions;
 
-    #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\ManyToMany(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
     #[Groups(['competition:read', 'competition:admin', 'competition:write', 'user:read'])]
-    private ?Player $referee = null;
+    private Collection $referees;
 
     public function __construct()
     {
         $this->participations = new ArrayCollection();
         $this->actions = new ArrayCollection();
+        $this->referees = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -278,14 +278,29 @@ class Competition
         return $this->participations->count();
     }
 
-    public function getReferee(): ?Player
+    public function getReferees(): Collection
     {
-        return $this->referee;
+        return $this->referees;
     }
 
-    public function setReferee(?Player $referee): static
+    public function addReferee(Player $referee): static
     {
-        $this->referee = $referee;
+        if (!$this->referees->contains($referee)) {
+            $this->referees->add($referee);
+            $referee->addRefereedCompetition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReferee(Player $referee): static
+    {
+        if ($this->referees->removeElement($referee)) {
+            // set the owning side to null (unless already changed)
+            if ($referee->getRefereedCompetitions()->contains($this)) {
+                $referee->removeRefereedCompetition($this);
+            }
+        }
 
         return $this;
     }

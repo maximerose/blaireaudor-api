@@ -10,7 +10,7 @@ export interface Competition {
   fog_of_war: boolean;
   participants_count: number;
   created_by: User | string;
-  referee: Player | string;
+  referees: (Player | string)[];
 }
 
 export interface Participation {

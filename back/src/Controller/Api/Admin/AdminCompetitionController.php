@@ -83,10 +83,10 @@ final class AdminCompetitionController extends AbstractController
         );
 
         if ($referee) {
-            $competition->setReferee($referee);
+            $competition->addReferee($referee);
         } else {
             if ($user->getPlayer()) {
-                $competition->setReferee($user->getPlayer());
+                $competition->addReferee($user->getPlayer());
             }
         }
 

@@ -39,10 +39,10 @@ class CompetitionManager
             $competition->setJoinCode($this->generateSafeJoinCode());
         }
 
-        if (null === $competition->getReferee()) {
+        if ($competition->getReferees()->isEmpty()) {
             $owner = $competition->getCreatedBy();
             if ($owner instanceof User && null !== $owner->getPlayer()) {
-                $competition->setReferee($owner->getPlayer());
+                $competition->addReferee($owner->getPlayer());
             }
         }
     }

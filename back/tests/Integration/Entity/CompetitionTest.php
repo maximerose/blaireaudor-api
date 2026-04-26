@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Integration\Entity;
 
 use App\Entity\Competition;
-use App\Entity\Player;
-use App\Entity\User;
 use App\Factory\CompetitionFactory;
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
@@ -24,7 +22,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 class CompetitionTest extends KernelTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testCompetitionGensSlugAndCodeOnPersist(): void
     {
@@ -52,43 +51,40 @@ class CompetitionTest extends KernelTestCase
     }
 
     public function testManagerSetsReferee(): void
-{
-    self::bootKernel();
-    $container = static::getContainer();
-    $manager = $container->get(CompetitionManager::class);
-    
-    $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
-    
-    // On crée l'objet manuellement
-    $comp = new Competition();
-    $comp->setName('Test Manager');
-    $comp->setStartDate(new \DateTimeImmutable());
-    $comp->setCreatedBy($admin); // On simule le Blameable
+    {
+        self::bootKernel();
+        $container = static::getContainer();
+        $manager = $container->get(CompetitionManager::class);
 
-    // ON APPELLE LE MANAGER
-    $manager->prepare($comp);
+        $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
 
-    $this->assertSame($admin->getPlayer()->getId(), $comp->getReferee()->getId());
-}
+        $comp = new Competition();
+        $comp->setName('Test Manager');
+        $comp->setStartDate(new \DateTimeImmutable());
+        $comp->setCreatedBy($admin);
+
+        $manager->prepare($comp);
+
+        $this->assertTrue($comp->getReferees()->contains($admin->getPlayer()));
+    }
 
     public function testCompetitionSetsDefaultRefereeFromCreatorOnPersist(): void
     {
         self::bootKernel();
 
         $admin = UserFactory::createOne([
-            'player' => PlayerFactory::createOne(['display_name' => 'Arbitre'])
+            'player' => PlayerFactory::createOne(['display_name' => 'Arbitre']),
         ]);
 
         $competition = CompetitionFactory::createOne([
             'name' => 'Compétition arbitrée',
-            'createdBy' => $admin
+            'createdBy' => $admin,
         ]);
 
-        $this->assertNotNull($competition->getReferee(), "L'arbitre ne doit pas être vide");
-        $this->assertInstanceOf(Player::class, $competition->getReferee());
+        $this->assertCount(1, $competition->getReferees(), 'Il doit y avoir un arbitre');
         $this->assertSame(
             $admin->getPlayer()->getId(),
-            $competition->getReferee()->getId(),
+            $competition->getReferees()->first()->getId(),
             "L'arbitre doit être le profil Player du créateur par défaut"
         );
     }

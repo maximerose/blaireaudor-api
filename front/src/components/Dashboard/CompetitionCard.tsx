@@ -35,7 +35,9 @@ export const CompetitionCard = ({
   const getEntityId = (entity: any) =>
     typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
   const isCreator = user.id === getEntityId(competition.created_by);
-  const isReferee = user.player?.id === getEntityId(competition.referee);
+  const isReferee = competition.referees.some(
+    (ref) => getEntityId(ref) === user.player?.id,
+  );
   const isParticipant = !!participation;
   const isManager = isCreator || isReferee;
 

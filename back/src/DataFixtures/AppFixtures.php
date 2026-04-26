@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
             'joinCode' => 'BLAIREAU25',
             'fogOfWar' => false,
             'createdBy' => $admin,
-            'referee' => $players['Chloé'],
+            'referees' => [$players['Chloé']],
         ]);
 
         $comp2026 = CompetitionFactory::createOne([
@@ -84,11 +84,11 @@ class AppFixtures extends Fixture
             'joinCode' => 'BLAIREAU26',
             'fogOfWar' => false,
             'createdBy' => $admin,
-            'referee' => $players['Axel'],
+            'referees' => [$players['Axel']],
         ]);
 
-        $io->note('2025 : '.$comp2025->getName().' arbitré par '.$comp2025->getReferee()->getDisplayName());
-        $io->note('2026 : '.$comp2026->getName().' arbitré par '.$comp2026->getReferee()->getDisplayName());
+        $io->note('2025 : '.$comp2025->getName().' arbitré par '.$comp2025->getReferees()->first()->getDisplayName());
+        $io->note('2026 : '.$comp2026->getName().' arbitré par '.$comp2026->getReferees()->first()->getDisplayName());
 
         // --- 4. Inscriptions aux compétitions (Participations) ---
         $allParticipations = [];

@@ -73,7 +73,7 @@ class Player
     #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'player', orphanRemoval: true)]
     private Collection $actions;
 
-    #[ORM\OneToMany(mappedBy: 'referee', targetEntity: Competition::class)]
+    #[ORM\ManyToMany(mappedBy: 'referees', targetEntity: Competition::class)]
     #[Groups(['user:read'])]
     private Collection $refereedCompetitions;
 
@@ -205,5 +205,26 @@ class Player
     public function getRefereedCompetitions(): Collection
     {
         return $this->refereedCompetitions;
+    }
+
+    public function addRefereedCompetition(Competition $competition): static
+    {
+        if (!$this->refereedCompetitions->contains($competition)) {
+            $this->refereedCompetitions->add($competition);
+            $competition->addReferee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefereedCompetition(Competition $competition): static
+    {
+        if ($this->refereedCompetitions->removeElement($competition)) {
+            if ($competition->getReferees()->contains($this)) {
+                $competition->removeReferee($this);
+            }
+        }
+
+        return $this;
     }
 }
