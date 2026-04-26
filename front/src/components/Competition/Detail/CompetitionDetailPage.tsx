@@ -5,10 +5,11 @@ import {
   ActionTable,
   ReportActionForm,
   CompetitionHeader,
+  AdminSettings,
 } from '@/components/Competition';
 import { getDaysUntilStart } from '@/utils';
 import { Button, Badge, Card, Text, LoadingScreen } from '@/components/UI';
-import { useCompetitionDetailUI } from '@/hooks';
+import { useCompetitionDetailUI, useCompetitionAdmin } from '@/hooks';
 
 const CompetitionDetailPage = () => {
   const {
@@ -25,11 +26,19 @@ const CompetitionDetailPage = () => {
     maxDate,
     timeRemaining,
     isUrgent,
+    isReferee,
   } = useCompetitionDetailUI();
+
+  const { handleActionStatus, updateAction, updateCompetition, isUpdating } =
+    useCompetitionAdmin(competition?.id, refresh);
+  const pendingCount =
+    actions?.filter((a) => a.status === 'pending').length || 0;
 
   if (loading) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
     return <div className="text-white p-10">Compétition non trouvée.</div>;
+
+  const isFogActive = competition.fog_of_war && !isReferee;
 
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
@@ -54,6 +63,15 @@ const CompetitionDetailPage = () => {
           </Badge>
         )}
       </nav>
+
+      {isReferee && !competition.is_finished && (
+        <AdminSettings
+          competition={competition}
+          onUpdate={updateCompetition}
+          isLoading={isUpdating}
+          pendingCount={pendingCount}
+        />
+      )}
 
       <CompetitionHeader
         name={competition.name}
@@ -87,6 +105,7 @@ const CompetitionDetailPage = () => {
                 players={potentialTargets}
                 minDate={minDate}
                 maxDate={maxDate}
+                isAdmin={isReferee}
                 onCancel={() => setIsReporting(false)}
                 onSuccess={() => {
                   setIsReporting(false);
@@ -138,10 +157,20 @@ const CompetitionDetailPage = () => {
             </Text>
             <div className="h-px w-full bg-white/5" />
             <Badge variant="ghost" className="opacity-60 text-[8px]">
-              {actions?.length || 0} entrées
+              {isReferee
+                ? actions?.length || 0
+                : actions?.filter((a) => a.status !== 'rejected').length ||
+                  0}{' '}
+              entrées
             </Badge>
           </header>
-          <ActionTable actions={actions || []} />
+          <ActionTable
+            actions={actions || []}
+            isAdmin={isReferee}
+            hidePoints={isFogActive}
+            onUpdate={updateAction}
+            onStatusChange={handleActionStatus}
+          />
         </section>
       </div>
     </main>

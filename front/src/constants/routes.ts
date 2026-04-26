@@ -19,20 +19,22 @@ export const ROUTES = {
   // Usage: apiFetch(ROUTES.API_ACTIONS)
   // ---------------------------------------------------------
   API_ACTIONS: '/actions',
+  API_ACTIONS_DETAIL: (id: string) => `/actions/${id}`,
+  API_COMPETITION_ACTIONS: (id: string) => `/competitions/${id}/actions`,
+  API_COMPETITION_BY_CODE: (code: string) => `/competitions/by-code/${code}`,
+  API_COMPETITION_CREATE: '/admin/competition',
+  API_COMPETITION_DETAIL: (id: string) => `/competitions/${id}`,
+  API_COMPETITION_LEADERBOARD: (id: string) =>
+    `/competitions/${id}/leaderboard`,
   API_PLAYERS: '/players',
   API_PARTICIPATIONS: '/participations',
   API_COMPETITIONS: '/competitions',
-  API_COMPETITION_BY_CODE: (code: string) => `/competitions/by-code/${code}`,
-  API_COMPETITION_LEADERBOARD: (id: string) =>
-    `/competitions/${id}/leaderboard`,
-  API_COMPETITION_CREATE: '/admin/competition',
-  API_COMPETITION_ACTIONS: (id: string) => `/competitions/${id}/actions`,
   API_SEARCH_PLAYERS: (query: string) => `/search/players?displayName=${query}`,
   API_ADD_PLAYERS_TO_COMP: (id: string) =>
     `/admin/competition/${id}/add-players`,
   API_PARTICIPATION_DETAIL: (id: string) => `/participations/${id}`,
-  API_COMPETITION_DETAIL: (id: string) => `/competitions/${id}`,
   API_CHECK_USERNAME: (username: string) => `/check-username/${username}`,
+  API_USER_DETAIL: (id: string) => `/users/${id}`,
 
   // ---------------------------------------------------------
   // 3. GÉNÉRATEURS D'IRI (Pour les relations dans le JSON body)

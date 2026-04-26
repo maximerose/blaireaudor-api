@@ -22,7 +22,7 @@ trait BlameableTrait
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['competition:read', 'user:read'])]
+    #[Groups(['competition:read', 'user:read', 'action:read', 'participation:read'])]
     private ?User $createdBy = null;
 
     /**
@@ -55,5 +55,15 @@ trait BlameableTrait
         $this->updatedBy = $user;
 
         return $this;
+    }
+
+    #[Groups(['action:read', 'competition:read'])]
+    public function getCreatorName(): ?string
+    {
+        if ($this->createdBy->getPlayer()) {
+            return $this->createdBy->getPlayer()->getDisplayName();
+        }
+
+        return null;
     }
 }

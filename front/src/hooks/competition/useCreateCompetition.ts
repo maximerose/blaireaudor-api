@@ -20,6 +20,9 @@ export const useCreateCompetition = () => {
     try {
       const response = await apiFetch(ROUTES.API_COMPETITION_CREATE, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           name: data.name,
           start_date: formattedStartDate,

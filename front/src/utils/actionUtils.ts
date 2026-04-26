@@ -1,3 +1,5 @@
+import type { User } from '@/context/AuthContext';
+
 export interface Action {
   id: string;
   description: string;
@@ -5,6 +7,7 @@ export interface Action {
   date_action: string;
   player?: { display_name: string };
   status: string;
+  created_by: User | string;
 }
 
 /**

@@ -7,31 +7,34 @@ namespace App\EventListener;
 use App\Entity\Action;
 use App\Repository\ParticipationRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PostPersistEventArgs;
+use Doctrine\ORM\Event\PostRemoveEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\Mapping\PostPersist;
-use Doctrine\ORM\Mapping\PostRemove;
-use Doctrine\ORM\Mapping\PostUpdate;
 
 #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Action::class)]
 #[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: Action::class)]
+#[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Action::class)]
 class ActionScoreListener
 {
     public function __construct(
         private ParticipationRepository $participationRepository,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
-    public function postPersist(Action $action, PostPersist $event): void
+    public function postPersist(Action $action, PostPersistEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
 
-    public function postUpdate(Action $action, PostUpdate $event): void
+    public function postUpdate(Action $action, PostUpdateEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
 
-    public function postRemove(Action $action, PostRemove $event): void
+    public function postRemove(Action $action, PostRemoveEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
@@ -52,7 +55,7 @@ class ActionScoreListener
 
         if ($participation) {
             $participation->updateScore();
-            $this->participationRepository->save($participation, true);
+            $this->entityManager->flush();
         }
     }
 }

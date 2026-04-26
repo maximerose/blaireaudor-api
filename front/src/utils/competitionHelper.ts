@@ -27,20 +27,6 @@ export const formatFrenchDate = (
 };
 
 /**
- * Détermine si une compétition est terminée (Après 23:59:59 du jour de fin)
- */
-export const getIsFinished = (
-  endDateStr: string | null | undefined,
-): boolean => {
-  if (!endDateStr) return false;
-  const endDate = new Date(endDateStr);
-  if (isNaN(endDate.getTime())) return false;
-
-  endDate.setHours(23, 59, 59, 999);
-  return endDate < new Date();
-};
-
-/**
  * Génère le libellé de la période
  */
 export const getDisplayDateText = (
@@ -60,11 +46,8 @@ export const getDisplayDateText = (
   return 'Date inconnue';
 };
 
-export const canRevealScores = (
-  competition: Competition,
-  isFinished: boolean,
-): boolean => {
-  return isFinished || !competition.fog_of_war;
+export const canRevealScores = (competition: Competition): boolean => {
+  return competition.is_finished || !competition.fog_of_war;
 };
 
 /**
@@ -80,7 +63,6 @@ export const getCompetitionStatus = (
 
   if (now < start) return CompetitionStatus.UPCOMING;
   if (end) {
-    end.setHours(23, 59, 59, 999);
     if (now > end) return CompetitionStatus.FINISHED;
   }
 
@@ -120,7 +102,6 @@ export const getTimeRemaining = (
   if (!endDateStr) return null;
   const now = new Date();
   const end = new Date(endDateStr);
-  end.setHours(23, 59, 59, 999);
 
   const diffTime = end.getTime() - now.getTime();
   if (diffTime <= 0) return null;
@@ -136,7 +117,6 @@ export const getIsUrgent = (endDateStr: string | null | undefined): boolean => {
   if (!endDateStr) return false;
   const now = new Date();
   const end = new Date(endDateStr);
-  end.setHours(23, 59, 59, 999);
 
   const diffTime = end.getTime() - now.getTime();
   const diffHours = diffTime / (1000 * 60 * 60);

@@ -1,4 +1,4 @@
-import { Card, EmptyState } from '@/components/UI';
+import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 
@@ -19,6 +19,16 @@ export const Leaderboard = ({
     onRefresh,
   );
 
+  const isFogActive = competition.fog_of_war && !isAdmin;
+
+  const displayData = isFogActive
+    ? [...enrichedData].sort((a, b) =>
+        (a.player.display_name || '').localeCompare(
+          b.player.display_name || '',
+        ),
+      )
+    : enrichedData;
+
   return (
     <Card
       variant="dark"
@@ -26,12 +36,23 @@ export const Leaderboard = ({
       role="region"
       aria-label={`Classement de la compétition : ${competition?.name || 'en cours'}`}
     >
+      {isFogActive && (
+        <div className="bg-gold/5 px-4 py-2 border-b border-gold/10 flex items-center justify-center gap-2">
+          <Text
+            variant="micro"
+            className="text-gold uppercase font-black tracking-widest animate-pulse"
+          >
+            🌫️ Brouillard de guerre actif
+          </Text>
+        </div>
+      )}
       <div className="divide-y divide-white/5" role="list">
-        {enrichedData.map((item) => (
+        {displayData.map((item) => (
           <LeaderboardRow
             key={item.id}
             item={item}
             isAdmin={isAdmin}
+            isFogActive={isFogActive}
             role="listitem"
             onDelete={() => handleDelete(item)}
           />

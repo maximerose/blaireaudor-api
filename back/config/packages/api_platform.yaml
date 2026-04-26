@@ -6,3 +6,7 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
     name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+    formats:
+        jsonld: ['application/ld+json']
+    patch_formats:
+        json: ['application/merge-patch+json']

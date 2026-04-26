@@ -82,6 +82,12 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
       joinCode: validatedCode,
     });
 
+    // LE DUMP FRONT
+    console.log('PAYLOAD ENVOYÉ :', {
+      ...formData,
+      joinCode: validatedCode,
+    });
+
     if (!competition) return;
 
     const existingIds = formData.players

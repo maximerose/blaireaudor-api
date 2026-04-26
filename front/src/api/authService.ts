@@ -6,7 +6,7 @@ export const authService = {
    * Envoie les données d'inscription au backend
    */
   register: async (formData: any) => {
-    const response = await apiFetch('/register', {
+    const response = await apiFetch(ROUTES.NAV_REGISTER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),

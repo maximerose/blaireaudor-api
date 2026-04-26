@@ -6,16 +6,20 @@ import { useRankedScoreUI } from '@/hooks';
 interface RankedScoreProps extends React.HTMLAttributes<HTMLDivElement> {
   score: number | string;
   rank: number;
+  isFogActive?: boolean;
 }
 
 export const RankedScore = ({
   score,
   rank,
+  isFogActive,
   className,
   ...props
 }: RankedScoreProps) => {
-  const { ariaLabel, scoreClasses } = useRankedScoreUI(score, rank);
-
+  const { ariaLabel, scoreClasses } = useRankedScoreUI(
+    score,
+    isFogActive ? 4 : rank,
+  );
   return (
     <div
       className={cn('flex items-baseline gap-1 tabular-nums', className)}

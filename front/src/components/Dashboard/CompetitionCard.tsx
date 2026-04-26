@@ -5,7 +5,6 @@ import {
 } from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
 import {
-  getIsFinished,
   getDisplayDateText,
   canRevealScores,
   getCompetitionStatus,
@@ -20,6 +19,7 @@ import {
   Text,
   RoleBadge,
 } from '@/components/UI';
+import { useMemo } from 'react';
 
 interface CompetitionCardProps {
   participation?: Participation;
@@ -35,16 +35,19 @@ export const CompetitionCard = ({
   const getEntityId = (entity: any) =>
     typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
   const isCreator = user.id === getEntityId(competition.created_by);
-  const isReferee = competition.referees.some(
-    (ref) => getEntityId(ref) === user.player?.id,
-  );
+  const isReferee = useMemo(() => {
+    if (!competition.referees) return false;
+    return competition.referees.some((ref: any) => {
+      const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
+      return refId === user.player?.id;
+    });
+  }, [competition, user]);
   const isParticipant = !!participation;
   const isManager = isCreator || isReferee;
 
   const score = participation?.score;
   const rank = participation?.rank;
 
-  const isFinished = getIsFinished(competition.end_date);
   const dateText = getDisplayDateText(
     competition.start_date,
     competition.end_date,
@@ -54,7 +57,7 @@ export const CompetitionCard = ({
     competition.end_date,
   );
 
-  const shouldReveal = canRevealScores(competition, isFinished);
+  const shouldReveal = canRevealScores(competition);
   const hasNoParticipants = competition.participants_count === 0;
 
   return (
@@ -184,13 +187,15 @@ export const CompetitionCard = ({
 
         <Button
           to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
-          variant={isFinished || isManager ? 'primary' : 'secondary'}
+          variant={
+            competition.is_finished || isManager ? 'primary' : 'secondary'
+          }
           size="sm"
           fullWidth
           className="sm:w-auto"
           aria-label={`Entrer dans l'arène ${competition.name}`}
         >
-          {isFinished
+          {competition.is_finished
             ? 'Voir le classement'
             : isManager
               ? 'Gérer le tournoi'

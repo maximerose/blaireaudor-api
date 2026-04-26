@@ -13,6 +13,7 @@ export const useReportAction = (
   competitionId: string,
   players: { id: string; display_name: string }[],
   onSuccess: () => void,
+  isAdmin: boolean,
 ) => {
   const [loading, setLoading] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
@@ -71,6 +72,7 @@ export const useReportAction = (
           points: Number(formData.points),
           player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
           competition: ROUTES.IRI_COMPETITION(competitionId),
+          status: isAdmin ? 'validated' : 'pending',
         }),
       });
 

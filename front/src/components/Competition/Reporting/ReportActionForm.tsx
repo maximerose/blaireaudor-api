@@ -14,6 +14,7 @@ interface ReportActionFormProps {
   players: { id: string; display_name: string }[];
   minDate: string;
   maxDate: string;
+  isAdmin: boolean;
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -23,6 +24,7 @@ export const ReportActionForm = ({
   players,
   minDate,
   maxDate,
+  isAdmin,
   onSuccess,
   onCancel,
 }: ReportActionFormProps) => {
@@ -40,7 +42,7 @@ export const ReportActionForm = ({
     searchContainerRef,
     filteredPlayers,
     selectPlayer,
-  } = useReportAction(competitionId, players, onSuccess);
+  } = useReportAction(competitionId, players, onSuccess, isAdmin);
 
   return (
     <div

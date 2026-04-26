@@ -7,16 +7,19 @@ interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   item: any;
   onDelete: () => void;
   isAdmin: boolean;
+  isFogActive: boolean;
 }
 
 export const LeaderboardRow = ({
   item,
   onDelete,
   isAdmin,
+  isFogActive,
   className,
   ...props
 }: LeaderboardRowProps) => {
   const { canDelete, medal, playerName } = useLeaderboardRow(item, isAdmin);
+  const showRealStats = !isFogActive;
 
   return (
     <div
@@ -24,22 +27,30 @@ export const LeaderboardRow = ({
       className={cn(
         'grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-default group',
         item.rank <= 3 ? 'bg-white/2' : 'bg-transparent',
+        isFogActive && !item.isMe && 'opacity-60',
         className,
       )}
     >
       <div className="col-span-2 flex justify-center">
-        {medal ? (
-          <span
-            className={cn(getMedalStyle(item.rank), 'text-2xl animate-fade-in')}
-            aria-hidden="true"
-          >
-            {medal}
-          </span>
+        {showRealStats ? (
+          medal ? (
+            <span
+              className={cn(
+                getMedalStyle(item.rank),
+                'text-2xl animate-fade-in',
+              )}
+              aria-hidden="true"
+            >
+              {medal}
+            </span>
+          ) : (
+            <Badge variant="ghost">
+              <span className="sr-only">Rang </span>
+              {item.rank}
+            </Badge>
+          )
         ) : (
-          <Badge variant="ghost">
-            <span className="sr-only">Rang </span>
-            {item.rank}
-          </Badge>
+          <Text className="opacity-20">?</Text>
         )}
       </div>
 
@@ -63,7 +74,7 @@ export const LeaderboardRow = ({
             )}
           </div>
 
-          {item.isExAequo && (
+          {showRealStats && item.isExAequo && (
             <Text variant="micro" className="text-white/20 italic">
               Ex-æquo
             </Text>
@@ -88,7 +99,20 @@ export const LeaderboardRow = ({
         className="col-span-3 flex items-center justify-end"
         aria-label={`Score : ${item.score} points`}
       >
-        <RankedScore score={item.score} rank={item.rank} />
+        {showRealStats || item.isMe ? (
+          <RankedScore
+            score={item.score}
+            rank={item.rank}
+            isFogActive={isFogActive}
+          />
+        ) : (
+          <div className="flex items-center gap-1 opacity-20">
+            <Text variant="mono" className="text-xs">
+              ??
+            </Text>
+            <Text className="text-[8px] uppercase">pts</Text>
+          </div>
+        )}
       </div>
     </div>
   );

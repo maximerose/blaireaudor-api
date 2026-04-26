@@ -23,7 +23,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['action:read']],
+    denormalizationContext: ['groups' => ['action:write']]
+)]
 class Action
 {
     use UuidTrait;
@@ -37,13 +40,13 @@ class Action
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read', 'action:write'])]
     private ?string $description = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\Type(type: 'integer')]
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read', 'action:write'])]
     private ?int $points = null;
 
     /**
@@ -51,7 +54,7 @@ class Action
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read', 'action:write'])]
     private ?Player $player = null;
 
     /**
@@ -59,17 +62,18 @@ class Action
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['action:write', 'competition:read', 'action:read'])]
     private ?Competition $competition = null;
 
     /**
      * @var ActionStatus état actuel de l'action (par défaut : PENDING)
      */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read', 'action:write'])]
     private ActionStatus $status = ActionStatus::PENDING;
 
     #[ORM\Column(nullable: false)]
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read', 'action:write'])]
     private \DateTimeImmutable $dateAction;
 
     public function getDescription(): ?string

@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
@@ -45,6 +46,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             normalizationContext: ['groups' => ['competition:read']],
             name: 'get_by_code'
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['competition:write']],
+            normalizationContext: ['groups' => ['competition:read']]
         ),
         new GetCollection(normalizationContext: ['groups' => 'competition:read']),
         new Delete(),
@@ -168,6 +173,10 @@ class Competition
 
     public function setEndDate(?\DateTimeImmutable $endDate): static
     {
+        if ($endDate && '00:00:00' === $endDate->format('H:i:s')) {
+            $endDate = $endDate->setTime(23, 59, 59);
+        }
+
         $this->endDate = $endDate;
 
         return $this;

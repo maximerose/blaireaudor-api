@@ -33,7 +33,7 @@ export const CompetitionRecruitmentStep = ({
       <div className="relative">
         <Input
           autoFocus
-          align="left"
+          align="center"
           placeholder="Chercher ou créer un joueur..."
           value={searchTerm}
           onChange={(e: any) => {

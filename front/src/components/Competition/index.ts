@@ -1,3 +1,4 @@
+export * from './Admin/AdminSettings';
 export * from './Detail/ActionRow';
 export * from './Detail/ActionTable';
 export * from './Detail/CompetitionDetailPage';

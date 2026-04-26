@@ -52,7 +52,7 @@ class CompetitionManager
      * * Si aucun code d'invitation n'est fourni, un code sécurisé et unique
      * est automatiquement généré.
      */
-    public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate = null, ?string $customJoinCode = null, ?bool $fogOfWar = false): Competition
+    public function createCompetition(string $name, \DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate = null, ?string $customJoinCode = null, ?bool $fogOfWar = true): Competition
     {
         $competition = new Competition();
 
