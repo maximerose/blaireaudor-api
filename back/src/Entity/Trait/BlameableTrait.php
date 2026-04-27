@@ -57,13 +57,13 @@ trait BlameableTrait
         return $this;
     }
 
-    #[Groups(['action:read', 'competition:read'])]
-    public function getCreatorName(): ?string
-    {
-        if ($this->createdBy->getPlayer()) {
-            return $this->createdBy->getPlayer()->getDisplayName();
-        }
+    // #[Groups(['action:read', 'competition:read'])]
+    // public function getCreatorName(): ?string
+    // {
+    //     if ($this->createdBy->getPlayer()) {
+    //         return $this->createdBy->getPlayer()->getDisplayName();
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 }

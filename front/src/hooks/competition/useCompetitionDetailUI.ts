@@ -1,12 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import {
-  useAuth,
-  useCompetitionData,
-  useCompetitionDelete,
-  useReportDateLimits,
-} from '@/hooks';
-import { getTimeRemaining, getIsUrgent } from '@/utils';
+import { useAuth, useCompetitionData, useCompetitionDelete } from '@/hooks';
 
 export const useCompetitionDetailUI = () => {
   const { user } = useAuth();
@@ -15,7 +9,6 @@ export const useCompetitionDetailUI = () => {
     useCompetitionData(code || '');
   const { deleteCompetition } = useCompetitionDelete();
   const [isReporting, setIsReporting] = useState(false);
-  const { minDate, maxDate } = useReportDateLimits(competition);
 
   const potentialTargets = useMemo(
     () =>
@@ -25,11 +18,6 @@ export const useCompetitionDetailUI = () => {
       })) || [],
     [leaderboard],
   );
-
-  const timeRemaining = competition
-    ? getTimeRemaining(competition.end_date)
-    : null;
-  const isUrgent = competition ? getIsUrgent(competition.end_date) : false;
 
   const isReferee = useMemo(() => {
     if (!competition || !user) return false;
@@ -50,10 +38,6 @@ export const useCompetitionDetailUI = () => {
     isReporting,
     setIsReporting,
     potentialTargets,
-    minDate,
-    maxDate,
-    timeRemaining,
-    isUrgent,
     isReferee,
   };
 };

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '@/api/config';
 import { ROUTES } from '@/constants/routes';
+import type { Competition } from '@/context/AuthContext';
 
 interface ReportData {
   targetPlayerId: string;
@@ -10,7 +11,7 @@ interface ReportData {
 }
 
 export const useReportAction = (
-  competitionId: string,
+  competition: Competition,
   players: { id: string; display_name: string }[],
   onSuccess: () => void,
   isAdmin: boolean,
@@ -24,6 +25,23 @@ export const useReportAction = (
     points: 10,
     dateAction: new Date().toISOString().split('T')[0],
   });
+
+  const dateLimits = useMemo(() => {
+    if (!competition) return { minDate: '', maxDate: '' };
+
+    const today = new Date().toISOString().split('T')[0];
+    const start = competition.start_date.split('T')[0];
+    const end = competition.end_date
+      ? competition.end_date.split('T')[0]
+      : null;
+
+    if (start > today) return { minDate: start, maxDate: start };
+
+    return {
+      minDate: start,
+      maxDate: end && end < today ? end : today,
+    };
+  }, [competition]);
 
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -71,7 +89,7 @@ export const useReportAction = (
           dateAction: formData.dateAction,
           points: Number(formData.points),
           player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
-          competition: ROUTES.IRI_COMPETITION(competitionId),
+          competition: ROUTES.IRI_COMPETITION(competition.id),
           status: isAdmin ? 'validated' : 'pending',
         }),
       });
@@ -103,6 +121,7 @@ export const useReportAction = (
   return {
     formData,
     loading,
+    dateLimits,
     handleChange,
     submitReport,
     isSuccess,

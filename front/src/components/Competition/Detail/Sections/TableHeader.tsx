@@ -1,0 +1,84 @@
+import { Text } from '@/components/UI';
+import { cn } from '@/utils';
+
+const TABLE_COLUMNS = [
+  {
+    id: 'date_action',
+    label: 'Date',
+    colSpan: 'col-span-3 md:col-span-2',
+    align: 'text-left',
+  },
+  {
+    id: 'player',
+    label: 'Joueur',
+    colSpan: 'col-span-6 md:col-span-3',
+    align: 'text-center',
+  },
+  {
+    id: 'description',
+    label: 'Action',
+    colSpan: 'hidden md:block md:col-span-5',
+    align: 'text-center',
+    noSort: true,
+  },
+  {
+    id: 'points',
+    label: 'Points',
+    colSpan: 'col-span-3 md:col-span-2',
+    align: 'text-right',
+  },
+];
+
+interface TableHeaderProps {
+  onSort: (field: string) => void;
+  getAriaSort: (field: string) => 'ascending' | 'descending' | undefined;
+  getSortIndicator: (field: string) => { char: string; className: string };
+}
+
+export const TableHeader = ({
+  onSort,
+  getAriaSort,
+  getSortIndicator,
+}: TableHeaderProps) => (
+  <div className="grid grid-cols-12 gap-2 px-6 py-2 bg-white/5 rounded-t-3xl border-x border-t border-white/10 mb-0">
+    <div role="row" className="contents">
+      {TABLE_COLUMNS.map((col) => {
+        const indicator = getSortIndicator(col.id);
+        return (
+          <div
+            key={col.id}
+            className={col.colSpan}
+            role="columnheader"
+            aria-sort={col.noSort ? undefined : getAriaSort(col.id)}
+          >
+            {!col.noSort ? (
+              <button
+                className={cn(
+                  'w-full flex items-center group transition-default hover:text-gold',
+                  col.align === 'text-center' && 'justify-center',
+                  col.align === 'text-right' && 'justify-end',
+                )}
+                onClick={() => onSort(col.id)}
+              >
+                <Text
+                  variant="micro"
+                  className="text-inherit opacity-60 uppercase font-black tracking-widest"
+                >
+                  {col.label}
+                </Text>
+                <span className={indicator.className}>{indicator.char}</span>
+              </button>
+            ) : (
+              <Text
+                variant="micro"
+                className="opacity-60 uppercase font-black tracking-widest text-center"
+              >
+                {col.label}
+              </Text>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);

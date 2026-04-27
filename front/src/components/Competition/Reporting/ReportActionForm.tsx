@@ -5,25 +5,22 @@ import {
   ReportSuccessView,
   PlayerDropdownList,
 } from '@/components/Competition';
+import type { Competition } from '@/context/AuthContext';
 
 const HIGH_CONTRAST_INPUT =
   'bg-white/[0.08] border-white/20 placeholder:text-white/20 focus:bg-white/[0.12] focus:border-gold';
 
 interface ReportActionFormProps {
-  competitionId: string;
+  competition: Competition;
   players: { id: string; display_name: string }[];
-  minDate: string;
-  maxDate: string;
   isAdmin: boolean;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
 export const ReportActionForm = ({
-  competitionId,
+  competition,
   players,
-  minDate,
-  maxDate,
   isAdmin,
   onSuccess,
   onCancel,
@@ -31,6 +28,7 @@ export const ReportActionForm = ({
   const {
     formData,
     loading,
+    dateLimits,
     handleChange,
     submitReport,
     isSuccess,
@@ -42,7 +40,7 @@ export const ReportActionForm = ({
     searchContainerRef,
     filteredPlayers,
     selectPlayer,
-  } = useReportAction(competitionId, players, onSuccess, isAdmin);
+  } = useReportAction(competition, players, onSuccess, isAdmin);
 
   return (
     <div
@@ -144,8 +142,8 @@ export const ReportActionForm = ({
                 <Input
                   label="Date de l'action"
                   type="date"
-                  min={minDate}
-                  max={maxDate}
+                  min={dateLimits.minDate}
+                  max={dateLimits.maxDate}
                   value={formData.dateAction}
                   onChange={(e: any) =>
                     handleChange('dateAction', e.target.value)

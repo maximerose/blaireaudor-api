@@ -1,9 +1,9 @@
 import { JoinCompetitionModal } from '@/components/Competition';
-import { Navbar, Button, Text, EmptyState } from '@/components/UI';
+import { Navbar, Button, EmptyState } from '@/components/UI';
 import { ROUTES } from '@/constants/routes';
 import { useDashboardUI } from '@/hooks';
 import { DashboardHeader } from './DashboardHeader';
-import { CompetitionCard } from './CompetitionCard';
+import { CompetitionListSection } from './CompetitionListSection';
 
 const Dashboard = () => {
   const {
@@ -13,7 +13,8 @@ const Dashboard = () => {
     managedCompetitions,
     stats,
     isJoinModalOpen,
-    setIsJoinModalOpen,
+    openJoinModal,
+    closeJoinModal,
   } = useDashboardUI();
 
   if (!user) return null;
@@ -36,73 +37,40 @@ const Dashboard = () => {
           <Button to={ROUTES.NAV_ADMIN_CREATE_COMPETITION} variant="primary">
             + Créer une compétition
           </Button>
-          <Button onClick={() => setIsJoinModalOpen(true)} variant="secondary">
+          <Button onClick={openJoinModal} variant="secondary">
             Rejoindre une compétition
           </Button>
         </section>
 
         {/* --- SECTION GESTION (Admin / Arbitre) --- */}
         {managedCompetitions.length > 0 && (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between px-1">
-              <Text
-                variant="caption"
-                className="text-gold uppercase font-bold tracking-widest opacity-60"
-              >
-                🛡️ Gestion des compétitions
-              </Text>
-              <div className="h-px flex-1 bg-gold/10 ml-4" />
-            </div>
-            <div className="grid gap-3">
-              {managedCompetitions.map((comp) => (
-                <CompetitionCard
-                  key={comp.join_code}
-                  competition={comp}
-                  user={user}
-                />
-              ))}
-            </div>
-          </section>
+          <CompetitionListSection
+            title="🛡️ Gestion des compétitions"
+            competitions={managedCompetitions}
+            user={user}
+            variant="gold"
+          />
         )}
 
         {/* --- SECTION JOUEUR --- */}
-        <section className="space-y-4" aria-labelledby="participations-title">
-          <div className="flex items-center justify-between px-1">
-            <Text
-              variant="caption"
-              className="opacity-40 uppercase font-bold tracking-widest"
-            >
-              Tes Participations
-            </Text>
-            <div className="h-px flex-1 bg-white/5 ml-4" />
-          </div>
-
-          <div className="grid gap-3">
-            {participations.length > 0 ? (
-              sortedParticipations.map((p) => (
-                <CompetitionCard
-                  key={p.competition.join_code}
-                  participation={p}
-                  competition={p.competition}
-                  user={user}
-                />
-              ))
-            ) : (
-              <EmptyState
-                layout="dashed"
-                icon="🏜️"
-                title="Aucune compétition en vue"
-                message="Crée ou rejoins une compétition pour commencer."
-              />
-            )}
-          </div>
-        </section>
+        <CompetitionListSection
+          title="Tes Participations"
+          participations={sortedParticipations}
+          user={user}
+          emptyState={
+            <EmptyState
+              layout="dashed"
+              icon="🏜️"
+              title="Aucune compétition"
+              message="Rejoins une arène !"
+            />
+          }
+        />
 
         {isJoinModalOpen && (
           <JoinCompetitionModal
-            onClose={() => setIsJoinModalOpen(false)}
+            onClose={closeJoinModal}
             onJoined={(code) => {
-              setIsJoinModalOpen(false);
               window.location.href = ROUTES.NAV_COMPETITION_DETAIL(code);
             }}
           />

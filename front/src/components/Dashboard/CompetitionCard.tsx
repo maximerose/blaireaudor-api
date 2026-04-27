@@ -4,12 +4,7 @@ import {
   type User,
 } from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
-import {
-  getDisplayDateText,
-  canRevealScores,
-  getCompetitionStatus,
-  cn,
-} from '@/utils';
+import { cn } from '@/utils';
 import { StatusBadge } from '@/components/Competition';
 import {
   RankedScore,
@@ -19,7 +14,7 @@ import {
   Text,
   RoleBadge,
 } from '@/components/UI';
-import { useMemo } from 'react';
+import { useCompetitionCard } from '@/hooks';
 
 interface CompetitionCardProps {
   participation?: Participation;
@@ -32,33 +27,18 @@ export const CompetitionCard = ({
   competition,
   user,
 }: CompetitionCardProps) => {
-  const getEntityId = (entity: any) =>
-    typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
-  const isCreator = user.id === getEntityId(competition.created_by);
-  const isReferee = useMemo(() => {
-    if (!competition.referees) return false;
-    return competition.referees.some((ref: any) => {
-      const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-      return refId === user.player?.id;
-    });
-  }, [competition, user]);
-  const isParticipant = !!participation;
-  const isManager = isCreator || isReferee;
-
-  const score = participation?.score;
-  const rank = participation?.rank;
-
-  const dateText = getDisplayDateText(
-    competition.start_date,
-    competition.end_date,
-  );
-  const status = getCompetitionStatus(
-    competition.start_date,
-    competition.end_date,
-  );
-
-  const shouldReveal = canRevealScores(competition);
-  const hasNoParticipants = competition.participants_count === 0;
+  const {
+    isCreator,
+    isReferee,
+    isManager,
+    isParticipant,
+    status,
+    dateText,
+    shouldReveal,
+    score,
+    rank,
+    hasNoParticipants,
+  } = useCompetitionCard(competition, participation, user);
 
   return (
     <Card

@@ -3,9 +3,11 @@ export * from './auth/useLogin';
 export * from './auth/useLogout';
 export * from './auth/useRegistration';
 
+export * from './competition/useActionRowInteraction';
 export * from './competition/useActionTable';
 export * from './competition/useAdminSettings';
 export * from './competition/useCompetitionAdmin';
+export * from './competition/useCompetitionCard';
 export * from './competition/useCompetitionData';
 export * from './competition/useCompetitionDelete';
 export * from './competition/useCompetitionDetailUI';
@@ -21,7 +23,7 @@ export * from './competition/useLeaderboardUI';
 export * from './competition/useParticipationDelete';
 export * from './competition/usePlayerSearch';
 export * from './competition/useReportAction';
-export * from './competition/useReportDateLimits';
+export * from './competition/useReporting';
 
 export * from './dashboard/useDashboardSort';
 export * from './dashboard/useDashboardUI';

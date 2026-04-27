@@ -7,8 +7,10 @@ export interface Competition {
   start_date: string;
   end_date: string;
   is_finished: boolean;
+  is_urgent: boolean;
   fog_of_war: boolean;
   participants_count: number;
+  has_started: boolean;
   created_by: User | string;
   referees: (Player | string)[];
 }

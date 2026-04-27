@@ -97,31 +97,31 @@ export const getDaysUntilStart = (startDate: string): string => {
 };
 
 export const getTimeRemaining = (
-  endDateStr: string | null | undefined,
+  competition: Competition | null | undefined,
 ): string | null => {
-  if (!endDateStr) return null;
-  const now = new Date();
-  const end = new Date(endDateStr);
+  if (
+    !competition?.end_date ||
+    !competition?.has_started ||
+    competition?.is_finished
+  ) {
+    return null;
+  }
 
+  const now = new Date();
+  const end = new Date(competition.end_date);
   const diffTime = end.getTime() - now.getTime();
+
   if (diffTime <= 0) return null;
 
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
 
   if (diffDays >= 2) return `dans ${diffDays} jours`;
   if (diffDays === 1) return `demain`;
-  return `aujourd'hui`;
-};
+  if (diffHours > 0) return `dans ${diffHours}h`;
 
-export const getIsUrgent = (endDateStr: string | null | undefined): boolean => {
-  if (!endDateStr) return false;
-  const now = new Date();
-  const end = new Date(endDateStr);
-
-  const diffTime = end.getTime() - now.getTime();
-  const diffHours = diffTime / (1000 * 60 * 60);
-
-  return diffHours > 0 && diffHours < 24;
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+  return `dans ${diffMinutes} min`;
 };
 
 export const formatShortDate = (dateString: string | Date): string => {

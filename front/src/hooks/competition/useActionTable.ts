@@ -1,28 +1,26 @@
+// front/src/hooks/competition/useActionTable.ts
 import { useState, useMemo } from 'react';
+import { useAuth } from '@/hooks';
 import { type Action, getUniqueDates } from '@/utils';
 
 export const useActionTable = (initialActions: Action[]) => {
+  const { user } = useAuth();
   const [sortField, setSortField] = useState<string>('date_action');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
+  const getEntityId = (entity: any) =>
+    typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
+
+  // 1. Dates disponibles pour le filtre
   const availableDates = useMemo(
     () => getUniqueDates(initialActions),
     [initialActions],
   );
 
-  const handleSort = (field: string) => {
-    if (field === sortField) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('desc');
-    }
-  };
-
-  const sortedActions = useMemo(() => {
+  // 2. Tri et filtrage par date
+  const processedActions = useMemo(() => {
     let result = [...initialActions];
-
     if (selectedDate) {
       result = result.filter((a) => a.date_action.startsWith(selectedDate));
     }
@@ -36,13 +34,33 @@ export const useActionTable = (initialActions: Action[]) => {
         sortField === 'player'
           ? b.player?.display_name || ''
           : String(b[sortField] || '');
-      const comparison = valA.localeCompare(valB, 'fr', {
-        sensitivity: 'base',
-      });
-
-      return sortOrder === 'asc' ? comparison : -comparison;
+      const comp = valA.localeCompare(valB, 'fr', { sensitivity: 'base' });
+      return sortOrder === 'asc' ? comp : -comp;
     });
   }, [initialActions, sortField, sortOrder, selectedDate]);
+
+  // 3. Répartition par catégories (Le cœur du YAGNI Logic)
+  const categories = useMemo(() => {
+    const pending = processedActions.filter((a) => a.status === 'pending');
+
+    return {
+      myPending: pending.filter((a) => getEntityId(a.created_by) === user?.id),
+      othersPending: pending.filter(
+        (a) => getEntityId(a.created_by) !== user?.id,
+      ),
+      validated: processedActions.filter((a) => a.status === 'validated'),
+      rejected: processedActions.filter((a) => a.status === 'rejected'),
+      totalPending: pending.length,
+    };
+  }, [processedActions, user]);
+
+  const handleSort = (field: string) => {
+    if (field === sortField) setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    else {
+      setSortField(field);
+      setSortOrder('desc');
+    }
+  };
 
   const getAriaSort = (field: string) => {
     if (sortField !== field) return undefined;
@@ -60,14 +78,13 @@ export const useActionTable = (initialActions: Action[]) => {
   };
 
   return {
-    sortedActions,
-    sortField,
-    sortOrder,
-    handleSort,
+    categories,
     selectedDate,
     setSelectedDate,
     availableDates,
+    handleSort,
     getAriaSort,
     getSortIndicator,
+    sortInfo: { field: sortField, order: sortOrder },
   };
 };

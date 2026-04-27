@@ -60,6 +60,7 @@ export const useDashboardUI = () => {
     managedCompetitions,
     stats,
     isJoinModalOpen,
-    setIsJoinModalOpen,
+    openJoinModal: () => setIsJoinModalOpen(true),
+    closeJoinModal: () => setIsJoinModalOpen(false),
   };
 };
