@@ -62,7 +62,7 @@ class Action
      */
     #[ORM\ManyToOne(inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:write', 'competition:read', 'action:read'])]
+    #[Groups(['action:write'])]
     private ?Competition $competition = null;
 
     /**

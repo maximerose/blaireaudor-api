@@ -35,13 +35,15 @@ export const ActionRowDisplayMode = ({
         >
           "{action.description}"
         </Text>
-        <Text
-          variant="body"
-          className="text-[8px] md:text-[10px] text-white/50"
-        >
-          Dénoncé par :{' '}
-          <span className="text-info-bright">{action.creator_name}</span>
-        </Text>
+        {action.creator_name && (
+          <Text
+            variant="body"
+            className="text-[8px] md:text-[10px] text-white/50"
+          >
+            Dénoncé par :{' '}
+            <span className="text-info-bright">{action.creator_name}</span>
+          </Text>
+        )}
 
         {/* Boutons de Modération */}
         {isPending && isAdmin && (
