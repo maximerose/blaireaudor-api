@@ -1,4 +1,6 @@
 export * from './Admin/AdminSettings';
+export * from './Admin/CloseCompetitionAction';
+export * from './Admin/FogOfWarToggle';
 export * from './Detail/ActionRow';
 export * from './Detail/ActionTable';
 export * from './Detail/CompetitionDetailPage';

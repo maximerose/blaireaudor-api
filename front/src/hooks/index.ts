@@ -4,6 +4,7 @@ export * from './auth/useLogout';
 export * from './auth/useRegistration';
 
 export * from './competition/useActionTable';
+export * from './competition/useAdminSettings';
 export * from './competition/useCompetitionAdmin';
 export * from './competition/useCompetitionData';
 export * from './competition/useCompetitionDelete';
