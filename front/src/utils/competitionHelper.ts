@@ -1,4 +1,4 @@
-import { type Competition } from '@/context/AuthContext';
+import { type Competition, type Player } from '@/context/AuthContext';
 
 export const CompetitionStatus = {
   ACTIVE: 'ACTIVE',
@@ -131,4 +131,102 @@ export const formatShortDate = (dateString: string | Date): string => {
       month: 'short',
     })
     .replace('.', '');
+};
+
+// ============================================================================
+// GESTION DES RÔLES ET DES ARBITRES
+// ============================================================================
+
+/**
+ * Extrait et formate la liste des arbitres d'une compétition
+ */
+export const getCompetitionReferees = (competition: any) => {
+  if (!competition?.referees) return [];
+
+  return competition.referees.map((ref: any) => {
+    const id = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
+    const name = typeof ref === 'string'
+      ? 'Arbitre'
+      : (ref.display_name || ref.displayName || ref.username || 'Arbitre');
+
+    return { id, name };
+  });
+};
+
+/**
+ * Vérifie si un joueur spécifique est arbitre de la compétition
+ */
+export const isPlayerReferee = (competition: any, playerId: string | undefined): boolean => {
+  if (!competition?.referees || !playerId) return false;
+
+  return competition.referees.some((ref: any) => {
+    const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
+    return refId === playerId;
+  });
+};
+
+/**
+ * Vérifie si un joueur spécifique est créateur de la compétition
+ */
+export const isPlayerCreator = (competition: any, player: Player | undefined): boolean => {
+  if (!competition || !player) return false;
+
+  const creator = competition.created_by || competition.createdBy;
+  if (!creator) return false;
+
+  const creatorId = typeof creator === 'string' ? creator.split('/').pop() : creator.id;
+  console.log(player);
+
+  if (!player.associated_user) return false;
+
+  return creatorId === player.associated_user?.id;
+}
+
+/**
+ * Vérifie si un utilisateur est le créateur de la compétition
+ */
+export const isCompetitionCreator = (competition: any, user: any): boolean => {
+  if (!competition || !user) return false;
+
+  const creator = competition.createdBy || competition.created_by;
+  if (!creator) return false;
+
+  const creatorId = typeof creator === 'string' ? creator.split('/').pop() : creator.id;
+
+  return creatorId === user.id || creator === user.username || creator === `/api/users/${user.id}`;
+};
+
+/**
+ * Résout le nom du créateur de façon exhaustive
+ */
+export const resolveCreatorName = (
+  competition: any,
+  leaderboard: any[] = [],
+  currentUser: any = null
+): string | null => {
+  if (!competition) return null;
+
+  const apiName = competition.creatorName || competition.creator_name;
+  if (apiName) return apiName;
+
+  const creator = competition.createdBy || competition.created_by;
+  if (!creator) return null;
+  const creatorId = typeof creator === 'string' ? creator.split('/').pop() : creator.id;
+
+  if (currentUser && (currentUser.id === creatorId)) {
+    return currentUser.player?.display_name;
+  }
+
+  const inLeaderboard = leaderboard.find(item => item.player?.id === creatorId);
+  if (inLeaderboard) return inLeaderboard.player.display_name;
+
+  return null;
+};
+
+/**
+ * Vérifie si l'utilisateur a les droits d'administration sur la compétition
+ * (Créateur OU Arbitre)
+ */
+export const canManageCompetition = (competition: any, user: any): boolean => {
+  return isCompetitionCreator(competition, user) || isPlayerReferee(competition, user?.player?.id);
 };

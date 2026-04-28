@@ -16,6 +16,7 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
   className?: string;
   isPulse?: boolean;
+  icon?: React.ReactNode;
 }
 
 const BADGE_VARIANTS: Record<BadgeVariant, string> = {
@@ -34,6 +35,7 @@ export const Badge = ({
   variant = 'gold',
   className = '',
   isPulse = false,
+  icon,
   ...props
 }: BadgeProps) => {
   return (
@@ -46,6 +48,7 @@ export const Badge = ({
       )}
       {...props}
     >
+      {icon && <span aria-hidden="true" className="text-[11px] leading-none">{icon}</span>}
       {children}
     </span>
   );

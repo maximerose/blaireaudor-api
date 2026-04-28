@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { useAuth, useCompetitionData, useCompetitionDelete } from '@/hooks';
+import { isCompetitionCreator, isPlayerReferee, resolveCreatorName } from '@/utils';
 
 export const useCompetitionDetailUI = () => {
   const { user } = useAuth();
@@ -19,14 +20,13 @@ export const useCompetitionDetailUI = () => {
     [leaderboard],
   );
 
-  const isReferee = useMemo(() => {
-    if (!competition || !user) return false;
+  const isReferee = isPlayerReferee(competition, user?.player?.id);
+  const isCreator = isCompetitionCreator(competition, user);
 
-    return competition.referees.some((ref: any) => {
-      const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-      return refId === user.player?.id;
-    });
-  }, [competition, user]);
+  const creatorName = useMemo(() =>
+    resolveCreatorName(competition, leaderboard, user),
+    [competition, leaderboard, user]
+  );
 
   return {
     competition,
@@ -39,5 +39,7 @@ export const useCompetitionDetailUI = () => {
     setIsReporting,
     potentialTargets,
     isReferee,
+    isCreator,
+    creatorName,
   };
 };

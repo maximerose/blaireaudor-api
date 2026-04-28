@@ -54,6 +54,7 @@ export const Leaderboard = ({
             isAdmin={isAdmin}
             isFogActive={isFogActive}
             role="listitem"
+            competition={competition}
             onDelete={() => handleDelete(item)}
           />
         ))}

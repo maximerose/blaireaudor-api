@@ -27,6 +27,7 @@ export interface Player {
   username: string;
   participations: Participation[];
   refereed_competitions: Competition[];
+  associated_user: User | null;
 }
 
 export interface User {

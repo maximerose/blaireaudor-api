@@ -19,6 +19,8 @@ const CompetitionDetailPage = () => {
     refresh,
     deleteCompetition,
     isReferee,
+    isCreator,
+    creatorName,
   } = useCompetitionDetailUI();
 
   const { handleActionStatus, updateAction } = useCompetitionAdmin(
@@ -38,6 +40,7 @@ const CompetitionDetailPage = () => {
       <DetailNavigation
         competition={competition}
         hasActions={hasActions}
+        isCreator={isCreator}
         onDelete={deleteCompetition}
       />
 
@@ -49,7 +52,7 @@ const CompetitionDetailPage = () => {
         />
       )}
 
-      <CompetitionHeader competition={competition} />
+      <CompetitionHeader competition={competition} creatorName={creatorName} />
 
       <ReportingSection
         competition={competition}

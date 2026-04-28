@@ -1,12 +1,14 @@
 import type React from 'react';
-import { Badge, RankedScore, Text, Button } from '@/components/UI';
+import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
+import type { Competition } from '@/context/AuthContext';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   item: any;
   onDelete: () => void;
   isAdmin: boolean;
+  competition: Competition;
   isFogActive: boolean;
 }
 
@@ -16,9 +18,10 @@ export const LeaderboardRow = ({
   isAdmin,
   isFogActive,
   className,
+  competition,
   ...props
 }: LeaderboardRowProps) => {
-  const { canDelete, medal, playerName } = useLeaderboardRow(item, isAdmin);
+  const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } = useLeaderboardRow(item, isAdmin, competition);
   const showRealStats = !isFogActive;
 
   return (
@@ -56,12 +59,12 @@ export const LeaderboardRow = ({
 
       <div className="col-span-7 flex items-center justify-between pr-1 overflow-hidden">
         <div className="flex flex-col gap-0.5 overflow-hidden text-left min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Text
               variant="h3"
               as="span"
               className={cn(
-                'truncate normal-case italic',
+                'truncate normal-case italic max-w-30 sm:max-w-none',
                 item.isMe ? 'text-gold' : 'text-white/90',
               )}
             >
@@ -72,6 +75,11 @@ export const LeaderboardRow = ({
                 Moi
               </Badge>
             )}
+
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {isPlayerCreator && <RoleBadge role="creator" />}
+              {isPlayerReferee && <RoleBadge role="referee" />}
+            </div>
           </div>
 
           {showRealStats && item.isExAequo && (

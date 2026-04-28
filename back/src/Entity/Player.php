@@ -64,7 +64,7 @@ class Player
      * @var User|null compte utilisateur lié à ce profil de jeu
      */
     #[ORM\OneToOne(inversedBy: 'player', cascade: ['persist', 'remove'])]
-    #[Groups(['competition:read'])]
+    #[Groups(['competition:read', 'player:read'])]
     private ?User $associatedUser = null;
 
     /**

@@ -21,13 +21,8 @@ export const RoleBadge = ({ role }: RoleBadgeProps) => {
   const config = ROLE_CONFIG[role];
 
   return (
-    <Badge variant={config.variant}>
-      <span className="flex items-center gap-1">
-        <span>{config.icon}</span>
-        <span className="uppercase tracking-tighter font-bold">
-          {config.label}
-        </span>
-      </span>
+    <Badge variant={config.variant} icon={config.icon}>
+      {config.label}
     </Badge>
   );
 };
