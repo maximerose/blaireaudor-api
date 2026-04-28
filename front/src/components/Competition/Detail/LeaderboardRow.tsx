@@ -22,7 +22,7 @@ export const LeaderboardRow = ({
   ...props
 }: LeaderboardRowProps) => {
   const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } = useLeaderboardRow(item, isAdmin, competition);
-  const showRealStats = !isFogActive;
+  const showRealStats = !isFogActive || isAdmin;
 
   return (
     <div

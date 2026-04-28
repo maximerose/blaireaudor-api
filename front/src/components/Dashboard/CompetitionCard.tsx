@@ -111,9 +111,8 @@ export const CompetitionCard = ({
           >
             {hasNoParticipants
               ? 'Arène vide'
-              : `${competition.participants_count} ${
-                  competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'
-                }`}
+              : `${competition.participants_count} ${competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'
+              }`}
           </Text>
         </div>
       </div>
@@ -129,7 +128,7 @@ export const CompetitionCard = ({
                 {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
               </Text>
               <div className="flex items-center gap-4">
-                {shouldReveal && score !== undefined && rank !== undefined ? (
+                {shouldReveal && score !== undefined && rank !== undefined || isManager ? (
                   <div
                     className="flex items-center gap-4"
                     aria-label={`Rang : ${rank}, Score : ${score}`}

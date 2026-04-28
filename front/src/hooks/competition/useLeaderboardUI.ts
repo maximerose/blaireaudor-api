@@ -11,7 +11,7 @@ export const useLeaderboardUI = (
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const isAdmin = canManageCompetition(user, competition);
+  const isAdmin = canManageCompetition(competition, user);
   const { deleteParticipation } = useParticipationDelete(onRefresh);
   const enrichedData = useLeaderboardLogic(data, user);
 
