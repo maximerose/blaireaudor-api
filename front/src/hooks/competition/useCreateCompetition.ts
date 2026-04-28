@@ -30,6 +30,7 @@ export const useCreateCompetition = () => {
           join_code: data.joinCode || null,
           participate: data.participate ?? true,
           fog_of_war: data.fogOfWar,
+          is_creator_referee: data.isCreatorReferee ?? true,
         }),
       });
 

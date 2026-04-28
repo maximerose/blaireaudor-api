@@ -47,7 +47,7 @@ class PlayerManager
      *
      * @return array{successes: array, errors: array} un résumé du traitement
      */
-    public function createPlayersBatch(array $rawNames, Competition $competition, User $user): array
+    public function createPlayersBatch(array $rawNames, Competition $competition, User $user, bool $joinCompetition = true): array
     {
         $results = ['successes' => [], 'errors' => []];
 
@@ -74,9 +74,11 @@ class PlayerManager
                 continue;
             }
 
-            $this->participationManager->joinCompetition($player, $competition);
+            if ($joinCompetition) {
+                $this->participationManager->joinCompetition($player, $competition);
+            }
 
-            $results['successes'][] = ['name' => $trimmedName];
+            $results['successes'][] = ['name' => $trimmedName, 'entity' => $player];
         }
 
         return $results;

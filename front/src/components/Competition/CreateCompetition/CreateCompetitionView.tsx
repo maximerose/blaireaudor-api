@@ -4,6 +4,7 @@ import {
   CompetitionConfigStep,
   CompetitionRecruitmentStep,
 } from '@/components/Competition';
+import { CompetitionRefereeStep } from './CompetitionRefereeStep';
 
 interface Props {
   onSuccess: (_competition: any) => void;
@@ -18,7 +19,9 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
     handleJoinCodeChange,
     generateCode,
     canGoNext,
-    players,
+    searchState,
+    playersActions,
+    refereesActions,
     submit,
     loading,
   } = useCreateCompetitionForm(onSuccess);
@@ -27,7 +30,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
     <div className="w-full max-w-md mx-auto animate-fade-in space-y-8">
       <CreateCompetitionStepper step={step} />
 
-      {step === 1 ? (
+      {step === 1 && (
         <CompetitionConfigStep
           formData={formData}
           updateField={updateField}
@@ -36,13 +39,24 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
           canNext={canGoNext}
           onNext={() => setStep(2)}
         />
-      ) : (
+      )}
+      {step === 2 && (
         <CompetitionRecruitmentStep
-          players={players}
+          players={{ ...searchState, ...playersActions }}
           formData={formData}
           onBack={() => setStep(1)}
+          onNext={() => setStep(3)}
+        />
+      )}
+      {step === 3 && (
+        <CompetitionRefereeStep
+          searchState={searchState}
+          formData={formData}
+          onToggleReferee={refereesActions.toggle}
+          onBack={() => setStep(2)}
           onSubmit={submit}
           loading={loading}
+          updateField={updateField}
         />
       )}
     </div>

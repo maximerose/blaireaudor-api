@@ -21,12 +21,12 @@ export const useInputUI = (
 
   const inputClasses = cn(
     'w-full bg-black/20 border border-gold/10 text-gold rounded-xl',
-    'py-2 sm:py-2.5 pr-2 sm:pr-4',
+    'py-2 sm:py-2.5',
+    icon ? 'pl-10 pr-10' : 'px-4',
     'placeholder:text-gold/20 text-[11px] sm:text-sm transition-default truncate text-ellipsis overflow-hidden',
     'focus:outline-none focus:border-gold/40 focus:ring-4 focus:ring-gold/5',
     'disabled:opacity-60 disabled:cursor-not-allowed',
     align === 'center' ? 'text-center' : 'text-left',
-    align === 'center' && icon ? 'pr-10' : 'pr-4',
     className,
   );
 

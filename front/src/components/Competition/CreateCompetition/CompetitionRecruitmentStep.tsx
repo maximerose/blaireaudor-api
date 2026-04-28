@@ -8,16 +8,14 @@ interface RecruitmentStepProps {
   players: any;
   formData: any;
   onBack: () => void;
-  onSubmit: () => void;
-  loading: boolean;
+  onNext: () => void;
 }
 
 export const CompetitionRecruitmentStep = ({
   players,
   formData,
   onBack,
-  onSubmit,
-  loading,
+  onNext,
 }: RecruitmentStepProps) => {
   const searchTerm = players.searchTerm || '';
   const results = players.results || [];
@@ -65,21 +63,11 @@ export const CompetitionRecruitmentStep = ({
       />
 
       <div className="flex gap-2">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="px-6 transition-default"
-          size="md"
-        >
+        <Button variant="ghost" onClick={onBack} className="px-6" size="md">
           Précédent
         </Button>
-        <Button
-          onClick={onSubmit}
-          isLoading={loading}
-          size="md"
-          className="flex-1"
-        >
-          Créer l'arène
+        <Button onClick={onNext} size="md" className="flex-1">
+          Continuer →
         </Button>
       </div>
     </div>

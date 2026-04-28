@@ -74,20 +74,83 @@ export const CompetitionConfigStep = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Début"
-            type="date"
-            value={formData.startDate}
-            onChange={(e: any) => updateField('startDate', e.target.value)}
-            required
-          />
-          <Input
-            label="Fin"
-            type="date"
-            value={formData.endDate}
-            onChange={(e: any) => updateField('endDate', e.target.value)}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* BLOC DÉBUT */}
+          <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
+            <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">
+              Début
+            </Text>
+
+            <Input
+              type="date"
+              value={formData.startDate}
+              onChange={(e: any) => updateField('startDate', e.target.value)}
+              required
+            />
+
+            <Card
+              variant="dark"
+              role="switch"
+              aria-checked={formData.startFullDay}
+              onClick={() => updateField('startFullDay', !formData.startFullDay)}
+              className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
+            >
+              <Text variant="micro" className={formData.startFullDay ? 'text-white' : 'text-white/50'}>
+                Journée complète
+              </Text>
+              <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.startFullDay ? 'bg-gold' : 'bg-white/10')}>
+                <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.startFullDay ? 'left-4.5' : 'left-0.5')} />
+              </div>
+            </Card>
+
+            {!formData.startFullDay && (
+              <div className="animate-slide-down">
+                <Input
+                  type="time"
+                  value={formData.startTime}
+                  onChange={(e: any) => updateField('startTime', e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* BLOC FIN */}
+          <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
+            <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">
+              Fin
+            </Text>
+
+            <Input
+              type="date"
+              value={formData.endDate}
+              onChange={(e: any) => updateField('endDate', e.target.value)}
+            />
+
+            <Card
+              variant="dark"
+              role="switch"
+              aria-checked={formData.endFullDay}
+              onClick={() => updateField('endFullDay', !formData.endFullDay)}
+              className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
+            >
+              <Text variant="micro" className={formData.endFullDay ? 'text-white' : 'text-white/50'}>
+                Journée complète
+              </Text>
+              <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.endFullDay ? 'bg-gold' : 'bg-white/10')}>
+                <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.endFullDay ? 'left-4.5' : 'left-0.5')} />
+              </div>
+            </Card>
+
+            {!formData.endFullDay && (
+              <div className="animate-slide-down">
+                <Input
+                  type="time"
+                  value={formData.endTime}
+                  onChange={(e: any) => updateField('endTime', e.target.value)}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-3">

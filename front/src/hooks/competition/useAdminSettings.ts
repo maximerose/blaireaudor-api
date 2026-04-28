@@ -30,7 +30,7 @@ export const useAdminSettings = ({
   const handleCloseCompetition = () => {
     if (pendingCount > 0) {
       toast.error(
-        `Impossible de clore ! Il reste ${pendingCount} signalement(s) à trancher.`,
+        `Impossible de clôturer ! Il reste ${pendingCount} signalement(s) à trancher.`,
         {
           icon: '⚖️',
           style: { borderRadius: '10px', background: '#333', color: '#fff' },

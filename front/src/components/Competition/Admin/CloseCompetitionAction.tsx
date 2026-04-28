@@ -23,7 +23,7 @@ export const CloseCompetitionAction = ({
           pendingCount > 0 && 'opacity-50 cursor-not-allowed',
         )}
       >
-        🚩 Clore la compétition
+        🚩 Clôturer la compétition
       </Button>
       {pendingCount > 0 && (
         <Text

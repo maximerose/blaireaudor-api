@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Api\Admin;
 
 use App\Entity\Competition;
-use App\Entity\Player;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
@@ -59,13 +58,6 @@ final class AdminCompetitionController extends AbstractController
             return $this->json(['error' => 'La date de début est obligatoire'], Response::HTTP_BAD_REQUEST);
         }
 
-        $referee = null;
-
-        if (isset($data['referee'])) {
-            $refereeId = basename($data['referee']);
-            $referee = $this->entityManager->getRepository(Player::class)->find($refereeId);
-        }
-
         try {
             $startDate = new \DateTimeImmutable($data['start_date']);
             $endDate = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
@@ -82,12 +74,11 @@ final class AdminCompetitionController extends AbstractController
             $data['join_code'] ?? null
         );
 
-        if ($referee) {
-            $competition->addReferee($referee);
-        } else {
-            if ($user->getPlayer()) {
-                $competition->addReferee($user->getPlayer());
-            }
+        $competition->setCreatedBy($user);
+
+        $isCreatorReferee = $data['is_creator_referee'] ?? true;
+        if ($isCreatorReferee && $user->getPlayer()) {
+            $competition->addReferee($user->getPlayer());
         }
 
         $errors = $validator->validate($competition);
@@ -138,7 +129,11 @@ final class AdminCompetitionController extends AbstractController
     ): JsonResponse {
         $user = $this->getUser();
 
-        if ($competition->getCreatedBy() !== $user) {
+        if (!$user instanceof User) {
+            return $this->json(['error' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if ($competition->getCreatedBy()?->getId() !== $user->getId()) {
             return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
         }
 
@@ -147,51 +142,81 @@ final class AdminCompetitionController extends AbstractController
         $errors = [];
 
         $existingPlayersIds = $data['existing_players_ids'] ?? [];
+        $newPlayersNames = $data['new_players'] ?? [];
+        $existingRefereesIds = $data['existing_referees_ids'] ?? [];
+        $newRefereesNames = $data['new_referees'] ?? [];
 
+        $createdPlayersByName = [];
+
+        // --- 1. JOUEURS EXISTANTS ---
         if (!empty($existingPlayersIds)) {
             $players = $playerRepository->findBy(['id' => $existingPlayersIds]);
             $playersById = [];
-
             foreach ($players as $player) {
                 $playersById[(string) $player->getId()] = $player;
             }
 
             foreach ($existingPlayersIds as $id) {
                 $idStr = (string) $id;
-
                 if (!isset($playersById[$idStr])) {
                     $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
                     continue;
                 }
 
                 $currentPlayer = $playersById[$idStr];
-
-                $isAlreadyIn = $participationRepository->findOneBy([
-                    'competition' => $competition,
-                    'player' => $currentPlayer,
-                ]);
+                $isAlreadyIn = $participationRepository->findOneBy(['competition' => $competition, 'player' => $currentPlayer]);
 
                 if ($isAlreadyIn) {
-                    $errors[] = [
-                        'id' => $id,
-                        'name' => $currentPlayer->getDisplayName(),
-                        'message' => 'Déjà inscrit',
-                    ];
+                    $errors[] = ['id' => $id, 'name' => $currentPlayer->getDisplayName(), 'message' => 'Déjà inscrit'];
                 } else {
                     $this->participationManager->joinCompetition($currentPlayer, $competition);
-
-                    $successes[] = [
-                        'id' => $id,
-                        'name' => $currentPlayer->getDisplayName(),
-                    ];
+                    $successes[] = ['id' => $id, 'name' => $currentPlayer->getDisplayName()];
                 }
             }
         }
 
-        if (!empty($data['new_players'])) {
-            $batchReport = $this->playerManager->createPlayersBatch($data['new_players'], $competition, $user);
-            $successes = array_merge($successes, $batchReport['successes']);
+        // --- 2. NOUVEAUX JOUEURS ---
+        if (!empty($newPlayersNames)) {
+            // true = ils rejoignent la compétition en tant que participants
+            $batchReport = $this->playerManager->createPlayersBatch($newPlayersNames, $competition, $user, true);
+            foreach ($batchReport['successes'] as $success) {
+                // On met l'entité de côté pour la suite
+                $createdPlayersByName[$success['name']] = $success['entity'];
+                $successes[] = ['name' => $success['name']];
+            }
             $errors = array_merge($errors, $batchReport['errors']);
+        }
+
+        // --- 3. ARBITRES EXISTANTS ---
+        if (!empty($existingRefereesIds)) {
+            $referees = $playerRepository->findBy(['id' => $existingRefereesIds]);
+            foreach ($referees as $ref) {
+                $competition->addReferee($ref);
+            }
+        }
+
+        // --- 4. NOUVEAUX ARBITRES ---
+        if (!empty($newRefereesNames)) {
+            $refereesToCreate = [];
+
+            foreach ($newRefereesNames as $refName) {
+                $trimmed = trim($refName);
+                if (isset($createdPlayersByName[$trimmed])) {
+                    $competition->addReferee($createdPlayersByName[$trimmed]);
+                } else {
+                    $refereesToCreate[] = $trimmed;
+                }
+            }
+
+            if (!empty($refereesToCreate)) {
+                // false = on crée le profil, mais on NE L'INSCRIT PAS comme participant au tournoi
+                $refBatchReport = $this->playerManager->createPlayersBatch($refereesToCreate, $competition, $user, false);
+                foreach ($refBatchReport['successes'] as $success) {
+                    $competition->addReferee($success['entity']);
+                    $successes[] = ['name' => $success['name'], 'info' => 'Arbitre externe ajouté'];
+                }
+                $errors = array_merge($errors, $refBatchReport['errors']);
+            }
         }
 
         $this->entityManager->flush();
