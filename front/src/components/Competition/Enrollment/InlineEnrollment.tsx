@@ -128,9 +128,8 @@ export const InlineEnrollment = ({
         </div>
       )}
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex justify-center gap-2 mt-2">
         <Button
-          fullWidth
           onClick={saveEnrollment}
           isLoading={loading}
           disabled={newPlayers.length === 0}
@@ -141,7 +140,7 @@ export const InlineEnrollment = ({
         <Button
           variant="ghost"
           onClick={() => setIsOpen(false)}
-          className="px-4 transition-default"
+          className="px-4 transition-default shrink-0"
           aria-label="Annuler le recrutement"
         >
           Annuler

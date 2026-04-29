@@ -44,15 +44,15 @@ const CompetitionDetailPage = () => {
         onDelete={deleteCompetition}
       />
 
-      {isReferee && !competition.is_finished && (
+      <CompetitionHeader competition={competition} creatorName={creatorName} />
+
+      {(isReferee || isCreator) && !competition.is_finished && (
         <AdminSettings
           competition={competition}
           actions={actions}
           refresh={refresh}
         />
       )}
-
-      <CompetitionHeader competition={competition} creatorName={creatorName} />
 
       <ReportingSection
         competition={competition}

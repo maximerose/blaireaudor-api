@@ -59,6 +59,7 @@ class AppFixtures extends Fixture
             $players[$name] = PlayerFactory::createOne([
                 'displayName' => $name,
                 'username' => strtolower(str_replace(' ', '.', $name)),
+                'createdBy' => $admin,
             ]);
             $io->progressAdvance();
         }

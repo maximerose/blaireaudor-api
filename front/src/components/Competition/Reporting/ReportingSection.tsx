@@ -1,7 +1,6 @@
 import { Button, Card, Text } from '@/components/UI';
-import { ReportActionForm } from '../Reporting/ReportActionForm';
-import { getDaysUntilStart } from '@/utils';
 import { useReporting } from '@/hooks';
+import { CompetitionCountdown, ReportActionForm } from '@/components/Competition';
 
 export const ReportingSection = ({
   competition,
@@ -27,9 +26,10 @@ export const ReportingSection = ({
           </Text>
           <Text variant="body" className="mt-2 opacity-60">
             Ouverture{' '}
-            <span className="text-gold font-bold">
-              {getDaysUntilStart(competition.start_date)}
-            </span>
+            <CompetitionCountdown
+              startDate={competition.start_date}
+              onStart={refresh}
+            />
           </Text>
         </Card>
       </section>

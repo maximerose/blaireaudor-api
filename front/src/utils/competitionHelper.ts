@@ -82,20 +82,6 @@ export const getStatusWeight = (status: CompetitionStatusType): number => {
   }
 };
 
-export const getDaysUntilStart = (startDate: string): string => {
-  const now = new Date();
-  const start = new Date(startDate);
-  now.setHours(0, 0, 0, 0);
-  start.setHours(0, 0, 0, 0);
-
-  const diffTime = start.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays <= 0) return 'très bientôt';
-  if (diffDays === 1) return 'demain';
-  return `dans ${diffDays} jours`;
-};
-
 export const getTimeRemaining = (
   competition: Competition | null | undefined,
 ): string | null => {
@@ -175,7 +161,6 @@ export const isPlayerCreator = (competition: any, player: Player | undefined): b
   if (!creator) return false;
 
   const creatorId = typeof creator === 'string' ? creator.split('/').pop() : creator.id;
-  console.log(player);
 
   if (!player.associated_user) return false;
 
