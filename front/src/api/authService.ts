@@ -6,7 +6,7 @@ export const authService = {
    * Envoie les données d'inscription au backend
    */
   register: async (formData: any) => {
-    const response = await apiFetch(ROUTES.NAV_REGISTER, {
+    const response = await apiFetch(ROUTES.API_REGISTER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -25,7 +25,7 @@ export const authService = {
    * Identifie l'utilisateur et stocke le Token JWT
    */
   login: async (credentials: any) => {
-    const response = await apiFetch('/login', {
+    const response = await apiFetch(ROUTES.API_LOGIN, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
@@ -47,7 +47,7 @@ export const authService = {
     if (!token) return;
 
     try {
-      await apiFetch('/logout', {
+      await apiFetch(ROUTES.API_LOGOUT, {
         method: 'GET',
       });
     } catch (error) {
@@ -68,7 +68,7 @@ export const authService = {
     if (!token) return null;
 
     try {
-      const response = await apiFetch('/me', { method: 'GET' });
+      const response = await apiFetch(ROUTES.API_ME, { method: 'GET' });
 
       if (!response.ok) {
         localStorage.removeItem('token');
