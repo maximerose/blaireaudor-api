@@ -236,4 +236,56 @@ final class AdminCompetitionController extends AbstractController
             ['groups' => ['competition:read']]
         );
     }
+
+    /**
+     * Ajoute un arbitre à la compétition.
+     */
+    #[Route('/{id}/referees/add', name: 'add_referee', methods: ['POST'])]
+    public function addReferee(
+        Competition $competition,
+        Request $request,
+        PlayerRepository $playerRepository,
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('MANAGE', $competition);
+
+        $data = $request->toArray();
+        $player = $playerRepository->find($data['player_id'] ?? '');
+
+        if (!$player) {
+            return $this->json(['error' => 'Joueur introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        $this->competitionManager->addReferee($competition, $player);
+        $this->entityManager->flush();
+
+        return $this->json($competition, Response::HTTP_OK, [], ['groups' => ['competition:read']]);
+    }
+
+    /**
+     * Retire un arbitre de la compétition.
+     */
+    #[Route('/{id}/referees/remove', name: 'remove_referee', methods: ['POST'])]
+    public function removeReferee(
+        Competition $competition,
+        Request $request,
+        PlayerRepository $playerRepository,
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('MANAGE', $competition);
+
+        $data = $request->toArray();
+        $player = $playerRepository->find($data['player_id'] ?? '');
+
+        if (!$player) {
+            return $this->json(['error' => 'Joueur introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $this->competitionManager->removeReferee($competition, $player);
+            $this->entityManager->flush();
+        } catch (\LogicException $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json($competition, Response::HTTP_OK, [], ['groups' => ['competition:read']]);
+    }
 }

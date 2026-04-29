@@ -24,7 +24,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class AdminCompetitionControllerTest extends WebTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testCreateCompetitionSuccess(): void
     {
@@ -32,7 +33,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
 
         $user = UserFactory::createOne(['player' => PlayerFactory::new()]);
         $client->loginUser($user);
-        
+
         $player = PlayerFactory::createOne();
 
         $client->request(
@@ -46,14 +47,14 @@ final class AdminCompetitionControllerTest extends WebTestCase
                 'start_date' => '2026-02-21',
                 'end_date' => '2026-02-27',
                 'participate' => true,
-                'referee' => '/api/players/' . $player->getId(), 
+                'referee' => '/api/players/'.$player->getId(),
             ])
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        
+
         $this->assertArrayHasKey('slug', $data);
         $this->assertEquals('blaireau-d-or', $data['slug']);
 
@@ -92,7 +93,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
             'id' => $competitionId,
             'endDate' => null,
         ]);
-        
+
         ParticipationFactory::assert()->exists([
             'competition' => $competitionId,
             'player' => $user->getPlayer()->getId(),
@@ -102,7 +103,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
         $this->assertNotNull($data['join_code']);
     }
 
-    public function testUserNotConnected(): void 
+    public function testUserNotConnected(): void
     {
         $client = static::createClient();
 
@@ -123,7 +124,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
     public function testCreateCompetitionMissingStartDate(): void
     {
         $client = static::createClient();
-        
+
         $user = UserFactory::createOne();
         $client->loginUser($user);
 
@@ -211,7 +212,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testAddPlayersToCompetitionSuccess(): void 
+    public function testAddPlayersToCompetitionSuccess(): void
     {
         $client = static::createClient();
 
@@ -236,7 +237,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        
+
         $this->assertEquals(2, $data['summary']['success_count']);
         ParticipationFactory::assert()->count(2, ['competition' => $competition]);
     }
@@ -263,7 +264,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'existing_players_ids' => [$existingPlayer->getId()], // Doublon
-                'new_players' => ['Nouveau Joueur'] // Doit passer
+                'new_players' => ['Nouveau Joueur'], // Doit passer
             ])
         );
 
@@ -295,7 +296,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'existing_players_ids' => [],
-                'new_players' => [''] // Nom vide qui devrait échouer
+                'new_players' => [''], // Nom vide qui devrait échouer
             ])
         );
 
@@ -316,7 +317,7 @@ final class AdminCompetitionControllerTest extends WebTestCase
 
         $admin = UserFactory::createOne();
         $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
-        
+
         PlayerFactory::createOne([
             'displayName' => 'Nom Identique',
         ]);
@@ -331,14 +332,14 @@ final class AdminCompetitionControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'existing_players_ids' => [],
-                'new_players' => ['Nom Identique']
+                'new_players' => ['Nom Identique'],
             ])
-        );      
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         PlayerFactory::assert()->exists(['username' => 'nom-identique']);
         PlayerFactory::assert()->exists(['username' => 'nom-identique-1']);
-        
+
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(1, $data['summary']['success_count']);
         $this->assertNotEmpty($data['successes']);
@@ -362,17 +363,93 @@ final class AdminCompetitionControllerTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'existing_players_ids' => [],
-                'new_players' => ['Même Nom', 'Même Nom']
+                'new_players' => ['Même Nom', 'Même Nom'],
             ])
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED); 
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         PlayerFactory::assert()->exists(['username' => 'meme-nom']);
-        PlayerFactory::assert()->exists(['username' => 'meme-nom-1']);  
+        PlayerFactory::assert()->exists(['username' => 'meme-nom-1']);
 
         $data = json_decode($client->getResponse()->getContent(), true);
-        
+
         $this->assertEquals(2, $data['summary']['success_count']);
+    }
+
+    public function testAddRefereeSuccess(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $client->loginUser($admin);
+
+        $competition = CompetitionFactory::createOne(['createdBy' => $admin]);
+        $newReferee = PlayerFactory::createOne();
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/referees/add', $competition->getId()),
+            [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['player_id' => $newReferee->getId()])
+        );
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertCount(2, $competition->getReferees());
+        $this->assertTrue($competition->getReferees()->contains($newReferee));
+    }
+
+    public function testRemoveLastRefereeFails(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $client->loginUser($admin);
+
+        $referee = PlayerFactory::createOne();
+        $competition = CompetitionFactory::createOne([
+            'createdBy' => $admin,
+            'referees' => [$referee],
+        ]);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/referees/remove', $competition->getId()),
+            [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['player_id' => $referee->getId()])
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        $content = json_decode($client->getResponse()->getContent(), true);
+        $this->assertStringContainsString('dernier arbitre', $content['error']);
+    }
+
+    public function testRemoveRefereeSuccess(): void
+    {
+        $client = static::createClient();
+
+        $admin = UserFactory::createOne();
+        $client->loginUser($admin);
+
+        $referee1 = PlayerFactory::createOne();
+        $referee2 = PlayerFactory::createOne();
+
+        $competition = CompetitionFactory::createOne([
+            'createdBy' => $admin,
+            'referees' => [$referee1, $referee2],
+        ]);
+
+        $client->request(
+            'POST',
+            sprintf('/api/admin/competition/%s/referees/remove', $competition->getId()),
+            [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['player_id' => $referee1->getId()])
+        );
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertCount(1, $competition->getReferees());
+        $this->assertFalse($competition->getReferees()->contains($referee1));
     }
 }

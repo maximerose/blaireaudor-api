@@ -88,4 +88,31 @@ class CompetitionManager
 
         return $code;
     }
+
+    /**
+     * Ajoute un arbitre à la compétition.
+     */
+    public function addReferee(Competition $competition, \App\Entity\Player $player): void
+    {
+        if (!$competition->getReferees()->contains($player)) {
+            $competition->addReferee($player);
+        }
+    }
+
+    /**
+     * Retire un arbitre de la compétition.
+     * @throws \LogicException si on tente de retirer le dernier arbitre.
+     */
+    public function removeReferee(Competition $competition, \App\Entity\Player $player): void
+    {
+        if (!$competition->getReferees()->contains($player)) {
+            return;
+        }
+
+        if ($competition->getReferees()->count() <= 1) {
+            throw new \LogicException("Impossible de se retirer : vous êtes le dernier arbitre de cette arène.");
+        }
+
+        $competition->removeReferee($player);
+    }
 }
