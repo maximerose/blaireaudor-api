@@ -1,6 +1,7 @@
 import { Badge, Text } from '@/components/UI';
 import type { Competition } from '@/context/AuthContext';
-import { getCompetitionReferees, getDisplayDateText, getTimeRemaining } from '@/utils';
+import { getCompetitionReferees, getDisplayDateText } from '@/utils';
+import { CompetitionCountdown } from './CompetitionCountdown';
 
 interface CompetitionHeaderProps {
   competition: Competition;
@@ -11,7 +12,6 @@ export const CompetitionHeader = ({
   competition,
   creatorName,
 }: CompetitionHeaderProps) => {
-  const timeRemaining = getTimeRemaining(competition);
   const referees = getCompetitionReferees(competition);
 
   const additionalReferees = referees.filter(
@@ -41,17 +41,12 @@ export const CompetitionHeader = ({
           {getDisplayDateText(competition.start_date, competition.end_date)}
         </Text>
 
-        {competition.has_started && timeRemaining && (
+        {competition.has_started && !competition.is_finished && (
           <div className="mt-1 bg-black/20 px-3 py-1 rounded-full border border-white/5" aria-live="polite">
-            <span className="text-xs font-black uppercase tracking-widest text-white/30 italic mr-2">
-              Termine
-            </span>
-            <span
-              className={`text-xs font-black uppercase tracking-widest ${competition.is_urgent ? 'text-danger animate-pulse' : 'text-gold'
-                }`}
-            >
-              {timeRemaining}
-            </span>
+            <CompetitionCountdown
+              prefix="Clôture"
+              targetDate={competition.end_date}
+            />
           </div>
         )}
       </div>

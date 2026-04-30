@@ -27,8 +27,8 @@ export const ReportingSection = ({
           <Text variant="body" className="mt-2 opacity-60">
             Ouverture{' '}
             <CompetitionCountdown
-              startDate={competition.start_date}
-              onStart={refresh}
+              targetDate={competition.start_date}
+              elapsedText="lancée !"
             />
           </Text>
         </Card>

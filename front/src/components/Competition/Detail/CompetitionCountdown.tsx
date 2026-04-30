@@ -1,30 +1,37 @@
+import { Text } from '@/components/UI';
 import { useCompetitionCountdown } from '@/hooks';
+import { cn } from '@/utils';
 
 interface CompetitionCountdownProps {
-  startDate: string;
-  onStart?: () => void;
+  targetDate: string;
+  prefix?: string;
+  onElapsed?: () => void;
+  elapsedText?: string;
 }
 
-export const CompetitionCountdown = ({ startDate, onStart }: CompetitionCountdownProps) => {
-  const { timeLeft, formatTime } = useCompetitionCountdown(startDate, onStart);
+export const CompetitionCountdown = ({ targetDate, prefix, onElapsed, elapsedText }: CompetitionCountdownProps) => {
+  const { timeLeft, formatTime, isUrgent } = useCompetitionCountdown(targetDate, onElapsed);
 
   if (!timeLeft) return null;
 
-  if (timeLeft.isStarted) {
-    return <span className="text-gold font-bold">ouverte ! (rafraîchissez la page)</span>;
-  }
-
-  if (timeLeft.days > 0) {
-    return (
-      <span className="text-gold font-bold">
-        {timeLeft.days === 1 ? 'demain' : `dans ${timeLeft.days} jours`}
-      </span>
-    );
+  if (timeLeft.isElapsed) {
+    return <Text variant="mono">{elapsedText || 'Terminée'}</Text>;
   }
 
   return (
-    <span className="text-gold font-bold font-mono tracking-widest text-lg ml-1">
-      {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
-    </span>
+    <Text variant="mono">
+      {prefix && <span className="mr-1 opacity-60">{prefix} </span>}
+
+      <span className={cn(
+        "tracking-widest",
+        isUrgent ? "text-danger" : "text-gold"
+      )}>
+        {timeLeft.days > 0 ? (
+          timeLeft.days === 1 ? 'demain' : `dans ${timeLeft.days} jours`
+        ) : (
+          `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`
+        )}
+      </span>
+    </Text>
   );
 };

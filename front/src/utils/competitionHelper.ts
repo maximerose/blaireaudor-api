@@ -82,34 +82,6 @@ export const getStatusWeight = (status: CompetitionStatusType): number => {
   }
 };
 
-export const getTimeRemaining = (
-  competition: Competition | null | undefined,
-): string | null => {
-  if (
-    !competition?.end_date ||
-    !competition?.has_started ||
-    competition?.is_finished
-  ) {
-    return null;
-  }
-
-  const now = new Date();
-  const end = new Date(competition.end_date);
-  const diffTime = end.getTime() - now.getTime();
-
-  if (diffTime <= 0) return null;
-
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffHours / 24);
-
-  if (diffDays >= 2) return `dans ${diffDays} jours`;
-  if (diffDays === 1) return `demain`;
-  if (diffHours > 0) return `dans ${diffHours}h`;
-
-  const diffMinutes = Math.floor(diffTime / (1000 * 60));
-  return `dans ${diffMinutes} min`;
-};
-
 export const formatShortDate = (dateString: string | Date): string => {
   return new Date(dateString)
     .toLocaleDateString('fr-FR', {
