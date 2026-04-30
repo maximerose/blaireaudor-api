@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 
 /**
  * Trait permettant le traçage automatique de l'auteur des modifications.
@@ -22,7 +23,7 @@ trait BlameableTrait
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['competition:read', 'user:read', 'action:read', 'participation:read'])]
+    #[Groups(['action:read', 'participation:read', 'competition:read'])]
     private ?User $createdBy = null;
 
     /**

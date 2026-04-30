@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { apiFetch } from '@/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
+import { formatToApiISO } from '@/utils';
 
 export const useCreateCompetition = () => {
   const [loading, setLoading] = useState(false);
@@ -10,11 +11,9 @@ export const useCreateCompetition = () => {
   const create = async (data: any) => {
     setLoading(true);
 
-    const formattedStartDate = data.startDate
-      ? new Date(data.startDate).toISOString()
-      : null;
-    const formattedEndDate = data.endDate
-      ? new Date(data.endDate).toISOString()
+    const formattedStartDate = formatToApiISO(data.startDate, data.startTime, data.startFullDay, false);
+    const formattedEndDate = data.endDate 
+      ? formatToApiISO(data.endDate, data.endTime, data.endFullDay, true) 
       : null;
 
     try {

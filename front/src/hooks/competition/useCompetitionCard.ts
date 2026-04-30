@@ -11,17 +11,26 @@ export const useCompetitionCard = (
   user: any,
 ) => {
   const isCreator = useMemo(() => {
-    const creatorId =
-      typeof competition.created_by === 'string'
-        ? competition.created_by.split('/').pop()
-        : competition.created_by?.id;
-    return user?.id === creatorId;
+    const creatorData = competition.createdBy || competition.created_by;
+    if (creatorData) {
+      const creatorId = typeof creatorData === 'string' ? creatorData.split('/').pop() : creatorData.id;
+      return String(user?.id) === String(creatorId);
+    }
+
+    if (user?.created_competitions) {
+      return user.created_competitions.some((c: any) => c.id === competition.id);
+    }
+
+    return false;
   }, [competition, user]);
 
   const isReferee = useMemo(() => {
-    return competition.referees?.some((ref: any) => {
+    const referees = competition.referees || [];
+    const playerToMatch = user?.player?.id || user?.id;
+
+    return referees.some((ref: any) => {
       const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-      return refId === user?.player?.id;
+      return String(refId) === String(playerToMatch);
     });
   }, [competition, user]);
 

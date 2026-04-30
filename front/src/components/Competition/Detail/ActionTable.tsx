@@ -1,4 +1,3 @@
-// front/src/components/Competition/Detail/ActionTable.tsx
 import { useActionTable } from '@/hooks';
 import { Card, EmptyState, Text } from '@/components/UI';
 import { DateNavigation, ActionRow } from '@/components/Competition';

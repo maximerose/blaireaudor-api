@@ -53,6 +53,7 @@ export const useDashboardUI = () => {
   stats.created = user?.created_competitions?.length || 0;
   stats.refereed = user?.player?.refereed_competitions?.length || 0;
 
+
   return {
     user,
     participations,

@@ -6,14 +6,14 @@ export const CloseCompetitionAction = ({
   isLoading,
   pendingCount,
 }: any) => (
-  <div className="flex flex-col items-center lg:items-end gap-3 border-t lg:border-t-0 border-white/5 pt-6 lg:pt-0">
+  <div className="flex flex-col items-center gap-3 border-t md:border-t-0 border-white/5 pt-6 md:pt-0">
     <Text
       variant="caption"
       className="opacity-40 uppercase font-black text-[10px] tracking-widest"
     >
       Fin de partie
     </Text>
-    <div className="flex flex-col items-center lg:items-end gap-2">
+    <div className="flex flex-col items-center gap-2">
       <Button
         variant="danger"
         onClick={onSafeClose}

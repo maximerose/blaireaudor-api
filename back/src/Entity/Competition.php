@@ -173,10 +173,6 @@ class Competition
 
     public function setEndDate(?\DateTimeImmutable $endDate): static
     {
-        if ($endDate && '00:00:00' === $endDate->format('H:i:s')) {
-            $endDate = $endDate->setTime(23, 59, 59);
-        }
-
         $this->endDate = $endDate;
 
         return $this;

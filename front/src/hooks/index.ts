@@ -16,6 +16,7 @@ export * from './competition/useCompetitionReferees';
 export * from './competition/useCreateCompetition';
 export * from './competition/useCreateCompetitionForm';
 export * from './competition/useCreateCompetitionPageUI';
+export * from './competition/useEditCompetition';
 export * from './competition/useEnrollment';
 export * from './competition/useInlineEnrollmentUI';
 export * from './competition/useJoinByCode';

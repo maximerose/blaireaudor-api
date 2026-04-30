@@ -23,7 +23,6 @@ export const RefereeManagement = ({
     isSearching,
     handleAdd,
     handleRemoveRequest,
-    feedback,
   } = useRefereeManagementUI(competition, onRefresh);
 
   const myPlayerId = currentUser?.user?.player?.id ? String(currentUser.user.player.id) : null;
@@ -36,18 +35,6 @@ export const RefereeManagement = ({
           Coopter des membres pour vous aider ou quitter votre poste.
         </Text>
       </header>
-
-      {feedback && (
-        <div
-          className={`p-3 rounded-lg border text-sm animate-fade-in ${feedback.type === 'success'
-            ? 'bg-success/10 border-success/20 text-success-bright'
-            : 'bg-danger/10 border-danger/20 text-danger-bright'
-            }`}
-          role="alert"
-        >
-          {feedback.text}
-        </div>
-      )}
 
       {/* Liste des arbitres actuels */}
       <div className="flex flex-wrap items-center justify-center gap-2">

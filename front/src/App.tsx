@@ -15,6 +15,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { CreateCompetitionPage } from './components/Competition/CreateCompetition/CreateCompetitionPage';
 import CompetitionDetailPage from './components/Competition/Detail/CompetitionDetailPage';
 import { ScrollToTop } from './components/UI/ScrollToTop';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const { user, loading } = useAuth();
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="bottom-right" reverseOrder={false} />
       <ScrollToTop />
       <div className="min-h-screen w-full bg-dark">
         <Routes>

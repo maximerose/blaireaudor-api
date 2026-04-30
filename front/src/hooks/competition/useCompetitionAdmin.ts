@@ -1,4 +1,3 @@
-// hooks/competition/useCompetitionAdmin.ts
 import { useState } from 'react';
 import { apiFetch } from '@/api/config';
 import { toast } from 'react-hot-toast';

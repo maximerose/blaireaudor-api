@@ -29,7 +29,6 @@ export const CompetitionRefereeStep = ({
     (ref: any) => !formData.players.some((p: any) => p.id === ref.id)
   );
 
-  // ✨ VÉRIFICATION : Est-ce que l'arène se retrouve sans aucun arbitre ?
   const hasNoReferee = !formData.isCreatorReferee && formData.referees.length === 0;
 
   return (

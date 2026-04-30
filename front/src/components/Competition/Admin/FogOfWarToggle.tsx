@@ -2,7 +2,7 @@ import { Button, Text, Badge } from '@/components/UI';
 import { cn } from '@/utils';
 
 export const FogOfWarToggle = ({ isActive, onToggle, isLoading }: any) => (
-  <div className="flex flex-col items-center lg:items-start gap-3">
+  <div className="flex flex-col items-center gap-3">
     <Button
       variant={isActive ? 'primary' : 'ghost'}
       onClick={onToggle}

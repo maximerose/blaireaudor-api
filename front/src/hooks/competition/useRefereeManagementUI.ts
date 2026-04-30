@@ -4,6 +4,7 @@ import { useCompetitionReferees } from './useCompetitionReferees';
 import type { Competition, Player } from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
 import { apiFetch } from '@/api/config';
+import toast from 'react-hot-toast';
 
 export const useRefereeManagementUI = (
   competition: Competition,
@@ -20,12 +21,6 @@ export const useRefereeManagementUI = (
   const [searchQuery, setSearchQuery] = useState('');
   const [rawSearchResults, setRawSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const showFeedback = (type: 'success' | 'error', text: string) => {
-    setFeedback({ type, text });
-    setTimeout(() => setFeedback(null), 2000);
-  };
 
   useEffect(() => {
     if (searchQuery.trim().length < 2) {
@@ -49,7 +44,7 @@ export const useRefereeManagementUI = (
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, referees]);
+  }, [searchQuery]);
 
   const searchResults = useMemo(() => {
     return rawSearchResults.filter(
@@ -62,9 +57,9 @@ export const useRefereeManagementUI = (
     if (success) {
       setSearchQuery('');
       setRawSearchResults([]);
-      showFeedback('success', `${player.display_name} a été nommé arbitre.`);
+      toast.success(`${player.display_name} est désormais arbitre.`);
     } else {
-      showFeedback('error', `Impossible de nommer ce joueur.`);
+      toast.error(`Impossible de nommer ce joueur.`);
     }
   };
 
@@ -76,9 +71,9 @@ export const useRefereeManagementUI = (
     if (window.confirm(confirmMsg)) {
       const success = await removeReferee(ref.id);
       if (success) {
-        showFeedback('success', isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} a été révoqué.`);
+        toast.success(isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} révoqué.`);
       } else {
-        showFeedback('error', "Une erreur est survenue lors de la révocation.");
+        toast.error("Échec de la révocation.");
       }
     }
   };
@@ -93,6 +88,5 @@ export const useRefereeManagementUI = (
     isSearching,
     handleAdd,
     handleRemoveRequest,
-    feedback,
   };
 };

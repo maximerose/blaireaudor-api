@@ -1,6 +1,6 @@
 import { Badge, Text } from '@/components/UI';
 import type { Competition } from '@/context/AuthContext';
-import { getCompetitionReferees, getDisplayDateText } from '@/utils';
+import { cn, getCompetitionReferees, getDisplayDateText } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
 
 interface CompetitionHeaderProps {
@@ -14,13 +14,9 @@ export const CompetitionHeader = ({
 }: CompetitionHeaderProps) => {
   const referees = getCompetitionReferees(competition);
 
-  const additionalReferees = referees.filter(
-    (ref: any) => ref.name !== creatorName
-  );
-
   return (
     <header className="mb-10 text-center space-y-5">
-      {/* 1. Titre et Code (La priorité absolue) */}
+      {/* 1. Titre et Code */}
       <div className="space-y-1">
         <Text variant="h1" className="text-3xl sm:text-5xl">
           {competition.name}
@@ -51,11 +47,11 @@ export const CompetitionHeader = ({
         )}
       </div>
 
-      {/* 3. Méta-informations groupées (Créateur & Arbitres) */}
+      {/* 3. Méta-informations groupées */}
       {(creatorName || referees.length > 0) && (
         <div className="pt-4 border-t border-white/5 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-3">
 
-          {/* Créateur */}
+          {/* Section Créateur : Toujours affichée si présente */}
           {creatorName && (
             <div className="flex items-center gap-2">
               <Text variant="micro" className="opacity-40 uppercase tracking-widest">
@@ -67,31 +63,30 @@ export const CompetitionHeader = ({
             </div>
           )}
 
-          {/* Séparateur visible uniquement sur desktop */}
-          {creatorName && additionalReferees.length > 0 && (
+          {/* Séparateur visuel si on a les deux infos */}
+          {creatorName && referees.length > 0 && (
             <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-white/20" aria-hidden="true" />
           )}
 
-          {/* Arbitres (sans répéter le créateur si c'est la même personne) */}
+          {/* Section Arbitres : Liste complète des arbitres */}
           {referees.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2">
-              {additionalReferees.length > 0 ? (
-                <>
-                  <Text variant="micro" className="opacity-40 uppercase tracking-widest sm:mr-1">
-                    Arbitre{additionalReferees.length > 1 ? 's' : ''}
-                  </Text>
-                  {additionalReferees.map((ref: any) => (
-                    <Badge key={ref.id} variant="info" icon="⚖️" className="py-0.5">
-                      {ref.name}
-                    </Badge>
-                  ))}
-                </>
-              ) : (
-                /* Si le seul arbitre est le créateur, on met juste un petit badge discret à côté de son nom */
-                <Badge variant="ghost" icon="⚖️" className="opacity-50 scale-90" title="Arbitre également">
-                  Arbitre
+              <Text variant="micro" className="opacity-40 uppercase tracking-widest sm:mr-1">
+                Arbitre{referees.length > 1 ? 's' : ''}
+              </Text>
+              {referees.map((ref: any) => (
+                <Badge
+                  key={ref.id}
+                  variant="info"
+                  icon="⚖️"
+                  className={cn(
+                    "py-0.5",
+                    ref.name === creatorName && "border-gold/60"
+                  )}
+                >
+                  {ref.name}
                 </Badge>
-              )}
+              ))}
             </div>
           )}
         </div>

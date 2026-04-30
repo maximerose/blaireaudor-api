@@ -1,4 +1,3 @@
-// front/src/hooks/competition/useActionTable.ts
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
 import { type Action, getUniqueDates } from '@/utils';
@@ -12,13 +11,11 @@ export const useActionTable = (initialActions: Action[]) => {
   const getEntityId = (entity: any) =>
     typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
 
-  // 1. Dates disponibles pour le filtre
   const availableDates = useMemo(
     () => getUniqueDates(initialActions),
     [initialActions],
   );
 
-  // 2. Tri et filtrage par date
   const processedActions = useMemo(() => {
     let result = [...initialActions];
     if (selectedDate) {
@@ -39,7 +36,6 @@ export const useActionTable = (initialActions: Action[]) => {
     });
   }, [initialActions, sortField, sortOrder, selectedDate]);
 
-  // 3. Répartition par catégories (Le cœur du YAGNI Logic)
   const categories = useMemo(() => {
     const pending = processedActions.filter((a) => a.status === 'pending');
 

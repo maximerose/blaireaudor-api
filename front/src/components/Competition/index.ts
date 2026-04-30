@@ -1,5 +1,6 @@
 export * from './Admin/AdminSettings';
 export * from './Admin/CloseCompetitionAction';
+export * from './Admin/CompetitionGeneralSettings';
 export * from './Admin/FogOfWarToggle';
 export * from './Admin/RefereeManagement';
 export * from './Detail/ActionRow';
