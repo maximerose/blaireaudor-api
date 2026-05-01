@@ -24,39 +24,25 @@ final class CompetitionVoter extends Voter
         $user = $token->getUser();
 
         if (!$user instanceof User) {
-            $vote?->addReason('Vous devez être connecté pour gérer cette compétition.');
+            $vote?->addReason('Vous devez être connecté.');
+            return false;
+        }
 
+        $player = $user->getPlayer();
+        if (!$player) {
+            $vote?->addReason('Vous devez être lié à un joueur.');
             return false;
         }
 
         /** @var Competition $competition */
         $competition = $subject;
 
-        $canManage = match ($attribute) {
-            self::MANAGE => $this->canManage($competition, $user),
-            default => false,
-        };
-
-        if (!$canManage) {
-            $vote?->addReason('Seul un arbitre ou le créateur de la compétition peut effectuer cette action.');
-        }
-
-        return $canManage;
-    }
-
-    private function canManage(Competition $competition, User $user): bool
-    {
-        // 1. Le créateur originel a toujours tous les droits
-        if ($competition->getCreatedBy() === $user) {
+        if ($competition->getReferees()->contains($player)) {
             return true;
         }
 
-        // 2. Un arbitre nommé a également les droits
-        $player = $user->getPlayer();
-        if ($player && $competition->getReferees()->contains($player)) {
-            return true;
-        }
-
-        return false;
+        return $competition->getParticipations()->exists(
+            fn ($key, $participation) => $participation->getPlayer() === $player
+        );
     }
 }

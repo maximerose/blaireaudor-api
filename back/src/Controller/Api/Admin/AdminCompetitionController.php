@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -121,6 +122,7 @@ final class AdminCompetitionController extends AbstractController
      *                      si au moins une erreur survient
      */
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
+    #[IsGranted('MANAGE', subject: 'competition')]
     public function addPlayers(
         Competition $competition,
         Request $request,
@@ -128,14 +130,6 @@ final class AdminCompetitionController extends AbstractController
         PlayerRepository $playerRepository,
     ): JsonResponse {
         $user = $this->getUser();
-
-        if (!$user instanceof User) {
-            return $this->json(['error' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        if ($competition->getCreatedBy()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-        }
 
         $data = $request->toArray();
         $successes = [];
@@ -241,13 +235,12 @@ final class AdminCompetitionController extends AbstractController
      * Ajoute un arbitre à la compétition.
      */
     #[Route('/{id}/referees/add', name: 'add_referee', methods: ['POST'])]
+    #[IsGranted('MANAGE', subject: 'competition')]
     public function addReferee(
         Competition $competition,
         Request $request,
         PlayerRepository $playerRepository,
     ): JsonResponse {
-        $this->denyAccessUnlessGranted('MANAGE', $competition);
-
         $data = $request->toArray();
         $player = $playerRepository->find($data['player_id'] ?? '');
 
@@ -265,13 +258,12 @@ final class AdminCompetitionController extends AbstractController
      * Retire un arbitre de la compétition.
      */
     #[Route('/{id}/referees/remove', name: 'remove_referee', methods: ['POST'])]
+    #[IsGranted('MANAGE', subject: 'competition')]
     public function removeReferee(
         Competition $competition,
         Request $request,
         PlayerRepository $playerRepository,
     ): JsonResponse {
-        $this->denyAccessUnlessGranted('MANAGE', $competition);
-
         $data = $request->toArray();
         $player = $playerRepository->find($data['player_id'] ?? '');
 

@@ -26,9 +26,6 @@ final class ActionController extends AbstractController
      *
      * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
      *
-     * @IsGranted("ACTION_CREATE", subject="competition")
-     * * Vérifie via le Voter si l'utilisateur a le droit de poster dans cette compétition.
-     *
      * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
      */
     #[Route('/{id}/actions', name: 'create', methods: 'POST')]

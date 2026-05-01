@@ -122,15 +122,28 @@ class Participation
 
     public function updateScore(): void
     {
-        $total = 0;
+        $totalScore = 0;
+        $competition = $this->getCompetition();
 
-        foreach ($this->getPlayer()->getActions() as $action) {
-            if ($action->getCompetition() === $this->getCompetition() && ActionStatus::VALIDATED === $action->getStatus()) {
-                $total += $action->getPoints();
+        $bonusMap = [];
+        if ($competition) {
+            foreach ($competition->getBonusDays() as $bonusDay) {
+                $bonusMap[$bonusDay->getDate()->format('Y-m-d')] = $bonusDay->getMultiplier();
             }
         }
 
-        $this->setScore($total);
+        foreach ($this->getActions() as $action) {
+            if (ActionStatus::VALIDATED !== $action->getStatus()) {
+                continue;
+            }
+
+            $actionDate = $action->getDateAction()->format('Y-m-d');
+            $multiplier = $bonusMap[$actionDate] ?? 1;
+
+            $totalScore += ($action->getPoints() * $multiplier);
+        }
+
+        $this->score = $totalScore;
     }
 
     #[Groups(['competition:read'])]

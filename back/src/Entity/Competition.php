@@ -111,11 +111,21 @@ class Competition
     #[Groups(['competition:read', 'competition:admin', 'competition:write', 'user:read'])]
     private Collection $referees;
 
+    /**
+     * Liste des jours bonus (multiplicateurs de points).
+     *
+     * @var Collection<int, BonusDay>
+     */
+    #[ORM\OneToMany(targetEntity: BonusDay::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Groups(['competition:read'])]
+    private Collection $bonusDays;
+
     public function __construct()
     {
         $this->participations = new ArrayCollection();
         $this->actions = new ArrayCollection();
         $this->referees = new ArrayCollection();
+        $this->bonusDays = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -304,6 +314,36 @@ class Competition
             // set the owning side to null (unless already changed)
             if ($referee->getRefereedCompetitions()->contains($this)) {
                 $referee->removeRefereedCompetition($this);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BonusDay>
+     */
+    public function getBonusDays(): Collection
+    {
+        return $this->bonusDays;
+    }
+
+    public function addBonusDay(BonusDay $bonusDay): static
+    {
+        if (!$this->bonusDays->contains($bonusDay)) {
+            $this->bonusDays->add($bonusDay);
+            $bonusDay->setCompetition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBonusDay(BonusDay $bonusDay): static
+    {
+        if ($this->bonusDays->removeElement($bonusDay)) {
+            // set the owning side to null (unless already changed)
+            if ($bonusDay->getCompetition() === $this) {
+                $bonusDay->setCompetition(null);
             }
         }
 
