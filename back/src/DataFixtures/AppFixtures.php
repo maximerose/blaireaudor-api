@@ -6,6 +6,7 @@ namespace App\DataFixtures;
 
 use App\Enum\ActionStatus;
 use App\Factory\ActionFactory;
+use App\Factory\BonusDayFactory;
 use App\Factory\CompetitionFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\PlayerFactory;
@@ -857,7 +858,28 @@ class AppFixtures extends Fixture
         }
         $io->progressFinish();
 
-        // --- 6. Calcul des Scores ---
+        // --- 6. Ajout des jours bonus ---
+        $io->section('Ajout des jours bonus');
+        BonusDayFactory::createOne([
+            'competition' => $comp2025,
+            'date' => new \DateTimeImmutable('2025-02-18'),
+            'multiplier' => 2,
+        ]);
+        BonusDayFactory::createOne([
+            'competition' => $comp2025,
+            'date' => new \DateTimeImmutable('2025-02-20'),
+            'multiplier' => 2,
+        ]);
+        $io->note('Jours bonus de '.$comp2025->getName().' ajoutés');
+
+        BonusDayFactory::createOne([
+            'competition' => $comp2026,
+            'date' => new \DateTimeImmutable('2026-02-26'),
+            'multiplier' => 2,
+        ]);
+        $io->note('Jours bonus de '.$comp2026->getName().' ajoutés');
+
+        // --- 7. Calcul des Scores ---
         $io->section('Calcul final des scores');
         $manager->flush();
 
