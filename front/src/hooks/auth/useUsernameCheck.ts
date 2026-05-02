@@ -1,55 +1,40 @@
+// front/src/hooks/auth/useUsernameCheck.ts
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { authService } from '@/services/api/auth';
 
 export const useUsernameCheck = (username: string, playerId: string | null) => {
-  const [status, setStatus] = useState<
-    'available' | 'taken' | 'guest_exists' | null
-  >(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [foundGuest, setFoundGuest] = useState<{
-    id: string;
-    name: string;
-    last_competition_name: string;
-  } | null>(null);
+  const [debouncedTerm, setDebouncedTerm] = useState('');
 
   useEffect(() => {
-    if (!username || username.length < 3) {
-      setStatus(null);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    const timer = setTimeout(async () => {
-      try {
-        const data = await authService.checkUsername(username);
-        if (!data.available) {
-          setStatus('taken');
-        } else if (data.is_guest_profile) {
-          if (playerId === data.guest_id) {
-            setStatus('available');
-          } else {
-            setStatus('guest_exists');
-            setFoundGuest({
-              id: data.guest_id,
-              name: data.guest_name,
-              last_competition_name: data.player.last_competition_name,
-            });
-          }
-        } else {
-          setStatus('available');
-        }
-      } catch (e) {
-        console.error('Erreur check username', e);
-        setStatus('taken');
-      } finally {
-        setIsLoading(false);
-      }
-    }, 400);
-
+    const timer = setTimeout(() => setDebouncedTerm(username), 400);
     return () => clearTimeout(timer);
-  }, [username, playerId]);
+  }, [username]);
 
-  return { status, setStatus, isLoading, foundGuest, setFoundGuest };
+  const { data, isLoading } = useQuery({
+    queryKey: ['username-check', debouncedTerm],
+    queryFn: () => authService.checkUsername(debouncedTerm),
+    enabled: debouncedTerm.length >= 3,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const status = !data
+    ? null
+    : !data.available
+      ? 'taken'
+      : data.is_guest_profile && playerId !== data.guest_id
+        ? 'guest_exists'
+        : 'available';
+
+  return {
+    status,
+    isLoading,
+    foundGuest: data?.is_guest_profile
+      ? {
+          id: data.guest_id,
+          name: data.guest_name,
+          last_competition_name: data.player?.last_competition_name,
+        }
+      : null,
+  };
 };

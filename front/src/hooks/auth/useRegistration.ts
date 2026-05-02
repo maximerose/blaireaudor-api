@@ -28,10 +28,8 @@ export const useRegistration = (redirectUrl: string) => {
 
   const {
     status: usernameStatus,
-    setStatus: setUsernameStatus,
     isLoading: checkLoading,
     foundGuest,
-    setFoundGuest,
   } = useUsernameCheck(formData.username, formData.player_id);
 
   const filteredResults = rawSearchResults.filter(
@@ -59,7 +57,6 @@ export const useRegistration = (redirectUrl: string) => {
       display_name: '',
       username: '',
     }));
-    setUsernameStatus(null);
     setSearchTerm('');
   };
 
@@ -71,8 +68,6 @@ export const useRegistration = (redirectUrl: string) => {
       player_id: foundGuest.id,
       display_name: foundGuest.name,
     }));
-    setUsernameStatus('available');
-    setFoundGuest(null);
     setShowUsernameHint(false);
   };
 
@@ -87,7 +82,6 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsUsernameCustomized(true);
-    setUsernameStatus(null);
     setFormData({ ...formData, username: slugify(e.target.value) });
   };
 
