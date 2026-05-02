@@ -1,6 +1,7 @@
 import { Button, Card, Text } from '@/components/UI';
 import { useReporting } from '@/hooks';
 import { CompetitionCountdown, ReportActionForm } from '@/components/Competition';
+import { useCompetition } from '@/context/CompetitionContext';
 
 export const ReportingSection = ({
   competition,
@@ -11,6 +12,8 @@ export const ReportingSection = ({
   const { isReporting, toggleReporting, potentialTargets } = useReporting({
     leaderboard,
   });
+  const { getTodayBonus } = useCompetition();
+  const todayBonus = getTodayBonus();
 
   if (competition.is_finished) return null;
 
@@ -37,7 +40,24 @@ export const ReportingSection = ({
   }
 
   return (
-    <section className="mb-10 max-w-2xl mx-auto animate-slide-up">
+    <section className="mb-10 max-w-2xl mx-auto animate-slide-up space-y-4">
+      {todayBonus && (
+        <Card
+          variant="dark"
+          className="border-danger-bright/30 bg-danger-dark/20 p-4 flex items-center gap-4 animate-pulse"
+        >
+          <span className="text-3xl">🔥</span>
+          <div className="flex-1">
+            <Text as="p" variant="caption" className="text-danger-bright font-black uppercase tracking-tighter">
+              Attention : Multiplicateur x{todayBonus.multiplier} activé !
+            </Text>
+            <Text as="p" variant="micro" className="opacity-70 leading-tight">
+              Indiquez le score de base de l'action, le bonus sera calculé automatiquement dans le journal.
+            </Text>
+          </div>
+          <span className="text-3xl">🔥</span>
+        </Card>
+      )}
       {!isReporting ? (
         <Button
           variant="danger"

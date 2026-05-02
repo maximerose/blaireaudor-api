@@ -5,7 +5,6 @@ import { cn } from '@/utils';
 export const PendingSection = ({
   myPending,
   othersPending,
-  isAdmin,
   onUpdate,
   onStatusChange,
 }: any) => {
@@ -60,7 +59,6 @@ export const PendingSection = ({
                     <ActionRow
                       key={action.id}
                       action={action}
-                      isAdmin={isAdmin}
                       onUpdate={onUpdate}
                       onStatusChange={onStatusChange}
                     />

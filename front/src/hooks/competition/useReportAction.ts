@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from '@/api/config';
 import { ROUTES } from '@/constants/routes';
 import type { Competition } from '@/context/AuthContext';
+import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 
 interface ReportData {
   targetPlayerId: string;
@@ -26,22 +27,8 @@ export const useReportAction = (
     dateAction: new Date().toISOString().split('T')[0],
   });
 
-  const dateLimits = useMemo(() => {
-    if (!competition) return { minDate: '', maxDate: '' };
-
-    const today = new Date().toISOString().split('T')[0];
-    const start = competition.start_date.split('T')[0];
-    const end = competition.end_date
-      ? competition.end_date.split('T')[0]
-      : null;
-
-    if (start > today) return { minDate: start, maxDate: start };
-
-    return {
-      minDate: start,
-      maxDate: end && end < today ? end : today,
-    };
-  }, [competition]);
+  const { minDate, maxDate } = useCompetitionDateLimits(competition, true)
+  const dateLimits = { minDate, maxDate };
 
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);

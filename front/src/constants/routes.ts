@@ -40,6 +40,11 @@ export const ROUTES = {
   API_PLAYERS: '/players',
   API_SEARCH_PLAYERS: (query: string) => `/search/players?displayName=${query}`,
 
+  // Bonus days
+  API_BONUS_DAYS: '/bonus_days',
+  API_BONUS_DAYS_DETAIL: (id: string) => `/bonus_days/${id}`,
+  API_BONUS_DAYS_BY_COMPETITION: (competitionId: string) => `/bonus_days?competition=${competitionId}`,
+
   // Administration
   API_COMPETITION_CREATE: '/admin/competition',
   API_ADD_PLAYERS_TO_COMP: (id: string) => `/admin/competition/${id}/add-players`,

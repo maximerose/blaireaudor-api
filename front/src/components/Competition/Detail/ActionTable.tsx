@@ -3,11 +3,10 @@ import { Card, EmptyState, Text } from '@/components/UI';
 import { DateNavigation, ActionRow } from '@/components/Competition';
 import { PendingSection } from './Sections/PendingSection';
 import { TableHeader } from './Sections/TableHeader';
+import { useCompetition } from '@/context/CompetitionContext';
 
 export const ActionTable = ({
   actions,
-  isAdmin,
-  hidePoints,
   onUpdate,
   onStatusChange,
 }: any) => {
@@ -20,6 +19,7 @@ export const ActionTable = ({
     getAriaSort,
     getSortIndicator,
   } = useActionTable(actions);
+  const { isAdmin } = useCompetition();
 
   return (
     <div
@@ -31,7 +31,6 @@ export const ActionTable = ({
       <PendingSection
         myPending={categories.myPending}
         othersPending={categories.othersPending}
-        isAdmin={isAdmin}
         onUpdate={onUpdate}
         onStatusChange={onStatusChange}
       />
@@ -58,8 +57,6 @@ export const ActionTable = ({
             <ActionRow
               key={action.id}
               action={action}
-              isAdmin={isAdmin}
-              hidePoints={hidePoints}
               onUpdate={onUpdate}
               onStatusChange={onStatusChange}
             />

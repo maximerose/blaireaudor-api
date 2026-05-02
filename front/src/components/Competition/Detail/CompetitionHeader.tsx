@@ -1,7 +1,8 @@
 import { Badge, Text } from '@/components/UI';
 import type { Competition } from '@/context/AuthContext';
-import { cn, getCompetitionReferees, getDisplayDateText } from '@/utils';
+import { cn, formatShortDate, getCompetitionReferees, getDisplayDateText } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
+import { useCompetition } from '@/context/CompetitionContext';
 
 interface CompetitionHeaderProps {
   competition: Competition;
@@ -13,6 +14,7 @@ export const CompetitionHeader = ({
   creatorName,
 }: CompetitionHeaderProps) => {
   const referees = getCompetitionReferees(competition);
+  const { bonusDays } = useCompetition();
 
   return (
     <header className="mb-10 text-center space-y-5">
@@ -37,7 +39,7 @@ export const CompetitionHeader = ({
           {getDisplayDateText(competition.start_date, competition.end_date)}
         </Text>
 
-        {competition.has_started && !competition.is_finished && (
+        {competition.has_started && !competition.is_finished && competition.end_date && (
           <div className="mt-1 bg-black/20 px-3 py-1 rounded-full border border-white/5" aria-live="polite">
             <CompetitionCountdown
               prefix="Clôture"
@@ -89,6 +91,24 @@ export const CompetitionHeader = ({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {bonusDays.length > 0 && (
+        <div className="pt-3 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
+          <Text variant="micro" className="opacity-40 uppercase tracking-widest w-full mb-1">
+            Calendrier des Bonus 🔥
+          </Text>
+          {bonusDays.map((bd) => (
+            <Badge
+              key={bd.id}
+              variant="danger"
+              className="text-[8px]"
+              icon={`x${bd.multiplier}`}
+            >
+              {formatShortDate(bd.date)}
+            </Badge>
+          ))}
         </div>
       )}
     </header>

@@ -1,22 +1,14 @@
 import { Button } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation } from '@/hooks';
+import { useCompetition } from '@/context/CompetitionContext';
 
-interface DateNavigationProps {
-  dates: string[];
-  selectedDate: string | null;
-  onSelect: (date: string | null) => void;
-}
-
-export const DateNavigation = ({
-  dates,
-  selectedDate,
-  onSelect,
-}: DateNavigationProps) => {
+export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
+  const { getMultiplier } = useCompetition();
   const { scrollRef, showMask, handleScroll } = useDateNavigation(dates);
 
   return (
-    <nav className="relative group" aria-label="Filtrer les actions par date">
+    <nav className="relative group z-20" aria-label="Filtrer les actions par date">
       <div
         ref={scrollRef}
         onScroll={handleScroll}
@@ -27,32 +19,47 @@ export const DateNavigation = ({
           variant={selectedDate === null ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => onSelect(null)}
-          aria-current={selectedDate === null ? 'true' : undefined}
-          className={cn(
-            'whitespace-nowrap transition-default',
-            selectedDate !== null && 'opacity-40 hover:opacity-80',
-          )}
+          className={cn(selectedDate !== null && 'opacity-40')}
         >
           Toutes les dates
         </Button>
 
-        {dates.map((date: string) => (
-          <Button
-            key={date}
-            variant={selectedDate === date ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => onSelect(date)}
-            aria-current={selectedDate === date ? 'true' : undefined}
-            className={cn(
-              'whitespace-nowrap transition-default',
-              selectedDate !== date && 'opacity-40 hover:opacity-80',
-            )}
-          >
-            {formatLongDate(date)}
-          </Button>
-        ))}
-      </div>
+        {dates.map((date: string) => {
+          const multiplier = getMultiplier(date);
+          const isActive = selectedDate === date;
 
+          return (
+            <div key={date} className="relative">
+              <Button
+                variant={isActive ? 'primary' : 'secondary'}
+                size="sm"
+                onClick={() => onSelect(date)}
+                className={cn(
+                  'whitespace-nowrap transition-default relative overflow-hidden px-4',
+                  !isActive && 'opacity-40 hover:opacity-80',
+                  multiplier && 'animate-danger-glow border-danger/50 pr-8'
+                )}
+              >
+                {formatLongDate(date)}
+
+                {multiplier && (
+                  <div className="absolute top-0 right-0 w-10 h-10 overflow-hidden pointer-events-none">
+                    <div className={cn(
+                      "absolute top-0 right-0 bg-danger w-[140%] h-5 rotate-45 translate-x-[30%] -translate-y-[10%]",
+                      "flex items-center justify-center shadow-lg border-b border-white/20",
+                      "animate-pulse"
+                    )}>
+                      <span className="text-[9px] font-black text-white uppercase tracking-tighter pt-1.5 pl-1">
+                        x{multiplier}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </Button>
+            </div>
+          );
+        })}
+      </div>
       <div
         aria-hidden="true"
         className={cn(
@@ -64,3 +71,4 @@ export const DateNavigation = ({
     </nav>
   );
 };
+

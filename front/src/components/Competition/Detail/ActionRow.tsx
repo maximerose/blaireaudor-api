@@ -1,16 +1,12 @@
 import { useActionRow, useActionRowInteraction } from '@/hooks';
 import { ActionRowEditMode } from './ActionRowEditMode';
 import { ActionRowDisplayMode } from './ActionRowDisplayMode';
+import { useCompetition } from '@/context/CompetitionContext';
 
-export const ActionRow = ({
-  action,
-  isAdmin,
-  hidePoints,
-  onUpdate,
-  onStatusChange,
-}: any) => {
-  const { isPending, pointsDisplay, pointsColorClass, playerName } =
-    useActionRow(action);
+export const ActionRow = ({ action, onUpdate, onStatusChange }: any) => {
+  const { isPending, playerName } = useActionRow(action);
+  const { isAdmin } = useCompetition();
+
   const {
     isEditing,
     editData,
@@ -19,9 +15,6 @@ export const ActionRow = ({
     stopEditing,
     handleSave,
   } = useActionRowInteraction(action, onUpdate);
-
-  const displayPoints = hidePoints ? '??' : pointsDisplay;
-  const displayColor = hidePoints ? 'text-white/20' : pointsColorClass;
 
   if (isEditing) {
     return (
@@ -38,11 +31,7 @@ export const ActionRow = ({
     <ActionRowDisplayMode
       action={action}
       playerName={playerName}
-      displayPoints={displayPoints}
-      displayColor={displayColor}
       isPending={isPending}
-      isAdmin={isAdmin}
-      hidePoints={hidePoints}
       onEdit={startEditing}
       onStatusChange={onStatusChange}
     />

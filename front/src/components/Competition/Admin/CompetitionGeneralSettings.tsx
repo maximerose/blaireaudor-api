@@ -41,7 +41,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
           competition.has_started ? "bg-white/2 border-white/5 opacity-60" : "bg-white/5 border-white/10"
         )}>
           <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">Début</Text>
-          {competition.has_started && <Badge variant="ghost" className="text-[8px]">Déjà lancée</Badge>}
+          {competition.has_started && <Badge variant="ghost" className="text-[8px] ml-2">Déjà lancée</Badge>}
           <Input
             type="date"
             value={formData.startDate}

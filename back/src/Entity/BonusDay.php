@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -30,9 +32,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'Un bonus est déjà programmé pour cette arène à cette date.'
 )]
 #[Assert\Expression(
-    expression: "this.getCompetition() == null or (this.getDate() >= this.getCompetition().getStartDate() and (this.getCompetition().getEndDate() == null or this.getDate() <= this.getCompetition().getEndDate()))",
+    expression: 'this.getCompetition() == null or (this.getDate() >= this.getCompetition().getStartDate() and (this.getCompetition().getEndDate() == null or this.getDate() <= this.getCompetition().getEndDate()))',
     message: "La date du jour bonus doit être comprise dans les dates d'ouverture et de fermeture de la compétition."
 )]
+#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['bonus:read']]),

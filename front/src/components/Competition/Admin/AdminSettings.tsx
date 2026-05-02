@@ -6,6 +6,7 @@ import { RefereeManagement } from './RefereeManagement';
 import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
 import { useState } from 'react';
 import { cn } from '@/utils';
+import { BonusDayManagement } from './BonusDayManagement';
 
 interface AdminSettingsProps {
   competition: any;
@@ -120,6 +121,8 @@ export const AdminSettings = ({
               currentUser={user}
               onRefresh={refresh}
             />
+
+            <BonusDayManagement />
           </section>
         </div>
       </div>

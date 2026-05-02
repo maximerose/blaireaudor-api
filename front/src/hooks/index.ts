@@ -5,7 +5,9 @@ export * from './auth/useRegistration';
 
 export * from './competition/useActionRowInteraction';
 export * from './competition/useActionTable';
+export * from './competition/useAdminBonusDay';
 export * from './competition/useAdminSettings';
+export * from './competition/useBonusDays';
 export * from './competition/useCompetitionAdmin';
 export * from './competition/useCompetitionCard';
 export * from './competition/useCompetitionCountdown';
