@@ -1,32 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 
-export const usePlayerSearch = () => {
-  const [results, setResults] = useState<any[]>([]);
-  const [searching, setSearching] = useState(false);
+export const usePlayerSearch = (debounceDelay = 400) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedTerm, setDebouncedTerm] = useState('');
 
-  const search = async (query: string) => {
-    if (query.length < 2) {
-      setResults([]);
-      return;
-    }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, debounceDelay);
 
-    setSearching(true);
+    return () => clearTimeout(timer);
+  }, [searchTerm, debounceDelay]);
 
-    try {
-      const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(query));
+  const { data: results = [], isFetching: searching } = useQuery({
+    queryKey: ['players', 'search', debouncedTerm],
+    queryFn: async () => {
+      const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(debouncedTerm));
+      if (!response.ok) throw new Error('Erreur lors de la recherche');
+
       const data = await response.json();
-      const results = Array.isArray(data)
+      return Array.isArray(data)
         ? data
         : data['hydra:member'] || data.member || [];
-      setResults(results);
-    } catch (error) {
-      console.error('Erreur recherche', error);
-    } finally {
-      setSearching(false);
-    }
-  };
+    },
+    enabled: debouncedTerm.trim().length >= 2,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  return { search, results, searching, setResults };
+  return {
+    searchTerm,
+    setSearchTerm,
+    results: searchTerm.trim().length < 2 ? [] : results,
+    searching,
+  };
 };

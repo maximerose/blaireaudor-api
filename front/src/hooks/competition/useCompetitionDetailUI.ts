@@ -16,14 +16,12 @@ export const useCompetitionDetailUI = () => {
   const { deleteCompetition } = useCompetitionDelete();
   const [isReporting, setIsReporting] = useState(false);
 
-  // Calcul du nombre d'entrées filtrées selon le rôle
   const entriesCount = useMemo(() => {
     if (!actions) return 0;
     const isReferee = isPlayerReferee(competition, user?.player?.id);
 
     if (isReferee) return actions.length;
 
-    // Pour les non-arbitres, on ne compte que ce qui n'est pas rejeté
     return actions.filter((a: any) => a.status !== 'rejected').length;
   }, [actions, competition, user]);
 

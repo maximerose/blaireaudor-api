@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '@/utils';
 import { authService } from '@/services/api/auth';
-import { useAuth, usePlayerSearch } from '@/hooks';
+import { useAuth, usePlayerSearch, useUsernameCheck } from '@/hooks';
+import type { Player } from '@/context/AuthContext';
 
 export const useRegistration = (redirectUrl: string) => {
-  const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
-  const [usernameStatus, setUsernameStatus] = useState<
-    'available' | 'taken' | 'guest_exists' | null
-  >(null);
-  const [foundGuest, setFoundGuest] = useState<{
-    id: string;
-    name: string;
-    last_competition_name: string;
-  } | null>(null);
-  const [checkLoading, setCheckLoading] = useState(false);
-  const [showUsernameHint, setShowUsernameHint] = useState(false);
-
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { search, results, searching, setResults } = usePlayerSearch();
+  const {
+    searchTerm,
+    setSearchTerm,
+    results: rawSearchResults,
+    searching,
+  } = usePlayerSearch();
 
   const [formData, setFormData] = useState({
     display_name: '',
@@ -29,8 +21,22 @@ export const useRegistration = (redirectUrl: string) => {
     plain_password: '',
     player_id: null as string | null,
   });
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
+  const [showUsernameHint, setShowUsernameHint] = useState(false);
 
-  const filteredResults = results.filter((p) => p.has_account === false);
+  const {
+    status: usernameStatus,
+    setStatus: setUsernameStatus,
+    isLoading: checkLoading,
+    foundGuest,
+    setFoundGuest,
+  } = useUsernameCheck(formData.username, formData.player_id);
+
+  const filteredResults = rawSearchResults.filter(
+    (p: Player) => p.has_account === false,
+  );
 
   const handlePlayerSelect = (player: any) => {
     setIsUsernameCustomized(true);
@@ -40,11 +46,10 @@ export const useRegistration = (redirectUrl: string) => {
       username: player.username,
       player_id: player.id,
     }));
+    setSearchTerm('');
   };
 
-  const handleClearSearch = () => {
-    setResults([]);
-  };
+  const handleClearSearch = () => setSearchTerm('');
 
   const handleClearPlayer = () => {
     setIsUsernameCustomized(false);
@@ -55,49 +60,8 @@ export const useRegistration = (redirectUrl: string) => {
       username: '',
     }));
     setUsernameStatus(null);
-    setResults([]);
+    setSearchTerm('');
   };
-
-  useEffect(() => {
-    const { username, player_id } = formData;
-
-    if (!username || username.length < 3) {
-      setUsernameStatus(null);
-      setCheckLoading(false);
-      return;
-    }
-
-    setCheckLoading(true);
-
-    const timer = setTimeout(async () => {
-      try {
-        const data = await authService.checkUsername(username);
-        if (!data.available) {
-          setUsernameStatus('taken');
-        } else if (data.is_guest_profile) {
-          if (player_id === data.guest_id) {
-            setUsernameStatus('available');
-          } else {
-            setUsernameStatus('guest_exists');
-            setFoundGuest({
-              id: data.guest_id,
-              name: data.guest_name,
-              last_competition_name: data.player.last_competition_name,
-            });
-          }
-        } else {
-          setUsernameStatus('available');
-        }
-      } catch (e) {
-        console.error('Erreur check username', e);
-        setUsernameStatus('taken');
-      } finally {
-        setCheckLoading(false);
-      }
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [formData.username]);
 
   const linkFoundGuest = () => {
     if (!foundGuest) return;
@@ -112,14 +76,6 @@ export const useRegistration = (redirectUrl: string) => {
     setShowUsernameHint(false);
   };
 
-  const getSubmitButtonText = () => {
-    if (isLoading) return 'Inscription en cours...';
-    if (checkLoading) return 'Vérification du pseudo...';
-    if (usernameStatus === 'taken') return 'Pseudo indisponible';
-    if (usernameStatus === 'guest_exists') return 'Profil existant';
-    return "S'inscrire au Blaireau d'Or";
-  };
-
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setFormData((prev) => ({
@@ -130,10 +86,13 @@ export const useRegistration = (redirectUrl: string) => {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUsername = slugify(e.target.value);
     setIsUsernameCustomized(true);
     setUsernameStatus(null);
-    setFormData({ ...formData, username: newUsername });
+    setFormData({ ...formData, username: slugify(e.target.value) });
+  };
+
+  const cleanUsername = () => {
+    setFormData((prev) => ({ ...prev, username: finalizeSlug(prev.username) }));
   };
 
   const handleUsernameFocus = () => setShowUsernameHint(true);
@@ -142,25 +101,22 @@ export const useRegistration = (redirectUrl: string) => {
     cleanUsername();
   };
   const handleDisplayNameBlur = () => {
-    if (!isUsernameCustomized) {
-      cleanUsername();
-    }
+    if (!isUsernameCustomized) cleanUsername();
   };
-
-  const cleanUsername = () => {
-    setFormData((prev) => ({
-      ...prev,
-      username: finalizeSlug(prev.username),
-    }));
-  };
-
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, plain_password: e.target.value }));
   };
 
+  const getSubmitButtonText = () => {
+    if (isLoading) return 'Inscription en cours...';
+    if (checkLoading) return 'Vérification du pseudo...';
+    if (usernameStatus === 'taken') return 'Pseudo indisponible';
+    if (usernameStatus === 'guest_exists') return 'Profil existant';
+    return "S'inscrire au Blaireau d'Or";
+  };
+
   const handleSubmit = async () => {
     if (isLoading || checkLoading || usernameStatus === 'taken') return;
-
     setIsLoading(true);
     setMessage('');
 
@@ -188,10 +144,8 @@ export const useRegistration = (redirectUrl: string) => {
       formData.username.length >= 3 &&
       usernameStatus !== 'guest_exists' &&
       usernameStatus !== null,
-
     shouldShowGuestAlert:
       !checkLoading && usernameStatus === 'guest_exists' && !!foundGuest,
-
     shouldShowUsernameHint: showUsernameHint,
   };
 
@@ -210,7 +164,8 @@ export const useRegistration = (redirectUrl: string) => {
       usernameStatus === 'taken' ||
       formData.username.length < 3,
     playerSearch: {
-      search,
+      searchTerm,
+      setSearchTerm,
       results: filteredResults,
       searching,
       onSelect: handlePlayerSelect,

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth, useEnrollment } from '@/hooks';
+import type { Player } from '@/context/AuthContext';
 
 const checkIsOwner = (user: any, competition: any) => {
   if (!user || !competition) return false;
@@ -8,17 +9,20 @@ const checkIsOwner = (user: any, competition: any) => {
   );
 };
 
-const getNewPlayers = (participants: any[], existingPlayers: any[] = []) => {
+const getNewPlayers = (
+  participants: Player[],
+  existingPlayers: Player[] = [],
+) => {
   return participants.filter(
-    (p) => !existingPlayers.find((cp: any) => cp.id === p.id),
+    (p) => !existingPlayers.find((cp: Player) => cp.id === p.id),
   );
 };
 
-const checkCanCreatePlayer = (searchTerm: string, searchResults: any[]) => {
+const checkCanCreatePlayer = (searchTerm: string, searchResults: Player[]) => {
   if (searchTerm.trim().length < 2) return false;
   const term = searchTerm.toLowerCase();
   const hasExactMatch = searchResults.some(
-    (p) => (p.display_name || p.displayName).toLowerCase() === term,
+    (p) => p.display_name.toLowerCase() === term,
   );
   return !hasExactMatch;
 };

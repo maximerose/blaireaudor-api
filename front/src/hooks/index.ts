@@ -2,6 +2,7 @@ export * from './auth/useAuth';
 export * from './auth/useLogin';
 export * from './auth/useLogout';
 export * from './auth/useRegistration';
+export * from './auth/useUsernameCheck';
 
 export * from './competition/useActionRowInteraction';
 export * from './competition/useActionTable';

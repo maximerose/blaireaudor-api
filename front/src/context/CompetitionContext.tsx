@@ -1,4 +1,3 @@
-// front/src/context/CompetitionContext.tsx
 import { createContext, useCallback, useMemo, type ReactNode } from 'react';
 import { useBonusDays } from '@/hooks/competition/useBonusDays';
 import { sortByDate } from '@/utils';
@@ -13,7 +12,6 @@ export interface CompetitionContextType {
   getTodayBonus: () => any | undefined;
 }
 
-// On exporte le contexte pour le hook, mais c'est une constante, pas une fonction.
 export const CompetitionContext = createContext<
   CompetitionContextType | undefined
 >(undefined);

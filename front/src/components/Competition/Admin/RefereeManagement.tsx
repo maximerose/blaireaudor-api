@@ -1,6 +1,6 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
-import type { Competition } from '@/context/AuthContext';
+import type { Competition, Player } from '@/context/AuthContext';
 
 interface RefereeManagementProps {
   competition: Competition;
@@ -118,7 +118,7 @@ export const RefereeManagement = ({
           {/* Résultats de la recherche */}
           {searchResults.length > 0 && (
             <ul className="absolute z-20 mt-2 w-full bg-[#111] border border-white/10 rounded-xl shadow-2xl max-h-60 overflow-y-auto divide-y divide-white/5">
-              {searchResults.map((player) => (
+              {searchResults.map((player: Player) => (
                 <li key={player.id}>
                   <PlayerSearchResultItem
                     player={player}

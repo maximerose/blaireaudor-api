@@ -8,7 +8,6 @@ import {
 export const useCompetitionData = (code: string) => {
   const queryClient = useQueryClient();
 
-  // 1. Récupération de la compétition via le joinCode
   const competitionQuery = useQuery({
     queryKey: ['competition', code],
     queryFn: () => fetchCompetitionByCode(code),
@@ -18,14 +17,12 @@ export const useCompetitionData = (code: string) => {
 
   const competitionId = competitionQuery.data?.id;
 
-  // 2. Récupération du classement (dépend de l'ID)
   const leaderboardQuery = useQuery({
     queryKey: ['competition', competitionId, 'leaderboard'],
     queryFn: () => fetchLeaderboard(competitionId!),
     enabled: !!competitionId,
   });
 
-  // 3. Récupération des actions (dépend de l'ID)
   const actionsQuery = useQuery({
     queryKey: ['competition', competitionId, 'actions'],
     queryFn: () => fetchCompetitionActions(competitionId!),

@@ -11,7 +11,7 @@ export interface Competition {
   fog_of_war: boolean;
   participants_count: number;
   has_started: boolean;
-  created_by: User | string;
+  created_by: User;
   referees: (Player | string)[];
 }
 
@@ -27,6 +27,7 @@ export interface Player {
   display_name: string;
   username: string;
   participations: Participation[];
+  has_account: boolean;
   refereed_competitions: Competition[];
   associated_user: User | null;
 }

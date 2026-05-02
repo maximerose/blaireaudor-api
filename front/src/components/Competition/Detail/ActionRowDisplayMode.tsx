@@ -69,7 +69,7 @@ export const ActionRowDisplayMode = ({
 
       {/* Points */}
       <div className="col-span-3 md:col-span-2 text-right flex flex-col items-end">
-        {multiplier && !hidePoints && (
+        {multiplier > 1 && !hidePoints && (
           <Text variant="mono" className="text-[9px] line-through opacity-30">
             {action.points} pts
           </Text>

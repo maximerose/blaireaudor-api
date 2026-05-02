@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
+import { usePlayerSearch } from './usePlayerSearch';
 
 export const useEnrollment = (
   competitionId: string,
@@ -13,51 +14,23 @@ export const useEnrollment = (
   const { refreshUser } = useAuth();
   const [participants, setParticipants] = useState(initialParticipants);
   const [loading, setLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    if (searchTerm.length < 2) {
-      setSearchResults([]);
-      return;
-    }
+  const {
+    searchTerm,
+    setSearchTerm,
+    results: rawSearchResults,
+    searching: isSearching,
+  } = usePlayerSearch();
 
-    const controller = new AbortController();
-    const delayDebounceFn = setTimeout(() => {
-      executeSearch(searchTerm, controller.signal);
-    }, 500);
-
-    return () => {
-      clearTimeout(delayDebounceFn);
-      controller.abort();
-    };
-  }, [searchTerm]);
-
-  const executeSearch = async (query: string, signal: AbortSignal) => {
-    setIsSearching(true);
-    try {
-      const response = await apiFetch(ROUTES.API_SEARCH_PLAYERS(query), {
-        signal,
-      });
-      const data = await response.json();
-      const results = Array.isArray(data) ? data : data['hydra:member'] || [];
-
-      const filteredResults = results.filter(
-        (result: any) => !participants.some((p) => p.id === result.id),
-      );
-
-      setSearchResults(filteredResults);
-    } catch (error: any) {
-      if (error.name === 'AbortError') return;
-      console.error('Erreur recherche', error);
-    } finally {
-      if (!signal.aborted) setIsSearching(false);
-    }
-  };
+  const searchResults = useMemo(() => {
+    return rawSearchResults.filter(
+      (result: any) =>
+        !participants.some((p) => String(p.id) === String(result.id)),
+    );
+  }, [rawSearchResults, participants]);
 
   const addExistingPlayer = (player: any) => {
-    if (!participants.find((p) => p.id === player.id)) {
+    if (!participants.find((p) => String(p.id) === String(player.id))) {
       setParticipants([
         ...participants,
         {
@@ -67,7 +40,6 @@ export const useEnrollment = (
         },
       ]);
     }
-    setSearchResults([]);
     setSearchTerm('');
   };
 

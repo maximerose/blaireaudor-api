@@ -4,7 +4,8 @@ import { LinkedProfileCard } from '@/components/Auth';
 
 interface Props {
   searchProps: {
-    search: (query: string) => void;
+    searchTerm: string;
+    setSearchTerm: (query: string) => void;
     results: any[];
     searching: boolean;
     onSelect: (player: any) => void;
@@ -20,7 +21,8 @@ export const HistoricalPlayerSearch = ({
   selectedName,
 }: Props) => {
   const {
-    search,
+    searchTerm,
+    setSearchTerm,
     results,
     searching,
     onSelect,
@@ -43,7 +45,8 @@ export const HistoricalPlayerSearch = ({
       <Input
         label="Déjà participé ?"
         placeholder="Ton nom d'affichage..."
-        onChange={(e) => search(e.target.value)}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         icon={searching ? '⏳' : '🔍'}
         align="center"
         role="combobox"
