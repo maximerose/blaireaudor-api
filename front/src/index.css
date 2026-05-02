@@ -121,10 +121,6 @@
   }
 }
 
-.animate-shrink-fade-out {
-  animation: shrink-fade-out 0.5s forwards ease-in-out;
-}
-
 @keyframes loading-bar {
   0% {
     transform: translateX(-100%);

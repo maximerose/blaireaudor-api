@@ -36,9 +36,9 @@ export default defineConfig([
       ...js.configs.recommended.rules,
       ...tseslint.configs.recommended[1].rules,
 
-      'indent': ['error', 2],
-      'react/jsx-indent': ['error', 2],
-      'react/jsx-indent-props': ['error', 2],
+      'indent': ['off'],
+      'react/jsx-indent': ['off'],
+      'react/jsx-indent-props': ['off'],
       // 1. DÉSACTIVER la règle de base (JS) pour éviter les doublons et conflits
       'no-unused-vars': 'off',
 

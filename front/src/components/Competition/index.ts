@@ -21,7 +21,6 @@ export * from './Join/JoinCompetitionModal';
 export * from './Join/JoinModalHeader';
 export * from './Reporting/ReportActionForm';
 export * from './Reporting/ReportingSection';
-export * from './Reporting/ReportSuccessView';
 export * from './Shared/StatusBadge';
 export * from './CreateCompetition/CompetitionConfigStep';
 export * from './CreateCompetition/CompetitionRecruitmentStep';

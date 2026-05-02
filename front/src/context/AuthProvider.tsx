@@ -1,15 +1,22 @@
-import { useState, useEffect, type ReactNode, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  type ReactNode,
+  useRef,
+  useMemo,
+  useContext,
+} from 'react';
 import { authService } from '@/services/api/auth';
-import { AuthContext, type User } from '@/context/AuthContext';
+import { AuthContext, type User, type AuthContextType } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const isInitilialized = useRef(false);
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    if (isInitilialized.current) return;
-    isInitilialized.current = true;
+    if (isInitialized.current) return;
+    isInitialized.current = true;
 
     const initAuth = async () => {
       const token = authService.getToken();
@@ -18,7 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userData = await authService.me();
           if (userData) setUser(userData);
         } catch (e) {
-          console.error(e);
+          console.error('Échec initialisation auth:', e);
           authService.logout();
         }
       }
@@ -51,11 +58,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ user, setUser, loading, login, logout, refreshUser }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value: AuthContextType = useMemo(
+    () => ({
+      user,
+      setUser,
+      loading,
+      login,
+      logout,
+      refreshUser,
+    }),
+    [user, loading],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

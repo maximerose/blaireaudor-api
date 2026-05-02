@@ -1,15 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { apiFetch } from '@/services/api/config';
+import { useMemo, useRef, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
-import type { Competition } from '@/context/AuthContext';
+import { actionService } from '@/services/api/action';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
-
-interface ReportData {
-  targetPlayerId: string;
-  description: string;
-  points: number;
-  dateAction: string;
-}
+import { toast } from 'react-hot-toast';
+import type { Competition } from '@/context/AuthContext';
 
 export const useReportAction = (
   competition: Competition,
@@ -18,9 +12,11 @@ export const useReportAction = (
   isAdmin: boolean,
 ) => {
   const [loading, setLoading] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [formData, setFormData] = useState<ReportData>({
+  const [search, setSearch] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const [formData, setFormData] = useState({
     targetPlayerId: '',
     description: '',
     points: 10,
@@ -28,91 +24,53 @@ export const useReportAction = (
   });
 
   const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
-  const dateLimits = { minDate, maxDate };
 
-  const [search, setSearch] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  const filteredPlayers = useMemo(() => {
-    return players.filter((p) =>
-      p.display_name.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [players, search]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
-        setShowDropdown(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleChange = (field: keyof ReportData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const filteredPlayers = useMemo(
+    () =>
+      players.filter((p) =>
+        p.display_name.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [players, search],
+  );
 
   const selectPlayer = (id: string, name: string) => {
-    handleChange('targetPlayerId', id);
+    setFormData((prev) => ({ ...prev, targetPlayerId: id }));
     setSearch(name);
     setShowDropdown(false);
   };
 
   const submitReport = async () => {
-    if (!formData.targetPlayerId || !formData.description || !formData.points)
-      return;
+    if (!formData.targetPlayerId || !formData.description) return;
 
     setLoading(true);
-    try {
-      const response = await apiFetch(ROUTES.API_ACTIONS, {
-        method: 'POST',
-        body: JSON.stringify({
-          description: formData.description,
-          dateAction: formData.dateAction,
-          points: Number(formData.points),
-          player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
-          competition: ROUTES.IRI_COMPETITION(competition.id),
-          status: isAdmin ? 'validated' : 'pending',
-        }),
-      });
+    const payload = {
+      description: formData.description,
+      dateAction: formData.dateAction,
+      points: Number(formData.points),
+      player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
+      competition: ROUTES.IRI_COMPETITION(competition.id),
+      status: isAdmin ? 'validated' : 'pending',
+    };
 
-      if (response.ok) {
-        setIsSuccess(true);
-        setFormData((prev) => ({
-          ...prev,
-          targetPlayerId: '',
-          description: '',
-          points: 0,
-        }));
-        setTimeout(() => {
-          setIsExiting(true);
-          setTimeout(() => {
-            onSuccess();
-            setIsSuccess(false);
-            setIsExiting(false);
-          }, 500);
-        }, 2500);
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'ajout d'une action", error);
-    } finally {
-      setLoading(false);
+    const { ok } = await actionService.create(competition.id, payload);
+
+    if (ok) {
+      toast.success(
+        isAdmin ? 'Méfait enregistré !' : "Dénonciation transmise à l'arbitre.",
+      );
+      onSuccess();
+    } else {
+      toast.error('Erreur lors du signalement.');
     }
+    setLoading(false);
   };
 
   return {
     formData,
     loading,
-    dateLimits,
-    handleChange,
+    dateLimits: { minDate, maxDate },
+    setFormData,
     submitReport,
-    isSuccess,
-    isExiting,
     search,
     setSearch,
     showDropdown,

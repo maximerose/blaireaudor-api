@@ -1,20 +1,10 @@
-import { createContext, useCallback, useMemo, type ReactNode } from 'react';
+import { useCallback, useMemo, useContext, type ReactNode } from 'react';
 import { useBonusDays } from '@/hooks/competition/useBonusDays';
 import { sortByDate } from '@/utils';
-
-export interface CompetitionContextType {
-  competition: any;
-  bonusDays: any[];
-  isAdmin: boolean;
-  hidePoints: boolean;
-  refresh: () => void;
-  getMultiplier: (date: string | null) => number | undefined;
-  getTodayBonus: () => any | undefined;
-}
-
-export const CompetitionContext = createContext<
-  CompetitionContextType | undefined
->(undefined);
+import {
+  CompetitionContext,
+  type CompetitionContextType,
+} from './CompetitionContext';
 
 export const CompetitionProvider = ({
   children,
@@ -51,19 +41,38 @@ export const CompetitionProvider = ({
     return bonusDays.find((bd) => bd.date.split('T')[0] === today);
   }, [bonusDays]);
 
+  const value: CompetitionContextType = useMemo(
+    () => ({
+      competition,
+      bonusDays,
+      isAdmin,
+      hidePoints,
+      refresh,
+      getMultiplier,
+      getTodayBonus,
+    }),
+    [
+      competition,
+      bonusDays,
+      isAdmin,
+      hidePoints,
+      refresh,
+      getMultiplier,
+      getTodayBonus,
+    ],
+  );
+
   return (
-    <CompetitionContext.Provider
-      value={{
-        competition,
-        bonusDays,
-        isAdmin,
-        hidePoints,
-        refresh,
-        getMultiplier,
-        getTodayBonus,
-      }}
-    >
+    <CompetitionContext.Provider value={value}>
       {children}
     </CompetitionContext.Provider>
   );
+};
+
+export const useCompetition = () => {
+  const context = useContext(CompetitionContext);
+  if (context === undefined) {
+    throw new Error('useCompetition must be used within a CompetitionProvider');
+  }
+  return context;
 };
