@@ -9,8 +9,16 @@ interface CompetitionCountdownProps {
   elapsedText?: string;
 }
 
-export const CompetitionCountdown = ({ targetDate, prefix, onElapsed, elapsedText }: CompetitionCountdownProps) => {
-  const { timeLeft, formatTime, isUrgent } = useCompetitionCountdown(targetDate, onElapsed);
+export const CompetitionCountdown = ({
+  targetDate,
+  prefix,
+  onElapsed,
+  elapsedText,
+}: CompetitionCountdownProps) => {
+  const { timeLeft, formatTime, isUrgent } = useCompetitionCountdown(
+    targetDate,
+    onElapsed,
+  );
 
   if (!timeLeft) return null;
 
@@ -22,15 +30,17 @@ export const CompetitionCountdown = ({ targetDate, prefix, onElapsed, elapsedTex
     <Text variant="mono">
       {prefix && <span className="mr-1 opacity-60">{prefix} </span>}
 
-      <span className={cn(
-        "tracking-widest",
-        isUrgent ? "text-danger" : "text-gold"
-      )}>
-        {timeLeft.days > 0 ? (
-          timeLeft.days === 1 ? 'demain' : `dans ${timeLeft.days} jours`
-        ) : (
-          `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`
+      <span
+        className={cn(
+          'tracking-widest',
+          isUrgent ? 'text-danger' : 'text-gold',
         )}
+      >
+        {timeLeft.days > 0
+          ? timeLeft.days === 1
+            ? 'demain'
+            : `dans ${timeLeft.days} jours`
+          : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
       </span>
     </Text>
   );

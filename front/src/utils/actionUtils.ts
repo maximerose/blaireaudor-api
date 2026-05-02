@@ -5,7 +5,7 @@ export interface Action {
   description: string;
   points: number;
   date_action: string;
-  player?: { display_name: string };
+  player?: { id: string; display_name: string };
   status: string;
   created_by: User | string;
 }

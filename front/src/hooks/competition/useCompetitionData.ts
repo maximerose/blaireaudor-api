@@ -1,41 +1,60 @@
-import { useState, useEffect, useCallback } from 'react';
-import { apiFetch } from '@/api/config';
-import { ROUTES } from '@/constants/routes';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  fetchCompetitionByCode,
+  fetchLeaderboard,
+  fetchCompetitionActions,
+} from '@/services/api/competition';
 
 export const useCompetitionData = (code: string) => {
-  const [competition, setCompetition] = useState<any>(null);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
-  const [actions, setActions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const fetchData = useCallback(async () => {
-    if (!code) return;
+  // 1. Récupération de la compétition via le joinCode
+  const competitionQuery = useQuery({
+    queryKey: ['competition', code],
+    queryFn: () => fetchCompetitionByCode(code),
+    enabled: !!code,
+    staleTime: 1000 * 60 * 5,
+  });
 
-    try {
-      const compRes = await apiFetch(ROUTES.API_COMPETITION_BY_CODE(code));
-      const compData = await compRes.json();
-      setCompetition(compData);
+  const competitionId = competitionQuery.data?.id;
 
-      if (compData.id) {
-        const [lbRes, actRes] = await Promise.all([
-          apiFetch(ROUTES.API_COMPETITION_LEADERBOARD(compData.id)),
-          apiFetch(ROUTES.API_COMPETITION_ACTIONS(compData.id)),
-        ]);
+  // 2. Récupération du classement (dépend de l'ID)
+  const leaderboardQuery = useQuery({
+    queryKey: ['competition', competitionId, 'leaderboard'],
+    queryFn: () => fetchLeaderboard(competitionId!),
+    enabled: !!competitionId,
+  });
 
-        setLeaderboard(await lbRes.json());
-        setActions(await actRes.json());
-      }
-    } catch (e) {
-      console.error('Erreur de chargement', e);
-    } finally {
-      setLoading(false);
+  // 3. Récupération des actions (dépend de l'ID)
+  const actionsQuery = useQuery({
+    queryKey: ['competition', competitionId, 'actions'],
+    queryFn: () => fetchCompetitionActions(competitionId!),
+    enabled: !!competitionId,
+  });
+
+  /**
+   * Fonction de rafraîchissement global :
+   * Invalide toutes les requêtes liées à cette compétition pour forcer un re-fetch.
+   */
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['competition', code] });
+    if (competitionId) {
+      queryClient.invalidateQueries({
+        queryKey: ['competition', competitionId],
+      });
     }
-  }, [code]);
+  };
 
-  useEffect(() => {
-    setLoading(true);
-    fetchData();
-  }, [fetchData]);
-
-  return { competition, leaderboard, actions, loading, refresh: fetchData };
+  return {
+    competition: competitionQuery.data,
+    leaderboard: leaderboardQuery.data ?? [],
+    actions: actionsQuery.data ?? [],
+    loading:
+      competitionQuery.isLoading ||
+      (!!competitionId &&
+        (leaderboardQuery.isLoading || actionsQuery.isLoading)),
+    error:
+      competitionQuery.error || leaderboardQuery.error || actionsQuery.error,
+    refresh,
+  };
 };

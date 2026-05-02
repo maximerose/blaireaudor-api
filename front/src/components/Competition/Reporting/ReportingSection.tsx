@@ -1,7 +1,9 @@
 import { Button, Card, Text } from '@/components/UI';
-import { useReporting } from '@/hooks';
-import { CompetitionCountdown, ReportActionForm } from '@/components/Competition';
-import { useCompetition } from '@/context/CompetitionContext';
+import { useReporting, useCompetition } from '@/hooks';
+import {
+  CompetitionCountdown,
+  ReportActionForm,
+} from '@/components/Competition';
 
 export const ReportingSection = ({
   competition,
@@ -48,11 +50,16 @@ export const ReportingSection = ({
         >
           <span className="text-3xl">🔥</span>
           <div className="flex-1">
-            <Text as="p" variant="caption" className="text-danger-bright font-black uppercase tracking-tighter">
+            <Text
+              as="p"
+              variant="caption"
+              className="text-danger-bright font-black uppercase tracking-tighter"
+            >
               Attention : Multiplicateur x{todayBonus.multiplier} activé !
             </Text>
             <Text as="p" variant="micro" className="opacity-70 leading-tight">
-              Indiquez le score de base de l'action, le bonus sera calculé automatiquement dans le journal.
+              Indiquez le score de base de l'action, le bonus sera calculé
+              automatiquement dans le journal.
             </Text>
           </div>
           <span className="text-3xl">🔥</span>

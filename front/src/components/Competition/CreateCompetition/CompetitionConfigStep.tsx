@@ -77,7 +77,10 @@ export const CompetitionConfigStep = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* BLOC DÉBUT */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-            <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">
+            <Text
+              variant="caption"
+              className="text-gold tracking-widest uppercase pl-1"
+            >
               Début
             </Text>
 
@@ -92,14 +95,31 @@ export const CompetitionConfigStep = ({
               variant="dark"
               role="switch"
               aria-checked={formData.startFullDay}
-              onClick={() => updateField('startFullDay', !formData.startFullDay)}
+              onClick={() =>
+                updateField('startFullDay', !formData.startFullDay)
+              }
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
-              <Text variant="micro" className={formData.startFullDay ? 'text-white' : 'text-white/50'}>
+              <Text
+                variant="micro"
+                className={
+                  formData.startFullDay ? 'text-white' : 'text-white/50'
+                }
+              >
                 Journée complète
               </Text>
-              <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.startFullDay ? 'bg-gold' : 'bg-white/10')}>
-                <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.startFullDay ? 'left-4.5' : 'left-0.5')} />
+              <div
+                className={cn(
+                  'w-8 h-4 rounded-full relative transition-default',
+                  formData.startFullDay ? 'bg-gold' : 'bg-white/10',
+                )}
+              >
+                <div
+                  className={cn(
+                    'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
+                    formData.startFullDay ? 'left-4.5' : 'left-0.5',
+                  )}
+                />
               </div>
             </Card>
 
@@ -108,7 +128,9 @@ export const CompetitionConfigStep = ({
                 <Input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e: any) => updateField('startTime', e.target.value)}
+                  onChange={(e: any) =>
+                    updateField('startTime', e.target.value)
+                  }
                 />
               </div>
             )}
@@ -116,7 +138,10 @@ export const CompetitionConfigStep = ({
 
           {/* BLOC FIN */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-            <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">
+            <Text
+              variant="caption"
+              className="text-gold tracking-widest uppercase pl-1"
+            >
               Fin
             </Text>
 
@@ -133,11 +158,24 @@ export const CompetitionConfigStep = ({
               onClick={() => updateField('endFullDay', !formData.endFullDay)}
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
-              <Text variant="micro" className={formData.endFullDay ? 'text-white' : 'text-white/50'}>
+              <Text
+                variant="micro"
+                className={formData.endFullDay ? 'text-white' : 'text-white/50'}
+              >
                 Journée complète
               </Text>
-              <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.endFullDay ? 'bg-gold' : 'bg-white/10')}>
-                <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.endFullDay ? 'left-4.5' : 'left-0.5')} />
+              <div
+                className={cn(
+                  'w-8 h-4 rounded-full relative transition-default',
+                  formData.endFullDay ? 'bg-gold' : 'bg-white/10',
+                )}
+              >
+                <div
+                  className={cn(
+                    'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
+                    formData.endFullDay ? 'left-4.5' : 'left-0.5',
+                  )}
+                />
               </div>
             </Card>
 

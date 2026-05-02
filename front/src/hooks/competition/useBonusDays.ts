@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useParams } from 'react-router-dom';
 
@@ -16,8 +16,9 @@ export const useBonusDays = (competitionId: string) => {
   return useQuery({
     queryKey: ['bonusDays', idToUse],
     queryFn: async (): Promise<BonusDay[]> => {
-      const response = await apiFetch(ROUTES.API_BONUS_DAYS_BY_COMPETITION(idToUse!));
-
+      const response = await apiFetch(
+        ROUTES.API_BONUS_DAYS_BY_COMPETITION(idToUse!),
+      );
 
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des jours bonus');

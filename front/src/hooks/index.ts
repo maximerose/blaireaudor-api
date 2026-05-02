@@ -8,6 +8,7 @@ export * from './competition/useActionTable';
 export * from './competition/useAdminBonusDay';
 export * from './competition/useAdminSettings';
 export * from './competition/useBonusDays';
+export * from './competition/useCompetition';
 export * from './competition/useCompetitionAdmin';
 export * from './competition/useCompetitionCard';
 export * from './competition/useCompetitionCountdown';

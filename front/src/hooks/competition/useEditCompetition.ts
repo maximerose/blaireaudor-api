@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '@/constants/routes';
 import { formatToApiISO, parseFromApiISO } from '@/utils';
@@ -25,26 +25,39 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
   });
 
   const updateField = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
     setLoading(true);
 
-    const finalStart = formatToApiISO(formData.startDate, formData.startTime, formData.startFullDay, false);
-    const finalEnd = formatToApiISO(formData.endDate, formData.endTime, formData.endFullDay, true);
+    const finalStart = formatToApiISO(
+      formData.startDate,
+      formData.startTime,
+      formData.startFullDay,
+      false,
+    );
+    const finalEnd = formatToApiISO(
+      formData.endDate,
+      formData.endTime,
+      formData.endFullDay,
+      true,
+    );
 
     try {
-      const response = await apiFetch(ROUTES.API_COMPETITION_DETAIL(competition.id), {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/merge-patch+json' },
-        body: JSON.stringify({
-          name: formData.name,
-          join_code: formData.joinCode,
-          ...(!competition.has_started && { start_date: finalStart }),
-          end_date: finalEnd,
-        }),
-      });
+      const response = await apiFetch(
+        ROUTES.API_COMPETITION_DETAIL(competition.id),
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/merge-patch+json' },
+          body: JSON.stringify({
+            name: formData.name,
+            join_code: formData.joinCode,
+            ...(!competition.has_started && { start_date: finalStart }),
+            end_date: finalEnd,
+          }),
+        },
+      );
 
       if (!response.ok) throw new Error();
 
@@ -54,16 +67,25 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
       const hasCodeChanged = formData.joinCode !== competition.join_code;
 
       if (hasCodeChanged) {
-        navigate(ROUTES.NAV_COMPETITION_DETAIL(formData.joinCode), { replace: true });
+        navigate(ROUTES.NAV_COMPETITION_DETAIL(formData.joinCode), {
+          replace: true,
+        });
       } else {
         onRefresh();
       }
-    } catch (err) {
+    } catch {
       toast.error('Erreur lors de la sauvegarde');
     } finally {
       setLoading(false);
     }
   };
 
-  return { isEditing, setIsEditing, formData, updateField, handleSave, loading };
+  return {
+    isEditing,
+    setIsEditing,
+    formData,
+    updateField,
+    handleSave,
+    loading,
+  };
 };

@@ -1,7 +1,11 @@
 import type { Competition } from '@/context/AuthContext';
 import { getRankMedal, isPlayerCreator, isPlayerReferee } from '@/utils';
 
-export const useLeaderboardRow = (item: any, isAdmin: boolean, competition: Competition) => {
+export const useLeaderboardRow = (
+  item: any,
+  isAdmin: boolean,
+  competition: Competition,
+) => {
   const canDelete = isAdmin && (!item.actions || item.actions.length === 0);
 
   const medal = getRankMedal(item.rank);

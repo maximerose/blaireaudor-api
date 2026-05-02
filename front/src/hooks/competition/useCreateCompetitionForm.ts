@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
 import { formatJoinCode, cleanJoinCode, generateClientSideCode } from '@/utils';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 
 export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
@@ -83,7 +83,10 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
       }
       return {
         ...prev,
-        referees: [...prev.referees, { ...person, isNew: person.isNew ?? isNew }],
+        referees: [
+          ...prev.referees,
+          { ...person, isNew: person.isNew ?? isNew },
+        ],
       };
     });
     setSearchTerm('');
@@ -99,7 +102,12 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     return !!(formData.name && formData.startDate);
   }, [formData.name, formData.startDate]);
 
-  const formatDateTime = (date: string, time: string, isFullDay: boolean, isEnd: boolean) => {
+  const formatDateTime = (
+    date: string,
+    time: string,
+    isFullDay: boolean,
+    isEnd: boolean,
+  ) => {
     if (!date) return null;
     if (isFullDay) {
       return isEnd ? `${date}T23:59:59` : `${date}T00:00:00`;
@@ -109,8 +117,18 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
 
   const submit = async () => {
     const validatedCode = cleanJoinCode(formData.joinCode);
-    const finalStartDate = formatDateTime(formData.startDate, formData.startTime, formData.startFullDay, false);
-    const finalEndDate = formatDateTime(formData.endDate, formData.endTime, formData.endFullDay, true);
+    const finalStartDate = formatDateTime(
+      formData.startDate,
+      formData.startTime,
+      formData.startFullDay,
+      false,
+    );
+    const finalEndDate = formatDateTime(
+      formData.endDate,
+      formData.endTime,
+      formData.endFullDay,
+      true,
+    );
     const competition = await create({
       ...formData,
       joinCode: validatedCode,
@@ -120,30 +138,44 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
 
     if (!competition) return;
 
-    const existingIds = formData.players.filter((p) => !p.isNew).map((p) => p.id);
-    const newNames = formData.players.filter((p) => p.isNew).map((p) => p.display_name);
-    
-    const existingReferees = formData.referees.filter((r) => !r.isNew).map((r) => r.id);
-    const newReferees = formData.referees.filter((r) => r.isNew).map((r) => r.display_name);
+    const existingIds = formData.players
+      .filter((p) => !p.isNew)
+      .map((p) => p.id);
+    const newNames = formData.players
+      .filter((p) => p.isNew)
+      .map((p) => p.display_name);
+
+    const existingReferees = formData.referees
+      .filter((r) => !r.isNew)
+      .map((r) => r.id);
+    const newReferees = formData.referees
+      .filter((r) => r.isNew)
+      .map((r) => r.display_name);
 
     if (existingIds.length > 0 || newNames.length > 0) {
       setIsAddingPlayers(true);
       try {
-        const response = await apiFetch(ROUTES.API_ADD_PLAYERS_TO_COMP(competition.id), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
+        const response = await apiFetch(
+          ROUTES.API_ADD_PLAYERS_TO_COMP(competition.id),
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              existing_players_ids: existingIds,
+              new_players: newNames,
+              existing_referees_ids: existingReferees,
+              new_referees: newReferees,
+            }),
           },
-          body: JSON.stringify({
-            existing_players_ids: existingIds,
-            new_players: newNames,
-            existing_referees_ids: existingReferees,
-            new_referees: newReferees,
-          }),
-        });
+        );
 
         if (!response.ok) {
-          console.error("Erreur serveur lors de l'ajout :", await response.text());
+          console.error(
+            "Erreur serveur lors de l'ajout :",
+            await response.text(),
+          );
         }
       } catch (e) {
         console.error("Erreur lors de l'ajout des joueurs", e);

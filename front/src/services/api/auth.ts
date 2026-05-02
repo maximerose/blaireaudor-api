@@ -1,4 +1,4 @@
-import { ROUTES } from '../constants/routes';
+import { ROUTES } from '../../constants/routes';
 import { apiFetch } from './config';
 
 export const authService = {

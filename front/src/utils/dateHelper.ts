@@ -2,14 +2,21 @@
  * Transforme les composants d'une date locale en chaîne ISO UTC pour l'API.
  * Gère les secondes pour les fins de journée (23:59:59).
  */
-export const formatToApiISO = (date: string, time: string, isFullDay: boolean, isEndDate: boolean): string => {
+export const formatToApiISO = (
+  date: string,
+  time: string,
+  isFullDay: boolean,
+  isEndDate: boolean,
+): string => {
   if (!date) return '';
 
   const cleanDate = date.includes('T') ? date.split('T')[0] : date;
 
-  let timePart = isFullDay
-    ? (isEndDate ? '23:59' : '00:00')
-    : (time || '00:00');
+  const timePart = isFullDay
+    ? isEndDate
+      ? '23:59'
+      : '00:00'
+    : time || '00:00';
 
   const localDate = new Date(`${cleanDate}T${timePart}`);
 
@@ -31,7 +38,11 @@ export const formatToApiISO = (date: string, time: string, isFullDay: boolean, i
  * @param key La clé contenant la date (ex: 'date' ou 'date_action')
  * @param order 'asc' ou 'desc'
  */
-export const sortByDate = <T>(list: T[], key: keyof T, order: 'asc' | 'desc' = 'asc'): T[] => {
+export const sortByDate = <T>(
+  list: T[],
+  key: keyof T,
+  order: 'asc' | 'desc' = 'asc',
+): T[] => {
   return [...list].sort((a, b) => {
     const dateA = new Date(a[key] as string).getTime();
     const dateB = new Date(b[key] as string).getTime();
@@ -54,6 +65,6 @@ export const parseFromApiISO = (isoString: string) => {
 
   return {
     date: `${year}-${month}-${day}`,
-    time: `${hours}:${minutes}`
+    time: `${hours}:${minutes}`,
   };
 };

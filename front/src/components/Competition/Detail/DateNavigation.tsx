@@ -1,14 +1,16 @@
 import { Button } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
-import { useDateNavigation } from '@/hooks';
-import { useCompetition } from '@/context/CompetitionContext';
+import { useDateNavigation, useCompetition } from '@/hooks';
 
 export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
   const { getMultiplier } = useCompetition();
   const { scrollRef, showMask, handleScroll } = useDateNavigation(dates);
 
   return (
-    <nav className="relative group z-20" aria-label="Filtrer les actions par date">
+    <nav
+      className="relative group z-20"
+      aria-label="Filtrer les actions par date"
+    >
       <div
         ref={scrollRef}
         onScroll={handleScroll}
@@ -37,18 +39,20 @@ export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
                 className={cn(
                   'whitespace-nowrap transition-default relative overflow-hidden px-4',
                   !isActive && 'opacity-40 hover:opacity-80',
-                  multiplier && 'animate-danger-glow border-danger/50 pr-8'
+                  multiplier && 'animate-danger-glow border-danger/50 pr-8',
                 )}
               >
                 {formatLongDate(date)}
 
                 {multiplier && (
                   <div className="absolute top-0 right-0 w-10 h-10 overflow-hidden pointer-events-none">
-                    <div className={cn(
-                      "absolute top-0 right-0 bg-danger w-[140%] h-5 rotate-45 translate-x-[30%] -translate-y-[10%]",
-                      "flex items-center justify-center shadow-lg border-b border-white/20",
-                      "animate-pulse"
-                    )}>
+                    <div
+                      className={cn(
+                        'absolute top-0 right-0 bg-danger w-[140%] h-5 rotate-45 translate-x-[30%] -translate-y-[10%]',
+                        'flex items-center justify-center shadow-lg border-b border-white/20',
+                        'animate-pulse',
+                      )}
+                    >
                       <span className="text-[9px] font-black text-white uppercase tracking-tighter pt-1.5 pl-1">
                         x{multiplier}
                       </span>
@@ -71,4 +75,3 @@ export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
     </nav>
   );
 };
-

@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 
-export const useCompetitionReferees = (competitionId: string, onRefresh: () => void) => {
+export const useCompetitionReferees = (
+  competitionId: string,
+  onRefresh: () => void,
+) => {
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
   const addReferee = async (playerId: string) => {
@@ -20,7 +23,7 @@ export const useCompetitionReferees = (competitionId: string, onRefresh: () => v
       const data = await res.json();
       alert(data.error || "Erreur lors de l'ajout de l'arbitre.");
     } catch (e) {
-      console.error("Erreur réseau", e);
+      console.error('Erreur réseau', e);
     } finally {
       setLoadingAction(null);
     }
@@ -43,7 +46,7 @@ export const useCompetitionReferees = (competitionId: string, onRefresh: () => v
       const data = await res.json();
       alert(data.error || "Erreur lors du retrait de l'arbitre.");
     } catch (e) {
-      console.error("Erreur réseau", e);
+      console.error('Erreur réseau', e);
     } finally {
       setLoadingAction(null);
     }

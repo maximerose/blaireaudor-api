@@ -48,7 +48,11 @@ export const Badge = ({
       )}
       {...props}
     >
-      {icon && <span aria-hidden="true" className="text-[11px] leading-none">{icon}</span>}
+      {icon && (
+        <span aria-hidden="true" className="text-[11px] leading-none">
+          {icon}
+        </span>
+      )}
       {children}
     </span>
   );

@@ -37,7 +37,11 @@ function App() {
             <Route
               path={ROUTES.NAV_DASHBOARD}
               element={
-                user ? <Dashboard /> : <Navigate to={ROUTES.NAV_LOGIN} replace />
+                user ? (
+                  <Dashboard />
+                ) : (
+                  <Navigate to={ROUTES.NAV_LOGIN} replace />
+                )
               }
             />
             <Route

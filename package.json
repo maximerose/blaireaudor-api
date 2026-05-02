@@ -3,7 +3,8 @@
   "private": true,
   "devDependencies": {
     "husky": "^9.1.7",
-    "prettier": "3.8.1"
+    "prettier": "3.8.1",
+    "repomix": "^1.14.0"
   },
   "version": "1.0.0",
   "main": "index.js",

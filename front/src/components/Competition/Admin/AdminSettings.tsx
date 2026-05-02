@@ -38,8 +38,8 @@ export const AdminSettings = ({
     <Card
       variant="dark"
       className={cn(
-        "border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300",
-        isExpanded ? "p-6 overflow-visible" : "p-3 sm:p-4 overflow-hidden"
+        'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
+        isExpanded ? 'p-6 overflow-visible' : 'p-3 sm:p-4 overflow-hidden',
       )}
     >
       {/* --- HEADER COMPACT (Toujours visible) --- */}
@@ -49,12 +49,18 @@ export const AdminSettings = ({
             <span className="text-xl">🛠️</span>
           </div>
           <div>
-            <Text variant="caption" className="font-bold uppercase tracking-widest text-gold/80">
+            <Text
+              variant="caption"
+              className="font-bold uppercase tracking-widest text-gold/80"
+            >
               Console d'administration
             </Text>
             {!isExpanded && (
               <div className="flex gap-2 mt-1">
-                <Badge variant={isFogActive ? "info" : "ghost"} className="text-[8px] py-0">
+                <Badge
+                  variant={isFogActive ? 'info' : 'ghost'}
+                  className="text-[8px] py-0"
+                >
                   Brouillard: {isFogActive ? 'Actif' : 'Inactif'}
                 </Badge>
                 <Badge variant="ghost" className="text-[8px] py-0">
@@ -71,27 +77,40 @@ export const AdminSettings = ({
           onClick={() => setIsExpanded(!isExpanded)}
           className="hover:bg-gold/10"
         >
-          {isExpanded ? 'Réduire' : 'Gérer l\'arène'}
+          {isExpanded ? 'Réduire' : "Gérer l'arène"}
         </Button>
       </div>
 
       {/* --- CONTENU DÉROULANT --- */}
-      <div className={cn(
-        "grid transition-all duration-300 ease-in-out",
-        isExpanded ? "grid-rows-[1fr] opacity-100 mt-6 overflow-visible" : "grid-rows-[0fr] opacity-0 overflow-hidden"
-      )}>
-        <div className={cn(
-          "flex flex-col gap-8",
-          isExpanded ? "overflow-visible" : "overflow-hidden"
-        )}>
-
+      <div
+        className={cn(
+          'grid transition-all duration-300 ease-in-out',
+          isExpanded
+            ? 'grid-rows-[1fr] opacity-100 mt-6 overflow-visible'
+            : 'grid-rows-[0fr] opacity-0 overflow-hidden',
+        )}
+      >
+        <div
+          className={cn(
+            'flex flex-col gap-8',
+            isExpanded ? 'overflow-visible' : 'overflow-hidden',
+          )}
+        >
           {/* Section 1 : Configuration (Moins massive) */}
           <section className="space-y-3">
             <header className="flex items-center gap-2 opacity-40">
               <span className="text-xs">⚙️</span>
-              <Text variant="micro" className="uppercase font-bold tracking-tighter">Configuration</Text>
+              <Text
+                variant="micro"
+                className="uppercase font-bold tracking-tighter"
+              >
+                Configuration
+              </Text>
             </header>
-            <CompetitionGeneralSettings competition={competition} onRefresh={refresh} />
+            <CompetitionGeneralSettings
+              competition={competition}
+              onRefresh={refresh}
+            />
           </section>
 
           {/* Section 2 : Actions rapides (Horizontal Grid) */}
@@ -114,7 +133,12 @@ export const AdminSettings = ({
           <section className="space-y-3">
             <header className="flex items-center gap-2 opacity-40">
               <span className="text-xs">⚖️</span>
-              <Text variant="micro" className="uppercase font-bold tracking-tighter">Équipe d'arbitrage</Text>
+              <Text
+                variant="micro"
+                className="uppercase font-bold tracking-tighter"
+              >
+                Équipe d'arbitrage
+              </Text>
             </header>
             <RefereeManagement
               competition={competition}

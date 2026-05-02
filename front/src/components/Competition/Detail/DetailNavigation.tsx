@@ -6,7 +6,11 @@ interface DetailNavigationProps {
   competition: Competition;
   hasActions: boolean;
   isCreator: boolean;
-  onDelete: (id: string, name: string, count: number) => Promise<boolean> | void;
+  onDelete: (
+    id: string,
+    name: string,
+    count: number,
+  ) => Promise<boolean> | void;
 }
 
 export const DetailNavigation = ({
@@ -20,8 +24,8 @@ export const DetailNavigation = ({
       <span aria-hidden="true">← </span>Retour
     </Button>
 
-    {isCreator && (
-      !hasActions ? (
+    {isCreator &&
+      (!hasActions ? (
         <Button
           variant="danger"
           size="sm"
@@ -33,7 +37,6 @@ export const DetailNavigation = ({
         <Badge variant="ghost" className="opacity-70 italic text-[8px]">
           Historique protégé
         </Badge>
-      )
-    )}
+      ))}
   </nav>
 );

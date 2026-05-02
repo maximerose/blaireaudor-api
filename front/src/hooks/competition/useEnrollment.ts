@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
 

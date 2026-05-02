@@ -101,7 +101,8 @@ class CompetitionManager
 
     /**
      * Retire un arbitre de la compétition.
-     * @throws \LogicException si on tente de retirer le dernier arbitre.
+     *
+     * @throws \LogicException si on tente de retirer le dernier arbitre
      */
     public function removeReferee(Competition $competition, \App\Entity\Player $player): void
     {
@@ -110,7 +111,7 @@ class CompetitionManager
         }
 
         if ($competition->getReferees()->count() <= 1) {
-            throw new \LogicException("Impossible de se retirer : vous êtes le dernier arbitre de cette arène.");
+            throw new \LogicException('Impossible de se retirer : vous êtes le dernier arbitre de cette arène.');
         }
 
         $competition->removeReferee($player);

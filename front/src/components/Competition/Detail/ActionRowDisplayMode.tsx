@@ -1,9 +1,14 @@
 import { Text } from '@/components/UI';
-import { useCompetition } from '@/context/CompetitionContext';
-import { useActionRow } from '@/hooks';
+import { useActionRow, useCompetition } from '@/hooks';
 import { cn, formatShortDate } from '@/utils';
 
-export const ActionRowDisplayMode = ({ action, playerName, isPending, onEdit, onStatusChange }: any) => {
+export const ActionRowDisplayMode = ({
+  action,
+  playerName,
+  isPending,
+  onEdit,
+  onStatusChange,
+}: any) => {
   const { isAdmin, hidePoints } = useCompetition();
   const { displayColor, pointsDisplay, multiplier } = useActionRow(action);
 
@@ -69,7 +74,10 @@ export const ActionRowDisplayMode = ({ action, playerName, isPending, onEdit, on
             {action.points} pts
           </Text>
         )}
-        <Text variant="mono" className={cn('text-sm md:text-base font-black', displayColor)}>
+        <Text
+          variant="mono"
+          className={cn('text-sm md:text-base font-black', displayColor)}
+        >
           {pointsDisplay} <span className="text-[8px] opacity-50">pts</span>
         </Text>
       </div>

@@ -1,8 +1,9 @@
+// front/src/context/CompetitionContext.tsx
+import { createContext, useCallback, useMemo, type ReactNode } from 'react';
 import { useBonusDays } from '@/hooks/competition/useBonusDays';
 import { sortByDate } from '@/utils';
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
 
-interface CompetitionContextType {
+export interface CompetitionContextType {
   competition: any;
   bonusDays: any[];
   isAdmin: boolean;
@@ -12,14 +13,17 @@ interface CompetitionContextType {
   getTodayBonus: () => any | undefined;
 }
 
-const CompetitionContext = createContext<CompetitionContextType | undefined>(undefined);
+// On exporte le contexte pour le hook, mais c'est une constante, pas une fonction.
+export const CompetitionContext = createContext<
+  CompetitionContextType | undefined
+>(undefined);
 
 export const CompetitionProvider = ({
   children,
   competition,
   isAdmin,
   hidePoints,
-  refresh
+  refresh,
 }: {
   children: ReactNode;
   competition: any;
@@ -29,31 +33,39 @@ export const CompetitionProvider = ({
 }) => {
   const { data: rawBonusDays } = useBonusDays(competition.id);
 
-  const bonusDays = useMemo(() =>
-    sortByDate(rawBonusDays || [], 'date'),
-    [rawBonusDays]);
+  const bonusDays = useMemo(
+    () => sortByDate(rawBonusDays || [], 'date'),
+    [rawBonusDays],
+  );
 
-  const getMultiplier = useCallback((date: string | null): number | undefined => {
-    if (!date) return undefined;
-    const cleanDate = date.split('T')[0];
-
-    return bonusDays.find(bd => bd.date.split('T')[0] === cleanDate)?.multiplier;
-  }, [bonusDays]);
+  const getMultiplier = useCallback(
+    (date: string | null): number | undefined => {
+      if (!date) return undefined;
+      const cleanDate = date.split('T')[0];
+      return bonusDays.find((bd) => bd.date.split('T')[0] === cleanDate)
+        ?.multiplier;
+    },
+    [bonusDays],
+  );
 
   const getTodayBonus = useCallback(() => {
     const today = new Date().toISOString().split('T')[0];
-    return bonusDays.find(bd => bd.date.split('T')[0] === today);
+    return bonusDays.find((bd) => bd.date.split('T')[0] === today);
   }, [bonusDays]);
 
   return (
-    <CompetitionContext.Provider value={{ competition, bonusDays, isAdmin, hidePoints, refresh, getMultiplier, getTodayBonus }}>
+    <CompetitionContext.Provider
+      value={{
+        competition,
+        bonusDays,
+        isAdmin,
+        hidePoints,
+        refresh,
+        getMultiplier,
+        getTodayBonus,
+      }}
+    >
       {children}
     </CompetitionContext.Provider>
   );
-};
-
-export const useCompetition = () => {
-  const context = useContext(CompetitionContext);
-  if (!context) throw new Error("useCompetition doit être utilisé dans un CompetitionProvider");
-  return context;
 };

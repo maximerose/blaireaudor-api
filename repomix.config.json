@@ -1,0 +1,15 @@
+{
+  "output": {
+    "filePath": "repomix-output.xml"
+  },
+  "ignore": {
+    "customPatterns": [
+      "**/node_modules/**",
+      "**/vendor/**",
+      "**/var/**",
+      "**/public/build/**",
+      "**/dist/**",
+      ".git"
+    ]
+  }
+}

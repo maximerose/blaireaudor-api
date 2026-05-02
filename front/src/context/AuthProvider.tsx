@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode, useRef } from 'react';
-import { authService } from '@/api/authService';
+import { authService } from '@/services/api/auth';
 import { AuthContext, type User } from '@/context/AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

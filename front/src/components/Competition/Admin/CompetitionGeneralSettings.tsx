@@ -3,19 +3,36 @@ import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
 
 export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
-  const { isEditing, setIsEditing, formData, updateField, handleSave, loading } =
-    useEditCompetition(competition, onRefresh);
+  const {
+    isEditing,
+    setIsEditing,
+    formData,
+    updateField,
+    handleSave,
+    loading,
+  } = useEditCompetition(competition, onRefresh);
 
   if (!isEditing) {
     return (
       <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-gold/20 transition-all">
         <div className="text-center sm:text-left">
-          <Text variant="body" className="font-bold text-gold">{competition.name}</Text>
-          <Text variant="micro" className="opacity-40 uppercase tracking-widest">
-            <span className="text-gold">{competition.join_code}</span> • Paramètres de la compétition
+          <Text variant="body" className="font-bold text-gold">
+            {competition.name}
+          </Text>
+          <Text
+            variant="micro"
+            className="opacity-40 uppercase tracking-widest"
+          >
+            <span className="text-gold">{competition.join_code}</span> •
+            Paramètres de la compétition
           </Text>
         </div>
-        <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)} className="mt-3 sm:mt-0">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsEditing(true)}
+          className="mt-3 sm:mt-0"
+        >
           Modifier les paramètres
         </Button>
       </div>
@@ -33,15 +50,30 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
         <Input
           label="Code d'accès"
           value={formData.joinCode}
-          onChange={(e: any) => updateField('joinCode', e.target.value.toUpperCase())}
+          onChange={(e: any) =>
+            updateField('joinCode', e.target.value.toUpperCase())
+          }
         />
 
-        <div className={cn(
-          "space-y-3 p-4 border rounded-2xl transition-all",
-          competition.has_started ? "bg-white/2 border-white/5 opacity-60" : "bg-white/5 border-white/10"
-        )}>
-          <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">Début</Text>
-          {competition.has_started && <Badge variant="ghost" className="text-[8px] ml-2">Déjà lancée</Badge>}
+        <div
+          className={cn(
+            'space-y-3 p-4 border rounded-2xl transition-all',
+            competition.has_started
+              ? 'bg-white/2 border-white/5 opacity-60'
+              : 'bg-white/5 border-white/10',
+          )}
+        >
+          <Text
+            variant="caption"
+            className="text-gold tracking-widest uppercase pl-1"
+          >
+            Début
+          </Text>
+          {competition.has_started && (
+            <Badge variant="ghost" className="text-[8px] ml-2">
+              Déjà lancée
+            </Badge>
+          )}
           <Input
             type="date"
             value={formData.startDate}
@@ -52,13 +84,30 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
             variant="dark"
             onClick={() => updateField('startFullDay', !formData.startFullDay)}
             className={cn(
-              "flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none",
-              !competition.has_started ? "cursor-pointer" : "cursor-not-allowed"
+              'flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none',
+              !competition.has_started
+                ? 'cursor-pointer'
+                : 'cursor-not-allowed',
             )}
           >
-            <Text variant="micro" className={formData.startFullDay ? 'text-white' : 'text-white/50'}>Journée complète</Text>
-            <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.startFullDay ? 'bg-gold' : 'bg-white/10')}>
-              <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.startFullDay ? 'left-4.5' : 'left-0.5')} />
+            <Text
+              variant="micro"
+              className={formData.startFullDay ? 'text-white' : 'text-white/50'}
+            >
+              Journée complète
+            </Text>
+            <div
+              className={cn(
+                'w-8 h-4 rounded-full relative transition-default',
+                formData.startFullDay ? 'bg-gold' : 'bg-white/10',
+              )}
+            >
+              <div
+                className={cn(
+                  'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
+                  formData.startFullDay ? 'left-4.5' : 'left-0.5',
+                )}
+              />
             </div>
           </Card>
           {!formData.startFullDay && (
@@ -73,27 +122,59 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
 
         {/* BLOC FIN */}
         <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-          <Text variant="caption" className="text-gold tracking-widest uppercase pl-1">Fin</Text>
-          <Input type="date" value={formData.endDate} onChange={(e: any) => updateField('endDate', e.target.value)} />
+          <Text
+            variant="caption"
+            className="text-gold tracking-widest uppercase pl-1"
+          >
+            Fin
+          </Text>
+          <Input
+            type="date"
+            value={formData.endDate}
+            onChange={(e: any) => updateField('endDate', e.target.value)}
+          />
           <Card
             variant="dark"
             onClick={() => updateField('endFullDay', !formData.endFullDay)}
             className="flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none"
           >
-            <Text variant="micro" className={formData.endFullDay ? 'text-white' : 'text-white/50'}>Journée complète</Text>
-            <div className={cn('w-8 h-4 rounded-full relative transition-default', formData.endFullDay ? 'bg-gold' : 'bg-white/10')}>
-              <div className={cn('absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default', formData.endFullDay ? 'left-4.5' : 'left-0.5')} />
+            <Text
+              variant="micro"
+              className={formData.endFullDay ? 'text-white' : 'text-white/50'}
+            >
+              Journée complète
+            </Text>
+            <div
+              className={cn(
+                'w-8 h-4 rounded-full relative transition-default',
+                formData.endFullDay ? 'bg-gold' : 'bg-white/10',
+              )}
+            >
+              <div
+                className={cn(
+                  'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
+                  formData.endFullDay ? 'left-4.5' : 'left-0.5',
+                )}
+              />
             </div>
           </Card>
           {!formData.endFullDay && (
-            <Input type="time" value={formData.endTime} onChange={(e: any) => updateField('endTime', e.target.value)} />
+            <Input
+              type="time"
+              value={formData.endTime}
+              onChange={(e: any) => updateField('endTime', e.target.value)}
+            />
           )}
         </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
-        <Button variant="ghost" onClick={() => setIsEditing(false)}>Annuler</Button>
-        <Button onClick={handleSave} isLoading={loading}>Sauvegarder</Button>
+        <Button variant="ghost" onClick={() => setIsEditing(false)}>
+          Annuler
+        </Button>
+        <Button onClick={handleSave} isLoading={loading}>
+          Sauvegarder
+        </Button>
       </div>
     </div>
   );

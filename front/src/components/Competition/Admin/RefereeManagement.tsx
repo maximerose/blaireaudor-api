@@ -25,7 +25,9 @@ export const RefereeManagement = ({
     handleRemoveRequest,
   } = useRefereeManagementUI(competition, onRefresh);
 
-  const myPlayerId = currentUser?.user?.player?.id ? String(currentUser.user.player.id) : null;
+  const myPlayerId = currentUser?.user?.player?.id
+    ? String(currentUser.user.player.id)
+    : null;
 
   return (
     <div className="space-y-4 pt-6 border-t border-white/10">
@@ -51,7 +53,11 @@ export const RefereeManagement = ({
             >
               <span className="flex items-center gap-1">
                 ⚖️ {ref.name}{' '}
-                {isMe && <span className="text-[9px] opacity-70 uppercase tracking-wider">(Vous)</span>}
+                {isMe && (
+                  <span className="text-[9px] opacity-70 uppercase tracking-wider">
+                    (Vous)
+                  </span>
+                )}
               </span>
 
               {canRemove && (
@@ -72,7 +78,8 @@ export const RefereeManagement = ({
 
       {isLastRef && (
         <Text variant="micro" className="text-warning-bright/80 italic block">
-          ⚠️ Vous êtes le dernier arbitre. Ajoutez un successeur avant de pouvoir démissionner.
+          ⚠️ Vous êtes le dernier arbitre. Ajoutez un successeur avant de
+          pouvoir démissionner.
         </Text>
       )}
 
@@ -100,7 +107,10 @@ export const RefereeManagement = ({
           </div>
 
           {isSearching && (
-            <Text variant="micro" className="absolute right-10 top-3 opacity-50">
+            <Text
+              variant="micro"
+              className="absolute right-10 top-3 opacity-50"
+            >
               ...
             </Text>
           )}
@@ -113,7 +123,11 @@ export const RefereeManagement = ({
                   <PlayerSearchResultItem
                     player={player}
                     onClick={() => handleAdd(player)}
-                    actionIcon={<span className="text-[10px] uppercase font-bold text-black bg-gold px-2 py-1 rounded shadow">Nommer</span>}
+                    actionIcon={
+                      <span className="text-[10px] uppercase font-bold text-black bg-gold px-2 py-1 rounded shadow">
+                        Nommer
+                      </span>
+                    }
                     className="w-full text-left p-3 hover:bg-white/5 transition-colors border-none"
                   />
                 </li>
@@ -121,11 +135,16 @@ export const RefereeManagement = ({
             </ul>
           )}
 
-          {searchQuery.length >= 2 && !isSearching && searchResults.length === 0 && (
-            <Text variant="micro" className="text-white/40 italic mt-2 px-1 block">
-              Aucun joueur disponible trouvé.
-            </Text>
-          )}
+          {searchQuery.length >= 2 &&
+            !isSearching &&
+            searchResults.length === 0 && (
+              <Text
+                variant="micro"
+                className="text-white/40 italic mt-2 px-1 block"
+              >
+                Aucun joueur disponible trouvé.
+              </Text>
+            )}
         </div>
       </div>
     </div>

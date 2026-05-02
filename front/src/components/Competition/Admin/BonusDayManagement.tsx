@@ -4,16 +4,27 @@ import { useBonusDayForm } from '@/hooks/competition/useBonusDayForm';
 
 export const BonusDayManagement = () => {
   const {
-    newDate, setNewDate, multiplier, setMultiplier,
-    handleAdd, deleteBonus, isAdding, bonusDays,
-    minDate, maxDate
+    newDate,
+    setNewDate,
+    multiplier,
+    setMultiplier,
+    handleAdd,
+    deleteBonus,
+    isAdding,
+    bonusDays,
+    minDate,
+    maxDate,
   } = useBonusDayForm();
 
   return (
     <div className="space-y-6 pt-6 border-t border-white/5">
       <header className="flex flex-col gap-1">
-        <Text variant="h3" className="text-gold italic">🔥 Multiplicateurs</Text>
-        <Text variant="micro" className="opacity-30">Multipliez les points de la journée.</Text>
+        <Text variant="h3" className="text-gold italic">
+          🔥 Multiplicateurs
+        </Text>
+        <Text variant="micro" className="opacity-30">
+          Multipliez les points de la journée.
+        </Text>
       </header>
 
       <div className="flex items-end gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
@@ -38,11 +49,7 @@ export const BonusDayManagement = () => {
             onChange={(e: any) => setMultiplier(parseInt(e.target.value))}
           />
         </div>
-        <Button
-          onClick={handleAdd}
-          isLoading={isAdding}
-          disabled={!newDate}
-        >
+        <Button onClick={handleAdd} isLoading={isAdding} disabled={!newDate}>
           Ajouter
         </Button>
       </div>
@@ -51,7 +58,8 @@ export const BonusDayManagement = () => {
         {bonusDays.map((bd) => (
           <Badge key={bd.id} variant="gold" className="pl-3 pr-1 py-1 gap-3">
             <span className="font-mono text-[10px]">
-              {formatShortDate(bd.date)} — <span className="text-white">x{bd.multiplier}</span>
+              {formatShortDate(bd.date)} —{' '}
+              <span className="text-white">x{bd.multiplier}</span>
             </span>
             <button
               type="button"

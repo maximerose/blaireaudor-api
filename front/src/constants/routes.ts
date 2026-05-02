@@ -29,7 +29,8 @@ export const ROUTES = {
   API_COMPETITIONS: '/competitions',
   API_COMPETITION_DETAIL: (id: string) => `/competitions/${id}`,
   API_COMPETITION_BY_CODE: (code: string) => `/competitions/by-code/${code}`,
-  API_COMPETITION_LEADERBOARD: (id: string) => `/competitions/${id}/leaderboard`,
+  API_COMPETITION_LEADERBOARD: (id: string) =>
+    `/competitions/${id}/leaderboard`,
 
   // Actions & Participations
   API_ACTIONS: '/actions',
@@ -43,13 +44,16 @@ export const ROUTES = {
   // Bonus days
   API_BONUS_DAYS: '/bonus_days',
   API_BONUS_DAYS_DETAIL: (id: string) => `/bonus_days/${id}`,
-  API_BONUS_DAYS_BY_COMPETITION: (competitionId: string) => `/bonus_days?competition=${competitionId}`,
+  API_BONUS_DAYS_BY_COMPETITION: (competitionId: string) =>
+    `/bonus_days?competition=${competitionId}`,
 
   // Administration
   API_COMPETITION_CREATE: '/admin/competition',
-  API_ADD_PLAYERS_TO_COMP: (id: string) => `/admin/competition/${id}/add-players`,
+  API_ADD_PLAYERS_TO_COMP: (id: string) =>
+    `/admin/competition/${id}/add-players`,
   API_ADD_REFEREE: (id: string) => `/admin/competition/${id}/referees/add`,
-  API_REMOVE_REFEREE: (id: string) => `/admin/competition/${id}/referees/remove`,
+  API_REMOVE_REFEREE: (id: string) =>
+    `/admin/competition/${id}/referees/remove`,
 
   // ---------------------------------------------------------
   // 3. GÉNÉRATEURS D'IRI

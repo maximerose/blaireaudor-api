@@ -1,8 +1,13 @@
 import { Badge, Text } from '@/components/UI';
 import type { Competition } from '@/context/AuthContext';
-import { cn, formatShortDate, getCompetitionReferees, getDisplayDateText } from '@/utils';
+import {
+  cn,
+  formatShortDate,
+  getCompetitionReferees,
+  getDisplayDateText,
+} from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
-import { useCompetition } from '@/context/CompetitionContext';
+import { useCompetition } from '@/hooks';
 
 interface CompetitionHeaderProps {
   competition: Competition;
@@ -39,24 +44,31 @@ export const CompetitionHeader = ({
           {getDisplayDateText(competition.start_date, competition.end_date)}
         </Text>
 
-        {competition.has_started && !competition.is_finished && competition.end_date && (
-          <div className="mt-1 bg-black/20 px-3 py-1 rounded-full border border-white/5" aria-live="polite">
-            <CompetitionCountdown
-              prefix="Clôture"
-              targetDate={competition.end_date}
-            />
-          </div>
-        )}
+        {competition.has_started &&
+          !competition.is_finished &&
+          competition.end_date && (
+            <div
+              className="mt-1 bg-black/20 px-3 py-1 rounded-full border border-white/5"
+              aria-live="polite"
+            >
+              <CompetitionCountdown
+                prefix="Clôture"
+                targetDate={competition.end_date}
+              />
+            </div>
+          )}
       </div>
 
       {/* 3. Méta-informations groupées */}
       {(creatorName || referees.length > 0) && (
         <div className="pt-4 border-t border-white/5 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-3">
-
           {/* Section Créateur : Toujours affichée si présente */}
           {creatorName && (
             <div className="flex items-center gap-2">
-              <Text variant="micro" className="opacity-40 uppercase tracking-widest">
+              <Text
+                variant="micro"
+                className="opacity-40 uppercase tracking-widest"
+              >
                 Créateur
               </Text>
               <Text variant="caption" className="text-gold font-medium">
@@ -67,13 +79,19 @@ export const CompetitionHeader = ({
 
           {/* Séparateur visuel si on a les deux infos */}
           {creatorName && referees.length > 0 && (
-            <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-white/20" aria-hidden="true" />
+            <span
+              className="hidden sm:inline-block w-1 h-1 rounded-full bg-white/20"
+              aria-hidden="true"
+            />
           )}
 
           {/* Section Arbitres : Liste complète des arbitres */}
           {referees.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <Text variant="micro" className="opacity-40 uppercase tracking-widest sm:mr-1">
+              <Text
+                variant="micro"
+                className="opacity-40 uppercase tracking-widest sm:mr-1"
+              >
                 Arbitre{referees.length > 1 ? 's' : ''}
               </Text>
               {referees.map((ref: any) => (
@@ -82,8 +100,8 @@ export const CompetitionHeader = ({
                   variant="info"
                   icon="⚖️"
                   className={cn(
-                    "py-0.5",
-                    ref.name === creatorName && "border-gold/60"
+                    'py-0.5',
+                    ref.name === creatorName && 'border-gold/60',
                   )}
                 >
                   {ref.name}
@@ -96,7 +114,10 @@ export const CompetitionHeader = ({
 
       {bonusDays.length > 0 && (
         <div className="pt-3 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
-          <Text variant="micro" className="opacity-40 uppercase tracking-widest w-full mb-1">
+          <Text
+            variant="micro"
+            className="opacity-40 uppercase tracking-widest w-full mb-1"
+          >
             Calendrier des Bonus 🔥
           </Text>
           {bonusDays.map((bd) => (

@@ -25,12 +25,14 @@ final class CompetitionVoter extends Voter
 
         if (!$user instanceof User) {
             $vote?->addReason('Vous devez être connecté.');
+
             return false;
         }
 
         $player = $user->getPlayer();
         if (!$player) {
             $vote?->addReason('Vous devez être lié à un joueur.');
+
             return false;
         }
 

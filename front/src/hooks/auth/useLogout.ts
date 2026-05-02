@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/api/authService';
+import { authService } from '@/services/api/auth';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
 import { useCallback } from 'react';

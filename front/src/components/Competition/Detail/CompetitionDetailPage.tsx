@@ -22,6 +22,7 @@ const CompetitionDetailPage = () => {
     isReferee,
     isCreator,
     creatorName,
+    entriesCount,
   } = useCompetitionDetailUI();
 
   const { handleActionStatus, updateAction } = useCompetitionAdmin(
@@ -51,7 +52,10 @@ const CompetitionDetailPage = () => {
           onDelete={deleteCompetition}
         />
 
-        <CompetitionHeader competition={competition} creatorName={creatorName} />
+        <CompetitionHeader
+          competition={competition}
+          creatorName={creatorName}
+        />
 
         {(isReferee || isCreator) && !competition.is_finished && (
           <AdminSettings
@@ -93,10 +97,7 @@ const CompetitionDetailPage = () => {
               </Text>
               <div className="h-px w-full bg-white/5" />
               <Badge variant="ghost" className="opacity-60 text-[8px]">
-                {isReferee
-                  ? actions?.length
-                  : actions?.filter((a) => a.status !== 'rejected').length}{' '}
-                entrées
+                {entriesCount} entrées
               </Badge>
             </header>
             <ActionTable

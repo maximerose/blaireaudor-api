@@ -13,12 +13,17 @@ export const useCompetitionCard = (
   const isCreator = useMemo(() => {
     const creatorData = competition.createdBy || competition.created_by;
     if (creatorData) {
-      const creatorId = typeof creatorData === 'string' ? creatorData.split('/').pop() : creatorData.id;
+      const creatorId =
+        typeof creatorData === 'string'
+          ? creatorData.split('/').pop()
+          : creatorData.id;
       return String(user?.id) === String(creatorId);
     }
 
     if (user?.created_competitions) {
-      return user.created_competitions.some((c: any) => c.id === competition.id);
+      return user.created_competitions.some(
+        (c: any) => c.id === competition.id,
+      );
     }
 
     return false;

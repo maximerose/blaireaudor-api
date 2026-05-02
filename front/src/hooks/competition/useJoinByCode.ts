@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {

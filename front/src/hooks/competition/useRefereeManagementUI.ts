@@ -3,19 +3,22 @@ import { getCompetitionReferees } from '@/utils';
 import { useCompetitionReferees } from './useCompetitionReferees';
 import type { Competition, Player } from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import toast from 'react-hot-toast';
 
 export const useRefereeManagementUI = (
   competition: Competition,
-  onRefresh: () => void
+  onRefresh: () => void,
 ) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(
     competition.id,
-    onRefresh
+    onRefresh,
   );
 
-  const referees = useMemo(() => getCompetitionReferees(competition), [competition]);
+  const referees = useMemo(
+    () => getCompetitionReferees(competition),
+    [competition],
+  );
   const isLastRef = referees.length <= 1;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,7 +51,7 @@ export const useRefereeManagementUI = (
 
   const searchResults = useMemo(() => {
     return rawSearchResults.filter(
-      (p: any) => !referees.some((r: any) => String(r.id) === String(p.id))
+      (p: any) => !referees.some((r: any) => String(r.id) === String(p.id)),
     );
   }, [rawSearchResults, referees]);
 
@@ -71,9 +74,11 @@ export const useRefereeManagementUI = (
     if (window.confirm(confirmMsg)) {
       const success = await removeReferee(ref.id);
       if (success) {
-        toast.success(isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} révoqué.`);
+        toast.success(
+          isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} révoqué.`,
+        );
       } else {
-        toast.error("Échec de la révocation.");
+        toast.error('Échec de la révocation.');
       }
     }
   };

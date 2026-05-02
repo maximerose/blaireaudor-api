@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '@/utils';
-import { authService } from '@/api/authService';
+import { authService } from '@/services/api/auth';
 import { useAuth, usePlayerSearch } from '@/hooks';
 
 export const useRegistration = (redirectUrl: string) => {

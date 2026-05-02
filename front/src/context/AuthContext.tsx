@@ -13,9 +13,10 @@ export interface Competition {
   has_started: boolean;
   created_by: User | string;
   referees: (Player | string)[];
-} 
+}
 
 export interface Participation {
+  player: Player;
   score: number;
   rank: number;
   competition: Competition;

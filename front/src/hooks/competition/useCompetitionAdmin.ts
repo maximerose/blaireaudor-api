@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '@/constants/routes';
 

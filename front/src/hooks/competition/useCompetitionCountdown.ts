@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 
-export const useCompetitionCountdown = (targetDate: string, onElapsed?: () => void) => {
+export const useCompetitionCountdown = (
+  targetDate: string,
+  onElapsed?: () => void,
+) => {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -17,7 +20,13 @@ export const useCompetitionCountdown = (targetDate: string, onElapsed?: () => vo
       const diff = targetTimestamp - now;
 
       if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isElapsed: true });
+        setTimeLeft({
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          isElapsed: true,
+        });
         if (onElapsed) onElapsed();
         return;
       }
@@ -37,7 +46,8 @@ export const useCompetitionCountdown = (targetDate: string, onElapsed?: () => vo
   }, [targetDate, onElapsed]);
 
   const formatTime = (time: number) => time.toString().padStart(2, '0');
-  const isUrgent = timeLeft !== null && !timeLeft.isElapsed && timeLeft.days === 0;
+  const isUrgent =
+    timeLeft !== null && !timeLeft.isElapsed && timeLeft.days === 0;
 
   return { timeLeft, formatTime, isUrgent };
 };

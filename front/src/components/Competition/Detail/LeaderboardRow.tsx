@@ -21,7 +21,8 @@ export const LeaderboardRow = ({
   competition,
   ...props
 }: LeaderboardRowProps) => {
-  const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } = useLeaderboardRow(item, isAdmin, competition);
+  const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } =
+    useLeaderboardRow(item, isAdmin, competition);
   const showRealStats = !isFogActive || isAdmin;
 
   return (

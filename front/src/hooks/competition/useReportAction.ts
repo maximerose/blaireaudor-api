@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { apiFetch } from '@/api/config';
+import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import type { Competition } from '@/context/AuthContext';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
@@ -27,7 +27,7 @@ export const useReportAction = (
     dateAction: new Date().toISOString().split('T')[0],
   });
 
-  const { minDate, maxDate } = useCompetitionDateLimits(competition, true)
+  const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
   const dateLimits = { minDate, maxDate };
 
   const [search, setSearch] = useState('');

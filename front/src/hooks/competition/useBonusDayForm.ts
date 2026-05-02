@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useBonusDayAdmin } from './useAdminBonusDay';
-import { useCompetition } from '@/context/CompetitionContext';
+import { useCompetition } from './useCompetition';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 
 export const useBonusDayForm = () => {
@@ -16,7 +16,7 @@ export const useBonusDayForm = () => {
     if (!newDate) return;
 
     const isDuplicate = bonusDays?.some(
-      (bd) => bd.date.split('T')[0] === newDate
+      (bd) => bd.date.split('T')[0] === newDate,
     );
 
     if (isDuplicate) {
@@ -37,6 +37,6 @@ export const useBonusDayForm = () => {
     isAdding,
     bonusDays,
     minDate,
-    maxDate
+    maxDate,
   };
 };
