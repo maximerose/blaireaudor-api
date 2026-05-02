@@ -1,16 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  fetchCompetitionByCode,
-  fetchLeaderboard,
-  fetchCompetitionActions,
-} from '@/services/api/competition';
+import { competitionService } from '@/services/api/competition';
 
 export const useCompetitionData = (code: string) => {
   const queryClient = useQueryClient();
 
   const competitionQuery = useQuery({
     queryKey: ['competition', code],
-    queryFn: () => fetchCompetitionByCode(code),
+    queryFn: () => competitionService.getByCode(code),
     enabled: !!code,
     staleTime: 1000 * 60 * 5,
   });
@@ -19,13 +15,13 @@ export const useCompetitionData = (code: string) => {
 
   const leaderboardQuery = useQuery({
     queryKey: ['competition', competitionId, 'leaderboard'],
-    queryFn: () => fetchLeaderboard(competitionId!),
+    queryFn: () => competitionService.getLeaderboard(competitionId!),
     enabled: !!competitionId,
   });
 
   const actionsQuery = useQuery({
     queryKey: ['competition', competitionId, 'actions'],
-    queryFn: () => fetchCompetitionActions(competitionId!),
+    queryFn: () => competitionService.getActions(competitionId!),
     enabled: !!competitionId,
   });
 
@@ -35,6 +31,7 @@ export const useCompetitionData = (code: string) => {
    */
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: ['competition', code] });
+
     if (competitionId) {
       queryClient.invalidateQueries({
         queryKey: ['competition', competitionId],
