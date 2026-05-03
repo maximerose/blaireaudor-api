@@ -84,7 +84,7 @@ function App() {
               }
             />
             <Route
-              path={ROUTES.NAV.COMPETITION_DETAIL_ROUTE}
+              path={ROUTES.NAV.COMPETITION_DETAIL_PATH}
               element={
                 user ? (
                   <CompetitionDetailPage />

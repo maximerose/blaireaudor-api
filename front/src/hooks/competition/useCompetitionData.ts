@@ -42,14 +42,16 @@ export const useCompetitionData = (code: string) => {
     }
   };
 
+  const isInitialLoading =
+    competitionQuery.isLoading ||
+    (!!competitionId && (leaderboardQuery.isLoading || actionsQuery.isLoading));
+
   return {
     competition: competitionQuery.data,
     leaderboard: leaderboardQuery.data ?? [],
     actions: actionsQuery.data ?? [],
-    loading:
-      competitionQuery.isLoading ||
-      (!!competitionId &&
-        (leaderboardQuery.isLoading || actionsQuery.isLoading)),
+    isReady: !isInitialLoading && !!competitionQuery.data,
+    isRefreshing: competitionQuery.isFetching || leaderboardQuery.isFetching,
     error:
       competitionQuery.error || leaderboardQuery.error || actionsQuery.error,
     refresh,

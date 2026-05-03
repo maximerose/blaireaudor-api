@@ -11,7 +11,7 @@ import type { Participation } from '@/types';
 export const useCompetitionDetailUI = () => {
   const { user } = useAuth();
   const { code } = useParams<{ code: string }>();
-  const { competition, leaderboard, actions, loading, refresh } =
+  const { competition, leaderboard, actions, isReady, isRefreshing, refresh } =
     useCompetitionData(code || '');
   const { deleteCompetition } = useCompetitionDelete();
   const [isReporting, setIsReporting] = useState(false);
@@ -46,7 +46,8 @@ export const useCompetitionDetailUI = () => {
     competition,
     leaderboard,
     actions,
-    loading,
+    isReady,
+    isRefreshing,
     refresh,
     deleteCompetition,
     isReporting,

@@ -15,7 +15,8 @@ const CompetitionDetailPage = () => {
     competition,
     leaderboard,
     actions,
-    loading,
+    isReady,
+    isRefreshing,
     refresh,
     deleteCompetition,
     isReferee,
@@ -29,7 +30,7 @@ const CompetitionDetailPage = () => {
     refresh,
   );
 
-  if (loading) return <LoadingScreen message="Récupération de l'arène..." />;
+  if (!isReady) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
     return <div className="text-white p-10">Compétition non trouvée.</div>;
 
@@ -43,6 +44,11 @@ const CompetitionDetailPage = () => {
       hidePoints={isFogActive}
       refresh={refresh}
     >
+      {isRefreshing && (
+        <div className="fixed top-4 right-4 animate-pulse text-[10px] text-white/40 uppercase tracking-widest">
+          Synchronisation...
+        </div>
+      )}
       <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
         <DetailNavigation
           competition={competition}
