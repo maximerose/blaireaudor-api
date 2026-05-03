@@ -29,11 +29,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_COMPETITION_DATE', fields: ['competition', 'date'])]
 #[UniqueEntity(
     fields: ['competition', 'date'],
-    message: 'Un bonus est déjà programmé pour cette arène à cette date.'
+    message: self::ERROR_DUPLICATE_BONUS
 )]
 #[Assert\Expression(
     expression: 'this.getCompetition() == null or (this.getDate() >= this.getCompetition().getStartDate() and (this.getCompetition().getEndDate() == null or this.getDate() <= this.getCompetition().getEndDate()))',
-    message: "La date du jour bonus doit être comprise dans les dates d'ouverture et de fermeture de la compétition."
+    message: self::ERROR_DATE_OUT_OF_RANGE
 )]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource(
@@ -65,6 +65,10 @@ class BonusDay
     use TimestampableTrait;
     use BlameableTrait;
 
+    public const DEFAULT_MULTIPLIER = 2;
+    public const ERROR_DATE_OUT_OF_RANGE = 'La date du jour bonus doit être comprise dans les dates de la compétition.';
+    public const ERROR_DUPLICATE_BONUS = 'Un bonus est déjà programmé pour cette arène à cette date.';
+
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'bonusDays')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['bonus:read', 'bonus:write'])]
@@ -77,9 +81,12 @@ class BonusDay
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotBlank]
-    #[Assert\GreaterThanOrEqual(2, message: 'Le multiplicateur doit être d\'au moins 2.')]
+    #[Assert\GreaterThanOrEqual(
+        value: self::DEFAULT_MULTIPLIER,
+        message: "Le multiplicateur doit être d'au moins {{ value }}."
+    )]
     #[Groups(['bonus:read', 'bonus:write', 'competition:read'])]
-    private ?int $multiplier = 2;
+    private ?int $multiplier = self::DEFAULT_MULTIPLIER;
 
     public function getCompetition(): ?Competition
     {
