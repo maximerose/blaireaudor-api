@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks';
-import { apiFetch } from '@/services/api/config';
+import { competitionService } from '@/services/api/competition';
 import { ROUTES } from '@/constants/routes';
 
 export const useCompetitionDelete = () => {
@@ -16,16 +16,15 @@ export const useCompetitionDelete = () => {
       alert(`Impossible de supprimer "${name}" car elle contient des actions.`);
       return false;
     }
+
     if (!window.confirm(`Supprimer définitivement "${name}" ?`)) return false;
 
     try {
-      const response = await apiFetch(ROUTES.API_COMPETITION_DETAIL(id), {
-        method: 'DELETE',
-      });
+      const success = await competitionService.delete(id);
 
-      if (response.ok) {
+      if (success) {
         await refreshUser();
-        navigate(ROUTES.NAV_DASHBOARD);
+        navigate(ROUTES.NAV.DASHBOARD);
         return true;
       }
     } catch (error) {

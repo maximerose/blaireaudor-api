@@ -1,8 +1,3 @@
-import {
-  type Competition,
-  type Participation,
-  type User,
-} from '@/context/AuthContext';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils';
 import { StatusBadge } from '@/components/Competition';
@@ -15,6 +10,7 @@ import {
   RoleBadge,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
+import type { Competition, Participation, User } from '@/types';
 
 interface CompetitionCardProps {
   participation?: Participation;
@@ -167,7 +163,7 @@ export const CompetitionCard = ({
         </div>
 
         <Button
-          to={ROUTES.NAV_COMPETITION_DETAIL(competition.join_code)}
+          to={ROUTES.NAV.COMPETITION_DETAIL(competition.join_code)}
           variant={
             competition.is_finished || isManager ? 'primary' : 'secondary'
           }

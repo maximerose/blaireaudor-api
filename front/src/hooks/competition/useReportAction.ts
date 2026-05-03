@@ -3,7 +3,7 @@ import { ROUTES } from '@/constants/routes';
 import { actionService } from '@/services/api/action';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 import { toast } from 'react-hot-toast';
-import type { Competition } from '@/context/AuthContext';
+import type { Competition } from '@/types';
 
 export const useReportAction = (
   competition: Competition,
@@ -47,8 +47,8 @@ export const useReportAction = (
       description: formData.description,
       dateAction: formData.dateAction,
       points: Number(formData.points),
-      player: ROUTES.IRI_PLAYER(formData.targetPlayerId),
-      competition: ROUTES.IRI_COMPETITION(competition.id),
+      player: ROUTES.IRI.PLAYER(formData.targetPlayerId),
+      competition: ROUTES.IRI.COMPETITION(competition.id),
       status: isAdmin ? 'validated' : 'pending',
     };
 

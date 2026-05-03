@@ -1,5 +1,5 @@
 import { Card, Text, Badge } from '@/components/UI';
-import { ActionRow } from '../ActionRow';
+import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 
 export const PendingSection = ({

@@ -2,7 +2,7 @@ import type React from 'react';
 import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
-import type { Competition } from '@/context/AuthContext';
+import type { Competition } from '@/types';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   item: any;

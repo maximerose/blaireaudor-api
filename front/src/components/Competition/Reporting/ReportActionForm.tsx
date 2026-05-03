@@ -2,7 +2,7 @@ import { Input, Button, Card, Text } from '@/components/UI';
 import { useReportAction } from '@/hooks';
 import { preventDefault, cn } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
-import type { Competition } from '@/context/AuthContext';
+import type { Competition } from '@/types';
 
 const INPUT_STYLE =
   'bg-white/[0.08] border-white/20 focus:border-gold transition-colors';

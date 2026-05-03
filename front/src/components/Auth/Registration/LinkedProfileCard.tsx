@@ -1,4 +1,5 @@
 import { Card, Text, Button } from '@/components/UI';
+import { AUTH_UI } from '@/constants';
 
 interface LinkedProfileCardProps {
   name?: string;
@@ -12,7 +13,7 @@ export const LinkedProfileCard = ({
   <Card
     variant="glass"
     role="region"
-    aria-label="Profil joueur lié"
+    aria-label={AUTH_UI.LINKED_CARD.STATUS}
     className="mb-8 p-5 border-success-bright/20 flex justify-between items-center bg-success/5 animate-fade-in"
   >
     <div className="flex flex-col gap-1 text-left">
@@ -25,7 +26,7 @@ export const LinkedProfileCard = ({
           variant="caption"
           className="text-success-bright font-bold uppercase tracking-wider"
         >
-          Profil lié
+          {AUTH_UI.LINKED_CARD.STATUS}
         </Text>
       </div>
       <Text variant="h2" className="text-white normal-case">
@@ -41,7 +42,7 @@ export const LinkedProfileCard = ({
       aria-label={`Changer de joueur à lier, actuellement défini sur ${name}`}
       className="transition-default hover:bg-white/10"
     >
-      Changer
+      {AUTH_UI.LINKED_CARD.CHANGE_BUTTON}
     </Button>
   </Card>
 );

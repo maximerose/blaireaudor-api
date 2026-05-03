@@ -1,6 +1,8 @@
 import { useActionRow, useActionRowInteraction, useCompetition } from '@/hooks';
-import { ActionRowEditMode } from './ActionRowEditMode';
-import { ActionRowDisplayMode } from './ActionRowDisplayMode';
+import {
+  ActionRowEditMode,
+  ActionRowDisplayMode,
+} from '@/components/Competition';
 
 export const ActionRow = ({ action, onUpdate, onStatusChange }: any) => {
   const { isPending, playerName } = useActionRow(action);

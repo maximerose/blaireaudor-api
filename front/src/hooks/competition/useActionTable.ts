@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
-import { type Action, getUniqueDates } from '@/utils';
+import { getUniqueDates } from '@/utils';
+import type { Action } from '@/types';
 
 export const useActionTable = (initialActions: Action[]) => {
   const { user } = useAuth();

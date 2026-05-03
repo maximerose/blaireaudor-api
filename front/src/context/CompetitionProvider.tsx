@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useContext, type ReactNode } from 'react';
-import { useBonusDays } from '@/hooks/competition/useBonusDays';
+import { useBonusDays } from '@/hooks';
 import { sortByDate } from '@/utils';
 import {
   CompetitionContext,

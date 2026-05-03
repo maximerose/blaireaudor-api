@@ -1,5 +1,5 @@
 import { Text } from '@/components/UI';
-import { CompetitionCard } from './CompetitionCard';
+import { CompetitionCard } from '@/components/Dashboard';
 import { cn } from '@/utils';
 
 interface CompetitionListSectionProps {

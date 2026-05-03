@@ -22,7 +22,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class RegistrationControllerTest extends WebTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testRegisterNewPlayerWithCompetitionCode(): void
     {
@@ -49,16 +50,16 @@ final class RegistrationControllerTest extends WebTestCase
         );
 
         $this->assertResponseStatusCodeSame(201);
-        
+
         UserFactory::assert()->exists(['username' => 'blaireau36']);
         PlayerFactory::assert()->exists(['username' => 'blaireau36']);
-        
+
         $user = UserFactory::find(['username' => 'blaireau36']);
         $entityManager->refresh($user);
 
         $this->assertNotNull($user->getPlayer(), 'Le User doit être lié à un Player');
         $this->assertSame('Patrick Dupont', $user->getPlayer()->getDisplayName());
-    
+
         $player = $user->getPlayer();
 
         ParticipationFactory::assert()->exists(criteria: [
@@ -66,7 +67,7 @@ final class RegistrationControllerTest extends WebTestCase
             'player' => $player,
         ]);
 
-        $participationsInThisComp = $player->getParticipations()->filter(function($p) use ($competition) {
+        $participationsInThisComp = $player->getParticipations()->filter(function ($p) use ($competition) {
             return $p->getCompetition() === $competition;
         });
 
@@ -78,7 +79,7 @@ final class RegistrationControllerTest extends WebTestCase
         $client = static::createClient();
 
         UserFactory::createOne(['username' => 'deja-pris']);
-        
+
         $client->request(
             'POST',
             '/api/register',
@@ -91,7 +92,7 @@ final class RegistrationControllerTest extends WebTestCase
                 'plain_password' => 'password',
             ])
         );
-        
+
         $this->assertResponseStatusCodeSame(422);
 
         $responseContent = $client->getResponse()->getContent();
@@ -138,7 +139,7 @@ final class RegistrationControllerTest extends WebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertFalse($data['available']);
     }
-    
+
     public function testRegisterByLinkingHistoricalPlayer(): void
     {
         $client = static::createClient();
@@ -146,7 +147,7 @@ final class RegistrationControllerTest extends WebTestCase
 
         $historicalPlayer = PlayerFactory::createOne([
             'displayName' => 'Ancien Nom',
-            'username' => 'ancien-nom'
+            'username' => 'ancien-nom',
         ]);
         $playerId = $historicalPlayer->getId()->toString();
 
@@ -167,11 +168,23 @@ final class RegistrationControllerTest extends WebTestCase
         $entityManager->refresh($historicalPlayer);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        
+
         $user = UserFactory::find(['username' => 'nouveau-pseudo']);
-        
+
         $this->assertSame($historicalPlayer, $user->getPlayer());
         $this->assertSame('Nouveau Nom', $historicalPlayer->getDisplayName());
         $this->assertSame('nouveau-pseudo', $historicalPlayer->getUsername());
+    }
+
+    public function testCheckPlayerRoute(): void
+    {
+        $client = static::createClient();
+        PlayerFactory::createOne(['username' => 'test-player', 'displayName' => 'Test']);
+
+        $client->request('GET', '/api/check-player/test-player');
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertTrue($data['exists']);
+        $this->assertSame('Test', $data['player']['display_name']);
     }
 }

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, ERRORS } from '@/constants';
 import { useAuth } from '@/hooks';
 import { slugify } from '@/utils';
 
@@ -16,7 +16,7 @@ export const useLogin = () => {
 
   useEffect(() => {
     logout();
-  }, []);
+  }, [logout]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,22 +31,16 @@ export const useLogin = () => {
     try {
       const response = await login(credentials);
       if (response.ok) {
-        navigate(ROUTES.NAV_DASHBOARD);
+        navigate(ROUTES.NAV.DASHBOARD);
       } else {
-        setError('Identifiants invalides.');
+        setError(ERRORS.AUTH.INVALID_CREDENTIALS);
       }
     } catch {
-      setError('Impossible de joindre le serveur.');
+      setError(ERRORS.NETWORK.SERVER);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return {
-    credentials,
-    error,
-    isLoading,
-    handleChange,
-    handleSubmit,
-  };
+  return { credentials, error, isLoading, handleChange, handleSubmit };
 };

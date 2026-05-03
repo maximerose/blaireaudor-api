@@ -6,7 +6,7 @@ import {
   isPlayerReferee,
   resolveCreatorName,
 } from '@/utils';
-import type { Participation } from '@/context/AuthContext';
+import type { Participation } from '@/types';
 
 export const useCompetitionDetailUI = () => {
   const { user } = useAuth();

@@ -1,23 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiFetch } from '@/services/api/config';
-import { ROUTES } from '@/constants/routes';
+import { bonusDayService } from '@/services/api/bonusDay';
 import { toast } from 'react-hot-toast';
 
 export const useBonusDayAdmin = (competitionId: string) => {
   const queryClient = useQueryClient();
 
   const addMutation = useMutation({
-    mutationFn: async (payload: { date: string; multiplier: number }) => {
-      const response = await apiFetch(ROUTES.API_BONUS_DAYS, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...payload,
-          competition: ROUTES.IRI_COMPETITION(competitionId),
-        }),
-      });
-      if (!response.ok) throw new Error();
-      return response.json();
-    },
+    mutationFn: ({ date, multiplier }: { date: string; multiplier: number }) =>
+      bonusDayService.create(competitionId, date, multiplier),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bonusDays', competitionId] });
       toast.success('Jour multiplicateur ajouté !');
@@ -26,11 +16,7 @@ export const useBonusDayAdmin = (competitionId: string) => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (bonusDayId: string) => {
-      await apiFetch(ROUTES.API_BONUS_DAYS_DETAIL(bonusDayId), {
-        method: 'DELETE',
-      });
-    },
+    mutationFn: (bonusDayId: string) => bonusDayService.delete(bonusDayId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bonusDays', competitionId] });
       toast.success('Bonus supprimé');

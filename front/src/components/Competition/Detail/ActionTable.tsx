@@ -1,8 +1,11 @@
 import { useActionTable, useCompetition } from '@/hooks';
 import { Card, EmptyState, Text } from '@/components/UI';
-import { DateNavigation, ActionRow } from '@/components/Competition';
-import { PendingSection } from './Sections/PendingSection';
-import { TableHeader } from './Sections/TableHeader';
+import {
+  DateNavigation,
+  ActionRow,
+  PendingSection,
+  TableHeader,
+} from '@/components/Competition';
 
 export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
   const {

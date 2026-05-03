@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { apiFetch } from '@/services/api/config';
-import { ROUTES } from '@/constants/routes';
+import { competitionService } from '@/services/api/competition';
 
 export const useCompetitionReferees = (
   competitionId: string,
@@ -11,15 +10,13 @@ export const useCompetitionReferees = (
   const addReferee = async (playerId: string) => {
     setLoadingAction(`add-${playerId}`);
     try {
-      const res = await apiFetch(ROUTES.API_ADD_REFEREE(competitionId), {
-        method: 'POST',
-        body: JSON.stringify({ player_id: playerId }),
-      });
+      const res = await competitionService.addReferee(competitionId, playerId);
 
       if (res.ok) {
         onRefresh();
         return true;
       }
+
       const data = await res.json();
       alert(data.error || "Erreur lors de l'ajout de l'arbitre.");
     } catch (e) {
@@ -33,10 +30,10 @@ export const useCompetitionReferees = (
   const removeReferee = async (playerId: string) => {
     setLoadingAction(`remove-${playerId}`);
     try {
-      const res = await apiFetch(ROUTES.API_REMOVE_REFEREE(competitionId), {
-        method: 'POST',
-        body: JSON.stringify({ player_id: playerId }),
-      });
+      const res = await competitionService.removeReferee(
+        competitionId,
+        playerId,
+      );
 
       if (res.ok) {
         onRefresh();

@@ -2,8 +2,10 @@ import { JoinCompetitionModal } from '@/components/Competition';
 import { Navbar, Button, EmptyState } from '@/components/UI';
 import { ROUTES } from '@/constants/routes';
 import { useDashboardUI } from '@/hooks';
-import { DashboardHeader } from './DashboardHeader';
-import { CompetitionListSection } from './CompetitionListSection';
+import {
+  DashboardHeader,
+  CompetitionListSection,
+} from '@/components/Dashboard';
 
 const Dashboard = () => {
   const {
@@ -34,7 +36,7 @@ const Dashboard = () => {
           className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           aria-label="Actions rapides"
         >
-          <Button to={ROUTES.NAV_ADMIN_CREATE_COMPETITION} variant="primary">
+          <Button to={ROUTES.NAV.ADMIN_CREATE_COMPETITION} variant="primary">
             + Créer une compétition
           </Button>
           <Button onClick={openJoinModal} variant="secondary">
@@ -71,7 +73,7 @@ const Dashboard = () => {
           <JoinCompetitionModal
             onClose={closeJoinModal}
             onJoined={(code) => {
-              window.location.href = ROUTES.NAV_COMPETITION_DETAIL(code);
+              window.location.href = ROUTES.NAV.COMPETITION_DETAIL(code);
             }}
           />
         )}

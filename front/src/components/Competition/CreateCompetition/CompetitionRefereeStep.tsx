@@ -5,11 +5,15 @@ import {
 } from '@/components/Competition';
 import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
+import type { CompetitionFormData } from '@/types';
 
 interface RefereeStepProps {
-  formData: any;
+  formData: CompetitionFormData;
   searchState: any;
-  updateField: (field: string, value: any) => void;
+  updateField: <K extends keyof CompetitionFormData>(
+    field: K,
+    value: CompetitionFormData[K],
+  ) => void;
   onToggleReferee: (person: any, isNew?: boolean) => void;
   onBack: () => void;
   onSubmit: () => void;

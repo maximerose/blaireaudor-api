@@ -1,6 +1,6 @@
 import { Text, Input, Button, Badge } from '@/components/UI';
 import { formatShortDate } from '@/utils';
-import { useBonusDayForm } from '@/hooks/competition/useBonusDayForm';
+import { useBonusDayForm } from '@/hooks';
 
 export const BonusDayManagement = () => {
   const {

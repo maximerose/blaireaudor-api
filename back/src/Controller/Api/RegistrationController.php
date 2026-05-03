@@ -107,24 +107,24 @@ final class RegistrationController extends AbstractController
         $player = $playerRepository->findOneBy(['username' => $username]);
         $playerIsClaimed = (null !== $player && null !== $player->getAssociatedUser());
 
-        $available = !$userExists && !$playerIsClaimed;
         $isGuest = (null !== $player && !$playerIsClaimed);
+        $available = !$userExists && !$playerIsClaimed;
 
         return $this->json([
             'available' => $available,
-            'username' => $username,
             'is_guest_profile' => $isGuest,
-            'guest_id' => $isGuest ? $player->getId() : null,
-            'guest_name' => $isGuest ? $player->getDisplayName() : null,
-            'player' => $player,
+            'player' => $player ? [
+                'id' => $player->getId(),
+                'display_name' => $player->getDisplayName(),
+                'username' => $player->getUsername(),
+                'last_competition_name' => $player->getLastCompetitionName(),
+            ] : null,
         ]);
     }
 
     #[Route('/check-player/{username}', name: 'check-player', methods: ['GET'])]
     public function checkPlayer(string $username, PlayerRepository $playerRepository): JsonResponse
     {
-        // On cherche le joueur par son username unique (le slug)
-        // et on vérifie qu'il n'est pas déjà lié à un compte User
         $player = $playerRepository->findOneBy([
             'username' => $username,
             'associatedUser' => null,
@@ -132,8 +132,11 @@ final class RegistrationController extends AbstractController
 
         return $this->json([
             'exists' => null !== $player,
-            'playerId' => $player?->getId(),
-            'displayName' => $player?->getDisplayName(),
+            'player' => $player ? [
+                'id' => $player->getId(),
+                'display_name' => $player->getDisplayName(),
+                'username' => $player->getUsername(),
+            ] : null,
         ]);
     }
 }

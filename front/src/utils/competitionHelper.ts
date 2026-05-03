@@ -1,4 +1,4 @@
-import { type Competition, type Player } from '@/context/AuthContext';
+import type { Player, Competition } from '@/types';
 
 export const CompetitionStatus = {
   ACTIVE: 'ACTIVE',

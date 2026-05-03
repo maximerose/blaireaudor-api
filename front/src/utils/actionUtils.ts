@@ -1,14 +1,4 @@
-import type { User } from '@/context/AuthContext';
-
-export interface Action {
-  id: string;
-  description: string;
-  points: number;
-  date_action: string;
-  player?: { id: string; display_name: string };
-  status: string;
-  created_by: User | string;
-}
+import type { Action } from '@/types';
 
 /**
  * Groupe les action par date

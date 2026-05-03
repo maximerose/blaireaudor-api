@@ -20,7 +20,7 @@ export const useLeaderboardUI = (
     const success = await deleteParticipation(item.id, playerName, false);
 
     if (success && item.isMe) {
-      navigate(ROUTES.NAV_DASHBOARD);
+      navigate(ROUTES.NAV.DASHBOARD);
     }
   };
 

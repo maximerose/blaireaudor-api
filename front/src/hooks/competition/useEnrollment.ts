@@ -2,8 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
-import { useAuth } from '@/hooks';
-import { usePlayerSearch } from './usePlayerSearch';
+import { useAuth, usePlayerSearch } from '@/hooks';
 
 export const useEnrollment = (
   competitionId: string,
@@ -66,7 +65,7 @@ export const useEnrollment = (
 
     try {
       const response = await apiFetch(
-        ROUTES.API_ADD_PLAYERS_TO_COMP(competitionId),
+        ROUTES.API.ADMIN.ADD_PARTICIPANTS(competitionId),
         {
           method: 'POST',
           body: JSON.stringify({
@@ -81,7 +80,7 @@ export const useEnrollment = (
         if (onSuccess) {
           onSuccess();
         } else {
-          navigate(ROUTES.NAV_DASHBOARD);
+          navigate(ROUTES.NAV.DASHBOARD);
         }
       } else {
         const errorData = await response.json();

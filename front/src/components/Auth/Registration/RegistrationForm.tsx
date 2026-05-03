@@ -1,5 +1,5 @@
 import { useRegistration } from '@/hooks';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, FORM, ICONS, AUTH_UI } from '@/constants';
 import { HistoricalPlayerSearch, GuestFoundAlert } from '@/components/Auth';
 import { AuthCard, Button, Input, Text } from '@/components/UI';
 import { cn, preventDefault } from '@/utils';
@@ -24,7 +24,7 @@ const RegistrationForm = () => {
     handlePasswordChange,
     handleSubmit,
     linkFoundGuest,
-  } = useRegistration(ROUTES.NAV_DASHBOARD);
+  } = useRegistration(ROUTES.NAV.DASHBOARD);
 
   return (
     <AuthCard title="S'inscrire" onSubmit={preventDefault(handleSubmit)}>
@@ -37,21 +37,21 @@ const RegistrationForm = () => {
       <div className="space-y-4">
         {/* 2. Nom d'affichage */}
         <Input
-          label="Nom d'affichage"
+          label={FORM.LABELS.DISPLAY_NAME}
           type="text"
           autoComplete="name"
           value={formData.display_name || ''}
           onChange={handleDisplayNameChange}
           onBlur={handleDisplayNameBlur}
           disabled={isLoading}
-          placeholder="Ex: Jean Dupont"
+          placeholder={FORM.PLACEHOLDERS.DISPLAY_NAME}
           required
         />
 
         {/* 3. Nom d'utilisateur & Aide au formatage */}
         <div className="space-y-1">
           <Input
-            label="Nom d'utilisateur"
+            label={FORM.LABELS.USERNAME}
             icon="@"
             type="text"
             autoComplete="username"
@@ -59,7 +59,7 @@ const RegistrationForm = () => {
             onChange={handleUsernameChange}
             onFocus={handleUsernameFocus}
             onBlur={handleUsernameBlur}
-            placeholder="votre-pseudo"
+            placeholder={FORM.PLACEHOLDERS.USERNAME}
             disabled={isLoading}
             required
             aria-describedby={
@@ -73,8 +73,8 @@ const RegistrationForm = () => {
               variant="micro"
               className="px-1 italic text-gold/60"
             >
-              <span aria-hidden="true">💡 </span> Minuscules, chiffres et tirets
-              uniquement.
+              <span aria-hidden="true">{ICONS.HINT} </span>{' '}
+              {FORM.HINTS.USERNAME_HINT}
             </Text>
           )}
         </div>
@@ -88,7 +88,7 @@ const RegistrationForm = () => {
               variant="micro"
               className="text-gold animate-pulse text-center"
             >
-              Vérification en cours...
+              {FORM.HINTS.USERNAME_CHECK}
             </Text>
           ) : (
             <Text
@@ -100,12 +100,14 @@ const RegistrationForm = () => {
                   : 'text-danger-bright',
               )}
             >
-              <span aria-hidden="true">
-                {usernameStatus === 'available' ? '✅ ' : '❌ '}
+              <span className="mr-2" aria-hidden="true">
+                {usernameStatus === 'available'
+                  ? `${ICONS.SUCCESS} `
+                  : `${ICONS.FAILURE} `}
               </span>
               {usernameStatus === 'available'
-                ? 'Pseudo disponible !'
-                : 'Ce pseudo est déjà pris.'}
+                ? FORM.HINTS.USERNAME_AVAILABLE
+                : FORM.HINTS.USERNAME_TAKEN}
             </Text>
           )}
         </div>
@@ -122,13 +124,13 @@ const RegistrationForm = () => {
 
       {/* 6. Mot de passe */}
       <Input
-        label="Mot de passe"
+        label={FORM.LABELS.PASSWORD}
         type="password"
         autoComplete="new-password"
         value={formData.plain_password || ''}
         onChange={handlePasswordChange}
         disabled={isLoading}
-        placeholder="••••••••"
+        placeholder={FORM.PLACEHOLDERS.PASSWORD}
         required
       />
 
@@ -159,12 +161,12 @@ const RegistrationForm = () => {
       {/* 9. Lien vers la connexion */}
       <div className="flex justify-center mt-6 pt-4 border-t border-white/5">
         <Button
-          to={ROUTES.NAV_LOGIN}
+          to={ROUTES.NAV.LOGIN}
           variant="ghost"
           size="sm"
           className="transition-default"
         >
-          Déjà inscrit ?
+          {AUTH_UI.REGISTER.ALREADY_ACCOUNT}
         </Button>
       </div>
     </AuthCard>

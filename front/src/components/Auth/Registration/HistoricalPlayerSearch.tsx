@@ -1,25 +1,29 @@
 import { Input, PlayerSearchResultItem, Card, Text } from '@/components/UI';
 import { useHistoricalSearchUI } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
+import type { Player } from '@/types';
+import { AUTH_UI, ICONS, FORM } from '@/constants';
 
-interface Props {
-  searchProps: {
-    searchTerm: string;
-    setSearchTerm: (query: string) => void;
-    results: any[];
-    searching: boolean;
-    onSelect: (player: any) => void;
-    onClear: () => void;
-    onCloseSearch: () => void;
-    isLinked: boolean;
-  };
+interface SearchLogicProps {
+  searchTerm: string;
+  setSearchTerm: (query: string) => void;
+  results: Player[];
+  searching: boolean;
+  onSelect: (player: Player) => void;
+  onClear: () => void;
+  onCloseSearch: () => void;
+  isLinked: boolean;
+}
+
+interface HistoricalPlayerSearchProps {
+  searchProps: SearchLogicProps;
   selectedName?: string;
 }
 
 export const HistoricalPlayerSearch = ({
   searchProps,
   selectedName,
-}: Props) => {
+}: HistoricalPlayerSearchProps) => {
   const {
     searchTerm,
     setSearchTerm,
@@ -43,11 +47,11 @@ export const HistoricalPlayerSearch = ({
   return (
     <div className="relative mb-8" ref={searchContainerRef}>
       <Input
-        label="Déjà participé ?"
-        placeholder="Ton nom d'affichage..."
+        label={AUTH_UI.HISTORICAL.LABEL}
+        placeholder={FORM.PLACEHOLDERS.SEARCH_PLAYER}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        icon={searching ? '⏳' : '🔍'}
+        icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         align="center"
         role="combobox"
         aria-expanded={results.length > 0}
@@ -67,8 +71,8 @@ export const HistoricalPlayerSearch = ({
                 key={player.id}
                 player={player}
                 role="option"
-                onClick={onSelect}
-                actionIcon="C'EST MOI"
+                onClick={() => onSelect(player)}
+                actionIcon={AUTH_UI.HISTORICAL.ACTION_SELECT}
               />
             ))}
           </div>
@@ -77,10 +81,11 @@ export const HistoricalPlayerSearch = ({
             type="button"
             onClick={onCloseSearch}
             className="w-full p-3 hover:bg-white/5 transition-default border-t border-white/5 flex justify-center cursor-pointer focus:bg-white/10 focus:outline-none"
-            aria-label="Fermer la liste de recherche"
+            aria-label={AUTH_UI.HISTORICAL.CLOSE_SEARCH}
           >
             <Text variant="micro" className="text-gold opacity-100">
-              <span aria-hidden="true">✕</span> Je ne suis pas dans cette liste
+              <span aria-hidden="true">{ICONS.CLOSE}</span>{' '}
+              {AUTH_UI.HISTORICAL.CLOSE_SEARCH}
             </Text>
           </button>
         </Card>

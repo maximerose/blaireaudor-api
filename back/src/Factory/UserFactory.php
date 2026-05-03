@@ -52,4 +52,17 @@ final class UserFactory extends PersistentObjectFactory
             // ->afterInstantiate(function(User $user): void {})
         ;
     }
+
+    public function withPlayer(array $attributes = []): self
+    {
+        return $this->afterInstantiate(function (User $user) use ($attributes) {
+            if (!$user->getPlayer()) {
+                $user->setPlayer(PlayerFactory::createOne(array_merge([
+                    'associatedUser' => $user,
+                    'username' => $user->getUserIdentifier(),
+                    'displayName' => self::faker()->name(),
+                ], $attributes)));
+            }
+        });
+    }
 }

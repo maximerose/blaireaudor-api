@@ -1,5 +1,4 @@
 import { Badge, Text } from '@/components/UI';
-import type { Competition } from '@/context/AuthContext';
 import {
   cn,
   formatShortDate,
@@ -8,6 +7,7 @@ import {
 } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { useCompetition } from '@/hooks';
+import type { Competition } from '@/types';
 
 interface CompetitionHeaderProps {
   competition: Competition;

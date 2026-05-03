@@ -22,7 +22,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
 
     try {
       const response = await apiFetch(
-        ROUTES.API_PARTICIPATION_DETAIL(participatoinId),
+        ROUTES.API.PARTICIPATIONS.DETAIL(participatoinId),
         {
           method: 'DELETE',
         },

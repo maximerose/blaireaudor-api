@@ -46,7 +46,7 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
 
     try {
       const response = await apiFetch(
-        ROUTES.API_COMPETITION_DETAIL(competition.id),
+        ROUTES.API.COMPETITIONS.DETAIL(competition.id),
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/merge-patch+json' },
@@ -67,7 +67,7 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
       const hasCodeChanged = formData.joinCode !== competition.join_code;
 
       if (hasCodeChanged) {
-        navigate(ROUTES.NAV_COMPETITION_DETAIL(formData.joinCode), {
+        navigate(ROUTES.NAV.COMPETITION_DETAIL(formData.joinCode), {
           replace: true,
         });
       } else {

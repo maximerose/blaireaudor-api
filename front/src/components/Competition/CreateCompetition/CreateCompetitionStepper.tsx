@@ -27,7 +27,7 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
   return (
     <div className="flex justify-between items-center px-1">
       <Button
-        to={ROUTES.NAV_DASHBOARD}
+        to={ROUTES.NAV.DASHBOARD}
         variant="ghost"
         size="sm"
         className="transition-default"

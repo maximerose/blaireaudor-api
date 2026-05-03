@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useBonusDayAdmin } from './useAdminBonusDay';
-import { useCompetition } from './useCompetition';
-import { useCompetitionDateLimits } from './useCompetitionDateLimits';
+import {
+  useBonusDayAdmin,
+  useCompetition,
+  useCompetitionDateLimits,
+} from '@/hooks';
 
 export const useBonusDayForm = () => {
   const { competition, bonusDays } = useCompetition();

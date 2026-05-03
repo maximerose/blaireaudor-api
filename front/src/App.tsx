@@ -35,65 +35,65 @@ function App() {
         <div className="min-h-screen w-full bg-dark">
           <Routes>
             <Route
-              path={ROUTES.NAV_DASHBOARD}
+              path={ROUTES.NAV.DASHBOARD}
               element={
                 user ? (
                   <Dashboard />
                 ) : (
-                  <Navigate to={ROUTES.NAV_LOGIN} replace />
+                  <Navigate to={ROUTES.NAV.LOGIN} replace />
                 )
               }
             />
             <Route
-              path={ROUTES.NAV_LOGIN}
+              path={ROUTES.NAV.LOGIN}
               element={
                 user ? (
-                  <Navigate to={ROUTES.NAV_DASHBOARD} replace />
+                  <Navigate to={ROUTES.NAV.DASHBOARD} replace />
                 ) : (
                   <LoginForm />
                 )
               }
             />
             <Route
-              path={ROUTES.NAV_HOME}
+              path={ROUTES.NAV.HOME}
               element={
                 <Navigate
-                  to={user ? ROUTES.NAV_DASHBOARD : ROUTES.NAV_LOGIN}
+                  to={user ? ROUTES.NAV.DASHBOARD : ROUTES.NAV.LOGIN}
                   replace
                 />
               }
             />
             <Route
-              path={ROUTES.NAV_REGISTER}
+              path={ROUTES.NAV.REGISTER}
               element={
                 user ? (
-                  <Navigate to={ROUTES.NAV_DASHBOARD} replace />
+                  <Navigate to={ROUTES.NAV.DASHBOARD} replace />
                 ) : (
                   <RegistrationForm />
                 )
               }
             />
             <Route
-              path={ROUTES.NAV_ADMIN_CREATE_COMPETITION}
+              path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
               element={
                 user ? (
                   <CreateCompetitionPage />
                 ) : (
-                  <Navigate to={ROUTES.NAV_LOGIN} />
+                  <Navigate to={ROUTES.NAV.LOGIN} />
                 )
               }
             />
             <Route
-              path={ROUTES.NAV_COMPETITION_DETAIL_ROUTE}
+              path={ROUTES.NAV.COMPETITION_DETAIL_ROUTE}
               element={
                 user ? (
                   <CompetitionDetailPage />
                 ) : (
-                  <Navigate to={ROUTES.NAV_LOGIN} replace />
+                  <Navigate to={ROUTES.NAV.LOGIN} replace />
                 )
               }
             />
-            <Route path={ROUTES.NAV_LOGOUT} element={<LogoutHandler />} />
+            <Route path={ROUTES.NAV.LOGOUT} element={<LogoutHandler />} />
           </Routes>
         </div>
       </Router>

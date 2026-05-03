@@ -3,6 +3,7 @@ import { authService } from '@/services/api/auth';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
 import { useCallback } from 'react';
+import { LOG_MESSAGES } from '@/constants';
 
 export const useLogout = () => {
   const { setUser } = useAuth();
@@ -12,11 +13,11 @@ export const useLogout = () => {
     try {
       await authService.logout();
     } catch (e) {
-      console.error('Erreur lors du logout serveur', e);
+      console.error(LOG_MESSAGES.AUTH.LOGOUT_SERVER_ERROR, e);
     } finally {
       localStorage.removeItem('token');
       setUser(null);
-      navigate(ROUTES.NAV_LOGIN, { replace: true });
+      navigate(ROUTES.NAV.LOGIN, { replace: true });
     }
   }, [setUser, navigate]);
 

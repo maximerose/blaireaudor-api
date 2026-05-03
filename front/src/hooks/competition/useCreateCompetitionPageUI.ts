@@ -5,7 +5,7 @@ export const useCreateCompetitionPageUI = () => {
   const navigate = useNavigate();
 
   const handleSuccess = (competition: any) => {
-    navigate(ROUTES.NAV_COMPETITION_DETAIL(competition.join_code));
+    navigate(ROUTES.NAV.COMPETITION_DETAIL(competition.join_code));
   };
 
   return { handleSuccess };

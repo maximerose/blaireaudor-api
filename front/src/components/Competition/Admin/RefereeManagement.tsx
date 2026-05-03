@@ -1,6 +1,6 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
-import type { Competition, Player } from '@/context/AuthContext';
+import type { Competition, Player } from '@/types';
 
 interface RefereeManagementProps {
   competition: Competition;

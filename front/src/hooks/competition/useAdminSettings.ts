@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { useCompetitionAdmin } from './useCompetitionAdmin';
+import { useCompetitionAdmin } from '@/hooks';
 import { useMemo } from 'react';
 
 interface UseAdminSettingsProps {

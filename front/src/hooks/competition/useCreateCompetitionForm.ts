@@ -1,15 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
 import { formatJoinCode, cleanJoinCode, generateClientSideCode } from '@/utils';
-import { apiFetch } from '@/services/api/config';
-import { ROUTES } from '@/constants/routes';
+import { competitionService } from '@/services/api/competition';
+import type { FormParticipant, Player, Competition } from '@/types';
 
-export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
+export const useCreateCompetitionForm = (
+  onSuccess: (comp: Competition) => void,
+) => {
   const [step, setStep] = useState(1);
   const { user } = useAuth();
   const { create, loading: creating } = useCreateCompetition();
-  const { results, searching, search, setResults } = usePlayerSearch();
-  const [searchTerm, setSearchTerm] = useState('');
+  const { results, searching, searchTerm, setSearchTerm, clearSearch } =
+    usePlayerSearch();
   const [isAddingPlayers, setIsAddingPlayers] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -24,13 +26,16 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     participate: true,
     fogOfWar: true,
     isCreatorReferee: true,
-    players: [] as any[],
-    referees: [] as any[],
+    players: [] as FormParticipant[],
+    referees: [] as FormParticipant[],
   });
 
   const filteredResults = results.filter((p) => p.username !== user?.username);
 
-  const updateField = (field: string, value: any) => {
+  const updateField = <K extends keyof typeof formData>(
+    field: K,
+    value: (typeof formData)[K],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -38,15 +43,14 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     updateField('joinCode', formatJoinCode(e.target.value));
   };
 
-  const handleAddPlayer = (player: any) => {
+  const handleAddPlayer = (player: Player) => {
     if (!formData.players.find((p) => p.id === player.id)) {
       setFormData((prev) => ({
         ...prev,
         players: [...prev.players, { ...player, isNew: false }],
       }));
     }
-    setSearchTerm('');
-    setResults([]);
+    clearSearch();
   };
 
   const handleAddNewPlayer = (name: string) => {
@@ -61,8 +65,7 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
         ],
       }));
     }
-    setSearchTerm('');
-    setResults([]);
+    clearSearch();
   };
 
   const handleRemovePlayer = (id: string) => {
@@ -72,25 +75,31 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     }));
   };
 
-  const handleToggleReferee = (person: any, isNew: boolean = false) => {
+  const handleToggleReferee = (
+    person: Player | FormParticipant,
+    isNewInput: boolean = false,
+  ) => {
     setFormData((prev) => {
       const isAlreadyRef = prev.referees.some((r) => r.id === person.id);
+
       if (isAlreadyRef) {
         return {
           ...prev,
           referees: prev.referees.filter((r) => r.id !== person.id),
         };
       }
+
+      const refereeToAdd: FormParticipant =
+        'username' in person
+          ? { ...person, isNew: false }
+          : { ...person, isNew: isNewInput || (person as any).isNew };
+
       return {
         ...prev,
-        referees: [
-          ...prev.referees,
-          { ...person, isNew: person.isNew ?? isNew },
-        ],
+        referees: [...prev.referees, refereeToAdd],
       };
     });
-    setSearchTerm('');
-    setResults([]);
+    clearSearch();
   };
 
   const generateCode = () => {
@@ -102,38 +111,10 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     return !!(formData.name && formData.startDate);
   }, [formData.name, formData.startDate]);
 
-  const formatDateTime = (
-    date: string,
-    time: string,
-    isFullDay: boolean,
-    isEnd: boolean,
-  ) => {
-    if (!date) return null;
-    if (isFullDay) {
-      return isEnd ? `${date}T23:59:59` : `${date}T00:00:00`;
-    }
-    return `${date}T${time}:00`;
-  };
-
   const submit = async () => {
-    const validatedCode = cleanJoinCode(formData.joinCode);
-    const finalStartDate = formatDateTime(
-      formData.startDate,
-      formData.startTime,
-      formData.startFullDay,
-      false,
-    );
-    const finalEndDate = formatDateTime(
-      formData.endDate,
-      formData.endTime,
-      formData.endFullDay,
-      true,
-    );
     const competition = await create({
       ...formData,
-      joinCode: validatedCode,
-      startDate: finalStartDate,
-      endDate: finalEndDate,
+      joinCode: cleanJoinCode(formData.joinCode),
     });
 
     if (!competition) return;
@@ -144,7 +125,6 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
     const newNames = formData.players
       .filter((p) => p.isNew)
       .map((p) => p.display_name);
-
     const existingReferees = formData.referees
       .filter((r) => !r.isNew)
       .map((r) => r.id);
@@ -152,33 +132,22 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
       .filter((r) => r.isNew)
       .map((r) => r.display_name);
 
-    if (existingIds.length > 0 || newNames.length > 0) {
+    if (
+      existingIds.length > 0 ||
+      newNames.length > 0 ||
+      existingReferees.length > 0 ||
+      newReferees.length > 0
+    ) {
       setIsAddingPlayers(true);
       try {
-        const response = await apiFetch(
-          ROUTES.API_ADD_PLAYERS_TO_COMP(competition.id),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              existing_players_ids: existingIds,
-              new_players: newNames,
-              existing_referees_ids: existingReferees,
-              new_referees: newReferees,
-            }),
-          },
-        );
-
-        if (!response.ok) {
-          console.error(
-            "Erreur serveur lors de l'ajout :",
-            await response.text(),
-          );
-        }
+        await competitionService.addParticipants(competition.id, {
+          existing_players_ids: existingIds,
+          new_players: newNames,
+          existing_referees_ids: existingReferees,
+          new_referees: newReferees,
+        });
       } catch (e) {
-        console.error("Erreur lors de l'ajout des joueurs", e);
+        console.error(e);
       } finally {
         setIsAddingPlayers(false);
       }
@@ -200,7 +169,6 @@ export const useCreateCompetitionForm = (onSuccess: (comp: any) => void) => {
       setSearchTerm,
       results: filteredResults,
       searching,
-      search,
     },
     playersActions: {
       add: handleAddPlayer,

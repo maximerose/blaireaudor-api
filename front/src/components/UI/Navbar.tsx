@@ -19,7 +19,7 @@ export const Navbar = () => {
   return (
     <nav className={NAV_CONTAINER} aria-label="Navigation principale">
       <Link
-        to={ROUTES.NAV_DASHBOARD}
+        to={ROUTES.NAV.DASHBOARD}
         className={LOGO_LINK}
         aria-label="Retour au tableau de bord Le Blaireau d'Or"
       >
@@ -48,7 +48,7 @@ export const Navbar = () => {
         </div>
 
         <Button
-          to={ROUTES.NAV_LOGOUT}
+          to={ROUTES.NAV.LOGOUT}
           variant="danger"
           size="sm"
           className="px-4 transition-default"

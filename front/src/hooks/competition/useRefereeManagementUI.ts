@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { getCompetitionReferees } from '@/utils';
-import { useCompetitionReferees } from './useCompetitionReferees';
-import type { Competition, Player } from '@/context/AuthContext';
+import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
-import { usePlayerSearch } from './usePlayerSearch';
+import type { Player, Competition } from '@/types';
 
 export const useRefereeManagementUI = (
   competition: Competition,

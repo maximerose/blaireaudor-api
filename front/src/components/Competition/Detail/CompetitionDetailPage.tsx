@@ -5,11 +5,10 @@ import {
   AdminSettings,
   InlineEnrollment,
 } from '@/components/Competition';
-import { DetailNavigation } from './DetailNavigation';
-import { ReportingSection } from '../Reporting/ReportingSection';
+import { DetailNavigation, ReportingSection } from '@/components/Competition';
 import { Badge, Text, LoadingScreen } from '@/components/UI';
+import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionDetailUI, useCompetitionAdmin } from '@/hooks';
-import { CompetitionProvider } from '@/context/CompetitionContext';
 
 const CompetitionDetailPage = () => {
   const {

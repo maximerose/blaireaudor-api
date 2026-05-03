@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '@/utils';
 import { authService } from '@/services/api/auth';
 import { useAuth, usePlayerSearch, useUsernameCheck } from '@/hooks';
-import type { Player } from '@/context/AuthContext';
+import type { Player } from '@/types';
+import { AUTH_UI, FORM, ERRORS, ICONS } from '@/constants';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuth();
@@ -21,6 +22,7 @@ export const useRegistration = (redirectUrl: string) => {
     plain_password: '',
     player_id: null as string | null,
   });
+
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
@@ -36,7 +38,8 @@ export const useRegistration = (redirectUrl: string) => {
     (p: Player) => p.has_account === false,
   );
 
-  const handlePlayerSelect = (player: any) => {
+  // LOGIQUE ACTIONS
+  const handlePlayerSelect = (player: Player) => {
     setIsUsernameCustomized(true);
     setFormData((prev) => ({
       ...prev,
@@ -51,12 +54,12 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleClearPlayer = () => {
     setIsUsernameCustomized(false);
-    setFormData((prev) => ({
-      ...prev,
-      player_id: null,
+    setFormData({
       display_name: '',
       username: '',
-    }));
+      plain_password: formData.plain_password,
+      player_id: null,
+    });
     setSearchTerm('');
   };
 
@@ -66,11 +69,12 @@ export const useRegistration = (redirectUrl: string) => {
     setFormData((prev) => ({
       ...prev,
       player_id: foundGuest.id,
-      display_name: foundGuest.name,
+      display_name: foundGuest.display_name,
     }));
     setShowUsernameHint(false);
   };
 
+  // GESTION CHAMPS
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setFormData((prev) => ({
@@ -85,6 +89,11 @@ export const useRegistration = (redirectUrl: string) => {
     setFormData({ ...formData, username: slugify(e.target.value) });
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, plain_password: e.target.value }));
+  };
+
+  // NETTOYAGE SLUG
   const cleanUsername = () => {
     setFormData((prev) => ({ ...prev, username: finalizeSlug(prev.username) }));
   };
@@ -97,18 +106,17 @@ export const useRegistration = (redirectUrl: string) => {
   const handleDisplayNameBlur = () => {
     if (!isUsernameCustomized) cleanUsername();
   };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, plain_password: e.target.value }));
-  };
 
+  // TEXTE DYNAMIQUE DU BOUTON (Centralisé)
   const getSubmitButtonText = () => {
-    if (isLoading) return 'Inscription en cours...';
-    if (checkLoading) return 'Vérification du pseudo...';
-    if (usernameStatus === 'taken') return 'Pseudo indisponible';
-    if (usernameStatus === 'guest_exists') return 'Profil existant';
-    return "S'inscrire au Blaireau d'Or";
+    if (isLoading) return AUTH_UI.REGISTER.LOADING_SUBMIT;
+    if (checkLoading) return FORM.HINTS.USERNAME_CHECK;
+    if (usernameStatus === 'taken') return FORM.HINTS.USERNAME_TAKEN;
+    if (usernameStatus === 'guest_exists') return AUTH_UI.GUEST_ALERT.TITLE;
+    return AUTH_UI.REGISTER.SUBMIT;
   };
 
+  // SOUMISSION
   const handleSubmit = async () => {
     if (isLoading || checkLoading || usernameStatus === 'taken') return;
     setIsLoading(true);
@@ -123,21 +131,24 @@ export const useRegistration = (redirectUrl: string) => {
         });
         navigate(redirectUrl);
       } else {
-        setMessage(data.message || '❌ Une erreur est survenue.');
+        setMessage(
+          data.message || `${ICONS.FAILURE} ${ERRORS.AUTH.REGISTRATION_FAILED}`,
+        );
       }
     } catch (error) {
-      setMessage('📡 Erreur de connexion au serveur.');
+      setMessage(`${ICONS.DANGER} ${ERRORS.NETWORK.SERVER}`);
       console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ÉTATS D'AFFICHAGE (Correction Bug "Vérification en cours")
   const displayStates = {
     shouldShowUsernameCheck:
       formData.username.length >= 3 &&
       usernameStatus !== 'guest_exists' &&
-      usernameStatus !== null,
+      (checkLoading || usernameStatus !== null),
     shouldShowGuestAlert:
       !checkLoading && usernameStatus === 'guest_exists' && !!foundGuest,
     shouldShowUsernameHint: showUsernameHint,

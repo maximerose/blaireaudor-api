@@ -1,5 +1,5 @@
 import { useLogin } from '@/hooks';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
 import { Input, Button, AuthCard, Text } from '@/components/UI';
 import { preventDefault } from '@/utils';
 
@@ -8,9 +8,12 @@ const LoginForm = () => {
     useLogin();
 
   return (
-    <AuthCard title="Le Blaireau d'Or" onSubmit={preventDefault(handleSubmit)}>
+    <AuthCard
+      title={AUTH_UI.LOGIN.TITLE}
+      onSubmit={preventDefault(handleSubmit)}
+    >
       <Text variant="caption" className="text-gold/50 mb-6 block text-center">
-        Identifiez-vous pour entrer dans l'arène
+        {AUTH_UI.LOGIN.SUBTITLE}
       </Text>
 
       {error && (
@@ -22,7 +25,7 @@ const LoginForm = () => {
             variant="micro"
             className="text-danger-bright text-center opacity-100"
           >
-            <span aria-hidden="true">⚠️ </span>
+            <span aria-hidden="true">{ICONS.DANGER} </span>
             {error}
           </Text>
         </div>
@@ -31,9 +34,9 @@ const LoginForm = () => {
       <div className="space-y-4">
         <Input
           name="username"
-          label="Nom d'utilisateur"
+          label={FORM.LABELS.USERNAME}
           icon="@"
-          placeholder="Ton pseudo..."
+          placeholder={FORM.PLACEHOLDERS.USERNAME}
           autoComplete="username"
           value={credentials.username}
           onChange={handleChange}
@@ -44,10 +47,10 @@ const LoginForm = () => {
 
         <Input
           name="password"
-          label="Mot de passe"
+          label={FORM.LABELS.PASSWORD}
           type="password"
-          icon="🔑"
-          placeholder="••••••••"
+          icon={ICONS.SECRET}
+          placeholder={FORM.PLACEHOLDERS.PASSWORD}
           autoComplete="current-password"
           value={credentials.password}
           onChange={handleChange}
@@ -58,21 +61,21 @@ const LoginForm = () => {
       </div>
 
       <Button type="submit" isLoading={isLoading} fullWidth className="mt-4">
-        Se connecter
+        {AUTH_UI.LOGIN.SUBMIT}
       </Button>
 
       <div className="text-center pt-4 border-t border-white/5 mt-4">
         <Text variant="micro" className="block mb-2">
-          Pas encore de compte ?
+          {AUTH_UI.LOGIN.NO_ACCOUNT}
         </Text>
         <Button
-          to={ROUTES.NAV_REGISTER}
+          to={ROUTES.NAV.REGISTER}
           variant="ghost"
           size="sm"
           className="text-gold"
-          aria-label="Créer un nouveau compte"
+          aria-label={AUTH_UI.LOGIN.REGISTER_LINK}
         >
-          S'inscrire ici
+          {AUTH_UI.LOGIN.REGISTER_LINK}
         </Button>
       </div>
     </AuthCard>

@@ -1,6 +1,6 @@
 import { ROUTES } from '@/constants/routes';
 import { Button, Badge } from '@/components/UI';
-import type { Competition } from '@/context/AuthContext';
+import type { Competition } from '@/types';
 
 interface DetailNavigationProps {
   competition: Competition;
@@ -20,7 +20,7 @@ export const DetailNavigation = ({
   onDelete,
 }: DetailNavigationProps) => (
   <nav className="mb-10 flex justify-between items-center">
-    <Button to={ROUTES.NAV_DASHBOARD} variant="ghost" size="sm">
+    <Button to={ROUTES.NAV.DASHBOARD} variant="ghost" size="sm">
       <span aria-hidden="true">← </span>Retour
     </Button>
 

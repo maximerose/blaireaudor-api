@@ -1,9 +1,13 @@
 import { Input, Button, Text, Card } from '@/components/UI';
+import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
 
 interface ConfigStepProps {
-  formData: any;
-  updateField: (field: string, value: any) => void;
+  formData: CompetitionFormData;
+  updateField: <K extends keyof CompetitionFormData>(
+    field: K,
+    value: CompetitionFormData[K],
+  ) => void;
   handleJoinCodeChange: (e: any) => void;
   onNext: () => void;
   onGenerateCode: () => void;
@@ -18,6 +22,21 @@ export const CompetitionConfigStep = ({
   onNext,
   canNext,
 }: ConfigStepProps) => {
+  const toggles = [
+    {
+      id: 'fogOfWar',
+      label: 'Brouillard de guerre',
+      sub: 'Scores cachés pendant le tournoi',
+      active: formData.fogOfWar,
+    },
+    {
+      id: 'participate',
+      label: 'Auto-inscription',
+      sub: 'Participer au tournoi en tant que joueur',
+      active: formData.participate,
+    },
+  ] as const;
+
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
@@ -192,20 +211,7 @@ export const CompetitionConfigStep = ({
         </div>
 
         <div className="space-y-3">
-          {[
-            {
-              id: 'fogOfWar',
-              label: 'Brouillard de guerre',
-              sub: 'Scores cachés pendant le tournoi',
-              active: formData.fogOfWar,
-            },
-            {
-              id: 'participate',
-              label: 'Auto-inscription',
-              sub: 'Participer au tournoi en tant que joueur',
-              active: formData.participate,
-            },
-          ].map((toggle) => (
+          {toggles.map((toggle) => (
             <Card
               key={toggle.id}
               variant="dark"

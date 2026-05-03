@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth, useEnrollment } from '@/hooks';
-import type { Player } from '@/context/AuthContext';
+import type { Player } from '@/types';
 
 const checkIsOwner = (user: any, competition: any) => {
   if (!user || !competition) return false;

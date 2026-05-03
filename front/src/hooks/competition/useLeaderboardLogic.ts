@@ -1,5 +1,5 @@
+import type { User } from '@/types';
 import { useMemo } from 'react';
-import type { User } from '@/context/AuthContext';
 
 export interface EnrichedLeaderboardItem {
   id: string;

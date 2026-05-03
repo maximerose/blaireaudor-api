@@ -14,15 +14,17 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
         throw new Error('Action impossible : profil joueur introuvable.');
       }
 
-      const checkRes = await apiFetch(ROUTES.API_COMPETITION_BY_CODE(joinCode));
+      const checkRes = await apiFetch(
+        ROUTES.API.COMPETITIONS.BY_CODE(joinCode),
+      );
       if (checkRes.status === 404) throw new Error("Cette arène n'existe pas.");
 
       const competition = await checkRes.json();
-      const joinRes = await apiFetch(ROUTES.API_PARTICIPATIONS, {
+      const joinRes = await apiFetch(ROUTES.API.PARTICIPATIONS.BASE, {
         method: 'POST',
         body: JSON.stringify({
-          player: ROUTES.IRI_PLAYER(playerId),
-          competition: ROUTES.IRI_COMPETITION(competition.id),
+          player: ROUTES.IRI.PLAYER(playerId),
+          competition: ROUTES.IRI.COMPETITION(competition.id),
         }),
       });
 

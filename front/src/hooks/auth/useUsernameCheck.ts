@@ -1,9 +1,12 @@
-// front/src/hooks/auth/useUsernameCheck.ts
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { authService } from '@/services/api/auth';
+import type { PlayerPreview } from '@/types';
 
-export const useUsernameCheck = (username: string, playerId: string | null) => {
+export const useUsernameCheck = (
+  username: string,
+  currentPlayerId: string | null,
+) => {
   const [debouncedTerm, setDebouncedTerm] = useState('');
 
   useEffect(() => {
@@ -14,7 +17,7 @@ export const useUsernameCheck = (username: string, playerId: string | null) => {
   const { data, isLoading } = useQuery({
     queryKey: ['username-check', debouncedTerm],
     queryFn: () => authService.checkUsername(debouncedTerm),
-    enabled: debouncedTerm.length >= 3,
+    enabled: debouncedTerm.length >= 2,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -22,19 +25,16 @@ export const useUsernameCheck = (username: string, playerId: string | null) => {
     ? null
     : !data.available
       ? 'taken'
-      : data.is_guest_profile && playerId !== data.guest_id
+      : data.is_guest_profile && currentPlayerId !== data.player?.id
         ? 'guest_exists'
         : 'available';
 
   return {
     status,
     isLoading,
-    foundGuest: data?.is_guest_profile
-      ? {
-          id: data.guest_id,
-          name: data.guest_name,
-          last_competition_name: data.player?.last_competition_name,
-        }
-      : null,
+    foundGuest:
+      data?.is_guest_profile && data.player
+        ? (data.player as PlayerPreview)
+        : null,
   };
 };
