@@ -1,4 +1,4 @@
-import type { FormParticipant, Player, User } from '@/types';
+import type { BonusDay, FormParticipant, Player, User } from '@/types';
 
 export interface Competition {
   id: string;
@@ -13,6 +13,7 @@ export interface Competition {
   has_started: boolean;
   created_by: User;
   referees: (Player | string)[];
+  bonus_days: Array<BonusDay>;
 }
 
 export interface CompetitionFormData {

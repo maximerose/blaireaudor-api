@@ -97,6 +97,10 @@ class BonusDay
     {
         $this->competition = $competition;
 
+        if ($competition && !$competition->getBonusDays()->contains($this)) {
+            $competition->getBonusDays()->add($this);
+        }
+
         return $this;
     }
 

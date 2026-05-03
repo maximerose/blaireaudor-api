@@ -12,6 +12,8 @@ use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
 use App\Validator\IsNotFinished;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -72,6 +74,14 @@ class Participation
     #[Groups(['user:read', 'competition:read'])]
     private ?int $rank = null;
 
+    #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
+    private Collection $actions;
+
+    public function __construct()
+    {
+        $this->actions = new ArrayCollection();
+    }
+
     public function getCompetition(): ?Competition
     {
         return $this->competition;
@@ -122,37 +132,34 @@ class Participation
 
     public function updateScore(): void
     {
-        $totalScore = 0;
         $competition = $this->getCompetition();
+        if (!$competition) {
+            $this->score = 0;
 
-        $bonusMap = [];
-        if ($competition) {
-            foreach ($competition->getBonusDays() as $bonusDay) {
-                $bonusMap[$bonusDay->getDate()->format('Y-m-d')] = $bonusDay->getMultiplier();
-            }
+            return;
         }
 
-        foreach ($this->getActions() as $action) {
+        $bonusMap = [];
+        foreach ($competition->getBonusDays() as $bonusDay) {
+            $bonusMap[$bonusDay->getDate()->format('Y-m-d')] = $bonusDay->getMultiplier();
+        }
+
+        $totalScore = 0;
+        foreach ($this->actions as $action) {
             if (ActionStatus::VALIDATED !== $action->getStatus()) {
                 continue;
             }
 
-            $actionDate = $action->getDateAction()->format('Y-m-d');
-            $multiplier = $bonusMap[$actionDate] ?? 1;
-
+            $dateKey = $action->getDateAction()->format('Y-m-d');
+            $multiplier = $bonusMap[$dateKey] ?? 1;
             $totalScore += ($action->getPoints() * $multiplier);
         }
 
         $this->score = $totalScore;
     }
 
-    #[Groups(['competition:read'])]
-    public function getActions(): array
+    public function getActions(): Collection
     {
-        $currentCompetition = $this->getCompetition();
-
-        return $this->getPlayer()->getActions()->filter(function (Action $action) use ($currentCompetition) {
-            return $action->getCompetition() === $currentCompetition;
-        })->toArray();
+        return $this->actions;
     }
 }

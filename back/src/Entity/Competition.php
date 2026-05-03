@@ -96,16 +96,8 @@ class Competition
      * @var Collection<int, Participation>
      */
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
-    #[Groups(['competition:read', 'competition:write', 'action:read'])]
+    #[Groups(['competition:read', 'competition:write'])]
     private Collection $participations;
-
-    /**
-     * Liste des actions enregistrées durant cette compétition.
-     *
-     * @var Collection<int, Action>
-     */
-    #[ORM\OneToMany(targetEntity: Action::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
-    private Collection $actions;
 
     #[ORM\ManyToMany(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
     #[Groups(['competition:read', 'competition:admin', 'competition:write', 'user:read'])]
@@ -123,7 +115,6 @@ class Competition
     public function __construct()
     {
         $this->participations = new ArrayCollection();
-        $this->actions = new ArrayCollection();
         $this->referees = new ArrayCollection();
         $this->bonusDays = new ArrayCollection();
     }
@@ -228,36 +219,6 @@ class Competition
             // set the owning side to null (unless already changed)
             if ($participation->getCompetition() === $this) {
                 $participation->setCompetition(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Action>
-     */
-    public function getActions(): Collection
-    {
-        return $this->actions;
-    }
-
-    public function addAction(Action $action): static
-    {
-        if (!$this->actions->contains($action)) {
-            $this->actions->add($action);
-            $action->setCompetition($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAction(Action $action): static
-    {
-        if ($this->actions->removeElement($action)) {
-            // set the owning side to null (unless already changed)
-            if ($action->getCompetition() === $this) {
-                $action->setCompetition(null);
             }
         }
 

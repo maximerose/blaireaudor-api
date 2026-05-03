@@ -22,10 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * à une compétition spécifique. Elle possède un cycle de vie via son statut.
  */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
-#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['participation.competition' => 'exact'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['action:read']],
-    denormalizationContext: ['groups' => ['action:write']]
+    denormalizationContext: ['groups' => ['action:write']],
+    forceEager: true,
 )]
 class Action
 {
@@ -50,22 +51,6 @@ class Action
     private ?int $points = null;
 
     /**
-     * @var Player|null le joueur ayant réalisé l'action
-     */
-    #[ORM\ManyToOne(inversedBy: 'actions')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:read', 'competition:read', 'action:write'])]
-    private ?Player $player = null;
-
-    /**
-     * @var Competition|null la compétition dans laquelle l'action a eu lieu
-     */
-    #[ORM\ManyToOne(inversedBy: 'actions')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:write'])]
-    private ?Competition $competition = null;
-
-    /**
      * @var ActionStatus état actuel de l'action (par défaut : PENDING)
      */
     #[ORM\Column(type: 'string', enumType: ActionStatus::class)]
@@ -75,6 +60,22 @@ class Action
     #[ORM\Column(nullable: false)]
     #[Groups(['action:read', 'competition:read', 'action:write'])]
     private \DateTimeImmutable $dateAction;
+
+    #[ORM\ManyToOne(targetEntity: Participation::class, inversedBy: 'actions')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['action:write', 'action:read'])]
+    private ?Participation $participation = null;
+
+    #[Groups(['action:read'])]
+    public function getPlayer(): ?Player
+    {
+        return $this->participation?->getPlayer();
+    }
+
+    public function getCompetition(): ?Competition
+    {
+        return $this->participation?->getCompetition();
+    }
 
     public function getDescription(): ?string
     {
@@ -96,32 +97,6 @@ class Action
     public function setPoints(int $points): static
     {
         $this->points = $points;
-
-        return $this;
-    }
-
-    public function getPlayer(): ?Player
-    {
-        return $this->player;
-    }
-
-    public function setPlayer(?Player $player): static
-    {
-        $this->player = $player;
-        $player?->addAction($this);
-
-        return $this;
-    }
-
-    public function getCompetition(): ?Competition
-    {
-        return $this->competition;
-    }
-
-    public function setCompetition(?Competition $competition): static
-    {
-        $this->competition = $competition;
-        $competition?->addAction($this);
 
         return $this;
     }
@@ -150,17 +125,19 @@ class Action
         return $this;
     }
 
-    /**
-     * Helper pour récupérer la participation correspondante au joueur et à la compétition.
-     */
     public function getParticipation(): ?Participation
     {
-        if (!$this->player || !$this->competition) {
-            return null;
+        return $this->participation;
+    }
+
+    public function setParticipation(?Participation $participation): static
+    {
+        $this->participation = $participation;
+
+        if ($participation && !$participation->getActions()->contains($this)) {
+            $participation->getActions()->add($this);
         }
 
-        return $this->player->getParticipations()->filter(function (Participation $p) {
-            return $p->getCompetition() === $this->competition;
-        })->first() ?: null;
+        return $this;
     }
 }

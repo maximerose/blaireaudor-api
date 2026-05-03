@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Competition;
 use App\Enum\ActionStatus;
 use App\Factory\ActionFactory;
 use App\Factory\BonusDayFactory;
@@ -93,17 +94,19 @@ class AppFixtures extends Fixture
         $io->note('2026 : '.$comp2026->getName().' arbitré par '.$comp2026->getReferees()->first()->getDisplayName());
 
         // --- 4. Inscriptions aux compétitions (Participations) ---
-        $allParticipations = [];
+        $participationsMap = [];
 
         foreach ($players as $name => $player) {
             // Inscription sélective 2025
             if (in_array($name, $list2025)) {
-                $allParticipations[] = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2025]);
+                $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2025]);
+                $participationsMap[(string) $comp2025->getId()][$name] = $p;
             }
 
             // Inscription sélective 2026
             if (in_array($name, $list2026)) {
-                $allParticipations[] = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2026]);
+                $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2026]);
+                $participationsMap[(string) $comp2026->getId()][$name] = $p;
             }
         }
 
@@ -833,29 +836,9 @@ class AppFixtures extends Fixture
 
         $io->progressStart(count($actions2025) + count($actions2026));
 
-        foreach ($actions2025 as $data) {
-            ActionFactory::createOne([
-                'player' => $players[$data[0]],
-                'competition' => $comp2025,
-                'points' => $data[1],
-                'description' => $data[2],
-                'dateAction' => new \DateTimeImmutable($data[3]),
-                'status' => ActionStatus::VALIDATED,
-            ]);
-            $io->progressAdvance();
-        }
+        $this->importActions($io, $actions2025, $comp2025, $participationsMap);
+        $this->importActions($io, $actions2026, $comp2026, $participationsMap);
 
-        foreach ($actions2026 as $data) {
-            ActionFactory::createOne([
-                'player' => $players[$data[0]],
-                'competition' => $comp2026,
-                'points' => $data[1],
-                'description' => $data[2],
-                'dateAction' => new \DateTimeImmutable($data[3]),
-                'status' => ActionStatus::VALIDATED,
-            ]);
-            $io->progressAdvance();
-        }
         $io->progressFinish();
 
         // --- 6. Ajout des jours bonus ---
@@ -883,12 +866,46 @@ class AppFixtures extends Fixture
         $io->section('Calcul final des scores');
         $manager->flush();
 
-        foreach ($allParticipations as $participation) {
-            $participation->updateScore();
-            $io->text('-> '.$participation->getCompetition()->getName().': Calcul du score de '.$participation->getPlayer()->getDisplayName().'...');
+        foreach ($participationsMap as $competitionId => $playersMap) {
+            foreach ($playersMap as $playerName => $participation) {
+                $participation->updateScore();
+
+                $io->text(sprintf(
+                    '-> %s : Calcul du score de %s...',
+                    $participation->getCompetition()->getName(),
+                    $participation->getPlayer()->getDisplayName()
+                ));
+            }
         }
 
         $manager->flush();
         $io->success('Base de données synchronisée et scores calculés !');
+    }
+
+    /**
+     * Helper pour importer les actions en utilisant la map de participations.
+     */
+    private function importActions(SymfonyStyle $io, array $actions, Competition $competition, array $map): void
+    {
+        $compId = (string) $competition->getId();
+
+        foreach ($actions as $data) {
+            $playerName = $data[0];
+            $participation = $map[$compId][$playerName] ?? null;
+
+            if (!$participation) {
+                $io->error("Participation introuvable pour $playerName dans ".$competition->getName());
+                continue;
+            }
+
+            ActionFactory::createOne([
+                'participation' => $participation,
+                'points' => $data[1],
+                'description' => $data[2],
+                'dateAction' => new \DateTimeImmutable($data[3]),
+                'status' => ActionStatus::VALIDATED,
+            ]);
+            $io->progressAdvance();
+        }
     }
 }

@@ -1,10 +1,8 @@
-import { useCallback, useMemo, useContext, type ReactNode } from 'react';
-import { useBonusDays } from '@/hooks';
+import { useCallback, useMemo, type ReactNode } from 'react';
 import { sortByDate } from '@/utils';
-import {
-  CompetitionContext,
-  type CompetitionContextType,
-} from './CompetitionContext';
+import { CompetitionContext } from './CompetitionContext';
+import type { Competition } from '@/types';
+import type { CompetitionContextType } from '@/context/types';
 
 export const CompetitionProvider = ({
   children,
@@ -14,20 +12,18 @@ export const CompetitionProvider = ({
   refresh,
 }: {
   children: ReactNode;
-  competition: any;
+  competition: Competition;
   isAdmin: boolean;
   hidePoints: boolean;
   refresh: () => void;
 }) => {
-  const { data: rawBonusDays } = useBonusDays(competition.id);
-
   const bonusDays = useMemo(
-    () => sortByDate(rawBonusDays || [], 'date'),
-    [rawBonusDays],
+    () => sortByDate(competition.bonus_days || [], 'date'),
+    [competition.bonus_days],
   );
 
   const getMultiplier = useCallback(
-    (date: string | null): number | undefined => {
+    (date: string | null) => {
       if (!date) return undefined;
       const cleanDate = date.split('T')[0];
       return bonusDays.find((bd) => bd.date.split('T')[0] === cleanDate)
@@ -67,12 +63,4 @@ export const CompetitionProvider = ({
       {children}
     </CompetitionContext.Provider>
   );
-};
-
-export const useCompetition = () => {
-  const context = useContext(CompetitionContext);
-  if (context === undefined) {
-    throw new Error('useCompetition must be used within a CompetitionProvider');
-  }
-  return context;
 };

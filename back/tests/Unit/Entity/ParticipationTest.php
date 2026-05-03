@@ -15,24 +15,21 @@ class ParticipationTest extends TestCase
     public function testUpdateScoreWithoutBonusDay(): void
     {
         $participation = ParticipationFactory::new()->withoutPersisting()->create();
-        $competition = $participation->getCompetition();
-        $player = $participation->getPlayer();
 
-        // On injecte les actions manuellement dans l'entité Player en mémoire
-        // pour que Participation::getActions() les trouve lors du filtrage.
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        // On lie directement l'action à la participation
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 10,
             'dateAction' => new \DateTimeImmutable('2026-05-14'),
             'status' => ActionStatus::VALIDATED,
-        ]));
+        ]);
 
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 15,
             'dateAction' => new \DateTimeImmutable('2026-05-15'),
             'status' => ActionStatus::VALIDATED,
-        ]));
+        ]);
 
         $participation->updateScore();
 
@@ -44,21 +41,20 @@ class ParticipationTest extends TestCase
     {
         $participation = ParticipationFactory::new()->withoutPersisting()->create();
         $competition = $participation->getCompetition();
-        $player = $participation->getPlayer();
 
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 10, // Sera multipliée par 3
             'dateAction' => new \DateTimeImmutable('2026-05-14'),
             'status' => ActionStatus::VALIDATED,
-        ]));
+        ]);
 
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 15, // Reste normale
             'dateAction' => new \DateTimeImmutable('2026-05-15'),
             'status' => ActionStatus::VALIDATED,
-        ]));
+        ]);
 
         $competition->addBonusDay(BonusDayFactory::new()->withoutPersisting()->create([
             'competition' => $competition,
@@ -76,30 +72,29 @@ class ParticipationTest extends TestCase
     {
         $participation = ParticipationFactory::new()->withoutPersisting()->create();
         $competition = $participation->getCompetition();
-        $player = $participation->getPlayer();
 
         // Action valide le jour du bonus (10 * 2 = 20)
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 10,
             'dateAction' => new \DateTimeImmutable('2026-05-14'),
             'status' => ActionStatus::VALIDATED,
-        ]));
+        ]);
 
-        // Actions ignorées (Pending & Refused)
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        // Actions ignorées (Pending & Rejected)
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 50,
             'dateAction' => new \DateTimeImmutable('2026-05-14'),
             'status' => ActionStatus::PENDING,
-        ]));
+        ]);
 
-        $player->addAction(ActionFactory::new()->withoutPersisting()->create([
-            'competition' => $competition,
+        ActionFactory::new()->withoutPersisting()->create([
+            'participation' => $participation,
             'points' => 20,
             'dateAction' => new \DateTimeImmutable('2026-05-14'),
             'status' => ActionStatus::REJECTED,
-        ]));
+        ]);
 
         $competition->addBonusDay(BonusDayFactory::new()->withoutPersisting()->create([
             'competition' => $competition,

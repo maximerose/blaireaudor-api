@@ -1,15 +1,14 @@
-import { createContext } from 'react';
-
-export interface CompetitionContextType {
-  competition: any;
-  bonusDays: any[];
-  isAdmin: boolean;
-  hidePoints: boolean;
-  refresh: () => void;
-  getMultiplier: (date: string | null) => number | undefined;
-  getTodayBonus: () => any | undefined;
-}
+import { createContext, useContext } from 'react';
+import type { CompetitionContextType } from '@/context/types';
 
 export const CompetitionContext = createContext<
   CompetitionContextType | undefined
 >(undefined);
+
+export const useCompetition = () => {
+  const context = useContext(CompetitionContext);
+  if (context === undefined) {
+    throw new Error('useCompetition must be used within a CompetitionProvider');
+  }
+  return context;
+};

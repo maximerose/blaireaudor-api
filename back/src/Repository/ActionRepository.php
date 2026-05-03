@@ -25,17 +25,23 @@ class ActionRepository extends ServiceEntityRepository
 
     public function findByCompetition(Competition $competition, string $sortBy = 'dateAction', string $order = 'DESC'): array
     {
-        $allowedFields = ['dateAction', 'points', 'player'];
-        $sortBy = in_array($sortBy, $allowedFields) ? "a.$sortBy" : 'a.dateAction';
+        $sortMap = [
+            'dateAction' => 'a.dateAction',
+            'points' => 'a.points',
+            'player' => 'p.displayName',
+        ];
+
+        $sortField = $sortMap[$sortBy] ?? 'a.dateAction';
         $order = 'ASC' === strtoupper($order) ? 'ASC' : 'DESC';
 
         return $this->createQueryBuilder('a')
-            ->join('a.player', 'p')
-            ->addSelect('p')
-            ->where('a.competition = :comp')
-            ->setParameter('comp', $competition)
-            ->orderBy($sortBy, $order)
-            ->getQuery()
-            ->getResult();
+        ->join('a.participation', 'part')
+        ->join('part.player', 'p')
+        ->addSelect('part', 'p')
+        ->where('part.competition = :comp')
+        ->setParameter('comp', $competition)
+        ->orderBy($sortField, $order)
+        ->getQuery()
+        ->getResult();
     }
 }

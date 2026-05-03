@@ -6,10 +6,11 @@ namespace App\Service;
 
 use App\Entity\Action;
 use App\Entity\Competition;
-use App\Entity\Player;
+use App\Entity\Participation;
 use App\Entity\User;
 use App\Enum\ActionStatus;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Service de gestion des actions de jeu.
@@ -26,7 +27,6 @@ final class ActionManager
     /**
      * Crée et persiste une nouvelle Action à partir des données de la requête.
      *
-     * @param Competition $competition la compétition concernée
      * @param User $author L'utilisateur qui tente de créer l'action
      * @param array $data les données (description, points, IRI du joueur)
      *
@@ -36,24 +36,32 @@ final class ActionManager
      */
     public function createActionFromPayload(Competition $competition, User $author, array $data): Action
     {
-        $playerId = basename($data['player']);
-        $player = $this->entityManager->getRepository(Player::class)->find($playerId);
+        if (!isset($data['player'], $data['description'], $data['points'])) {
+            throw new \InvalidArgumentException('Données incomplètes pour créer l\'action.');
+        }
 
-        if (!$player) {
-            throw new \InvalidArgumentException('Le joueur n\'existe pas');
+        $playerId = basename((string) $data['player']);
+
+        if (!Uuid::isValid($playerId)) {
+            throw new \InvalidArgumentException('Le joueur ne participe pas à cette compétition.');
+        }
+
+        $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
+            'player' => $playerId,
+            'competition' => $competition,
+        ]);
+
+        if (!$participation) {
+            throw new \InvalidArgumentException('Le joueur ne participe pas à cette compétition.');
         }
 
         $action = new Action();
         $action->setDescription($data['description']);
         $action->setPoints((int) $data['points']);
-        $action->setPlayer($player);
-        $action->setCompetition($competition);
+        $action->setParticipation($participation);
 
-        if ($competition->getCreatedBy() === $author) {
-            $action->setStatus(ActionStatus::VALIDATED);
-        } else {
-            $action->setStatus(ActionStatus::PENDING);
-        }
+        $isAdmin = $competition->getCreatedBy() === $author;
+        $action->setStatus($isAdmin ? ActionStatus::VALIDATED : ActionStatus::PENDING);
 
         $this->entityManager->persist($action);
 

@@ -38,11 +38,11 @@ final class ActionFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'competition' => CompetitionFactory::new(),
+            'participation' => ParticipationFactory::new(),
             'description' => self::faker()->text(255),
-            'player' => PlayerFactory::new(),
             'points' => self::faker()->numberBetween(-50, 100),
             'status' => ActionStatus::PENDING,
+            'dateAction' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
 
