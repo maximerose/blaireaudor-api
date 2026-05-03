@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useAuth, usePlayerSearch } from '@/hooks';
+import { API } from '@/constants';
 
 export const useEnrollment = (
   competitionId: string,
@@ -65,7 +66,7 @@ export const useEnrollment = (
 
     try {
       const response = await apiFetch(
-        ROUTES.API.ADMIN.ADD_PARTICIPANTS(competitionId),
+        API.ENDPOINTS.ADMIN.ADD_PARTICIPANTS(competitionId),
         {
           method: 'POST',
           body: JSON.stringify({

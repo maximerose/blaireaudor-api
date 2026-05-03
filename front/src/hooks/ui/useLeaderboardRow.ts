@@ -1,4 +1,4 @@
-import type { Competition } from '@/context/AuthContext';
+import type { Competition } from '@/types';
 import { getRankMedal, isPlayerCreator, isPlayerReferee } from '@/utils';
 
 export const useLeaderboardRow = (

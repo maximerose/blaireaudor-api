@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/hooks';
 import { apiFetch } from '@/services/api/config';
-import { ROUTES } from '@/constants/routes';
+import { API } from '@/constants';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {
   const { user, refreshUser } = useAuth();
@@ -15,16 +15,16 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
       }
 
       const checkRes = await apiFetch(
-        ROUTES.API.COMPETITIONS.BY_CODE(joinCode),
+        API.ENDPOINTS.COMPETITIONS.BY_CODE(joinCode),
       );
       if (checkRes.status === 404) throw new Error("Cette arène n'existe pas.");
 
       const competition = await checkRes.json();
-      const joinRes = await apiFetch(ROUTES.API.PARTICIPATIONS.BASE, {
+      const joinRes = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
         method: 'POST',
         body: JSON.stringify({
-          player: ROUTES.IRI.PLAYER(playerId),
-          competition: ROUTES.IRI.COMPETITION(competition.id),
+          player: API.IRI.PLAYER(playerId),
+          competition: API.IRI.COMPETITION(competition.id),
         }),
       });
 

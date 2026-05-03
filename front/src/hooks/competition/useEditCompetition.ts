@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { apiFetch } from '@/services/api/config';
 import { toast } from 'react-hot-toast';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, API } from '@/constants';
 import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,10 +46,10 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
 
     try {
       const response = await apiFetch(
-        ROUTES.API.COMPETITIONS.DETAIL(competition.id),
+        API.ENDPOINTS.COMPETITIONS.DETAIL(competition.id),
         {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/merge-patch+json' },
+          headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
           body: JSON.stringify({
             name: formData.name,
             join_code: formData.joinCode,

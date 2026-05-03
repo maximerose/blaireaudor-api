@@ -1,20 +1,24 @@
-export const API_URL = import.meta.env.VITE_API_BASE_URL;
+import { API } from '@/constants';
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('token');
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/ld+json',
-    Accept: 'application/ld+json',
-  };
+  const headers = new Headers(options.headers);
 
-  if (options.headers) {
-    Object.assign(headers, options.headers as Record<string, string>);
+  if (!headers.has('Accept')) {
+    headers.set('Accept', API.GROUPS.JSON_LD);
+  }
+
+  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+    headers.set('Content-Type', API.GROUPS.JSON_LD);
   }
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.set('Authorization', `Bearer ${token}`);
   }
 
-  return fetch(`${API_URL}${endpoint}`, { ...options, headers });
+  return fetch(`${API.BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
 };

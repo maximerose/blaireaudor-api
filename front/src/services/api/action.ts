@@ -1,10 +1,10 @@
-import { ROUTES } from '@/constants/routes';
 import { apiFetch } from './config';
+import { API } from '@/constants';
 
 export const actionService = {
   create: async (competitionId: string, payload: any) => {
     const response = await apiFetch(
-      ROUTES.API.COMPETITIONS.ACTIONS(competitionId),
+      API.ENDPOINTS.COMPETITIONS.ACTIONS(competitionId),
       {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -14,9 +14,9 @@ export const actionService = {
   },
 
   update: async (id: string, data: any) => {
-    const response = await apiFetch(ROUTES.API.ACTIONS.DETAIL(id), {
+    const response = await apiFetch(API.ENDPOINTS.ACTIONS.DETAIL(id), {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/merge-patch+json' },
+      headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
     return { ok: response.ok, data: await response.json() };

@@ -1,6 +1,6 @@
 import { apiFetch } from '@/services/api/config';
-import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks';
+import { API } from '@/constants';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const { refreshUser } = useAuth();
@@ -22,7 +22,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
 
     try {
       const response = await apiFetch(
-        ROUTES.API.PARTICIPATIONS.DETAIL(participatoinId),
+        API.ENDPOINTS.PARTICIPATIONS.DETAIL(participatoinId),
         {
           method: 'DELETE',
         },

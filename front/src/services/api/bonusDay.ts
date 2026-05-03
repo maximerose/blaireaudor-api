@@ -1,15 +1,15 @@
 import type { BonusDay } from '@/types';
 import { apiFetch } from './config';
-import { ROUTES } from '@/constants/routes';
+import { API } from '@/constants';
 
 export const bonusDayService = {
   create: async (competitionId: string, date: string, multiplier: number) => {
-    const response = await apiFetch(ROUTES.API.BONUS.BASE, {
+    const response = await apiFetch(API.ENDPOINTS.BONUS.BASE, {
       method: 'POST',
       body: JSON.stringify({
         date,
         multiplier,
-        competition: ROUTES.IRI.COMPETITION(competitionId),
+        competition: API.IRI.COMPETITION(competitionId),
       }),
     });
 
@@ -18,7 +18,7 @@ export const bonusDayService = {
   },
 
   delete: async (bonusDayId: string) => {
-    const response = await apiFetch(ROUTES.API.BONUS.DETAIL(bonusDayId), {
+    const response = await apiFetch(API.ENDPOINTS.BONUS.DETAIL(bonusDayId), {
       method: 'DELETE',
     });
 
@@ -27,7 +27,7 @@ export const bonusDayService = {
 
   getByCompetition: async (competitionId: string): Promise<BonusDay[]> => {
     const response = await apiFetch(
-      ROUTES.API.BONUS.BY_COMPETITION(competitionId),
+      API.ENDPOINTS.BONUS.BY_COMPETITION(competitionId),
     );
 
     if (!response.ok) {

@@ -1,6 +1,6 @@
-import { ROUTES } from '@/constants/routes';
 import { apiFetch } from './config';
 import { formatToApiISO } from '@/utils';
+import { API } from '@/constants';
 
 export const competitionService = {
   create: async (data: any) => {
@@ -14,7 +14,7 @@ export const competitionService = {
       ? formatToApiISO(data.endDate, data.endTime, data.endFullDay, true)
       : null;
 
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.BASE, {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BASE, {
       method: 'POST',
       body: JSON.stringify({
         name: data.name,
@@ -38,35 +38,35 @@ export const competitionService = {
   },
 
   update: async (id: string, data: any) => {
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.DETAIL(id), {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/merge-patch+json' },
+      headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
     return { ok: response.ok, data: await response.json() };
   },
 
   delete: async (id: string) => {
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.DETAIL(id), {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'DELETE',
     });
     return response.ok;
   },
 
   getByCode: async (code: string) => {
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.BY_CODE(code));
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code));
     if (!response.ok) throw new Error(`Arène introuvable (code: ${code})`);
     return response.json();
   },
 
   getLeaderboard: async (id: string) => {
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.LEADERBOARD(id));
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.LEADERBOARD(id));
     if (!response.ok) throw new Error('Erreur chargement classement');
     return response.json();
   },
 
   getActions: async (id: string) => {
-    const response = await apiFetch(ROUTES.API.COMPETITIONS.ACTIONS(id));
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.ACTIONS(id));
     if (!response.ok) throw new Error('Erreur chargement actions');
     return response.json();
   },
@@ -81,7 +81,7 @@ export const competitionService = {
     },
   ) => {
     const response = await apiFetch(
-      ROUTES.API.ADMIN.ADD_PARTICIPANTS(competitionId),
+      API.ENDPOINTS.ADMIN.ADD_PARTICIPANTS(competitionId),
       {
         method: 'POST',
         body: JSON.stringify(participants),
@@ -94,14 +94,14 @@ export const competitionService = {
   },
 
   addReferee: async (competitionId: string, playerId: string) => {
-    return apiFetch(ROUTES.API.ADMIN.ADD_REFEREE(competitionId), {
+    return apiFetch(API.ENDPOINTS.ADMIN.ADD_REFEREE(competitionId), {
       method: 'POST',
       body: JSON.stringify({ player_id: playerId }),
     });
   },
 
   removeReferee: async (competitionId: string, playerId: string) => {
-    return apiFetch(ROUTES.API.ADMIN.REMOVE_REFEREE(competitionId), {
+    return apiFetch(API.ENDPOINTS.ADMIN.REMOVE_REFEREE(competitionId), {
       method: 'POST',
       body: JSON.stringify({ player_id: playerId }),
     });

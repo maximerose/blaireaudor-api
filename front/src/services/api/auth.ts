@@ -1,4 +1,4 @@
-import { ROUTES } from '../../constants/routes';
+import { API } from '@/constants';
 import { apiFetch } from './config';
 
 export const authService = {
@@ -6,7 +6,7 @@ export const authService = {
    * Envoie les données d'inscription au backend
    */
   register: async (formData: any) => {
-    const response = await apiFetch(ROUTES.API.AUTH.REGISTER, {
+    const response = await apiFetch(API.ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -25,7 +25,7 @@ export const authService = {
    * Identifie l'utilisateur et stocke le Token JWT
    */
   login: async (credentials: any) => {
-    const response = await apiFetch(ROUTES.API.AUTH.LOGIN, {
+    const response = await apiFetch(API.ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
@@ -47,7 +47,7 @@ export const authService = {
     if (!token) return;
 
     try {
-      await apiFetch(ROUTES.API.AUTH.LOGOUT, {
+      await apiFetch(API.ENDPOINTS.AUTH.LOGOUT, {
         method: 'GET',
       });
     } catch (error) {
@@ -68,7 +68,7 @@ export const authService = {
     if (!token) return null;
 
     try {
-      const response = await apiFetch(ROUTES.API.AUTH.ME, { method: 'GET' });
+      const response = await apiFetch(API.ENDPOINTS.AUTH.ME, { method: 'GET' });
 
       if (!response.ok) {
         localStorage.removeItem('token');
@@ -96,7 +96,9 @@ export const authService = {
    * Vérifie si un nom d'utilisateur est déjà pris
    */
   checkUsername: async (username: string) => {
-    const response = await apiFetch(ROUTES.API.USER.CHECK_USERNAME(username));
+    const response = await apiFetch(
+      API.ENDPOINTS.USER.CHECK_USERNAME(username),
+    );
     return await response.json();
   },
 };
