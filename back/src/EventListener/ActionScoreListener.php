@@ -8,14 +8,14 @@ use App\Entity\Action;
 use App\Repository\ParticipationRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PostPersistEventArgs;
-use Doctrine\ORM\Event\PostRemoveEventArgs;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
-#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Action::class)]
-#[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: Action::class)]
-#[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Action::class)]
+#[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Action::class)]
+#[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Action::class)]
+#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Action::class)]
 class ActionScoreListener
 {
     public function __construct(
@@ -24,38 +24,27 @@ class ActionScoreListener
     ) {
     }
 
-    public function postPersist(Action $action, PostPersistEventArgs $event): void
+    public function prePersist(Action $action, PrePersistEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
 
-    public function postUpdate(Action $action, PostUpdateEventArgs $event): void
+    public function preUpdate(Action $action, PreUpdateEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
 
-    public function postRemove(Action $action, PostRemoveEventArgs $event): void
+    public function preRemove(Action $action, PreRemoveEventArgs $event): void
     {
         $this->updateParticipationScore($action);
     }
 
     private function updateParticipationScore(Action $action): void
     {
-        $player = $action->getPlayer();
-        $competition = $action->getCompetition();
-
-        if (!$player || !$competition) {
-            return;
-        }
-
-        $participation = $this->participationRepository->findOneBy([
-            'player' => $player,
-            'competition' => $competition,
-        ]);
+        $participation = $action->getParticipation();
 
         if ($participation) {
             $participation->updateScore();
-            $this->entityManager->flush();
         }
     }
 }

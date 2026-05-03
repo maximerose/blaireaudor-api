@@ -149,4 +149,18 @@ class Action
 
         return $this;
     }
+
+    /**
+     * Helper pour récupérer la participation correspondante au joueur et à la compétition.
+     */
+    public function getParticipation(): ?Participation
+    {
+        if (!$this->player || !$this->competition) {
+            return null;
+        }
+
+        return $this->player->getParticipations()->filter(function (Participation $p) {
+            return $p->getCompetition() === $this->competition;
+        })->first() ?: null;
+    }
 }
