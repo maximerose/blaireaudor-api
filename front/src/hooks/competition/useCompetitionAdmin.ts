@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { actionService } from '@/services/api/action';
 import { competitionService } from '@/services/api/competition';
+import type { ActionStatus } from '@/types';
 
 export const useCompetitionAdmin = (
   competitionId: string | undefined,
@@ -22,10 +23,8 @@ export const useCompetitionAdmin = (
     }
   };
 
-  const handleActionStatus = (
-    actionId: string,
-    status: 'validated' | 'rejected',
-  ) => updateAction(actionId, { status });
+  const handleActionStatus = (actionId: string, status: ActionStatus) =>
+    updateAction(actionId, { status });
 
   const updateCompetition = async (data: any) => {
     if (!competitionId) return;

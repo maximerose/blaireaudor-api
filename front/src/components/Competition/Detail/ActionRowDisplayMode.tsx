@@ -1,5 +1,6 @@
 import { Text } from '@/components/UI';
 import { useActionRow, useCompetition } from '@/hooks';
+import { ActionStatus } from '@/types';
 import { cn, formatShortDate } from '@/utils';
 
 export const ActionRowDisplayMode = ({
@@ -51,13 +52,15 @@ export const ActionRowDisplayMode = ({
           {isPending && isAdmin && (
             <div className="mt-2 flex justify-center gap-4 animate-fade-in border-l border-white/10 pl-3">
               <button
-                onClick={() => onStatusChange(action.id, 'validated')}
+                onClick={() =>
+                  onStatusChange(action.id, ActionStatus.VALIDATED)
+                }
                 className="text-[10px] font-black text-success hover:underline uppercase tracking-widest"
               >
                 Accepter ✓
               </button>
               <button
-                onClick={() => onStatusChange(action.id, 'rejected')}
+                onClick={() => onStatusChange(action.id, ActionStatus.REJECTED)}
                 className="text-[10px] font-black text-danger hover:underline uppercase tracking-widest"
               >
                 Refuser ✕

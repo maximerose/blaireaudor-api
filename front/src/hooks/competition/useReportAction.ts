@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { actionService } from '@/services/api/action';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 import { toast } from 'react-hot-toast';
-import type { Competition } from '@/types';
+import { ActionStatus, type Competition } from '@/types';
 import { API } from '@/constants';
 
 export const useReportAction = (
@@ -49,7 +49,7 @@ export const useReportAction = (
       points: Number(formData.points),
       player: API.IRI.PLAYER(formData.targetPlayerId),
       competition: API.IRI.COMPETITION(competition.id),
-      status: isAdmin ? 'validated' : 'pending',
+      status: isAdmin ? ActionStatus.VALIDATED : ActionStatus.PENDING,
     };
 
     const { ok } = await actionService.create(competition.id, payload);

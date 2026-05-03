@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
 import { getUniqueDates } from '@/utils';
-import type { Action } from '@/types';
+import { ActionStatus, type Action } from '@/types';
 
 export const useActionTable = (initialActions: Action[]) => {
   const { user } = useAuth();
@@ -38,15 +38,21 @@ export const useActionTable = (initialActions: Action[]) => {
   }, [initialActions, sortField, sortOrder, selectedDate]);
 
   const categories = useMemo(() => {
-    const pending = processedActions.filter((a) => a.status === 'pending');
+    const pending = processedActions.filter(
+      (a) => a.status === ActionStatus.PENDING,
+    );
 
     return {
       myPending: pending.filter((a) => getEntityId(a.created_by) === user?.id),
       othersPending: pending.filter(
         (a) => getEntityId(a.created_by) !== user?.id,
       ),
-      validated: processedActions.filter((a) => a.status === 'validated'),
-      rejected: processedActions.filter((a) => a.status === 'rejected'),
+      validated: processedActions.filter(
+        (a) => a.status === ActionStatus.VALIDATED,
+      ),
+      rejected: processedActions.filter(
+        (a) => a.status === ActionStatus.REJECTED,
+      ),
       totalPending: pending.length,
     };
   }, [processedActions, user]);

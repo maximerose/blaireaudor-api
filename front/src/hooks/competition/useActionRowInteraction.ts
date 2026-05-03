@@ -1,3 +1,4 @@
+import { ActionStatus } from '@/types';
 import { useState } from 'react';
 
 export const useActionRowInteraction = (action: any, onUpdate: any) => {
@@ -11,7 +12,7 @@ export const useActionRowInteraction = (action: any, onUpdate: any) => {
     const success = await onUpdate(action.id, {
       description: editData.description,
       points: Number(editData.points),
-      ...(isAdmin ? { status: 'validated' } : {}),
+      ...(isAdmin ? { status: ActionStatus.VALIDATED } : {}),
     });
     if (success) setIsEditing(false);
   };

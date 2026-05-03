@@ -6,7 +6,7 @@ import {
   isPlayerReferee,
   resolveCreatorName,
 } from '@/utils';
-import type { Participation } from '@/types';
+import { ActionStatus, type Participation } from '@/types';
 
 export const useCompetitionDetailUI = () => {
   const { user } = useAuth();
@@ -22,7 +22,8 @@ export const useCompetitionDetailUI = () => {
 
     if (isReferee) return actions.length;
 
-    return actions.filter((a: any) => a.status !== 'rejected').length;
+    return actions.filter((a: any) => a.status !== ActionStatus.REJECTED)
+      .length;
   }, [actions, competition, user]);
 
   const potentialTargets = useMemo(
