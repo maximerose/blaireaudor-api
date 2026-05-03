@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { playerService } from '@/services/api/player';
 import type { Player } from '@/types';
+import { QUERY_KEYS } from '@/constants';
 
 export const usePlayerSearch = (debounceDelay = 400) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,7 +16,7 @@ export const usePlayerSearch = (debounceDelay = 400) => {
   }, [searchTerm, debounceDelay]);
 
   const { data: results = [], isFetching: searching } = useQuery<Player[]>({
-    queryKey: ['players', 'search', debouncedTerm],
+    queryKey: QUERY_KEYS.player.search(debouncedTerm),
     queryFn: () => playerService.search(debouncedTerm),
     enabled: debouncedTerm.trim().length >= 2,
     staleTime: 1000 * 60 * 5,

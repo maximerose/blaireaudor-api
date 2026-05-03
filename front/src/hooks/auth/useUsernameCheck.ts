@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { authService } from '@/services/api/auth';
 import type { PlayerPreview } from '@/types';
+import { QUERY_KEYS } from '@/constants';
 
 export const useUsernameCheck = (
   username: string,
@@ -15,7 +16,7 @@ export const useUsernameCheck = (
   }, [username]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['username-check', debouncedTerm],
+    queryKey: QUERY_KEYS.auth.usernameCheck(debouncedTerm),
     queryFn: () => authService.checkUsername(debouncedTerm),
     enabled: debouncedTerm.length >= 2,
     staleTime: 1000 * 60 * 5,

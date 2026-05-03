@@ -1,11 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competition';
+import { QUERY_KEYS } from '@/constants';
 
 export const useCompetitionData = (code: string) => {
   const queryClient = useQueryClient();
 
   const competitionQuery = useQuery({
-    queryKey: ['competition', code],
+    queryKey: QUERY_KEYS.competition.byCode(code),
     queryFn: () => competitionService.getByCode(code),
     enabled: !!code,
     staleTime: 1000 * 60 * 5,
@@ -14,13 +15,13 @@ export const useCompetitionData = (code: string) => {
   const competitionId = competitionQuery.data?.id;
 
   const leaderboardQuery = useQuery({
-    queryKey: ['competition', competitionId, 'leaderboard'],
+    queryKey: QUERY_KEYS.competition.byId(competitionId).leaderboard,
     queryFn: () => competitionService.getLeaderboard(competitionId!),
     enabled: !!competitionId,
   });
 
   const actionsQuery = useQuery({
-    queryKey: ['competition', competitionId, 'actions'],
+    queryKey: QUERY_KEYS.competition.byId(competitionId).actions,
     queryFn: () => competitionService.getActions(competitionId!),
     enabled: !!competitionId,
   });
@@ -30,11 +31,13 @@ export const useCompetitionData = (code: string) => {
    * Invalide toutes les requêtes liées à cette compétition pour forcer un re-fetch.
    */
   const refresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['competition', code] });
+    queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.competition.byCode(code),
+    });
 
     if (competitionId) {
       queryClient.invalidateQueries({
-        queryKey: ['competition', competitionId],
+        queryKey: QUERY_KEYS.competition.byId(competitionId).root,
       });
     }
   };
