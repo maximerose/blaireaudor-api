@@ -14,7 +14,7 @@ export const competitionService = {
       ? formatToApiISO(data.endDate, data.endTime, data.endFullDay, true)
       : null;
 
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BASE, {
+    const response = await apiFetch(API.ENDPOINTS.ADMIN.COMPETITION_CREATE, {
       method: 'POST',
       body: JSON.stringify({
         name: data.name,

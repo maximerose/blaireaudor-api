@@ -2,7 +2,12 @@ import { useMemo, useState } from 'react';
 import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
 import { formatJoinCode, cleanJoinCode, generateClientSideCode } from '@/utils';
 import { competitionService } from '@/services/api/competition';
-import type { FormParticipant, Player, Competition } from '@/types';
+import type {
+  FormParticipant,
+  Player,
+  Competition,
+  CompetitionFormData,
+} from '@/types';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
@@ -14,7 +19,7 @@ export const useCreateCompetitionForm = (
     usePlayerSearch();
   const [isAddingPlayers, setIsAddingPlayers] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CompetitionFormData>({
     name: '',
     startDate: '',
     startTime: '00:00',
@@ -22,7 +27,7 @@ export const useCreateCompetitionForm = (
     endDate: '',
     endTime: '23:59',
     endFullDay: true,
-    joinCode: '',
+    joinCode: null,
     participate: true,
     fogOfWar: true,
     isCreatorReferee: true,
@@ -32,9 +37,9 @@ export const useCreateCompetitionForm = (
 
   const filteredResults = results.filter((p) => p.username !== user?.username);
 
-  const updateField = <K extends keyof typeof formData>(
+  const updateField = <K extends keyof CompetitionFormData>(
     field: K,
-    value: (typeof formData)[K],
+    value: CompetitionFormData[K],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
