@@ -41,22 +41,34 @@ export const COMPETITION_UI = {
         `${ICONS.DANGER} ${count} actions en attente`,
     },
   },
-  ACTIONS: {
-    TABLE: {
-      COLUMN_DATE: 'Date',
-      COLUMN_PLAYER: 'Joueur',
-      COLUMN_ACTION: 'Action',
-      COLUMN_POINTS: 'Points',
-      EMPTY_ACTIONS_TITLE: 'Journal vide',
-      EMPTY_ACTIONS_SUBTITILE: 'Aucune action validée...',
-    },
+  DETAIL: {
+    LOADING: 'Récupération de la compétition',
+    NOT_FOUND: 'Compétition non trouvée',
+    SYNCING: 'Synchronisation...',
     SECTIONS: {
-      PENDING: `${ICONS.REFEREE} Actions en attente`,
-      MY_SUBMISSIONS: 'Mes envois',
-      OTHER_SUBMISSIONS: 'Signalements des autres',
-      REJECTED: `${ICONS.TRASH} Actions rejetées (Archive)`,
+      LEADERBOARD: {
+        TITLE: 'Classement',
+      },
+      ACTIONS: {
+        TITLE: 'Journal des actions',
+        ENTRIES: (count: number) => `${count} entrées`,
+        TABLE: {
+          COLUMN_DATE: 'Date',
+          COLUMN_PLAYER: 'Joueur',
+          COLUMN_ACTION: 'Action',
+          COLUMN_POINTS: 'Points',
+          EMPTY_ACTIONS_TITLE: 'Journal vide',
+          EMPTY_ACTIONS_SUBTITILE: 'Aucune action validée...',
+        },
+        SUB_SECTIONS: {
+          PENDING: `${ICONS.REFEREE} Actions en attente`,
+          MY_SUBMISSIONS: 'Mes envois',
+          OTHER_SUBMISSIONS: 'Signalements des autres',
+          REJECTED: `${ICONS.TRASH} Actions rejetées (Archive)`,
+        },
+        REPORTED_BY: 'Dénoncé par : ',
+        POINTS_SHORT: 'pts',
+      },
     },
-    REPORTED_BY: 'Dénoncé par : ',
-    POINTS_SHORT: 'pts',
   },
 } as const;

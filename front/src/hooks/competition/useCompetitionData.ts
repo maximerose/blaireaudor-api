@@ -50,7 +50,7 @@ export const useCompetitionData = (code: string) => {
     competition: competitionQuery.data,
     leaderboard: leaderboardQuery.data ?? [],
     actions: actionsQuery.data ?? [],
-    isReady: !isInitialLoading && !!competitionQuery.data,
+    isReady: !isInitialLoading,
     isRefreshing: competitionQuery.isFetching || leaderboardQuery.isFetching,
     error:
       competitionQuery.error || leaderboardQuery.error || actionsQuery.error,

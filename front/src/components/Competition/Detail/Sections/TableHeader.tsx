@@ -5,26 +5,26 @@ import { cn } from '@/utils';
 const TABLE_COLUMNS = [
   {
     id: 'date_action',
-    label: COMPETITION_UI.ACTIONS.TABLE.COLUMN_DATE,
+    label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_DATE,
     colSpan: 'col-span-3 md:col-span-2',
     align: 'text-left',
   },
   {
     id: 'player',
-    label: COMPETITION_UI.ACTIONS.TABLE.COLUMN_PLAYER,
+    label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_PLAYER,
     colSpan: 'col-span-6 md:col-span-3',
     align: 'text-center',
   },
   {
     id: 'description',
-    label: COMPETITION_UI.ACTIONS.TABLE.COLUMN_ACTION,
+    label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_ACTION,
     colSpan: 'hidden md:block md:col-span-5',
     align: 'text-center',
     noSort: true,
   },
   {
     id: 'points',
-    label: COMPETITION_UI.ACTIONS.TABLE.COLUMN_POINTS,
+    label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_POINTS,
     colSpan: 'col-span-3 md:col-span-2',
     align: 'text-right',
   },

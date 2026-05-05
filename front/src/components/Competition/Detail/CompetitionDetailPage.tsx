@@ -7,6 +7,7 @@ import {
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
 import { Badge, Text, LoadingScreen } from '@/components/UI';
+import { COMPETITION_UI } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionDetailUI, useCompetitionAdmin } from '@/hooks';
 
@@ -32,7 +33,13 @@ const CompetitionDetailPage = () => {
 
   if (!isReady) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
-    return <div className="text-white p-10">Compétition non trouvée.</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Text variant="h2" className="text-white/50">
+          {COMPETITION_UI.DETAIL.NOT_FOUND}
+        </Text>
+      </div>
+    );
 
   const isFogActive = competition.fog_of_war && !isReferee;
   const hasActions = actions && actions.length > 0;
@@ -46,7 +53,7 @@ const CompetitionDetailPage = () => {
     >
       {isRefreshing && (
         <div className="fixed top-4 right-4 animate-pulse text-[10px] text-white/40 uppercase tracking-widest">
-          Synchronisation...
+          {COMPETITION_UI.DETAIL.SYNCING}
         </div>
       )}
       <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
@@ -81,7 +88,7 @@ const CompetitionDetailPage = () => {
           <section className="lg:col-span-4 space-y-6">
             <header className="flex items-center gap-4 px-1">
               <Text variant="caption" className="whitespace-nowrap font-bold">
-                Classement
+                {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
               </Text>
               <div className="h-px w-full bg-white/5" />
             </header>
@@ -98,11 +105,11 @@ const CompetitionDetailPage = () => {
           <section className="lg:col-span-8 space-y-6">
             <header className="flex items-center px-1">
               <Text variant="caption" className="whitespace-nowrap font-bold">
-                Journal des actions
+                {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
               </Text>
               <div className="h-px w-full bg-white/5" />
               <Badge variant="ghost" className="opacity-60 text-[8px]">
-                {entriesCount} entrées
+                {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ENTRIES(entriesCount)}
               </Badge>
             </header>
             <ActionTable

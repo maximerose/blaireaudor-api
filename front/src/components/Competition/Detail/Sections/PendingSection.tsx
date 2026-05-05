@@ -19,7 +19,7 @@ export const PendingSection = ({
           variant="caption"
           className="text-gold uppercase font-bold tracking-widest opacity-80"
         >
-          {COMPETITION_UI.ACTIONS.SECTIONS.PENDING}
+          {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.PENDING}
         </Text>
         <Badge variant="gold" isPulse>
           {total}
@@ -30,12 +30,16 @@ export const PendingSection = ({
       <div className="space-y-8">
         {[
           {
-            label: COMPETITION_UI.ACTIONS.SECTIONS.MY_SUBMISSIONS,
+            label:
+              COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS
+                .MY_SUBMISSIONS,
             data: myPending,
             border: 'border-gold/20 shadow-gold/5',
           },
           {
-            label: COMPETITION_UI.ACTIONS.SECTIONS.OTHER_SUBMISSIONS,
+            label:
+              COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS
+                .OTHER_SUBMISSIONS,
             data: othersPending,
             border: 'border-white/5',
           },

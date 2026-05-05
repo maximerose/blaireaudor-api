@@ -44,7 +44,7 @@ export const ActionRowDisplayMode = ({
               variant="body"
               className="text-[8px] md:text-[10px] text-white/50"
             >
-              {COMPETITION_UI.ACTIONS.REPORTED_BY}
+              {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}
               <span className="text-info-bright">{action.creator_name}</span>
             </Text>
           )}
@@ -75,7 +75,8 @@ export const ActionRowDisplayMode = ({
       <div className="col-span-3 md:col-span-2 text-right flex flex-col items-end">
         {multiplier > 1 && !hidePoints && (
           <Text variant="mono" className="text-[9px] line-through opacity-30">
-            {action.points} {COMPETITION_UI.ACTIONS.POINTS_SHORT}
+            {action.points}{' '}
+            {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.POINTS_SHORT}
           </Text>
         )}
         <Text
@@ -84,7 +85,7 @@ export const ActionRowDisplayMode = ({
         >
           {pointsDisplay}{' '}
           <span className="text-[8px] opacity-50">
-            {COMPETITION_UI.ACTIONS.POINTS_SHORT}
+            {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.POINTS_SHORT}
           </span>
         </Text>
       </div>
