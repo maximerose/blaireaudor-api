@@ -79,7 +79,7 @@ export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
             variant="micro"
             className="mb-2 px-2 uppercase tracking-tighter italic"
           >
-            {ICONS.TRASH} Actions rejetées (Archive)
+            {COMPETITION_UI.ACTIONS.SECTIONS.REJECTED}
           </Text>
           <div className="divide-y divide-white/5 bg-black/20 rounded-xl overflow-hidden border border-white/5">
             {categories.rejected.map((action) => (

@@ -50,10 +50,11 @@ export const COMPETITION_UI = {
       EMPTY_ACTIONS_TITLE: 'Journal vide',
       EMPTY_ACTIONS_SUBTITILE: 'Aucune action validée...',
     },
-    PENDING: {
-      TITLE: `${ICONS.REFEREE} Actions en attente`,
+    SECTIONS: {
+      PENDING: `${ICONS.REFEREE} Actions en attente`,
       MY_SUBMISSIONS: 'Mes envois',
       OTHER_SUBMISSIONS: 'Signalements des autres',
+      REJECTED: `${ICONS.TRASH} Actions rejetées (Archive)`,
     },
     REPORTED_BY: 'Dénoncé par : ',
     POINTS_SHORT: 'pts',
