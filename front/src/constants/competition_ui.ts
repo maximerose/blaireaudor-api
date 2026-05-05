@@ -17,6 +17,13 @@ export const COMPETITION_UI = {
     },
     REFEREE: {
       TITLE: "Équipe d'arbitrage",
+      SUBTITLE: 'Coopter des membres pour vous aider ou quitter votre poste.',
+      YOU: '(Vous)',
+      TOOLTIP_RESIGN: 'Démissionner',
+      TOOLTIP_REVOKE: 'Révoquer cet arbitre',
+      ARIA_REVOKE: 'Révoquer',
+      LAST_REF_WARNING: `${ICONS.DANGER} Vous êtes le dernier arbitre. Ajoutez un successeur avant de pouvoir démissionner.`,
+      APPOINT: 'Nommer',
     },
     FOG: {
       LABEL: 'Brouillard :',

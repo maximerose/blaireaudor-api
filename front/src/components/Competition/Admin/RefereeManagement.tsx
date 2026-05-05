@@ -1,5 +1,5 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI, FORM, ICONS } from '@/constants';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
 import type { Competition, Player } from '@/types';
 
@@ -33,9 +33,9 @@ export const RefereeManagement = ({
   return (
     <div className="space-y-4 pt-6 border-t border-white/10">
       <header>
-        <Text variant="h3">Équipe d'arbitrage</Text>
+        <Text variant="h3">{COMPETITION_UI.ADMIN.REFEREE.TITLE}</Text>
         <Text variant="caption" className="opacity-60 text-[10px]">
-          Coopter des membres pour vous aider ou quitter votre poste.
+          {COMPETITION_UI.ADMIN.REFEREE.SUBTITLE}
         </Text>
       </header>
 
@@ -53,10 +53,10 @@ export const RefereeManagement = ({
               className={`flex items-center gap-2 pr-1 py-1 ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
             >
               <span className="flex items-center gap-1">
-                ⚖️ {ref.name}{' '}
+                {ICONS.REFEREE} {ref.name}{' '}
                 {isMe && (
                   <span className="text-[9px] opacity-70 uppercase tracking-wider">
-                    (Vous)
+                    {COMPETITION_UI.ADMIN.REFEREE.YOU}
                   </span>
                 )}
               </span>
@@ -66,8 +66,12 @@ export const RefereeManagement = ({
                   onClick={() => handleRemoveRequest(ref, isMe)}
                   disabled={isRemoving}
                   className="hover:text-danger text-white/40 hover:bg-white/10 rounded-full w-5 h-5 flex items-center justify-center transition-colors ml-1"
-                  title={isMe ? 'Démissionner' : 'Révoquer cet arbitre'}
-                  aria-label="Révoquer"
+                  title={
+                    isMe
+                      ? COMPETITION_UI.ADMIN.REFEREE.TOOLTIP_RESIGN
+                      : COMPETITION_UI.ADMIN.REFEREE.TOOLTIP_REVOKE
+                  }
+                  aria-label={COMPETITION_UI.ADMIN.REFEREE.ARIA_REVOKE}
                 >
                   {ICONS.CANCEL}
                 </button>
@@ -79,8 +83,7 @@ export const RefereeManagement = ({
 
       {isLastRef && (
         <Text variant="micro" className="text-warning-bright/80 italic block">
-          ⚠️ Vous êtes le dernier arbitre. Ajoutez un successeur avant de
-          pouvoir démissionner.
+          {COMPETITION_UI.ADMIN.REFEREE.LAST_REF_WARNING}
         </Text>
       )}
 
@@ -92,7 +95,7 @@ export const RefereeManagement = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher un joueur (2 lettres min)..."
+              placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER}
               className="bg-black/40 border border-white/10 rounded-lg px-3 py-3 pr-10 text-sm text-white w-full focus:border-gold/50 outline-none transition-colors"
             />
 
@@ -112,7 +115,7 @@ export const RefereeManagement = ({
               variant="micro"
               className="absolute right-10 top-3 opacity-50"
             >
-              ...
+              {ICONS.LOADING}
             </Text>
           )}
 
@@ -126,7 +129,7 @@ export const RefereeManagement = ({
                     onClick={() => handleAdd(player)}
                     actionIcon={
                       <span className="text-[10px] uppercase font-bold text-black bg-gold px-2 py-1 rounded shadow">
-                        Nommer
+                        {COMPETITION_UI.ADMIN.REFEREE.APPOINT}
                       </span>
                     }
                     className="w-full text-left p-3 hover:bg-white/5 transition-colors border-none"
@@ -143,7 +146,7 @@ export const RefereeManagement = ({
                 variant="micro"
                 className="text-white/40 italic mt-2 px-1 block"
               >
-                Aucun joueur disponible trouvé.
+                {FORM.PLAYER.HINT.NOT_FOUND}
               </Text>
             )}
         </div>

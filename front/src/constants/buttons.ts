@@ -11,6 +11,7 @@ export const BUTTONS = {
   CONTINUE: 'Continuer →',
   PREVIOUS: '← Précédent',
   CLOSE: 'Fermer',
+  CLEAR_SEARCH: 'Effacer la recherche',
 
   // Interface / Layout
   COLLAPSE: 'Réduire',
