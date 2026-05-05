@@ -1,6 +1,7 @@
 import { ROUTES } from '@/constants/routes';
 import { Button, Badge } from '@/components/UI';
 import type { Competition } from '@/types';
+import { BUTTONS, COMPETITION_UI } from '@/constants';
 
 interface DetailNavigationProps {
   competition: Competition;
@@ -21,7 +22,7 @@ export const DetailNavigation = ({
 }: DetailNavigationProps) => (
   <nav className="mb-10 flex justify-between items-center">
     <Button to={ROUTES.NAV.DASHBOARD} variant="ghost" size="sm">
-      <span aria-hidden="true">← </span>Retour
+      {BUTTONS.BACK}
     </Button>
 
     {isCreator &&
@@ -31,11 +32,11 @@ export const DetailNavigation = ({
           size="sm"
           onClick={() => onDelete(competition.id, competition.name, 0)}
         >
-          Supprimer la compétition
+          {BUTTONS.DELETE}
         </Button>
       ) : (
         <Badge variant="ghost" className="opacity-70 italic text-[8px]">
-          Historique protégé
+          {COMPETITION_UI.DETAIL.PROTECTED}
         </Badge>
       ))}
   </nav>

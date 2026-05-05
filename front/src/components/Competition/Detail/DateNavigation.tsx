@@ -1,6 +1,7 @@
 import { Button } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation, useCompetition } from '@/hooks';
+import { COMPETITION_UI } from '@/constants';
 
 export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
   const { getMultiplier } = useCompetition();
@@ -23,7 +24,7 @@ export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
           onClick={() => onSelect(null)}
           className={cn(selectedDate !== null && 'opacity-40')}
         >
-          Toutes les dates
+          {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ALL_DATES}
         </Button>
 
         {dates.map((date: string) => {

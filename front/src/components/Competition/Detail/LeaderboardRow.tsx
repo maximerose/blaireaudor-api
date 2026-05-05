@@ -3,7 +3,7 @@ import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
 import type { Competition } from '@/types';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS, UI } from '@/constants';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   item: any;
@@ -50,12 +50,16 @@ export const LeaderboardRow = ({
             </span>
           ) : (
             <Badge variant="ghost">
-              <span className="sr-only">Rang </span>
+              <span className="sr-only">
+                {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.RANK}{' '}
+              </span>
               {item.rank}
             </Badge>
           )
         ) : (
-          <Text className="opacity-20">?</Text>
+          <Text className="opacity-20">
+            {COMPETITION_UI.DETAIL.MASKED_POINTS}
+          </Text>
         )}
       </div>
 
@@ -74,7 +78,7 @@ export const LeaderboardRow = ({
             </Text>
             {item.isMe && (
               <Badge variant="gold" isPulse aria-label="C'est vous">
-                Moi
+                {UI.ME}
               </Badge>
             )}
 
@@ -86,7 +90,7 @@ export const LeaderboardRow = ({
 
           {showRealStats && item.isExAequo && (
             <Text variant="micro" className="text-white/20 italic">
-              Ex-æquo
+              {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.EXAEQUO}
             </Text>
           )}
         </div>
@@ -97,8 +101,12 @@ export const LeaderboardRow = ({
             size="sm"
             onClick={onDelete}
             className="text-danger-bright/20 hover:text-danger-bright hover:bg-danger/10 px-2 transition-default"
-            aria-label={`Supprimer la participation de ${playerName}`}
-            title="Supprimer la participation"
+            aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
+              playerName,
+            )}
+            title={
+              COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.DELETE_PARTICIPATION
+            }
           >
             <span aria-hidden="true">{ICONS.CANCEL}</span>
           </Button>
@@ -118,9 +126,11 @@ export const LeaderboardRow = ({
         ) : (
           <div className="flex items-center gap-1 opacity-20">
             <Text variant="mono" className="text-xs">
-              ??
+              {COMPETITION_UI.DETAIL.MASKED_POINTS}
             </Text>
-            <Text className="text-[8px] uppercase">pts</Text>
+            <Text className="text-[8px] uppercase">
+              {COMPETITION_UI.DETAIL.POINTS_SHORT}
+            </Text>
           </div>
         )}
       </div>

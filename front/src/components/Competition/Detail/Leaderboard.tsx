@@ -1,7 +1,7 @@
 import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 interface LeaderboardProps {
   data: any[];
@@ -35,7 +35,9 @@ export const Leaderboard = ({
       variant="dark"
       className="overflow-hidden shadow-2xl border-white/5"
       role="region"
-      aria-label={`Classement de la compétition : ${competition?.name || 'en cours'}`}
+      aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_TITLE(
+        competition?.name,
+      )}
     >
       {isFogActive && (
         <div className="bg-gold/5 px-4 py-2 border-b border-gold/10 flex items-center justify-center gap-2">
@@ -43,7 +45,7 @@ export const Leaderboard = ({
             variant="micro"
             className="text-gold uppercase font-black tracking-widest animate-pulse"
           >
-            {ICONS.FOG_ACTIVE} Brouillard de guerre actif
+            {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.FOG_OF_WAR.ACTIVE}
           </Text>
         </div>
       )}
@@ -65,8 +67,8 @@ export const Leaderboard = ({
         <EmptyState
           layout="card"
           icon={ICONS.EMPTY}
-          title="No man's land"
-          message="L'arène est déserte... Aucun blaireau n'a osé relever le défi pour le moment."
+          title={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.EMPTY.TITLE}
+          message={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.EMPTY.MESSAGE}
           role="status"
         />
       )}

@@ -8,10 +8,12 @@ export const BUTTONS = {
   MODIFY: 'Modifier',
   ACCEPT: 'Accepter',
   REJECT: 'Refuser',
+  DELETE: 'Supprimer',
 
   // Navigation
   CONTINUE: 'Continuer →',
   PREVIOUS: '← Précédent',
+  BACK: '← Retour',
   CLOSE: 'Fermer',
   CLEAR_SEARCH: 'Effacer la recherche',
 
