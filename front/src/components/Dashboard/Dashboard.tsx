@@ -6,7 +6,7 @@ import {
   DashboardHeader,
   CompetitionListSection,
 } from '@/components/Dashboard';
-import { ICONS } from '@/constants';
+import { DASHBOARD_UI, ICONS } from '@/constants';
 
 const Dashboard = () => {
   const {
@@ -38,17 +38,17 @@ const Dashboard = () => {
           aria-label="Actions rapides"
         >
           <Button to={ROUTES.NAV.ADMIN_CREATE_COMPETITION} variant="primary">
-            + Créer une compétition
+            {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
           </Button>
           <Button onClick={openJoinModal} variant="secondary">
-            Rejoindre une compétition
+            {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
           </Button>
         </section>
 
         {/* --- SECTION GESTION (Admin / Arbitre) --- */}
         {managedCompetitions.length > 0 && (
           <CompetitionListSection
-            title="🛡️ Gestion des compétitions"
+            title={DASHBOARD_UI.CARD.SECTIONS.MANAGEMENT}
             competitions={managedCompetitions}
             user={user}
             variant="gold"
@@ -57,15 +57,15 @@ const Dashboard = () => {
 
         {/* --- SECTION JOUEUR --- */}
         <CompetitionListSection
-          title="Tes Participations"
+          title={DASHBOARD_UI.CARD.SECTIONS.PARTICIPATIONS}
           participations={sortedParticipations}
           user={user}
           emptyState={
             <EmptyState
               layout="dashed"
               icon={ICONS.EMPTY}
-              title="Aucune compétition"
-              message="Rejoins une arène !"
+              title={DASHBOARD_UI.CARD.EMPTY.TITLE}
+              message={DASHBOARD_UI.CARD.EMPTY.MESSAGE}
             />
           }
         />

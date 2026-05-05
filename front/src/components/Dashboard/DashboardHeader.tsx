@@ -1,4 +1,5 @@
 import { Text } from '@/components/UI';
+import { DASHBOARD_UI } from '@/constants';
 
 interface DashboardHeaderProps {
   displayName?: string;
@@ -18,11 +19,31 @@ export const DashboardHeader = ({
   stats,
 }: DashboardHeaderProps) => {
   const statItems = [
-    { label: 'En cours', val: stats.active, color: 'text-success-bright' },
-    { label: 'À venir', val: stats.upcoming, color: 'text-info-bright' },
-    { label: 'Terminées', val: stats.finished, color: 'text-danger-bright' },
-    { label: 'Créées', val: stats.created, color: 'text-gold' },
-    { label: 'Arbitrées', val: stats.refereed, color: 'text-info-bright' },
+    {
+      label: DASHBOARD_UI.HEADER.STATS.ACTIVE,
+      val: stats.active,
+      color: 'text-success-bright',
+    },
+    {
+      label: DASHBOARD_UI.HEADER.STATS.UPCOMING,
+      val: stats.upcoming,
+      color: 'text-info-bright',
+    },
+    {
+      label: DASHBOARD_UI.HEADER.STATS.FINISHED,
+      val: stats.finished,
+      color: 'text-danger-bright',
+    },
+    {
+      label: DASHBOARD_UI.HEADER.STATS.CREATED,
+      val: stats.created,
+      color: 'text-gold',
+    },
+    {
+      label: DASHBOARD_UI.HEADER.STATS.REFEREED,
+      val: stats.refereed,
+      color: 'text-info-bright',
+    },
   ];
 
   return (
@@ -34,7 +55,7 @@ export const DashboardHeader = ({
             variant="h1"
             className="text-white normal-case"
           >
-            Salut{' '}
+            {DASHBOARD_UI.HEADER.GREETING}
             {displayName && (
               <>
                 , <span className="text-gold">{displayName}</span>
@@ -45,16 +66,14 @@ export const DashboardHeader = ({
 
         <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
           <Text variant="caption" className="text-white/40">
-            {totalParticipations > 0
-              ? `${totalParticipations} participation${totalParticipations > 1 ? 's' : ''} au total`
-              : 'Aucune compétition active'}
+            {DASHBOARD_UI.HEADER.TOTAL_PARTICIPATIONS(totalParticipations)}
           </Text>
         </div>
 
         <div
           className="flex justify-center gap-3"
           role="list"
-          aria-label="Résumé de vos compétitions"
+          aria-label={DASHBOARD_UI.HEADER.ARIA.SUMMARY}
         >
           {statItems.map((s) => (
             <div
@@ -72,8 +91,7 @@ export const DashboardHeader = ({
                 {s.label}
               </Text>
               <span className="sr-only">
-                {s.val} {s.val > 1 ? 'compétitions' : 'compétition'}{' '}
-                {s.label.toLowerCase()}
+                {DASHBOARD_UI.HEADER.ARIA.STAT_DETAIL(s.val, s.label)}
               </span>
             </div>
           ))}

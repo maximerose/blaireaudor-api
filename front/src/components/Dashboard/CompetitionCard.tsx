@@ -11,6 +11,7 @@ import {
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation, User } from '@/types';
+import { DASHBOARD_UI, ICONS } from '@/constants';
 
 interface CompetitionCardProps {
   participation?: Participation;
@@ -63,7 +64,7 @@ export const CompetitionCard = ({
             {competition.name}
           </Text>
           <Text variant="micro" className="text-gold/40 mt-0.5">
-            <span className="sr-only">Dates : </span>
+            <span className="sr-only">{DASHBOARD_UI.CARD.ARIA.DATES}</span>
             {dateText}
           </Text>
         </div>
@@ -75,10 +76,10 @@ export const CompetitionCard = ({
             variant="micro"
             className="opacity-10 text-white uppercase font-black"
           >
-            Accès
+            {DASHBOARD_UI.CARD.ACCESS_LABEL}
           </Text>
           <Text variant="mono" className="text-gold/60 uppercase">
-            <span className="sr-only">Code d'accès : </span>
+            <span className="sr-only">{DASHBOARD_UI.CARD.ARIA.JOIN_CODE}</span>
             {competition.join_code}
           </Text>
         </div>
@@ -90,13 +91,15 @@ export const CompetitionCard = ({
               ? 'border-danger-bright/20 bg-danger/5'
               : 'border-white/5 bg-white/2',
           )}
-          aria-label={`${competition.participants_count} participants`}
+          aria-label={DASHBOARD_UI.CARD.ARIA.PARTICIPANTS(
+            competition.participants_count,
+          )}
         >
           <Text
             variant="micro"
             className="opacity-10 text-white uppercase font-black"
           >
-            Participants
+            {DASHBOARD_UI.CARD.PARTICIPANTS_LABEL}
           </Text>
           <Text
             variant="micro"
@@ -106,10 +109,10 @@ export const CompetitionCard = ({
             )}
           >
             {hasNoParticipants
-              ? 'Arène vide'
-              : `${competition.participants_count} ${
-                  competition.participants_count > 1 ? 'Blaireaux' : 'Blaireau'
-                }`}
+              ? DASHBOARD_UI.CARD.EMPTY_COMPETITION
+              : DASHBOARD_UI.CARD.PARTICIPANT_COUNT(
+                  competition.participants_count,
+                )}
           </Text>
         </div>
       </div>
@@ -122,14 +125,16 @@ export const CompetitionCard = ({
                 variant="micro"
                 className="opacity-20 text-white uppercase font-black"
               >
-                {shouldReveal ? 'Résultats' : 'Brouillard de guerre'}
+                {shouldReveal
+                  ? DASHBOARD_UI.CARD.RESULTS
+                  : DASHBOARD_UI.CARD.FOG_OF_WAR}
               </Text>
               <div className="flex items-center gap-4">
                 {(shouldReveal && score !== undefined && rank !== undefined) ||
                 isManager ? (
                   <div
                     className="flex items-center gap-4"
-                    aria-label={`Rang : ${rank}, Score : ${score}`}
+                    aria-label={DASHBOARD_UI.CARD.ARIA.RANK_SCORE(rank, score)}
                   >
                     <RankedScore score={score} rank={rank} />
                     <RankBadge rank={rank} />
@@ -139,9 +144,9 @@ export const CompetitionCard = ({
                     variant="micro"
                     className="opacity-40 italic flex items-center gap-2 text-white"
                   >
-                    Scores masqués{' '}
+                    {DASHBOARD_UI.CARD.MASKED_SCORES}
                     <span aria-hidden="true" className="text-xs">
-                      🌫️
+                      {ICONS.FOG_ACTIVE}
                     </span>
                   </Text>
                 )}
@@ -153,10 +158,10 @@ export const CompetitionCard = ({
                 variant="micro"
                 className="text-gold/40 uppercase font-black"
               >
-                Rôle Officiel
+                {DASHBOARD_UI.CARD.OFFICIAL_ROLE}
               </Text>
               <Text variant="micro" className="text-white/30 italic">
-                Mode spectateur / gestion
+                {DASHBOARD_UI.CARD.SPECTATOR_MODE}
               </Text>
             </div>
           )}
@@ -170,13 +175,15 @@ export const CompetitionCard = ({
           size="sm"
           fullWidth
           className="sm:w-auto"
-          aria-label={`Entrer dans l'arène ${competition.name}`}
+          aria-label={DASHBOARD_UI.CARD.ARIA.ENTER_COMPETITION(
+            competition.name,
+          )}
         >
           {competition.is_finished
-            ? 'Voir le classement'
+            ? DASHBOARD_UI.BUTTONS.VIEW_COMPETITION
             : isManager
-              ? 'Gérer le tournoi'
-              : 'Entrer dans le tournoi'}
+              ? DASHBOARD_UI.BUTTONS.MANAGE_COMPETITION
+              : DASHBOARD_UI.BUTTONS.ENTER_COMPETITION}
         </Button>
       </div>
     </Card>
