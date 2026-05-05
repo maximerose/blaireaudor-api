@@ -65,8 +65,8 @@ export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
             <EmptyState
               layout="card"
               icon={ICONS.EMPTY}
-              title={COMPETITION_UI.DETAIL.TABLE.EMPTY_ACTIONS_TITLE}
-              message={COMPETITION_UI.DETAIL.TABLE.EMPTY_ACTIONS_SUBTITILE}
+              title={COMPETITION_UI.ACTIONS.TABLE.EMPTY_ACTIONS_TITLE}
+              message={COMPETITION_UI.ACTIONS.TABLE.EMPTY_ACTIONS_SUBTITILE}
             />
           )}
         </Card>

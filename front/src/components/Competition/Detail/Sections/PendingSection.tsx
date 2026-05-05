@@ -1,7 +1,7 @@
 import { Card, Text, Badge } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 
 export const PendingSection = ({
   myPending,
@@ -19,7 +19,7 @@ export const PendingSection = ({
           variant="caption"
           className="text-gold uppercase font-bold tracking-widest opacity-80"
         >
-          {ICONS.REFEREE} Actions en attente
+          {COMPETITION_UI.ACTIONS.PENDING.TITLE}
         </Text>
         <Badge variant="gold" isPulse>
           {total}
@@ -30,12 +30,12 @@ export const PendingSection = ({
       <div className="space-y-8">
         {[
           {
-            label: 'Mes envois',
+            label: COMPETITION_UI.ACTIONS.PENDING.MY_SUBMISSIONS,
             data: myPending,
             border: 'border-gold/20 shadow-gold/5',
           },
           {
-            label: 'Signalements des autres',
+            label: COMPETITION_UI.ACTIONS.PENDING.MY_SUBMISSIONS,
             data: othersPending,
             border: 'border-white/5',
           },

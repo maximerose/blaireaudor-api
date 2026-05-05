@@ -41,7 +41,7 @@ export const COMPETITION_UI = {
         `${ICONS.DANGER} ${count} actions en attente`,
     },
   },
-  DETAIL: {
+  ACTIONS: {
     TABLE: {
       COLUMN_DATE: 'Date',
       COLUMN_PLAYER: 'Joueur',
@@ -49,6 +49,11 @@ export const COMPETITION_UI = {
       COLUMN_POINTS: 'Points',
       EMPTY_ACTIONS_TITLE: 'Journal vide',
       EMPTY_ACTIONS_SUBTITILE: 'Aucune action validée...',
+    },
+    PENDING: {
+      TITLE: `${ICONS.REFEREE} Actions en attente`,
+      MY_SUBMISSIONS: 'Mes envois',
+      OTHER_SUBMISSIONS: 'Signalements des autres',
     },
   },
 } as const;
