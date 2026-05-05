@@ -55,5 +55,7 @@ export const COMPETITION_UI = {
       MY_SUBMISSIONS: 'Mes envois',
       OTHER_SUBMISSIONS: 'Signalements des autres',
     },
+    REPORTED_BY: 'Dénoncé par : ',
+    POINTS_SHORT: 'pts',
   },
 } as const;

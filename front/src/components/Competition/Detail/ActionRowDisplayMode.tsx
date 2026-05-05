@@ -1,5 +1,5 @@
 import { Text } from '@/components/UI';
-import { ICONS } from '@/constants';
+import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
 import { useActionRow, useCompetition } from '@/hooks';
 import { ActionStatus } from '@/types';
 import { cn, formatShortDate } from '@/utils';
@@ -44,7 +44,7 @@ export const ActionRowDisplayMode = ({
               variant="body"
               className="text-[8px] md:text-[10px] text-white/50"
             >
-              Dénoncé par :{' '}
+              {COMPETITION_UI.ACTIONS.REPORTED_BY}
               <span className="text-info-bright">{action.creator_name}</span>
             </Text>
           )}
@@ -58,13 +58,13 @@ export const ActionRowDisplayMode = ({
                 }
                 className="text-[10px] font-black text-success hover:underline uppercase tracking-widest"
               >
-                Accepter {ICONS.CHECK}
+                {BUTTONS.ACCEPT} {ICONS.CHECK}
               </button>
               <button
                 onClick={() => onStatusChange(action.id, ActionStatus.REJECTED)}
                 className="text-[10px] font-black text-danger hover:underline uppercase tracking-widest"
               >
-                Refuser {ICONS.CANCEL}
+                {BUTTONS.REJECT} {ICONS.CANCEL}
               </button>
             </div>
           )}
@@ -75,14 +75,17 @@ export const ActionRowDisplayMode = ({
       <div className="col-span-3 md:col-span-2 text-right flex flex-col items-end">
         {multiplier > 1 && !hidePoints && (
           <Text variant="mono" className="text-[9px] line-through opacity-30">
-            {action.points} pts
+            {action.points} {COMPETITION_UI.ACTIONS.POINTS_SHORT}
           </Text>
         )}
         <Text
           variant="mono"
           className={cn('text-sm md:text-base font-black', displayColor)}
         >
-          {pointsDisplay} <span className="text-[8px] opacity-50">pts</span>
+          {pointsDisplay}{' '}
+          <span className="text-[8px] opacity-50">
+            {COMPETITION_UI.ACTIONS.POINTS_SHORT}
+          </span>
         </Text>
       </div>
 

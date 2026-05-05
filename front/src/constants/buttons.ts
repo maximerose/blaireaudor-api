@@ -6,6 +6,8 @@ export const BUTTONS = {
   CANCEL: 'Annuler',
   ADD: 'Ajouter',
   MODIFY: 'Modifier',
+  ACCEPT: 'Accepter',
+  REJECT: 'Refuser',
 
   // Navigation
   CONTINUE: 'Continuer →',
