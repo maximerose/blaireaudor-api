@@ -168,8 +168,9 @@ export const FORM = {
    */
   MODALS: {
     JOIN: {
-      INPUT_LABEL: "Code de l'arène",
-      SUBMIT: "Entrer dans l'arène",
+      INPUT_LABEL: "Code d'accès",
+      PLACEHOLDER: 'Saisis le code de la compétition',
+      SUBMIT: 'Entrer dans la compétition',
     },
   },
 } as const;
