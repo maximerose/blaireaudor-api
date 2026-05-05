@@ -7,6 +7,7 @@ export const BUTTONS = {
   ADD: 'Ajouter',
   MODIFY: 'Modifier',
   ACCEPT: 'Accepter',
+  REMOVE: 'Retirer',
   REJECT: 'Refuser',
   DELETE: 'Supprimer',
 

@@ -1,4 +1,5 @@
 import { Card, Text, PlayerSearchResultItem } from '@/components/UI';
+import { FORM } from '@/constants';
 
 interface PlayerSearchResultsDropdownProps {
   results: any[];
@@ -27,10 +28,10 @@ export const PlayerSearchResultsDropdown = ({
         >
           <div className="flex flex-col text-left">
             <Text variant="micro" className="text-gold opacity-100">
-              Créer le profil "{searchTerm}"
+              {FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
             </Text>
             <Text variant="micro" className="italic opacity-30">
-              Nouveau joueur
+              {FORM.ADMIN.ENROLLMENT.NEW_PLAYER_HINT}
             </Text>
           </div>
           <div className="w-6 h-6 rounded-full border border-gold/20 flex items-center justify-center text-gold group-hover:scale-110 transition-default">

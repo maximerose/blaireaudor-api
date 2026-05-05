@@ -1,5 +1,5 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
-import { COMPETITION_UI, FORM, ICONS } from '@/constants';
+import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
 import type { Competition, Player } from '@/types';
 
@@ -56,7 +56,7 @@ export const RefereeManagement = ({
                 {ICONS.REFEREE} {ref.name}{' '}
                 {isMe && (
                   <span className="text-[9px] opacity-70 uppercase tracking-wider">
-                    {COMPETITION_UI.ADMIN.REFEREE.YOU}
+                    ({UI.ME})
                   </span>
                 )}
               </span>

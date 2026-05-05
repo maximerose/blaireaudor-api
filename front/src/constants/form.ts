@@ -155,6 +155,9 @@ export const FORM = {
     ENROLLMENT: {
       TITLE: 'Nouveau recrutement',
       BUTTON_OPEN: '+ Ajouter un joueur',
+      NEW_PLAYER_HINT: 'Nouveau joueur',
+      SELECTED_PLAYERS: 'Joueurs sélectionnés',
+      NO_PLAYER_SELECTED_HINT: 'Aucun joueur sélectionné',
       CREATE_NEW: (name: string) => `+ créer "${name}"`,
       SAVE_COUNT: (count: number) => `Recruter(${count})`,
     },

@@ -1,5 +1,5 @@
 import { Badge, Text } from '@/components/UI';
-import { ICONS } from '@/constants';
+import { BUTTONS, ICONS } from '@/constants';
 
 interface SelectedPlayerBadgeProps {
   player: any;
@@ -24,7 +24,7 @@ export const SelectedPlayerBadge = ({
         onClick={() => onRemove(player.id)}
         className="w-5 h-5 rounded-full flex items-center justify-center text-gold/40 hover:bg-danger/20 hover:text-danger-bright transition-default cursor-pointer"
         aria-label={`Retirer ${player.display_name}`}
-        title="Retirer"
+        title={BUTTONS.REMOVE}
       >
         <span aria-hidden="true">{ICONS.CANCEL}</span>
       </button>

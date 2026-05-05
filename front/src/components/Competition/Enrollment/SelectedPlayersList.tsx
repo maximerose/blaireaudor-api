@@ -1,5 +1,5 @@
 import { Badge, Text } from '@/components/UI';
-import { ICONS } from '@/constants';
+import { FORM, ICONS } from '@/constants';
 import { cn } from '@/utils';
 
 interface SelectedPlayersListProps {
@@ -20,7 +20,7 @@ export const SelectedPlayersList = ({
     )}
     role="list"
     aria-live="polite"
-    aria-label="Joueurs sélectionnés"
+    aria-label={FORM.ADMIN.ENROLLMENT.SELECTED_PLAYERS}
   >
     {participants.length > 0 ? (
       participants.map((p) => (
@@ -49,7 +49,7 @@ export const SelectedPlayersList = ({
       ))
     ) : (
       <Text variant="micro" className="m-auto opacity-20">
-        Aucun joueur sélectionné
+        {FORM.ADMIN.ENROLLMENT.NO_PLAYER_SELECTED_HINT}
       </Text>
     )}
   </div>
