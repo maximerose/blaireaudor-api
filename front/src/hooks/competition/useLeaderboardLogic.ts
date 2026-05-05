@@ -1,31 +1,25 @@
-import type { User } from '@/types';
+import type { Participation } from '@/types';
 import { useMemo } from 'react';
+import { useAuth } from '../auth/useAuth';
+import { getIdFromData } from '@/utils';
 
 export interface EnrichedLeaderboardItem {
-  id: string;
-  player: any;
-  score: number;
-  actions: any[];
   rank: number;
-  medal?: { icon: string; label: string };
   isMe: boolean;
   isExAequo: boolean;
 }
 
-export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
+export const useLeaderboardLogic = (participations: Participation[]) => {
+  const { user } = useAuth();
+
+  const currentPlayerId = user?.player?.id?.toString();
+
   return useMemo(() => {
-    const sortedData = [...data].sort((a, b) => {
+    const sortedData = [...participations].sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      const nameA = (
-        a.player.display_name ||
-        a.player.displayName ||
-        ''
-      ).toLowerCase();
-      const nameB = (
-        b.player.display_name ||
-        b.player.displayName ||
-        ''
-      ).toLowerCase();
+
+      const nameA = (a.player.display_name || '').toLowerCase();
+      const nameB = (b.player.display_name || '').toLowerCase();
       return nameA.localeCompare(nameB);
     });
 
@@ -49,9 +43,9 @@ export const useLeaderboardLogic = (data: any[], currentUser: User | null) => {
       return {
         ...item,
         rank: currentRank,
-        isMe: currentUser?.player?.username === item.player.username,
+        isMe: getIdFromData(item.player) === currentPlayerId,
         isExAequo: scoreCounts[item.score] > 1,
       } as EnrichedLeaderboardItem;
     });
-  }, [data, currentUser]);
+  }, [participations, currentPlayerId]);
 };
