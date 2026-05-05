@@ -4,7 +4,7 @@ import {
   CompetitionCountdown,
   ReportActionForm,
 } from '@/components/Competition';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 export const ReportingSection = ({
   competition,
@@ -28,13 +28,15 @@ export const ReportingSection = ({
           className="text-center p-4 border-dashed border-gold/10 max-w-md mx-auto"
         >
           <Text variant="h2" className="text-gold/30 italic font-medium">
-            L'heure de la délation n'a pas sonné...
+            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_TITLE}
           </Text>
           <Text variant="body" className="mt-2 opacity-60">
-            Ouverture{' '}
+            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_SUBTITLE}
             <CompetitionCountdown
               targetDate={competition.start_date}
-              elapsedText="lancée !"
+              elapsedText={
+                COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_ELAPSED
+              }
             />
           </Text>
         </Card>
@@ -56,11 +58,12 @@ export const ReportingSection = ({
               variant="caption"
               className="text-danger-bright font-black uppercase tracking-tighter"
             >
-              Attention : Multiplicateur x{todayBonus.multiplier} activé !
+              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_WARNING(
+                todayBonus.multiplier,
+              )}
             </Text>
             <Text as="p" variant="micro" className="opacity-70 leading-tight">
-              Indiquez le score de base de l'action, le bonus sera calculé
-              automatiquement dans le journal.
+              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
             </Text>
           </div>
           <span className="text-3xl">{ICONS.FIRE}</span>
@@ -77,7 +80,9 @@ export const ReportingSection = ({
           <span className="text-xl mr-4 group-hover:animate-bounce">
             {ICONS.ALARM}
           </span>
-          <span className="tracking-widest">Dénoncer un adversaire</span>
+          <span className="tracking-widest">
+            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
+          </span>
         </Button>
       ) : (
         <ReportActionForm

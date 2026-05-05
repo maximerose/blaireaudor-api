@@ -56,6 +56,16 @@ export const COMPETITION_UI = {
         REFEREE_LABEL: (count: number) => `Arbitre${count > 1 ? 's' : ''}`,
         MULTIPLIERS_SECTION_TITLE: `Calendrier des Bonus ${ICONS.FIRE}`,
       },
+      REPORTING: {
+        NOT_STARTED_TITLE: "L'heure de la délation n'a pas sonné...",
+        NOT_STARTED_SUBTITLE: 'Ouverture ',
+        NOT_STARTED_ELAPSED: 'lancée !',
+        BONUS_WARNING: (multiplier: number) =>
+          `Attention : Multiplicateur x${multiplier} activé !`,
+        BONUS_HINT:
+          "Indiquez le score de base de l'action, le bonus sera calculé automatiquement dans le journal.",
+        REPORT_BUTTON: 'Dénoncer un adversaire',
+      },
       LEADERBOARD: {
         TITLE: 'Classement',
         ARIA_TITLE: (competitionName?: string) =>

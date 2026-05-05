@@ -91,9 +91,9 @@ export const ReportActionForm = ({
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Points"
+                label={FORM.REPORT_ACTION.LABELS.POINTS}
                 type="number"
-                icon="⚡"
+                icon={ICONS.POINTS}
                 value={formData.points}
                 onChange={(e: any) =>
                   setFormData((p) => ({ ...p, points: e.target.value }))
