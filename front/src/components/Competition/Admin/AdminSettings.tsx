@@ -7,6 +7,7 @@ import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
 import { useState } from 'react';
 import { cn } from '@/utils';
 import { BonusDayManagement } from './BonusDayManagement';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 interface AdminSettingsProps {
   competition: any;
@@ -61,7 +62,10 @@ export const AdminSettings = ({
                   variant={isFogActive ? 'info' : 'ghost'}
                   className="text-[8px] py-0"
                 >
-                  Brouillard: {isFogActive ? 'Actif' : 'Inactif'}
+                  Brouillard:{' '}
+                  {isFogActive
+                    ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
+                    : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
                 </Badge>
                 <Badge variant="ghost" className="text-[8px] py-0">
                   {competition.referees?.length} Arbitre(s)
@@ -99,7 +103,7 @@ export const AdminSettings = ({
           {/* Section 1 : Configuration (Moins massive) */}
           <section className="space-y-3">
             <header className="flex items-center gap-2 opacity-40">
-              <span className="text-xs">⚙️</span>
+              <span className="text-xs">{ICONS.SETTINGS}</span>
               <Text
                 variant="micro"
                 className="uppercase font-bold tracking-tighter"

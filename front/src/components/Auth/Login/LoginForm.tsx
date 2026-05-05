@@ -34,9 +34,9 @@ const LoginForm = () => {
       <div className="space-y-4">
         <Input
           name="username"
-          label={FORM.LABELS.USERNAME}
+          label={FORM.AUTH.LABELS.USERNAME}
           icon="@"
-          placeholder={FORM.PLACEHOLDERS.USERNAME}
+          placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
           autoComplete="username"
           value={credentials.username}
           onChange={handleChange}
@@ -47,10 +47,10 @@ const LoginForm = () => {
 
         <Input
           name="password"
-          label={FORM.LABELS.PASSWORD}
+          label={FORM.AUTH.LABELS.PASSWORD}
           type="password"
           icon={ICONS.SECRET}
-          placeholder={FORM.PLACEHOLDERS.PASSWORD}
+          placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
           autoComplete="current-password"
           value={credentials.password}
           onChange={handleChange}

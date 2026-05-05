@@ -7,6 +7,7 @@ import {
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
+import { FORM } from '@/constants';
 
 export const InlineEnrollment = ({
   competition,
@@ -43,7 +44,7 @@ export const InlineEnrollment = ({
         className="border-dashed border-white/5 py-4 mt-4 transition-default hover:bg-white/5"
         aria-expanded="false"
       >
-        + Ajouter un joueur
+        {FORM.ADMIN.ENROLLMENT.BUTTON_OPEN}
       </Button>
     );
   }
@@ -57,7 +58,7 @@ export const InlineEnrollment = ({
     >
       <div className="flex justify-center items-center mb-4">
         <Text variant="caption" className="text-gold">
-          Nouveau recrutement
+          {FORM.ADMIN.ENROLLMENT.TITLE}
         </Text>
       </div>
 
@@ -65,8 +66,8 @@ export const InlineEnrollment = ({
         <Input
           autoFocus
           align="center"
-          label="Chercher un joueur"
-          placeholder="Nom du blaireau..."
+          label={FORM.PLAYER.LABELS.SEARCH_PLAYER}
+          placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
           value={searchTerm}
           onChange={(e: any) => setSearchTerm(e.target.value)}
           icon={isSearching ? '⏳' : '🔍'}
@@ -90,7 +91,7 @@ export const InlineEnrollment = ({
                 player={p}
                 role="option"
                 onClick={addExistingPlayer}
-                actionIcon="Ajouter"
+                actionIcon={FORM.SHARED.BUTTONS.ADD}
               />
             ))}
           </Card>
@@ -103,10 +104,10 @@ export const InlineEnrollment = ({
             fullWidth
             onClick={() => addNewPlayer(searchTerm)}
             className="border-dashed border-white/10 italic normal-case transition-default hover:border-gold/30"
-            aria-label={`Créer le nouveau joueur ${searchTerm}`}
+            aria-label={FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
           >
             <Text variant="micro" className="opacity-100">
-              + créer "{searchTerm}"
+              {FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
             </Text>
           </Button>
         )}
@@ -135,15 +136,15 @@ export const InlineEnrollment = ({
           disabled={newPlayers.length === 0}
           aria-live="polite"
         >
-          Recruter ({newPlayers.length})
+          {FORM.ADMIN.ENROLLMENT.SAVE_COUNT(newPlayers.length)}
         </Button>
         <Button
           variant="ghost"
           onClick={() => setIsOpen(false)}
           className="px-4 transition-default shrink-0"
-          aria-label="Annuler le recrutement"
+          aria-label={FORM.SHARED.BUTTONS.CANCEL}
         >
-          Annuler
+          {FORM.SHARED.BUTTONS.CANCEL}
         </Button>
       </div>
     </Card>

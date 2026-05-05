@@ -1,4 +1,5 @@
 import { Input, Button, Text, Card } from '@/components/UI';
+import { FORM, ICONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
 
@@ -25,14 +26,14 @@ export const CompetitionConfigStep = ({
   const toggles = [
     {
       id: 'fogOfWar',
-      label: 'Brouillard de guerre',
-      sub: 'Scores cachés pendant le tournoi',
+      label: FORM.COMPETITION.LABELS.FOG_OF_WAR,
+      sub: FORM.COMPETITION.HINTS.FOG_OF_WAR,
       active: formData.fogOfWar,
     },
     {
       id: 'participate',
-      label: 'Auto-inscription',
-      sub: 'Participer au tournoi en tant que joueur',
+      label: FORM.COMPETITION.LABELS.PARTICIPATE,
+      sub: FORM.COMPETITION.HINTS.PARTICIPATE,
       active: formData.participate,
     },
   ] as const;
@@ -41,17 +42,17 @@ export const CompetitionConfigStep = ({
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
         <Text variant="h2" className="italic">
-          L'Arène
+          {FORM.COMPETITION.STEPS.CONFIG.TITLE}
         </Text>
         <Text variant="caption" className="opacity-30">
-          Configuration initiale
+          {FORM.COMPETITION.STEPS.CONFIG.SUBTITLE}
         </Text>
       </div>
 
       <div className="space-y-4">
         <Input
-          label="Nom"
-          placeholder="Nom de la compétition..."
+          label={FORM.COMPETITION.LABELS.NAME}
+          placeholder={FORM.COMPETITION.PLACEHOLDERS.NAME}
           value={formData.name}
           onChange={(e: any) => updateField('name', e.target.value)}
           required
@@ -60,11 +61,11 @@ export const CompetitionConfigStep = ({
         <div className="space-y-1">
           <div className="relative flex items-center group">
             <Input
-              label="Code d'accès"
-              value={formData.joinCode}
+              label={FORM.COMPETITION.LABELS.JOIN_CODE}
+              value={formData.joinCode ?? ''}
               onChange={handleJoinCodeChange}
               align="center"
-              placeholder="Ex: BLAIR-2026"
+              placeholder={FORM.COMPETITION.PLACEHOLDERS.JOIN_CODE}
               renderRight={
                 <button
                   type="button"
@@ -76,9 +77,9 @@ export const CompetitionConfigStep = ({
                   )}
                 >
                   <span className="text-xs font-bold uppercase tracking-tighter">
-                    Auto
+                    {FORM.SHARED.BUTTONS.AUTO}
                   </span>
-                  <span className="text-sm">✨</span>
+                  <span className="text-sm">{ICONS.STARS}</span>
                 </button>
               }
             />
@@ -88,7 +89,7 @@ export const CompetitionConfigStep = ({
               variant="micro"
               className="italic opacity-30 text-center block"
             >
-              Vide = génération automatique ✨
+              {FORM.COMPETITION.HINTS.JOIN_CODE}
             </Text>
           )}
         </div>
@@ -100,7 +101,7 @@ export const CompetitionConfigStep = ({
               variant="caption"
               className="text-gold tracking-widest uppercase pl-1"
             >
-              Début
+              {FORM.COMPETITION.LABELS.START}
             </Text>
 
             <Input
@@ -125,7 +126,7 @@ export const CompetitionConfigStep = ({
                   formData.startFullDay ? 'text-white' : 'text-white/50'
                 }
               >
-                Journée complète
+                {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
               <div
                 className={cn(
@@ -161,7 +162,7 @@ export const CompetitionConfigStep = ({
               variant="caption"
               className="text-gold tracking-widest uppercase pl-1"
             >
-              Fin
+              {FORM.COMPETITION.LABELS.END}
             </Text>
 
             <Input
@@ -181,7 +182,7 @@ export const CompetitionConfigStep = ({
                 variant="micro"
                 className={formData.endFullDay ? 'text-white' : 'text-white/50'}
               >
-                Journée complète
+                {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
               <div
                 className={cn(
@@ -259,7 +260,7 @@ export const CompetitionConfigStep = ({
       </div>
 
       <Button fullWidth onClick={onNext} disabled={!canNext} size="lg">
-        Continuer →
+        {FORM.SHARED.BUTTONS.CONTINUE}
       </Button>
     </div>
   );

@@ -110,8 +110,8 @@ export const useRegistration = (redirectUrl: string) => {
   // TEXTE DYNAMIQUE DU BOUTON (Centralisé)
   const getSubmitButtonText = () => {
     if (isLoading) return AUTH_UI.REGISTER.LOADING_SUBMIT;
-    if (checkLoading) return FORM.HINTS.USERNAME_CHECK;
-    if (usernameStatus === 'taken') return FORM.HINTS.USERNAME_TAKEN;
+    if (checkLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
+    if (usernameStatus === 'taken') return FORM.AUTH.HINTS.USERNAME_TAKEN;
     if (usernameStatus === 'guest_exists') return AUTH_UI.GUEST_ALERT.TITLE;
     return AUTH_UI.REGISTER.SUBMIT;
   };

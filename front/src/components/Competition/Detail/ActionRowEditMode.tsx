@@ -1,4 +1,5 @@
 import { Input, Button } from '@/components/UI';
+import { FORM } from '@/constants';
 
 interface ActionRowEditModeProps {
   editData: { description: string; points: number | string };
@@ -18,8 +19,8 @@ export const ActionRowEditMode = ({
       {/* Input Description */}
       <div className="md:col-span-9">
         <Input
-          label="Description du méfait"
-          placeholder="Ex: A mangé le dernier cookie..."
+          label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
+          placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
           value={editData.description}
           onChange={(e: any) =>
             setEditData({ ...editData, description: e.target.value })
@@ -30,7 +31,7 @@ export const ActionRowEditMode = ({
       {/* Input Points */}
       <div className="md:col-span-3">
         <Input
-          label="Points"
+          label={FORM.REPORT_ACTION.LABELS.POINTS}
           type="number"
           value={editData.points}
           onChange={(e: any) =>
@@ -43,10 +44,10 @@ export const ActionRowEditMode = ({
     {/* Actions du formulaire */}
     <div className="flex justify-end gap-2 pt-2">
       <Button size="sm" variant="ghost" onClick={onCancel} type="button">
-        Annuler
+        {FORM.SHARED.BUTTONS.CANCEL}
       </Button>
       <Button size="sm" variant="primary" onClick={onSave} type="button">
-        Enregistrer les modifs 💾
+        {FORM.SHARED.BUTTONS.SAVE}
       </Button>
     </div>
   </div>

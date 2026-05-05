@@ -1,4 +1,5 @@
 import { Button, Text, Badge } from '@/components/UI';
+import { COMPETITION_UI, ICONS } from '@/constants';
 import { cn } from '@/utils';
 
 export const FogOfWarToggle = ({ isActive, onToggle, isLoading }: any) => (
@@ -19,26 +20,30 @@ export const FogOfWarToggle = ({ isActive, onToggle, isLoading }: any) => (
             isActive ? 'bg-gold text-black' : 'bg-white/5 text-white/20',
           )}
         >
-          {isActive ? '🌫️' : '👁️'}
+          {ICONS.FOG_STATUS(isActive)}
         </div>
         <div className="flex flex-col flex-1">
           <Text
             variant="h3"
             className="font-black uppercase text-[11px] leading-none tracking-tight"
           >
-            {isActive ? 'Lever le brouillard' : 'Activer le brouillard'}
+            {isActive
+              ? COMPETITION_UI.ADMIN.FOG.DISABLE
+              : COMPETITION_UI.ADMIN.FOG.ENABLE}
           </Text>
           <Text
             variant="body"
             className="text-[10px] opacity-60 font-normal italic mt-1 leading-tight"
           >
             {isActive
-              ? 'Rendre les scores visibles par tous'
-              : 'Cacher les scores pour le suspense'}
+              ? COMPETITION_UI.ADMIN.FOG.DESC_OFF
+              : COMPETITION_UI.ADMIN.FOG.DESC_ON}
           </Text>
         </div>
         <Badge variant={isActive ? 'success' : 'warning'}>
-          {isActive ? 'ACTIF' : 'OFF'}
+          {isActive
+            ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
+            : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
         </Badge>
       </div>
     </Button>

@@ -1,4 +1,5 @@
 import { Card, Text } from '@/components/UI';
+import { FORM } from '@/constants';
 
 interface PlayerDropdownListProps {
   filteredPlayers: any[];
@@ -36,7 +37,7 @@ export const PlayerDropdownList = ({
     ) : (
       <div className="p-4 text-center">
         <Text variant="micro" className="opacity-40 italic">
-          Aucun blaireau trouvé
+          {FORM.PLAYER.HINT.NOT_FOUND}
         </Text>
       </div>
     )}

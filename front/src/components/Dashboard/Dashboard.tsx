@@ -6,6 +6,7 @@ import {
   DashboardHeader,
   CompetitionListSection,
 } from '@/components/Dashboard';
+import { ICONS } from '@/constants';
 
 const Dashboard = () => {
   const {
@@ -62,7 +63,7 @@ const Dashboard = () => {
           emptyState={
             <EmptyState
               layout="dashed"
-              icon="🏜️"
+              icon={ICONS.EMPTY}
               title="Aucune compétition"
               message="Rejoins une arène !"
             />

@@ -4,6 +4,7 @@ import {
   CompetitionCountdown,
   ReportActionForm,
 } from '@/components/Competition';
+import { ICONS } from '@/constants';
 
 export const ReportingSection = ({
   competition,
@@ -48,7 +49,7 @@ export const ReportingSection = ({
           variant="dark"
           className="border-danger-bright/30 bg-danger-dark/20 p-4 flex items-center gap-4 animate-pulse"
         >
-          <span className="text-3xl">🔥</span>
+          <span className="text-3xl">{ICONS.FIRE}</span>
           <div className="flex-1">
             <Text
               as="p"
@@ -62,7 +63,7 @@ export const ReportingSection = ({
               automatiquement dans le journal.
             </Text>
           </div>
-          <span className="text-3xl">🔥</span>
+          <span className="text-3xl">{ICONS.FIRE}</span>
         </Card>
       )}
       {!isReporting ? (
@@ -73,7 +74,9 @@ export const ReportingSection = ({
           className="group"
           onClick={() => toggleReporting()}
         >
-          <span className="text-xl mr-4 group-hover:animate-bounce">🚨</span>
+          <span className="text-xl mr-4 group-hover:animate-bounce">
+            {ICONS.ALARM}
+          </span>
           <span className="tracking-widest">Dénoncer un adversaire</span>
         </Button>
       ) : (

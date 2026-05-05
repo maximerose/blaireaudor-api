@@ -1,4 +1,5 @@
 import { Badge, Text } from '@/components/UI';
+import { ICONS } from '@/constants';
 import { cn } from '@/utils';
 
 interface SelectedPlayersListProps {
@@ -41,7 +42,7 @@ export const SelectedPlayersList = ({
               aria-label={`Supprimer ${p.display_name}`}
               className="text-gold/40 hover:text-danger-bright transition-default text-[11px]"
             >
-              ✕
+              {ICONS.CANCEL}
             </button>
           )}
         </Badge>

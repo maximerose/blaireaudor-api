@@ -6,6 +6,7 @@ import {
   PendingSection,
   TableHeader,
 } from '@/components/Competition';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
   const {
@@ -63,9 +64,9 @@ export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
           {categories.validated.length === 0 && (
             <EmptyState
               layout="card"
-              icon="🏜️"
-              title="Journal vide"
-              message="Aucune action confirmée."
+              icon={ICONS.EMPTY}
+              title={COMPETITION_UI.DETAIL.TABLE.EMPTY_ACTIONS_TITLE}
+              message={COMPETITION_UI.DETAIL.TABLE.EMPTY_ACTIONS_SUBTITILE}
             />
           )}
         </Card>
@@ -78,7 +79,7 @@ export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
             variant="micro"
             className="mb-2 px-2 uppercase tracking-tighter italic"
           >
-            🗑️ Actions rejetées (Archive)
+            {ICONS.TRASH} Actions rejetées (Archive)
           </Text>
           <div className="divide-y divide-white/5 bg-black/20 rounded-xl overflow-hidden border border-white/5">
             {categories.rejected.map((action) => (

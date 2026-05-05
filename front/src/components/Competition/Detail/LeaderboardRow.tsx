@@ -3,6 +3,7 @@ import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
 import type { Competition } from '@/types';
+import { ICONS } from '@/constants';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   item: any;
@@ -99,7 +100,7 @@ export const LeaderboardRow = ({
             aria-label={`Supprimer la participation de ${playerName}`}
             title="Supprimer la participation"
           >
-            <span aria-hidden="true">✕</span>
+            <span aria-hidden="true">{ICONS.CANCEL}</span>
           </Button>
         )}
       </div>

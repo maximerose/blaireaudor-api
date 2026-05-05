@@ -37,21 +37,21 @@ const RegistrationForm = () => {
       <div className="space-y-4">
         {/* 2. Nom d'affichage */}
         <Input
-          label={FORM.LABELS.DISPLAY_NAME}
+          label={FORM.AUTH.LABELS.DISPLAY_NAME}
           type="text"
           autoComplete="name"
           value={formData.display_name || ''}
           onChange={handleDisplayNameChange}
           onBlur={handleDisplayNameBlur}
           disabled={isLoading}
-          placeholder={FORM.PLACEHOLDERS.DISPLAY_NAME}
+          placeholder={FORM.AUTH.PLACEHOLDERS.DISPLAY_NAME}
           required
         />
 
         {/* 3. Nom d'utilisateur & Aide au formatage */}
         <div className="space-y-1">
           <Input
-            label={FORM.LABELS.USERNAME}
+            label={FORM.AUTH.LABELS.USERNAME}
             icon="@"
             type="text"
             autoComplete="username"
@@ -59,7 +59,7 @@ const RegistrationForm = () => {
             onChange={handleUsernameChange}
             onFocus={handleUsernameFocus}
             onBlur={handleUsernameBlur}
-            placeholder={FORM.PLACEHOLDERS.USERNAME}
+            placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
             disabled={isLoading}
             required
             aria-describedby={
@@ -74,7 +74,7 @@ const RegistrationForm = () => {
               className="px-1 italic text-gold/60"
             >
               <span aria-hidden="true">{ICONS.HINT} </span>{' '}
-              {FORM.HINTS.USERNAME_HINT}
+              {FORM.AUTH.HINTS.USERNAME_HINT}
             </Text>
           )}
         </div>
@@ -88,7 +88,7 @@ const RegistrationForm = () => {
               variant="micro"
               className="text-gold animate-pulse text-center"
             >
-              {FORM.HINTS.USERNAME_CHECK}
+              {FORM.AUTH.HINTS.USERNAME_CHECK}
             </Text>
           ) : (
             <Text
@@ -106,8 +106,8 @@ const RegistrationForm = () => {
                   : `${ICONS.FAILURE} `}
               </span>
               {usernameStatus === 'available'
-                ? FORM.HINTS.USERNAME_AVAILABLE
-                : FORM.HINTS.USERNAME_TAKEN}
+                ? FORM.AUTH.HINTS.USERNAME_AVAILABLE
+                : FORM.AUTH.HINTS.USERNAME_TAKEN}
             </Text>
           )}
         </div>
@@ -124,13 +124,13 @@ const RegistrationForm = () => {
 
       {/* 6. Mot de passe */}
       <Input
-        label={FORM.LABELS.PASSWORD}
+        label={FORM.AUTH.LABELS.PASSWORD}
         type="password"
         autoComplete="new-password"
         value={formData.plain_password || ''}
         onChange={handlePasswordChange}
         disabled={isLoading}
-        placeholder={FORM.PLACEHOLDERS.PASSWORD}
+        placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
         required
       />
 

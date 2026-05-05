@@ -30,8 +30,10 @@ export const formatJoinCode = (text: string): string => {
 /**
  * Nettoie définitivement le code : enlève les tirets qui traînent au début/fin.
  */
-export const cleanJoinCode = (text: string): string => {
-  return finalizeSlug(text.toLowerCase()).toUpperCase();
+export const cleanJoinCode = (text: string | null): string | null => {
+  if (!text) return null;
+  const cleaned = finalizeSlug(text.toLowerCase()).toUpperCase();
+  return cleaned === '' ? null : cleaned;
 };
 
 export const generateClientSideCode = () => {

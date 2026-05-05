@@ -1,4 +1,5 @@
 import { Text } from '@/components/UI';
+import { ICONS } from '@/constants';
 import { useActionRow, useCompetition } from '@/hooks';
 import { ActionStatus } from '@/types';
 import { cn, formatShortDate } from '@/utils';
@@ -57,13 +58,13 @@ export const ActionRowDisplayMode = ({
                 }
                 className="text-[10px] font-black text-success hover:underline uppercase tracking-widest"
               >
-                Accepter ✓
+                Accepter {ICONS.CHECK}
               </button>
               <button
                 onClick={() => onStatusChange(action.id, ActionStatus.REJECTED)}
                 className="text-[10px] font-black text-danger hover:underline uppercase tracking-widest"
               >
-                Refuser ✕
+                Refuser {ICONS.CANCEL}
               </button>
             </div>
           )}
@@ -91,7 +92,7 @@ export const ActionRowDisplayMode = ({
           onClick={onEdit}
           className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-default"
         >
-          ✏️
+          {ICONS.EDIT}
         </button>
       )}
     </div>

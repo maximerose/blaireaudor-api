@@ -1,6 +1,7 @@
 import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
+import { ICONS } from '@/constants';
 
 interface LeaderboardProps {
   data: any[];
@@ -42,7 +43,7 @@ export const Leaderboard = ({
             variant="micro"
             className="text-gold uppercase font-black tracking-widest animate-pulse"
           >
-            🌫️ Brouillard de guerre actif
+            {ICONS.FOG_ACTIVE} Brouillard de guerre actif
           </Text>
         </div>
       )}
@@ -63,7 +64,7 @@ export const Leaderboard = ({
       {enrichedData.length === 0 && (
         <EmptyState
           layout="card"
-          icon="🏜️"
+          icon={ICONS.EMPTY}
           title="No man's land"
           message="L'arène est déserte... Aucun blaireau n'a osé relever le défi pour le moment."
           role="status"

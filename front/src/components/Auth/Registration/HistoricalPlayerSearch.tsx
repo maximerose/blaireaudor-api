@@ -48,7 +48,7 @@ export const HistoricalPlayerSearch = ({
     <div className="relative mb-8" ref={searchContainerRef}>
       <Input
         label={AUTH_UI.HISTORICAL.LABEL}
-        placeholder={FORM.PLACEHOLDERS.SEARCH_PLAYER}
+        placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         icon={searching ? ICONS.LOADING : ICONS.SEARCH}
@@ -84,7 +84,7 @@ export const HistoricalPlayerSearch = ({
             aria-label={AUTH_UI.HISTORICAL.CLOSE_SEARCH}
           >
             <Text variant="micro" className="text-gold opacity-100">
-              <span aria-hidden="true">{ICONS.CLOSE}</span>{' '}
+              <span aria-hidden="true">{ICONS.CANCEL}</span>{' '}
               {AUTH_UI.HISTORICAL.CLOSE_SEARCH}
             </Text>
           </button>

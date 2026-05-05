@@ -1,3 +1,5 @@
+import { ICONS } from '@/constants';
+
 export const getRankTextColor = (rank: number) => {
   if (rank === 1) return 'text-[#FFD700]'; // Or
   if (rank === 2) return 'text-[#C0C0C0]'; // Argent
@@ -25,9 +27,9 @@ export const getRankAnimation = (rank: number) => {
 };
 
 export const getRankMedal = (rank: number) => {
-  if (rank === 1) return '🥇';
-  if (rank === 2) return '🥈';
-  if (rank === 3) return '🥉';
+  if (rank === 1) return ICONS.MEDALS.GOLD;
+  if (rank === 2) return ICONS.MEDALS.SILVER;
+  if (rank === 3) return ICONS.MEDALS.BRONZE;
   return null;
 };
 

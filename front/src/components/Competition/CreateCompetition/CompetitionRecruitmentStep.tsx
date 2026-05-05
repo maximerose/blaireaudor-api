@@ -3,6 +3,7 @@ import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
+import { FORM, ICONS } from '@/constants';
 
 interface RecruitmentStepProps {
   players: any;
@@ -24,7 +25,10 @@ export const CompetitionRecruitmentStep = ({
     <div className="space-y-6 animate-slide-up">
       <div className="text-center">
         <Text variant="h2" className="italic">
-          Recrutement
+          {FORM.COMPETITION.STEPS.RECRUITMENT.TITLE}
+        </Text>
+        <Text variant="caption" className="opacity-30">
+          {FORM.COMPETITION.STEPS.RECRUITMENT.SUBTITLE}
         </Text>
       </div>
 
@@ -32,13 +36,13 @@ export const CompetitionRecruitmentStep = ({
         <Input
           autoFocus
           align="center"
-          placeholder="Chercher ou créer un joueur..."
+          placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
           value={searchTerm}
           onChange={(e: any) => {
             players.setSearchTerm(e.target.value);
             players.search(e.target.value);
           }}
-          icon={players.searching ? '⏳' : '🔍'}
+          icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
         />
 
         {searchTerm.length >= 1 && (
@@ -64,10 +68,10 @@ export const CompetitionRecruitmentStep = ({
 
       <div className="flex gap-2">
         <Button variant="ghost" onClick={onBack} className="px-6" size="md">
-          Précédent
+          {FORM.SHARED.BUTTONS.PREVIOUS}
         </Button>
         <Button onClick={onNext} size="md" className="flex-1">
-          Continuer →
+          {FORM.SHARED.BUTTONS.CONTINUE}
         </Button>
       </div>
     </div>

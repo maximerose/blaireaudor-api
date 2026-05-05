@@ -6,6 +6,7 @@ import {
 import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
 import type { CompetitionFormData } from '@/types';
+import { FORM, ICONS } from '@/constants';
 
 interface RefereeStepProps {
   formData: CompetitionFormData;
@@ -43,23 +44,23 @@ export const CompetitionRefereeStep = ({
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
         <Text variant="h2" className="italic">
-          Arbitrage
+          {FORM.COMPETITION.STEPS.REFEREE.TITLE}
         </Text>
         <Text variant="caption" className="opacity-30">
-          Recherche un arbitre ou sélectionne un joueur
+          {FORM.COMPETITION.STEPS.REFEREE.SUBTITLE}
         </Text>
       </div>
 
       <div className="relative z-10">
         <Input
           align="center"
-          placeholder="Chercher un arbitre externe..."
+          placeholder={FORM.COMPETITION.PLACEHOLDERS.EXTERNAL_REFEREE}
           value={searchTerm}
           onChange={(e: any) => {
             setSearchTerm(e.target.value);
             search(e.target.value);
           }}
-          icon={searching ? '⏳' : '🔍'}
+          icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         />
 
         {searchTerm.length >= 1 && (
@@ -81,7 +82,7 @@ export const CompetitionRefereeStep = ({
             variant="micro"
             className="text-gold uppercase tracking-widest pl-1"
           >
-            Arbitre Principal
+            {FORM.COMPETITION.LABELS.MAIN_REFEREE}
           </Text>
           <Card
             variant="dark"
@@ -97,7 +98,7 @@ export const CompetitionRefereeStep = ({
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm">
-                👑
+                {ICONS.CREATOR}
               </div>
               <Text
                 variant="body"
@@ -107,7 +108,7 @@ export const CompetitionRefereeStep = ({
                     : 'text-white'
                 }
               >
-                Toi ({user?.player?.display_name})
+                Moi ({user?.player?.display_name})
               </Text>
             </div>
             <div
@@ -119,7 +120,7 @@ export const CompetitionRefereeStep = ({
               )}
             >
               {formData.isCreatorReferee && (
-                <span className="text-xs font-black">✓</span>
+                <span className="text-xs font-black">{ICONS.CHECK}</span>
               )}
             </div>
           </Card>
@@ -131,7 +132,7 @@ export const CompetitionRefereeStep = ({
               variant="micro"
               className="text-white/50 uppercase tracking-widest pl-1"
             >
-              Arbitres Externes
+              {FORM.COMPETITION.LABELS.EXTERNAL_REFEREES}
             </Text>
             <SelectedPlayersList
               participants={externalReferees}
@@ -146,7 +147,7 @@ export const CompetitionRefereeStep = ({
               variant="micro"
               className="text-white/50 uppercase tracking-widest pl-1"
             >
-              Joueurs (clic pour nommer arbitre)
+              {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
             </Text>
             {formData.players.map((player: any) => {
               const isRef = formData.referees.some(
@@ -166,7 +167,7 @@ export const CompetitionRefereeStep = ({
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm">
-                      {isRef ? '⚖️' : '👤'}
+                      {isRef ? ICONS.REFEREE : ICONS.PLAYER}
                     </div>
                     <Text
                       variant="body"
@@ -183,7 +184,9 @@ export const CompetitionRefereeStep = ({
                         : 'border-white/20',
                     )}
                   >
-                    {isRef && <span className="text-xs font-black">✓</span>}
+                    {isRef && (
+                      <span className="text-xs font-black">{ICONS.CHECK}</span>
+                    )}
                   </div>
                 </Card>
               );
@@ -198,7 +201,7 @@ export const CompetitionRefereeStep = ({
           variant="caption"
           className="text-danger-bright text-center block mt-2 animate-fade-in font-bold"
         >
-          ⚠️ Tu dois désigner au moins un arbitre.
+          {FORM.COMPETITION.HINTS.REFEREE}
         </Text>
       )}
 
@@ -210,9 +213,9 @@ export const CompetitionRefereeStep = ({
           className="px-6"
           size="md"
         >
-          Précédent
+          {FORM.SHARED.BUTTONS.PREVIOUS}
         </Button>
-        {/* ✨ BOUTON DÉSACTIVÉ SI hasNoReferee EST TRUE ✨ */}
+        {/* ✨ BOUTON DÉSACTIVÉ SI hasNoReferee EST TRUE */}
         <Button
           onClick={onSubmit}
           isLoading={loading}
@@ -220,7 +223,7 @@ export const CompetitionRefereeStep = ({
           size="md"
           className="flex-1"
         >
-          Créer l'arène ✨
+          {FORM.COMPETITION.BUTTONS.CREATE}
         </Button>
       </div>
     </div>

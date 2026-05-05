@@ -2,6 +2,7 @@ import { useJoinCompetitionModal } from '@/hooks';
 import { Button, Input, Card, Text } from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
 import { preventDefault } from '@/utils';
+import { FORM, ICONS } from '@/constants';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
@@ -30,8 +31,8 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
         <form onSubmit={preventDefault(handleSubmit)} className="space-y-8">
           <div className="space-y-3">
             <Input
-              label="Code de l'arène"
-              placeholder="BLAIR-2026"
+              label={FORM.MODALS.JOIN.INPUT_LABEL}
+              placeholder={FORM.COMPETITION.PLACEHOLDERS.JOIN_CODE}
               value={code}
               onChange={handleCodeChange}
               className="text-center font-mono font-black tracking-[0.2em] text-xl uppercase"
@@ -49,7 +50,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
                 variant="micro"
                 className="text-danger-bright text-center animate-pulse"
               >
-                ⚠️ {error}
+                {ICONS.DANGER} {error}
               </Text>
             )}
           </div>
@@ -62,7 +63,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               size="lg"
               className="transition-default"
             >
-              Entrer dans l'arène
+              {FORM.MODALS.JOIN.SUBMIT}
             </Button>
 
             <Button
@@ -72,7 +73,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               className="text-white/20 hover:text-white/50 transition-default"
               aria-label="Fermer la modale"
             >
-              Fermer
+              {FORM.SHARED.BUTTONS.CANCEL}
             </Button>
           </div>
         </form>

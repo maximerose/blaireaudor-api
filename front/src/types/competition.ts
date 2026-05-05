@@ -24,7 +24,7 @@ export interface CompetitionFormData {
   endDate: string;
   endTime: string;
   endFullDay: boolean;
-  joinCode: string;
+  joinCode: string | null;
   participate: boolean;
   fogOfWar: boolean;
   isCreatorReferee: boolean;

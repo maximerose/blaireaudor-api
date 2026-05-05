@@ -1,6 +1,8 @@
 import { Text, Input, Button, Badge } from '@/components/UI';
 import { formatShortDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
+import { COMPETITION_UI, FORM, ICONS } from '@/constants';
+import type { BonusDay } from '@/types';
 
 export const BonusDayManagement = () => {
   const {
@@ -20,10 +22,10 @@ export const BonusDayManagement = () => {
     <div className="space-y-6 pt-6 border-t border-white/5">
       <header className="flex flex-col gap-1">
         <Text variant="h3" className="text-gold italic">
-          🔥 Multiplicateurs
+          {COMPETITION_UI.ADMIN.BONUS.TITLE}
         </Text>
         <Text variant="micro" className="opacity-30">
-          Multipliez les points de la journée.
+          {COMPETITION_UI.ADMIN.BONUS.SUBTITLE}
         </Text>
       </header>
 
@@ -31,7 +33,7 @@ export const BonusDayManagement = () => {
         <div className="flex-1">
           <Input
             type="date"
-            label="Choisir une date"
+            label={FORM.SHARED.LABELS.DATE}
             value={newDate}
             min={minDate}
             max={maxDate}
@@ -43,19 +45,19 @@ export const BonusDayManagement = () => {
         <div className="w-24">
           <Input
             type="number"
-            label="Coeff."
+            label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
             min={2}
             value={multiplier}
             onChange={(e: any) => setMultiplier(parseInt(e.target.value))}
           />
         </div>
         <Button onClick={handleAdd} isLoading={isAdding} disabled={!newDate}>
-          Ajouter
+          {FORM.SHARED.BUTTONS.ADD}
         </Button>
       </div>
 
       <div className="flex flex-wrap justify-center gap-2">
-        {bonusDays.map((bd) => (
+        {bonusDays.map((bd: BonusDay) => (
           <Badge key={bd.id} variant="gold" className="pl-3 pr-1 py-1 gap-3">
             <span className="font-mono text-[10px]">
               {formatShortDate(bd.date)} —{' '}
@@ -66,14 +68,14 @@ export const BonusDayManagement = () => {
               onClick={() => deleteBonus(bd.id)}
               className="w-5 h-5 flex items-center justify-center rounded-md bg-danger/20 text-danger-bright hover:bg-danger hover:text-white transition-default"
             >
-              ✕
+              {ICONS.CANCEL}
             </button>
           </Badge>
         ))}
 
         {bonusDays.length === 0 && (
           <Text variant="micro" className="italic opacity-20 py-2">
-            Aucun multiplicateur programmé.
+            {FORM.ADMIN.BONUS.EMPTY}
           </Text>
         )}
       </div>

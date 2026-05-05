@@ -1,4 +1,5 @@
 import { Badge, Text } from '@/components/UI';
+import { ICONS } from '@/constants';
 
 interface SelectedPlayerBadgeProps {
   player: any;
@@ -25,7 +26,7 @@ export const SelectedPlayerBadge = ({
         aria-label={`Retirer ${player.display_name}`}
         title="Retirer"
       >
-        <span aria-hidden="true">✕</span>
+        <span aria-hidden="true">{ICONS.CANCEL}</span>
       </button>
     </Badge>
   );

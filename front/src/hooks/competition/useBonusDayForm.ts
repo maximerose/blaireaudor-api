@@ -5,6 +5,7 @@ import {
   useCompetition,
   useCompetitionDateLimits,
 } from '@/hooks';
+import type { BonusDay } from '@/types';
 
 export const useBonusDayForm = () => {
   const { competition, bonusDays } = useCompetition();
@@ -18,7 +19,7 @@ export const useBonusDayForm = () => {
     if (!newDate) return;
 
     const isDuplicate = bonusDays?.some(
-      (bd) => bd.date.split('T')[0] === newDate,
+      (bd: BonusDay) => bd.date.split('T')[0] === newDate,
     );
 
     if (isDuplicate) {

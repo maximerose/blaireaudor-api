@@ -31,7 +31,7 @@ export const DetailNavigation = ({
           size="sm"
           onClick={() => onDelete(competition.id, competition.name, 0)}
         >
-          Supprimer l'arène
+          Supprimer la compétition
         </Button>
       ) : (
         <Badge variant="ghost" className="opacity-70 italic text-[8px]">

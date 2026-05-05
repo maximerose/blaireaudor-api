@@ -3,6 +3,7 @@ import { useReportAction } from '@/hooks';
 import { preventDefault, cn } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
 import type { Competition } from '@/types';
+import { FORM, ICONS } from '@/constants';
 
 const INPUT_STYLE =
   'bg-white/[0.08] border-white/20 focus:border-gold transition-colors';
@@ -49,24 +50,25 @@ export const ReportActionForm = ({
               variant="h2"
               className="text-danger-bright italic flex items-center justify-center gap-2"
             >
-              <span className="animate-pulse">🚨</span> Balance ton blaireau
+              <span className="animate-pulse">{ICONS.ALARM}</span>{' '}
+              {FORM.REPORT_ACTION.TITLE}
             </Text>
             <Text variant="caption" className="text-white/60">
-              Signalement de méfait
+              {FORM.REPORT_ACTION.SUBTITLE}
             </Text>
           </header>
 
           <div className="space-y-4">
             <div className="relative" ref={searchContainerRef}>
               <Input
-                label="Le coupable"
-                placeholder="Chercher un blaireau..."
+                label={FORM.REPORT_ACTION.LABELS.PLAYER}
+                placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.PLAYER}
                 value={search}
                 required
                 onFocus={() => setShowDropdown(true)}
                 onChange={(e: any) => setSearch(e.target.value)}
                 className={INPUT_STYLE}
-                icon={showDropdown ? '🔍' : '👤'}
+                icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
               />
               {showDropdown && (
                 <PlayerDropdownList
@@ -77,8 +79,8 @@ export const ReportActionForm = ({
             </div>
 
             <Input
-              label="Le méfait"
-              placeholder="Description du crime..."
+              label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
+              placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
               value={formData.description}
               onChange={(e: any) =>
                 setFormData((p) => ({ ...p, description: e.target.value }))
@@ -100,7 +102,7 @@ export const ReportActionForm = ({
                 className={INPUT_STYLE}
               />
               <Input
-                label="Date"
+                label={FORM.SHARED.LABELS.DATE}
                 type="date"
                 min={dateLimits.minDate}
                 max={dateLimits.maxDate}
@@ -121,10 +123,10 @@ export const ReportActionForm = ({
               type="submit"
               isLoading={loading}
             >
-              Dénoncer l'action
+              {FORM.REPORT_ACTION.BUTTONS.SUBMIT}
             </Button>
             <Button variant="ghost" fullWidth onClick={onCancel} size="sm">
-              Finalement, je pardonne
+              {FORM.REPORT_ACTION.BUTTONS.CANCEL}
             </Button>
           </div>
         </form>

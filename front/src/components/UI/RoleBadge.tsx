@@ -1,4 +1,5 @@
 import { Badge } from '@/components/UI';
+import { ICONS } from '@/constants';
 
 interface RoleBadgeProps {
   role: 'creator' | 'referee';
@@ -8,12 +9,12 @@ const ROLE_CONFIG = {
   creator: {
     variant: 'warning' as const,
     label: 'Créateur',
-    icon: '👑',
+    icon: ICONS.CREATOR,
   },
   referee: {
     variant: 'info' as const,
     label: 'Arbitre',
-    icon: '⚖️',
+    icon: ICONS.REFEREE,
   },
 };
 

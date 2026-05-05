@@ -1,15 +1,37 @@
 export const ICONS = {
-  // Génériques
+  MEDALS: {
+    GOLD: '🥇',
+    SILVER: '🥈',
+    BRONZE: '🥉',
+  },
   SECRET: '🔑',
+  TRASH: '🗑️',
   DANGER: '⚠️',
   SEARCH: '🔍',
   LOADING: '⏳',
   HINT: '💡',
-  CLOSE: '✕',
-
-  // Spécifiques au contexte social/joueur
+  SAVE: '💾',
+  ADD: '➕',
+  EDIT: '✏️',
+  STARS: '✨',
+  FLAG: '🚩',
+  CANCEL: '✕',
+  FIRE: '🔥',
+  POINTS: '🎯',
+  CALENDAR: '📅',
+  ALARM: '🚨',
+  FOG_STATUS: (isActive: boolean) =>
+    isActive ? `${ICONS.FOG_ACTIVE}` : `${ICONS.FOG_INACTIVE}`,
+  FOG_ACTIVE: '🌫️',
+  FOG_INACTIVE: '👁️',
+  PLAYER: '👤',
+  CREATOR: '👑',
+  REFEREE: '⚖️',
   GUEST_EYE: '👀',
   GUEST_NEW: '🐣',
   SUCCESS: '✅',
+  CHECK: '✓',
   FAILURE: '❌',
+  SETTINGS: '⚙️',
+  EMPTY: '🏜️',
 } as const;

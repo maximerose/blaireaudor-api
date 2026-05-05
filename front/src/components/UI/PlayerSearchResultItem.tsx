@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Badge, Text } from '@/components/UI';
 import { usePlayerSearchResultUI } from '@/hooks';
+import { ICONS } from '@/constants';
 
 interface Player {
   id: string;
@@ -71,7 +72,7 @@ export const PlayerSearchResultItem = ({
           </div>
         ) : (
           <Badge variant="info" className="py-0 px-1.5 mt-1 w-fit opacity-60">
-            Nouveau joueur <span aria-hidden="true">🐣</span>
+            Nouveau joueur <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
           </Badge>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { Button, Text } from '@/components/UI';
+import { COMPETITION_UI } from '@/constants';
 import { cn } from '@/utils';
 
 export const CloseCompetitionAction = ({
@@ -11,7 +12,7 @@ export const CloseCompetitionAction = ({
       variant="caption"
       className="opacity-40 uppercase font-black text-[10px] tracking-widest"
     >
-      Fin de partie
+      {COMPETITION_UI.ADMIN.CLOSE.HEADER}
     </Text>
     <div className="flex flex-col items-center gap-2">
       <Button
@@ -23,14 +24,14 @@ export const CloseCompetitionAction = ({
           pendingCount > 0 && 'opacity-50 cursor-not-allowed',
         )}
       >
-        🚩 Clôturer la compétition
+        {COMPETITION_UI.ADMIN.CLOSE.SUBMIT}
       </Button>
       {pendingCount > 0 && (
         <Text
           variant="micro"
           className="text-danger-bright animate-pulse font-bold"
         >
-          ⚠️ {pendingCount} actions en attente
+          {COMPETITION_UI.ADMIN.CLOSE.PENDING_WARNING(pendingCount)}
         </Text>
       )}
     </div>

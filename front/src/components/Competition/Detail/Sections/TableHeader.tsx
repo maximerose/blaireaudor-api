@@ -1,29 +1,30 @@
 import { Text } from '@/components/UI';
+import { COMPETITION_UI } from '@/constants';
 import { cn } from '@/utils';
 
 const TABLE_COLUMNS = [
   {
     id: 'date_action',
-    label: 'Date',
+    label: COMPETITION_UI.DETAIL.TABLE.COLUMN_DATE,
     colSpan: 'col-span-3 md:col-span-2',
     align: 'text-left',
   },
   {
     id: 'player',
-    label: 'Joueur',
+    label: COMPETITION_UI.DETAIL.TABLE.COLUMN_PLAYER,
     colSpan: 'col-span-6 md:col-span-3',
     align: 'text-center',
   },
   {
     id: 'description',
-    label: 'Action',
+    label: COMPETITION_UI.DETAIL.TABLE.COLUMN_ACTION,
     colSpan: 'hidden md:block md:col-span-5',
     align: 'text-center',
     noSort: true,
   },
   {
     id: 'points',
-    label: 'Points',
+    label: COMPETITION_UI.DETAIL.TABLE.COLUMN_POINTS,
     colSpan: 'col-span-3 md:col-span-2',
     align: 'text-right',
   },

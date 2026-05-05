@@ -7,7 +7,8 @@ import {
 } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { useCompetition } from '@/hooks';
-import type { Competition } from '@/types';
+import type { BonusDay, Competition } from '@/types';
+import { ICONS } from '@/constants';
 
 interface CompetitionHeaderProps {
   competition: Competition;
@@ -98,7 +99,7 @@ export const CompetitionHeader = ({
                 <Badge
                   key={ref.id}
                   variant="info"
-                  icon="⚖️"
+                  icon={ICONS.REFEREE}
                   className={cn(
                     'py-0.5',
                     ref.name === creatorName && 'border-gold/60',
@@ -118,9 +119,9 @@ export const CompetitionHeader = ({
             variant="micro"
             className="opacity-40 uppercase tracking-widest w-full mb-1"
           >
-            Calendrier des Bonus 🔥
+            Calendrier des Bonus {ICONS.FIRE}
           </Text>
-          {bonusDays.map((bd) => (
+          {bonusDays.map((bd: BonusDay) => (
             <Badge
               key={bd.id}
               variant="danger"

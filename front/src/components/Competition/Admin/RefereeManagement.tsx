@@ -1,4 +1,5 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
+import { ICONS } from '@/constants';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
 import type { Competition, Player } from '@/types';
 
@@ -68,7 +69,7 @@ export const RefereeManagement = ({
                   title={isMe ? 'Démissionner' : 'Révoquer cet arbitre'}
                   aria-label="Révoquer"
                 >
-                  ✕
+                  {ICONS.CANCEL}
                 </button>
               )}
             </Badge>
@@ -101,7 +102,7 @@ export const RefereeManagement = ({
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-1"
                 aria-label="Effacer la recherche"
               >
-                ✕
+                {ICONS.CANCEL}
               </button>
             )}
           </div>

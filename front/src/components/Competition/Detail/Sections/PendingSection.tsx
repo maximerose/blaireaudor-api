@@ -1,6 +1,7 @@
 import { Card, Text, Badge } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
+import { ICONS } from '@/constants';
 
 export const PendingSection = ({
   myPending,
@@ -18,7 +19,7 @@ export const PendingSection = ({
           variant="caption"
           className="text-gold uppercase font-bold tracking-widest opacity-80"
         >
-          ⚖️ Actions en attente
+          {ICONS.REFEREE} Actions en attente
         </Text>
         <Badge variant="gold" isPulse>
           {total}

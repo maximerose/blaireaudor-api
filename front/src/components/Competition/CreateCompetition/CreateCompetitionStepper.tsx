@@ -1,6 +1,7 @@
 import { ROUTES } from '@/constants/routes';
 import { Button } from '@/components/UI';
 import { cn } from '@/utils';
+import { FORM, ICONS } from '@/constants';
 
 export const CreateCompetitionStepper = ({ step }: { step: number }) => {
   const renderCircle = (num: number) => {
@@ -19,7 +20,7 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
         )}
         aria-live="polite"
       >
-        {isPassed ? '1' : '✓'}
+        {isPassed ? '1' : ICONS.CHECK}
       </div>
     );
   };
@@ -32,7 +33,7 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
         size="sm"
         className="transition-default"
       >
-        ← Annuler
+        {FORM.SHARED.BUTTONS.CANCEL}
       </Button>
       <div className="flex items-center gap-2">
         {renderCircle(1)}

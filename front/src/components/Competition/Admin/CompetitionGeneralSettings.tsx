@@ -1,6 +1,7 @@
 import { Input, Button, Text, Card, Badge } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
+import { FORM } from '@/constants';
 
 export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
   const {
@@ -43,12 +44,12 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
     <div className="space-y-6 p-6 bg-black/20 rounded-3xl border border-gold/20 animate-slide-up">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
-          label="Nom de la compétition"
+          label={FORM.COMPETITION.LABELS.NAME}
           value={formData.name}
           onChange={(e: any) => updateField('name', e.target.value)}
         />
         <Input
-          label="Code d'accès"
+          label={FORM.COMPETITION.LABELS.JOIN_CODE}
           value={formData.joinCode}
           onChange={(e: any) =>
             updateField('joinCode', e.target.value.toUpperCase())
@@ -67,11 +68,11 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
             variant="caption"
             className="text-gold tracking-widest uppercase pl-1"
           >
-            Début
+            {FORM.COMPETITION.LABELS.START}
           </Text>
           {competition.has_started && (
             <Badge variant="ghost" className="text-[8px] ml-2">
-              Déjà lancée
+              {FORM.COMPETITION.HINTS.ALREADY_STARTED}
             </Badge>
           )}
           <Input
@@ -94,7 +95,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
               variant="micro"
               className={formData.startFullDay ? 'text-white' : 'text-white/50'}
             >
-              Journée complète
+              {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
             <div
               className={cn(
@@ -126,7 +127,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
             variant="caption"
             className="text-gold tracking-widest uppercase pl-1"
           >
-            Fin
+            {FORM.COMPETITION.LABELS.END}
           </Text>
           <Input
             type="date"
@@ -142,7 +143,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
               variant="micro"
               className={formData.endFullDay ? 'text-white' : 'text-white/50'}
             >
-              Journée complète
+              {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
             <div
               className={cn(
@@ -170,10 +171,10 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
 
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
         <Button variant="ghost" onClick={() => setIsEditing(false)}>
-          Annuler
+          {FORM.SHARED.BUTTONS.CANCEL}
         </Button>
         <Button onClick={handleSave} isLoading={loading}>
-          Sauvegarder
+          {FORM.SHARED.BUTTONS.SAVE}
         </Button>
       </div>
     </div>
