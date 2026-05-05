@@ -7,7 +7,7 @@ export const COMPETITION_UI = {
       TITLE: "Console d'administration",
       CONFIG_TITLE: 'Configuration',
       BUTTON_EXPAND: "Gérer l'arène",
-      BUTTON_EDIT: 'Modifer les paramètres',
+      BUTTON_EDIT: 'Modifier les paramètres',
       REFEREES_COUNT: (count: number) => `${count} Arbitre(s)`,
     },
     BONUS: {
