@@ -1,12 +1,12 @@
 import { Text } from '@/components/UI';
 import { CompetitionCard } from '@/components/Dashboard';
 import { cn } from '@/utils';
+import type { Competition, Participation } from '@/types';
 
 interface CompetitionListSectionProps {
   title: string;
-  competitions?: any[];
-  participations?: any[];
-  user: any;
+  competitions?: Competition[];
+  participations?: Participation[];
   variant?: 'gold' | 'white';
   emptyState?: React.ReactNode;
 }
@@ -15,7 +15,6 @@ export const CompetitionListSection = ({
   title,
   competitions,
   participations,
-  user,
   variant = 'white',
   emptyState,
 }: CompetitionListSectionProps) => {
@@ -51,7 +50,7 @@ export const CompetitionListSection = ({
           <>
             {/* Si on passe des compétitions (ex: Managed) */}
             {competitions?.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} user={user} />
+              <CompetitionCard key={comp.id} competition={comp} />
             ))}
             {/* Si on passe des participations (ex: Joueur) */}
             {participations?.map((p) => (
@@ -59,7 +58,6 @@ export const CompetitionListSection = ({
                 key={p.competition.id}
                 participation={p}
                 competition={p.competition}
-                user={user}
               />
             ))}
           </>

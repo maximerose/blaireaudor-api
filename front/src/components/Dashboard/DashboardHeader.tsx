@@ -1,50 +1,9 @@
 import { Text } from '@/components/UI';
 import { DASHBOARD_UI } from '@/constants';
+import { useDashboardHeader } from '@/hooks/dashboard/useDashboardHeader';
 
-interface DashboardHeaderProps {
-  displayName?: string;
-  totalParticipations: number;
-  stats: {
-    active: number;
-    upcoming: number;
-    finished: number;
-    created: number;
-    refereed: number;
-  };
-}
-
-export const DashboardHeader = ({
-  displayName,
-  totalParticipations,
-  stats,
-}: DashboardHeaderProps) => {
-  const statItems = [
-    {
-      label: DASHBOARD_UI.HEADER.STATS.ACTIVE,
-      val: stats.active,
-      color: 'text-success-bright',
-    },
-    {
-      label: DASHBOARD_UI.HEADER.STATS.UPCOMING,
-      val: stats.upcoming,
-      color: 'text-info-bright',
-    },
-    {
-      label: DASHBOARD_UI.HEADER.STATS.FINISHED,
-      val: stats.finished,
-      color: 'text-danger-bright',
-    },
-    {
-      label: DASHBOARD_UI.HEADER.STATS.CREATED,
-      val: stats.created,
-      color: 'text-gold',
-    },
-    {
-      label: DASHBOARD_UI.HEADER.STATS.REFEREED,
-      val: stats.refereed,
-      color: 'text-info-bright',
-    },
-  ];
+export const DashboardHeader = () => {
+  const { displayName, totalParticipations, statItems } = useDashboardHeader();
 
   return (
     <section className="space-y-4" aria-labelledby="dashboard-title">

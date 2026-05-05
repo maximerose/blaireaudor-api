@@ -3,62 +3,64 @@ import {
   getDisplayDateText,
   getCompetitionStatus,
   canRevealScores,
+  getIdFromData,
 } from '@/utils';
+import { useAuth } from '@/hooks';
+import type {
+  Competition,
+  Participation,
+  Player,
+  PlayerPreview,
+} from '@/types';
 
 export const useCompetitionCard = (
-  competition: any,
-  participation: any,
-  user: any,
+  competition: Competition,
+  participation?: Participation,
 ) => {
+  const { user } = useAuth();
+
+  const currentUserId = user?.id?.toString();
+  const currentPlayerId = user?.player?.id?.toString();
+
   const isCreator = useMemo(() => {
-    const creatorData = competition.createdBy || competition.created_by;
-    if (creatorData) {
-      const creatorId =
-        typeof creatorData === 'string'
-          ? creatorData.split('/').pop()
-          : creatorData.id;
-      return String(user?.id) === String(creatorId);
-    }
+    const creatorId = getIdFromData(competition.created_by);
 
-    if (user?.created_competitions) {
-      return user.created_competitions.some(
-        (c: any) => c.id === competition.id,
-      );
-    }
+    if (creatorId) return currentUserId === creatorId;
 
-    return false;
-  }, [competition, user]);
+    return (
+      user?.created_competitions?.some(
+        (c: Competition) => c.id === competition.id,
+      ) ?? false
+    );
+  }, [competition, currentUserId, user?.created_competitions]);
 
   const isReferee = useMemo(() => {
     const referees = competition.referees || [];
-    const playerToMatch = user?.player?.id || user?.id;
+    const idToMatch = currentPlayerId || currentUserId;
 
-    return referees.some((ref: any) => {
-      const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-      return String(refId) === String(playerToMatch);
-    });
-  }, [competition, user]);
+    return referees.some(
+      (ref: string | Player | PlayerPreview) =>
+        getIdFromData(ref) === idToMatch,
+    );
+  }, [competition.referees, currentPlayerId, currentUserId]);
 
-  const status = getCompetitionStatus(
-    competition.start_date,
-    competition.end_date,
-  );
-  const dateText = getDisplayDateText(
-    competition.start_date,
-    competition.end_date,
-  );
   const shouldReveal = canRevealScores(competition);
+  const score = participation?.score;
+  const rank = participation?.rank;
+  const hasVisibleResults =
+    shouldReveal && score !== undefined && rank !== undefined;
 
   return {
     isCreator,
     isReferee,
     isManager: isCreator || isReferee,
     isParticipant: !!participation,
-    status,
-    dateText,
+    status: getCompetitionStatus(competition.start_date, competition.end_date),
+    dateText: getDisplayDateText(competition.start_date, competition.end_date),
     shouldReveal,
-    score: participation?.score,
-    rank: participation?.rank,
-    hasNoParticipants: competition.participants_count === 0,
+    score,
+    rank,
+    hasNoParticipants: (competition.participants_count ?? 0) === 0,
+    hasVisibleResults,
   };
 };

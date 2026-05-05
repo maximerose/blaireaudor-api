@@ -10,19 +10,17 @@ import {
   RoleBadge,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
-import type { Competition, Participation, User } from '@/types';
+import type { Competition, Participation } from '@/types';
 import { DASHBOARD_UI, ICONS } from '@/constants';
 
 interface CompetitionCardProps {
-  participation?: Participation;
   competition: Competition;
-  user: User;
+  participation?: Participation;
 }
 
 export const CompetitionCard = ({
   participation,
   competition,
-  user,
 }: CompetitionCardProps) => {
   const {
     isCreator,
@@ -35,7 +33,8 @@ export const CompetitionCard = ({
     score,
     rank,
     hasNoParticipants,
-  } = useCompetitionCard(competition, participation, user);
+    hasVisibleResults,
+  } = useCompetitionCard(competition, participation);
 
   return (
     <Card
@@ -130,8 +129,9 @@ export const CompetitionCard = ({
                   : DASHBOARD_UI.CARD.FOG_OF_WAR}
               </Text>
               <div className="flex items-center gap-4">
-                {(shouldReveal && score !== undefined && rank !== undefined) ||
-                isManager ? (
+                {(hasVisibleResults || isManager) &&
+                score !== undefined &&
+                rank !== undefined ? (
                   <div
                     className="flex items-center gap-4"
                     aria-label={DASHBOARD_UI.CARD.ARIA.RANK_SCORE(rank, score)}
