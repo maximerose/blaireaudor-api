@@ -6,7 +6,7 @@ import {
 import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
 import type { CompetitionFormData } from '@/types';
-import { FORM, ICONS } from '@/constants';
+import { FORM, ICONS, BUTTONS } from '@/constants';
 
 interface RefereeStepProps {
   formData: CompetitionFormData;
@@ -213,7 +213,7 @@ export const CompetitionRefereeStep = ({
           className="px-6"
           size="md"
         >
-          {FORM.SHARED.BUTTONS.PREVIOUS}
+          {BUTTONS.PREVIOUS}
         </Button>
         {/* ✨ BOUTON DÉSACTIVÉ SI hasNoReferee EST TRUE */}
         <Button

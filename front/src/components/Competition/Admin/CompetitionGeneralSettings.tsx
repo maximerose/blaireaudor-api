@@ -1,7 +1,7 @@
 import { Input, Button, Text, Card, Badge } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
-import { FORM } from '@/constants';
+import { FORM, BUTTONS } from '@/constants';
 
 export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
   const {
@@ -171,10 +171,10 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
 
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
         <Button variant="ghost" onClick={() => setIsEditing(false)}>
-          {FORM.SHARED.BUTTONS.CANCEL}
+          {BUTTONS.CANCEL}
         </Button>
         <Button onClick={handleSave} isLoading={loading}>
-          {FORM.SHARED.BUTTONS.SAVE}
+          {BUTTONS.SAVE}
         </Button>
       </div>
     </div>

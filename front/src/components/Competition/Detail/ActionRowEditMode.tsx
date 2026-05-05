@@ -1,5 +1,5 @@
 import { Input, Button } from '@/components/UI';
-import { FORM } from '@/constants';
+import { FORM, BUTTONS } from '@/constants';
 
 interface ActionRowEditModeProps {
   editData: { description: string; points: number | string };
@@ -44,10 +44,10 @@ export const ActionRowEditMode = ({
     {/* Actions du formulaire */}
     <div className="flex justify-end gap-2 pt-2">
       <Button size="sm" variant="ghost" onClick={onCancel} type="button">
-        {FORM.SHARED.BUTTONS.CANCEL}
+        {BUTTONS.CANCEL}
       </Button>
       <Button size="sm" variant="primary" onClick={onSave} type="button">
-        {FORM.SHARED.BUTTONS.SAVE}
+        {BUTTONS.SAVE}
       </Button>
     </div>
   </div>

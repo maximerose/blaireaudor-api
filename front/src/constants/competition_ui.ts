@@ -4,13 +4,21 @@ export const COMPETITION_UI = {
   ADMIN: {
     GENERAL: {
       SETTINGS_LABEL: 'Paramètres de la compétition',
+      TITLE: "Console d'administration",
+      CONFIG_TITLE: 'Configuration',
+      BUTTON_EXPAND: "Gérer l'arène",
+      REFEREES_COUNT: (count: number) => `${count} Arbitre(s)`,
     },
     BONUS: {
       TITLE: `${ICONS.FIRE} Multiplicateurs`,
       SUBTITLE: 'Multipliez les points de la journée.',
       EMPTY: 'Aucun multiplicateur programmé.',
     },
+    REFEREE: {
+      TITLE: "Équipe d'arbitrage",
+    },
     FOG: {
+      LABEL: 'Brouillard :',
       ENABLE: 'Activer le brouillard',
       DISABLE: 'Lever le brouillard',
       DESC_ON: 'Cacher les scores pour le suspense',

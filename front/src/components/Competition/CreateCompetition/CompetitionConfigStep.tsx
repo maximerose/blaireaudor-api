@@ -1,5 +1,5 @@
 import { Input, Button, Text, Card } from '@/components/UI';
-import { FORM, ICONS } from '@/constants';
+import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
 
@@ -77,7 +77,7 @@ export const CompetitionConfigStep = ({
                   )}
                 >
                   <span className="text-xs font-bold uppercase tracking-tighter">
-                    {FORM.SHARED.BUTTONS.AUTO}
+                    {BUTTONS.AUTO}
                   </span>
                   <span className="text-sm">{ICONS.STARS}</span>
                 </button>
@@ -260,7 +260,7 @@ export const CompetitionConfigStep = ({
       </div>
 
       <Button fullWidth onClick={onNext} disabled={!canNext} size="lg">
-        {FORM.SHARED.BUTTONS.CONTINUE}
+        {BUTTONS.CONTINUE}
       </Button>
     </div>
   );

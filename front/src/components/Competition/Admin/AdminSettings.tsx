@@ -7,7 +7,7 @@ import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
 import { useState } from 'react';
 import { cn } from '@/utils';
 import { BonusDayManagement } from './BonusDayManagement';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
 
 interface AdminSettingsProps {
   competition: any;
@@ -54,7 +54,7 @@ export const AdminSettings = ({
               variant="caption"
               className="font-bold uppercase tracking-widest text-gold/80"
             >
-              Console d'administration
+              {COMPETITION_UI.ADMIN.GENERAL.TITLE}
             </Text>
             {!isExpanded && (
               <div className="flex gap-2 mt-1">
@@ -62,13 +62,15 @@ export const AdminSettings = ({
                   variant={isFogActive ? 'info' : 'ghost'}
                   className="text-[8px] py-0"
                 >
-                  Brouillard:{' '}
+                  {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
                   {isFogActive
                     ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
                     : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
                 </Badge>
                 <Badge variant="ghost" className="text-[8px] py-0">
-                  {competition.referees?.length} Arbitre(s)
+                  {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
+                    competition.referees?.length || 0,
+                  )}
                 </Badge>
               </div>
             )}
@@ -81,7 +83,9 @@ export const AdminSettings = ({
           onClick={() => setIsExpanded(!isExpanded)}
           className="hover:bg-gold/10"
         >
-          {isExpanded ? 'Réduire' : "Gérer l'arène"}
+          {isExpanded
+            ? BUTTONS.COLLAPSE
+            : COMPETITION_UI.ADMIN.GENERAL.BUTTON_EXPAND}
         </Button>
       </div>
 
@@ -108,7 +112,7 @@ export const AdminSettings = ({
                 variant="micro"
                 className="uppercase font-bold tracking-tighter"
               >
-                Configuration
+                {COMPETITION_UI.ADMIN.GENERAL.CONFIG_TITLE}
               </Text>
             </header>
             <CompetitionGeneralSettings
@@ -136,12 +140,12 @@ export const AdminSettings = ({
           {/* Section 3 : Arbitrage */}
           <section className="space-y-3">
             <header className="flex items-center gap-2 opacity-40">
-              <span className="text-xs">⚖️</span>
+              <span className="text-xs">{ICONS.REFEREE}</span>
               <Text
                 variant="micro"
                 className="uppercase font-bold tracking-tighter"
               >
-                Équipe d'arbitrage
+                {COMPETITION_UI.ADMIN.REFEREE.TITLE}
               </Text>
             </header>
             <RefereeManagement

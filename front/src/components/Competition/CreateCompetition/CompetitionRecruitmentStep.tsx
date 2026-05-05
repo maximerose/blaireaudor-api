@@ -3,7 +3,7 @@ import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import { FORM, ICONS } from '@/constants';
+import { FORM, ICONS, BUTTONS } from '@/constants';
 
 interface RecruitmentStepProps {
   players: any;
@@ -68,10 +68,10 @@ export const CompetitionRecruitmentStep = ({
 
       <div className="flex gap-2">
         <Button variant="ghost" onClick={onBack} className="px-6" size="md">
-          {FORM.SHARED.BUTTONS.PREVIOUS}
+          {BUTTONS.PREVIOUS}
         </Button>
         <Button onClick={onNext} size="md" className="flex-1">
-          {FORM.SHARED.BUTTONS.CONTINUE}
+          {BUTTONS.CONTINUE}
         </Button>
       </div>
     </div>

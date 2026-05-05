@@ -5,15 +5,6 @@ export const FORM = {
    * ÉLÉMENTS PARTAGÉS (Reutilisables partout)
    */
   SHARED: {
-    BUTTONS: {
-      SAVE: `Enregistrer ${ICONS.SAVE}`,
-      CANCEL: 'Annuler',
-      ADD: 'Ajouter',
-      MODIFY: 'Modifier',
-      CONTINUE: 'Continuer →',
-      PREVIOUS: '← Précédent',
-      AUTO: 'Auto',
-    },
     LABELS: {
       SAVE: 'Sauvegarder',
       DATE: 'Date',

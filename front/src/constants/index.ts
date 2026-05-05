@@ -1,5 +1,6 @@
 export * from './api';
 export * from './auth_ui';
+export * from './buttons';
 export * from './competition_ui';
 export * from './errors';
 export * from './form';

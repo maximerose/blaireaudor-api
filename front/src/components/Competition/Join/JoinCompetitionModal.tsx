@@ -2,7 +2,7 @@ import { useJoinCompetitionModal } from '@/hooks';
 import { Button, Input, Card, Text } from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
 import { preventDefault } from '@/utils';
-import { FORM, ICONS } from '@/constants';
+import { FORM, ICONS, BUTTONS } from '@/constants';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
@@ -73,7 +73,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               className="text-white/20 hover:text-white/50 transition-default"
               aria-label="Fermer la modale"
             >
-              {FORM.SHARED.BUTTONS.CANCEL}
+              {BUTTONS.CANCEL}
             </Button>
           </div>
         </form>

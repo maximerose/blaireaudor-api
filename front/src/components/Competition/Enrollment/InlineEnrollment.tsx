@@ -7,7 +7,7 @@ import {
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
-import { FORM } from '@/constants';
+import { FORM, BUTTONS } from '@/constants';
 
 export const InlineEnrollment = ({
   competition,
@@ -91,7 +91,7 @@ export const InlineEnrollment = ({
                 player={p}
                 role="option"
                 onClick={addExistingPlayer}
-                actionIcon={FORM.SHARED.BUTTONS.ADD}
+                actionIcon={BUTTONS.ADD}
               />
             ))}
           </Card>
@@ -142,9 +142,9 @@ export const InlineEnrollment = ({
           variant="ghost"
           onClick={() => setIsOpen(false)}
           className="px-4 transition-default shrink-0"
-          aria-label={FORM.SHARED.BUTTONS.CANCEL}
+          aria-label={BUTTONS.CANCEL}
         >
-          {FORM.SHARED.BUTTONS.CANCEL}
+          {BUTTONS.CANCEL}
         </Button>
       </div>
     </Card>

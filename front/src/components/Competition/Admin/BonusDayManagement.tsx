@@ -1,7 +1,7 @@
 import { Text, Input, Button, Badge } from '@/components/UI';
 import { formatShortDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
-import { COMPETITION_UI, FORM, ICONS } from '@/constants';
+import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
 import type { BonusDay } from '@/types';
 
 export const BonusDayManagement = () => {
@@ -52,7 +52,7 @@ export const BonusDayManagement = () => {
           />
         </div>
         <Button onClick={handleAdd} isLoading={isAdding} disabled={!newDate}>
-          {FORM.SHARED.BUTTONS.ADD}
+          {BUTTONS.ADD}
         </Button>
       </div>
 

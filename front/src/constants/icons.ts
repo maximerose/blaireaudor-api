@@ -13,6 +13,7 @@ export const ICONS = {
   SAVE: '💾',
   ADD: '➕',
   EDIT: '✏️',
+  TOOLS: '🛠️',
   STARS: '✨',
   FLAG: '🚩',
   CANCEL: '✕',
