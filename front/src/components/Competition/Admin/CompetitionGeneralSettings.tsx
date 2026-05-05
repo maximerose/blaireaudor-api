@@ -1,7 +1,7 @@
 import { Input, Button, Text, Card, Badge } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
-import { FORM, BUTTONS } from '@/constants';
+import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
 
 export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
   const {
@@ -25,7 +25,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
             className="opacity-40 uppercase tracking-widest"
           >
             <span className="text-gold">{competition.join_code}</span> •
-            Paramètres de la compétition
+            {COMPETITION_UI.ADMIN.GENERAL.SETTINGS_LABEL}
           </Text>
         </div>
         <Button
@@ -34,7 +34,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
           onClick={() => setIsEditing(true)}
           className="mt-3 sm:mt-0"
         >
-          Modifier les paramètres
+          {COMPETITION_UI.ADMIN.GENERAL.BUTTON_EDIT}
         </Button>
       </div>
     );
