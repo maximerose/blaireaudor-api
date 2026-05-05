@@ -1,4 +1,4 @@
-import { ICONS } from './icons';
+import { ICONS } from '@/constants/icons';
 
 export const COMPETITION_UI = {
   ADMIN: {
@@ -46,6 +46,14 @@ export const COMPETITION_UI = {
     NOT_FOUND: 'Compétition non trouvée',
     SYNCING: 'Synchronisation...',
     SECTIONS: {
+      HEADER: {
+        JOIN_CODE_ARIA: "Code d'accès : ",
+        DATES_ARIA: 'Dates : ',
+        COUNTDOWN_PREFIX: 'Clôture',
+        CREATOR_LABEL: 'Créateur',
+        REFEREE_LABEL: (count: number) => `Arbitre${count > 1 ? 's' : ''}`,
+        MULTIPLIERS_SECTION_TITLE: `Calendrier des Bonus ${ICONS.FIRE}`,
+      },
       LEADERBOARD: {
         TITLE: 'Classement',
       },

@@ -8,7 +8,7 @@ import {
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { useCompetition } from '@/hooks';
 import type { BonusDay, Competition } from '@/types';
-import { ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 interface CompetitionHeaderProps {
   competition: Competition;
@@ -33,7 +33,9 @@ export const CompetitionHeader = ({
           variant="mono"
           className="text-gold/50 tracking-[0.4em] uppercase text-sm inline-block bg-gold/5 px-3 py-1 rounded border border-gold/10"
         >
-          <span className="sr-only">Code d'accès : </span>
+          <span className="sr-only">
+            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
+          </span>
           {competition.join_code}
         </Text>
       </div>
@@ -41,7 +43,9 @@ export const CompetitionHeader = ({
       {/* 2. Infos Temporelles */}
       <div className="flex flex-col items-center gap-1">
         <Text variant="caption" className="opacity-60">
-          <span className="sr-only">Dates : </span>
+          <span className="sr-only">
+            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.DATES_ARIA}
+          </span>
           {getDisplayDateText(competition.start_date, competition.end_date)}
         </Text>
 
@@ -53,7 +57,7 @@ export const CompetitionHeader = ({
               aria-live="polite"
             >
               <CompetitionCountdown
-                prefix="Clôture"
+                prefix={COMPETITION_UI.DETAIL.SECTIONS.HEADER.COUNTDOWN_PREFIX}
                 targetDate={competition.end_date}
               />
             </div>
@@ -70,7 +74,7 @@ export const CompetitionHeader = ({
                 variant="micro"
                 className="opacity-40 uppercase tracking-widest"
               >
-                Créateur
+                {COMPETITION_UI.DETAIL.SECTIONS.HEADER.CREATOR_LABEL}
               </Text>
               <Text variant="caption" className="text-gold font-medium">
                 {creatorName}
@@ -93,7 +97,9 @@ export const CompetitionHeader = ({
                 variant="micro"
                 className="opacity-40 uppercase tracking-widest sm:mr-1"
               >
-                Arbitre{referees.length > 1 ? 's' : ''}
+                {COMPETITION_UI.DETAIL.SECTIONS.HEADER.REFEREE_LABEL(
+                  referees.length,
+                )}
               </Text>
               {referees.map((ref: any) => (
                 <Badge
@@ -119,7 +125,7 @@ export const CompetitionHeader = ({
             variant="micro"
             className="opacity-40 uppercase tracking-widest w-full mb-1"
           >
-            Calendrier des Bonus {ICONS.FIRE}
+            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.MULTIPLIERS_SECTION_TITLE}
           </Text>
           {bonusDays.map((bd: BonusDay) => (
             <Badge
