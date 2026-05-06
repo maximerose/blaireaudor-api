@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Text } from '@/components/UI';
-import { useAdminSettings, useAuth } from '@/hooks';
+import { useAdminSettings } from '@/hooks';
 import { FogOfWarToggle } from './FogOfWarToggle';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
 import { RefereeManagement } from './RefereeManagement';
@@ -8,10 +8,12 @@ import { useState } from 'react';
 import { cn } from '@/utils';
 import { BonusDayManagement } from './BonusDayManagement';
 import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
+import type { Action, Competition } from '@/types';
+import { AdminProvider } from '@/context/AdminProvider';
 
 interface AdminSettingsProps {
-  competition: any;
-  actions: any[];
+  competition: Competition;
+  actions: Action[];
   refresh: () => void;
 }
 
@@ -21,143 +23,124 @@ export const AdminSettings = ({
   refresh,
 }: AdminSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const {
-    isFogActive,
-    isUpdating,
-    pendingCount,
-    handleToggleFog,
-    handleCloseCompetition,
-  } = useAdminSettings({
-    competition,
-    actions,
-    refresh,
-  });
 
-  const user = useAuth();
+  const adminState = useAdminSettings({ competition, actions, refresh });
+
+  const { isFogActive } = adminState;
 
   return (
-    <Card
-      variant="dark"
-      className={cn(
-        'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
-        isExpanded ? 'p-6 overflow-visible' : 'p-3 sm:p-4 overflow-hidden',
-      )}
-    >
-      {/* --- HEADER COMPACT (Toujours visible) --- */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-gold/10 rounded-lg text-gold hidden sm:block">
-            <span className="text-xl">🛠️</span>
-          </div>
-          <div>
-            <Text
-              variant="caption"
-              className="font-bold uppercase tracking-widest text-gold/80"
-            >
-              {COMPETITION_UI.ADMIN.GENERAL.TITLE}
-            </Text>
-            {!isExpanded && (
-              <div className="flex gap-2 mt-1">
-                <Badge
-                  variant={isFogActive ? 'info' : 'ghost'}
-                  className="text-[8px] py-0"
-                >
-                  {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
-                  {isFogActive
-                    ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
-                    : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
-                </Badge>
-                <Badge variant="ghost" className="text-[8px] py-0">
-                  {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
-                    competition.referees?.length || 0,
-                  )}
-                </Badge>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="hover:bg-gold/10"
-        >
-          {isExpanded
-            ? BUTTONS.COLLAPSE
-            : COMPETITION_UI.ADMIN.GENERAL.BUTTON_EXPAND}
-        </Button>
-      </div>
-
-      {/* --- CONTENU DÉROULANT --- */}
-      <div
+    <AdminProvider value={adminState}>
+      <Card
+        variant="dark"
         className={cn(
-          'grid transition-all duration-300 ease-in-out',
-          isExpanded
-            ? 'grid-rows-[1fr] opacity-100 mt-6 overflow-visible'
-            : 'grid-rows-[0fr] opacity-0 overflow-hidden',
+          'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
+          isExpanded ? 'p-6 overflow-visible' : 'p-3 sm:p-4 overflow-hidden',
         )}
       >
+        {/* --- HEADER COMPACT (Toujours visible) --- */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gold/10 rounded-lg text-gold hidden sm:block">
+              <span className="text-xl">{ICONS.SETTINGS}</span>
+            </div>
+            <div>
+              <Text
+                variant="caption"
+                className="font-bold uppercase tracking-widest text-gold/80"
+              >
+                {COMPETITION_UI.ADMIN.GENERAL.TITLE}
+              </Text>
+              {!isExpanded && (
+                <div className="flex gap-2 mt-1">
+                  <Badge
+                    variant={isFogActive ? 'info' : 'ghost'}
+                    className="text-[8px] py-0"
+                  >
+                    {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
+                    {isFogActive
+                      ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
+                      : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
+                  </Badge>
+                  <Badge variant="ghost" className="text-[8px] py-0">
+                    {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
+                      competition.referees?.length || 0,
+                    )}
+                  </Badge>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="hover:bg-gold/10"
+          >
+            {isExpanded
+              ? BUTTONS.COLLAPSE
+              : COMPETITION_UI.ADMIN.GENERAL.BUTTON_EXPAND}
+          </Button>
+        </div>
+
+        {/* --- CONTENU DÉROULANT --- */}
         <div
           className={cn(
-            'flex flex-col gap-8',
-            isExpanded ? 'overflow-visible' : 'overflow-hidden',
+            'grid transition-all duration-300 ease-in-out',
+            isExpanded
+              ? 'grid-rows-[1fr] opacity-100 mt-6 overflow-visible'
+              : 'grid-rows-[0fr] opacity-0 overflow-hidden',
           )}
         >
-          {/* Section 1 : Configuration (Moins massive) */}
-          <section className="space-y-3">
-            <header className="flex items-center gap-2 opacity-40">
-              <span className="text-xs">{ICONS.SETTINGS}</span>
-              <Text
-                variant="micro"
-                className="uppercase font-bold tracking-tighter"
-              >
-                {COMPETITION_UI.ADMIN.GENERAL.CONFIG_TITLE}
-              </Text>
-            </header>
-            <CompetitionGeneralSettings
-              competition={competition}
-              onRefresh={refresh}
-            />
-          </section>
-
-          {/* Section 2 : Actions rapides (Horizontal Grid) */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5">
-            <FogOfWarToggle
-              isActive={isFogActive}
-              onToggle={handleToggleFog}
-              isLoading={isUpdating}
-            />
-            <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
-              <CloseCompetitionAction
-                onSafeClose={handleCloseCompetition}
-                isLoading={isUpdating}
-                pendingCount={pendingCount}
+          <div
+            className={cn(
+              'flex flex-col gap-8',
+              isExpanded ? 'overflow-visible' : 'overflow-hidden',
+            )}
+          >
+            {/* Section 1 : Configuration (Moins massive) */}
+            <section className="space-y-3">
+              <header className="flex items-center gap-2 opacity-40">
+                <span className="text-xs">{ICONS.SETTINGS}</span>
+                <Text
+                  variant="micro"
+                  className="uppercase font-bold tracking-tighter"
+                >
+                  {COMPETITION_UI.ADMIN.GENERAL.CONFIG_TITLE}
+                </Text>
+              </header>
+              <CompetitionGeneralSettings
+                competition={competition}
+                onRefresh={refresh}
               />
-            </div>
-          </section>
+            </section>
 
-          {/* Section 3 : Arbitrage */}
-          <section className="space-y-3">
-            <header className="flex items-center gap-2 opacity-40">
-              <span className="text-xs">{ICONS.REFEREE}</span>
-              <Text
-                variant="micro"
-                className="uppercase font-bold tracking-tighter"
-              >
-                {COMPETITION_UI.ADMIN.REFEREE.TITLE}
-              </Text>
-            </header>
-            <RefereeManagement
-              competition={competition}
-              currentUser={user}
-              onRefresh={refresh}
-            />
+            {/* Section 2 : Actions rapides (Horizontal Grid) */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+              <FogOfWarToggle />
+              <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
+                <CloseCompetitionAction />
+              </div>
+            </section>
 
-            <BonusDayManagement />
-          </section>
+            {/* Section 3 : Arbitrage */}
+            <section className="space-y-3">
+              <header className="flex items-center gap-2 opacity-40">
+                <span className="text-xs">{ICONS.REFEREE}</span>
+                <Text
+                  variant="micro"
+                  className="uppercase font-bold tracking-tighter"
+                >
+                  {COMPETITION_UI.ADMIN.REFEREE.TITLE}
+                </Text>
+              </header>
+              <RefereeManagement />
+
+              <BonusDayManagement />
+            </section>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </AdminProvider>
   );
 };

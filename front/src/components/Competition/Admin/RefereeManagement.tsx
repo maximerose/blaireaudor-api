@@ -1,19 +1,12 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
+import { useAuth, useCompetition } from '@/hooks';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
-import type { Competition, Player } from '@/types';
+import type { Player } from '@/types';
 
-interface RefereeManagementProps {
-  competition: Competition;
-  currentUser: any;
-  onRefresh: () => void;
-}
-
-export const RefereeManagement = ({
-  competition,
-  currentUser,
-  onRefresh,
-}: RefereeManagementProps) => {
+export const RefereeManagement = () => {
+  const { competition, refresh } = useCompetition();
+  const { user: currentUser } = useAuth();
   const {
     referees,
     isLastRef,
@@ -24,10 +17,10 @@ export const RefereeManagement = ({
     isSearching,
     handleAdd,
     handleRemoveRequest,
-  } = useRefereeManagementUI(competition, onRefresh);
+  } = useRefereeManagementUI(competition, refresh);
 
-  const myPlayerId = currentUser?.user?.player?.id
-    ? String(currentUser.user.player.id)
+  const myPlayerId = currentUser?.player?.id
+    ? String(currentUser.player.id)
     : null;
 
   return (
