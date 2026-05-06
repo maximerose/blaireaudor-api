@@ -1,4 +1,6 @@
-import type { Player, Competition } from '@/types';
+import type { Player, Competition, User } from '@/types';
+import { getIdFromData } from './api';
+import type { EnrichedLeaderboardItem } from '@/hooks';
 
 export const CompetitionStatus = {
   ACTIVE: 'ACTIVE',
@@ -30,9 +32,11 @@ export const formatFrenchDate = (
  * Génère le libellé de la période
  */
 export const getDisplayDateText = (
-  startDateStr: string,
+  startDateStr: string | null | undefined,
   endDateStr?: string | null,
 ) => {
+  if (!startDateStr) return 'Date inconnue';
+
   const formattedStart = formatFrenchDate(startDateStr);
   const formattedEnd = formatFrenchDate(endDateStr);
 
@@ -98,15 +102,18 @@ export const formatShortDate = (dateString: string | Date): string => {
 /**
  * Extrait et formate la liste des arbitres d'une compétition
  */
-export const getCompetitionReferees = (competition: any) => {
+export const getCompetitionReferees = (
+  competition: Competition | null | undefined,
+) => {
   if (!competition?.referees) return [];
 
-  return competition.referees.map((ref: any) => {
-    const id = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-    const name =
-      typeof ref === 'string'
-        ? 'Arbitre'
-        : ref.display_name || ref.displayName || ref.username || 'Arbitre';
+  return competition.referees.map((ref: Player | string) => {
+    const id = getIdFromData(ref);
+
+    let name = 'Arbitre';
+    if (typeof ref === 'object' && ref !== null) {
+      name = ref.display_name || ref.username || 'Arbitre';
+    }
 
     return { id, name };
   });
@@ -116,82 +123,85 @@ export const getCompetitionReferees = (competition: any) => {
  * Vérifie si un joueur spécifique est arbitre de la compétition
  */
 export const isPlayerReferee = (
-  competition: any,
-  playerId: string | undefined,
+  competition: Competition | null | undefined,
+  playerId?: string | null,
 ): boolean => {
   if (!competition?.referees || !playerId) return false;
 
-  return competition.referees.some((ref: any) => {
-    const refId = typeof ref === 'string' ? ref.split('/').pop() : ref.id;
-    return refId === playerId;
+  return competition.referees.some((ref: Player | string) => {
+    return getIdFromData(ref) === playerId;
   });
+};
+
+/**
+ * Utilitaire interne pour extraire l'ID du créateur peu importe le format de l'API
+ */
+const resolveCreatorId = (
+  competition: Competition | null | undefined,
+): string | null => {
+  if (!competition?.created_by) return null;
+  return getIdFromData(competition.created_by);
 };
 
 /**
  * Vérifie si un joueur spécifique est créateur de la compétition
  */
 export const isPlayerCreator = (
-  competition: any,
-  player: Player | undefined,
+  competition: Competition | null | undefined,
+  player: Player | null,
 ): boolean => {
   if (!competition || !player) return false;
 
-  const creator = competition.created_by || competition.createdBy;
-  if (!creator) return false;
+  const creatorId = resolveCreatorId(competition);
+  if (!creatorId) return false;
 
-  const creatorId =
-    typeof creator === 'string' ? creator.split('/').pop() : creator.id;
+  const playerUserId = player.associated_user
+    ? getIdFromData(player.associated_user)
+    : null;
 
-  if (!player.associated_user) return false;
-
-  return creatorId === player.associated_user?.id;
+  return creatorId === playerUserId;
 };
 
 /**
  * Vérifie si un utilisateur est le créateur de la compétition
  */
-export const isCompetitionCreator = (competition: any, user: any): boolean => {
+export const isCompetitionCreator = (
+  competition: Competition | null | undefined,
+  user?: User | null,
+): boolean => {
   if (!competition || !user) return false;
 
-  const creator = competition.createdBy || competition.created_by;
-  if (!creator) return false;
+  const creatorId = resolveCreatorId(competition);
+  const userId = getIdFromData(user);
 
-  const creatorId =
-    typeof creator === 'string' ? creator.split('/').pop() : creator.id;
-
-  return (
-    creatorId === user.id ||
-    creator === user.username ||
-    creator === `/api/users/${user.id}`
-  );
+  return creatorId !== null && creatorId === userId;
 };
 
 /**
  * Résout le nom du créateur de façon exhaustive
  */
 export const resolveCreatorName = (
-  competition: any,
-  leaderboard: any[] = [],
-  currentUser: any = null,
+  competition: Competition | null | undefined,
+  leaderboard: EnrichedLeaderboardItem[] = [],
+  currentUser: User | null,
 ): string | null => {
   if (!competition) return null;
 
-  const apiName = competition.creatorName || competition.creator_name;
+  const apiName = competition.creator_name;
   if (apiName) return apiName;
 
-  const creator = competition.createdBy || competition.created_by;
-  if (!creator) return null;
-  const creatorId =
-    typeof creator === 'string' ? creator.split('/').pop() : creator.id;
+  const creatorId = resolveCreatorId(competition);
+  if (!creatorId) return null;
 
-  if (currentUser && currentUser.id === creatorId) {
-    return currentUser.player?.display_name;
+  if (currentUser && getIdFromData(currentUser) === creatorId) {
+    return currentUser.player?.display_name || null;
   }
 
   const inLeaderboard = leaderboard.find(
     (item) => item.player?.id === creatorId,
   );
-  if (inLeaderboard) return inLeaderboard.player.display_name;
+
+  if (inLeaderboard) return inLeaderboard.player.display_name || null;
 
   return null;
 };
@@ -200,7 +210,10 @@ export const resolveCreatorName = (
  * Vérifie si l'utilisateur a les droits d'administration sur la compétition
  * (Créateur OU Arbitre)
  */
-export const canManageCompetition = (competition: any, user: any): boolean => {
+export const canManageCompetition = (
+  competition: Competition | null | undefined,
+  user: User | null,
+): boolean => {
   return (
     isCompetitionCreator(competition, user) ||
     isPlayerReferee(competition, user?.player?.id)

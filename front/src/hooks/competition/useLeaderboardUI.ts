@@ -1,8 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth, useParticipationDelete, useLeaderboardLogic } from '@/hooks';
+import {
+  useAuth,
+  useParticipationDelete,
+  useLeaderboardLogic,
+  type EnrichedLeaderboardItem,
+} from '@/hooks';
 import { ROUTES } from '@/constants/routes';
 import { canManageCompetition } from '@/utils';
 import type { Competition, Participation } from '@/types';
+import { useMemo } from 'react';
 
 export const useLeaderboardUI = (
   participations: Participation[],
@@ -13,22 +19,43 @@ export const useLeaderboardUI = (
   const { user } = useAuth();
 
   const isAdmin = canManageCompetition(competition, user);
+  const isFogOfWarActive = competition.fog_of_war && !isAdmin;
+
   const { deleteParticipation } = useParticipationDelete(onRefresh);
 
-  const enrichedData = useLeaderboardLogic(participations);
+  const enrichedParticipations = useLeaderboardLogic(participations);
 
-  const handleDelete = async (item: any) => {
-    const playerName = item.player?.display_name || item.player?.displayName;
-    const success = await deleteParticipation(item.id, playerName, false);
+  const displayableParticipations = useMemo(() => {
+    if (!isFogOfWarActive) {
+      return enrichedParticipations;
+    }
 
-    if (success && item.isMe) {
+    return [...enrichedParticipations].sort((participationA, participationB) =>
+      (participationA.player.display_name || '').localeCompare(
+        participationB.player.display_name || '',
+      ),
+    );
+  }, [enrichedParticipations, isFogOfWarActive]);
+
+  const handleParticipationDelete = async (
+    participationToDelete: EnrichedLeaderboardItem,
+  ) => {
+    const playerName = participationToDelete.player?.display_name;
+    const isDeleteSuccessful = await deleteParticipation(
+      participationToDelete.id,
+      playerName,
+      false,
+    );
+
+    if (isDeleteSuccessful && participationToDelete.isMe) {
       navigate(ROUTES.NAV.DASHBOARD);
     }
   };
 
   return {
-    enrichedData,
+    dislpayedParticipations: displayableParticipations,
+    isFogActive: isFogOfWarActive,
     isAdmin,
-    handleDelete,
+    handleDelete: handleParticipationDelete,
   };
 };

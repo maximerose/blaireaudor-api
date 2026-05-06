@@ -3,48 +3,59 @@ import { useMemo } from 'react';
 import { useAuth } from '../auth/useAuth';
 import { getIdFromData } from '@/utils';
 
-export interface EnrichedLeaderboardItem {
+export type EnrichedLeaderboardItem = Participation & {
+  id: string;
   rank: number;
   isMe: boolean;
   isExAequo: boolean;
-}
+};
 
 export const useLeaderboardLogic = (participations: Participation[]) => {
   const { user } = useAuth();
-
   const currentPlayerId = user?.player?.id?.toString();
 
   return useMemo(() => {
-    const sortedData = [...participations].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
+    const rankedParticipations = [...participations].sort(
+      (participationA, participationB) => {
+        if (participationB.score !== participationA.score)
+          return participationB.score - participationA.score;
 
-      const nameA = (a.player.display_name || '').toLowerCase();
-      const nameB = (b.player.display_name || '').toLowerCase();
-      return nameA.localeCompare(nameB);
-    });
+        const playerNameA = (
+          participationA.player.display_name || ''
+        ).toLowerCase();
+        const playerNameB = (
+          participationB.player.display_name || ''
+        ).toLowerCase();
 
-    const scoreCounts = sortedData.reduce(
-      (acc, item) => {
-        acc[item.score] = (acc[item.score] || 0) + 1;
-        return acc;
+        return playerNameA.localeCompare(playerNameB);
+      },
+    );
+
+    const scoreFrequencies = rankedParticipations.reduce(
+      (frequencies, currentParticipation) => {
+        const currentScore = currentParticipation.score;
+        frequencies[currentScore] = (frequencies[currentScore] || 0) + 1;
+
+        return frequencies;
       },
       {} as Record<number, number>,
     );
 
-    let currentRank = 0;
-    let lastScore = -1;
+    let currentRankPosition = 0;
+    let previousScore = -1;
 
-    return sortedData.map((item, index) => {
-      if (item.score !== lastScore) {
-        currentRank = index + 1;
+    return rankedParticipations.map((participation, index) => {
+      if (participation.score !== previousScore) {
+        currentRankPosition = index + 1;
       }
-      lastScore = item.score;
+      previousScore = participation.score;
 
       return {
-        ...item,
-        rank: currentRank,
-        isMe: getIdFromData(item.player) === currentPlayerId,
-        isExAequo: scoreCounts[item.score] > 1,
+        ...participation,
+        id: participation.id || getIdFromData(participation),
+        rank: currentRankPosition,
+        isMe: getIdFromData(participation.player) === currentPlayerId,
+        isExAequo: scoreFrequencies[participation.score] > 1,
       } as EnrichedLeaderboardItem;
     });
   }, [participations, currentPlayerId]);

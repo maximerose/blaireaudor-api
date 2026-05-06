@@ -12,6 +12,7 @@ export interface Competition {
   participants_count: number;
   has_started: boolean;
   created_by: User;
+  creator_name: string;
   referees: (Player | string)[];
   bonus_days: Array<BonusDay>;
 }

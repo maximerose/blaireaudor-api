@@ -1,12 +1,12 @@
 import type React from 'react';
 import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
-import { useLeaderboardRow } from '@/hooks';
+import { useLeaderboardRow, type EnrichedLeaderboardItem } from '@/hooks';
 import type { Competition } from '@/types';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
-  item: any;
+  participation: EnrichedLeaderboardItem;
   onDelete: () => void;
   isAdmin: boolean;
   competition: Competition;
@@ -14,7 +14,7 @@ interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const LeaderboardRow = ({
-  item,
+  participation,
   onDelete,
   isAdmin,
   isFogActive,
@@ -23,7 +23,7 @@ export const LeaderboardRow = ({
   ...props
 }: LeaderboardRowProps) => {
   const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } =
-    useLeaderboardRow(item, isAdmin, competition);
+    useLeaderboardRow(participation, isAdmin, competition);
   const showRealStats = !isFogActive || isAdmin;
 
   return (
@@ -31,8 +31,8 @@ export const LeaderboardRow = ({
       {...props}
       className={cn(
         'grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-default group',
-        item.rank <= 3 ? 'bg-white/2' : 'bg-transparent',
-        isFogActive && !item.isMe && 'opacity-60',
+        participation.rank <= 3 ? 'bg-white/2' : 'bg-transparent',
+        isFogActive && !participation.isMe && 'opacity-60',
         className,
       )}
     >
@@ -41,7 +41,7 @@ export const LeaderboardRow = ({
           medal ? (
             <span
               className={cn(
-                getMedalStyle(item.rank),
+                getMedalStyle(participation.rank),
                 'text-2xl animate-fade-in',
               )}
               aria-hidden="true"
@@ -53,7 +53,7 @@ export const LeaderboardRow = ({
               <span className="sr-only">
                 {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.RANK}{' '}
               </span>
-              {item.rank}
+              {participation.rank}
             </Badge>
           )
         ) : (
@@ -71,12 +71,12 @@ export const LeaderboardRow = ({
               as="span"
               className={cn(
                 'truncate normal-case italic max-w-30 sm:max-w-none',
-                item.isMe ? 'text-gold' : 'text-white/90',
+                participation.isMe ? 'text-gold' : 'text-white/90',
               )}
             >
               {playerName}
             </Text>
-            {item.isMe && (
+            {participation.isMe && (
               <Badge variant="gold" isPulse aria-label="C'est vous">
                 {UI.ME}
               </Badge>
@@ -88,7 +88,7 @@ export const LeaderboardRow = ({
             </div>
           </div>
 
-          {showRealStats && item.isExAequo && (
+          {showRealStats && participation.isExAequo && (
             <Text variant="micro" className="text-white/20 italic">
               {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.EXAEQUO}
             </Text>
@@ -115,12 +115,12 @@ export const LeaderboardRow = ({
 
       <div
         className="col-span-3 flex items-center justify-end"
-        aria-label={`Score : ${item.score} points`}
+        aria-label={`Score : ${participation.score} points`}
       >
-        {showRealStats || item.isMe ? (
+        {showRealStats || participation.isMe ? (
           <RankedScore
-            score={item.score}
-            rank={item.rank}
+            score={participation.score}
+            rank={participation.rank}
             isFogActive={isFogActive}
           />
         ) : (

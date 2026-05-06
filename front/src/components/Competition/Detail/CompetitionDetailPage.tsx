@@ -93,7 +93,7 @@ const CompetitionDetailPage = () => {
               <div className="h-px w-full bg-white/5" />
             </header>
             <Leaderboard
-              data={leaderboard || []}
+              participations={leaderboard || []}
               competition={competition}
               onRefresh={refresh}
             />

@@ -2,33 +2,21 @@ import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 import { COMPETITION_UI, ICONS } from '@/constants';
+import type { Competition, Participation } from '@/types';
 
 interface LeaderboardProps {
-  data: any[];
-  competition: any;
+  participations: Participation[];
+  competition: Competition;
   onRefresh: () => void;
 }
 
 export const Leaderboard = ({
-  data,
+  participations,
   competition,
   onRefresh,
 }: LeaderboardProps) => {
-  const { enrichedData, isAdmin, handleDelete } = useLeaderboardUI(
-    data,
-    competition,
-    onRefresh,
-  );
-
-  const isFogActive = competition.fog_of_war && !isAdmin;
-
-  const displayData = isFogActive
-    ? [...enrichedData].sort((a, b) =>
-        (a.player.display_name || '').localeCompare(
-          b.player.display_name || '',
-        ),
-      )
-    : enrichedData;
+  const { dislpayedParticipations, isFogActive, isAdmin, handleDelete } =
+    useLeaderboardUI(participations, competition, onRefresh);
 
   return (
     <Card
@@ -50,10 +38,10 @@ export const Leaderboard = ({
         </div>
       )}
       <div className="divide-y divide-white/5" role="list">
-        {displayData.map((item) => (
+        {dislpayedParticipations.map((item) => (
           <LeaderboardRow
             key={item.id}
-            item={item}
+            participation={item}
             isAdmin={isAdmin}
             isFogActive={isFogActive}
             role="listitem"
@@ -63,7 +51,7 @@ export const Leaderboard = ({
         ))}
       </div>
 
-      {enrichedData.length === 0 && (
+      {dislpayedParticipations.length === 0 && (
         <EmptyState
           layout="card"
           icon={ICONS.EMPTY}
