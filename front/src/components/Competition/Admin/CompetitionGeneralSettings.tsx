@@ -2,8 +2,13 @@ import { Input, Button, Text, Card, Badge } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
+import type { Competition } from '@/types';
 
-export const CompetitionGeneralSettings = ({ competition }: any) => {
+interface Props {
+  competition: Competition;
+}
+
+export const CompetitionGeneralSettings = ({ competition }: Props) => {
   const {
     isEditing,
     setIsEditing,
@@ -46,12 +51,14 @@ export const CompetitionGeneralSettings = ({ competition }: any) => {
         <Input
           label={FORM.COMPETITION.LABELS.NAME}
           value={formData.name}
-          onChange={(e: any) => updateField('name', e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            updateField('name', e.target.value)
+          }
         />
         <Input
           label={FORM.COMPETITION.LABELS.JOIN_CODE}
           value={formData.joinCode ?? ''}
-          onChange={(e: any) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             updateField('joinCode', e.target.value.toUpperCase())
           }
         />
@@ -78,12 +85,17 @@ export const CompetitionGeneralSettings = ({ competition }: any) => {
           <Input
             type="date"
             value={formData.startDate}
-            onChange={(e: any) => updateField('startDate', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              updateField('startDate', e.target.value)
+            }
             disabled={competition.has_started}
           />
           <Card
             variant="dark"
-            onClick={() => updateField('startFullDay', !formData.startFullDay)}
+            onClick={() =>
+              !competition.has_started &&
+              updateField('startFullDay', !formData.startFullDay)
+            }
             className={cn(
               'flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none',
               !competition.has_started
@@ -115,7 +127,9 @@ export const CompetitionGeneralSettings = ({ competition }: any) => {
             <Input
               type="time"
               value={formData.startTime}
-              onChange={(e: any) => updateField('startTime', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                updateField('startTime', e.target.value)
+              }
               disabled={competition.has_started}
             />
           )}
@@ -132,7 +146,9 @@ export const CompetitionGeneralSettings = ({ competition }: any) => {
           <Input
             type="date"
             value={formData.endDate}
-            onChange={(e: any) => updateField('endDate', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              updateField('endDate', e.target.value)
+            }
           />
           <Card
             variant="dark"
@@ -163,7 +179,9 @@ export const CompetitionGeneralSettings = ({ competition }: any) => {
             <Input
               type="time"
               value={formData.endTime}
-              onChange={(e: any) => updateField('endTime', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                updateField('endTime', e.target.value)
+              }
             />
           )}
         </div>
