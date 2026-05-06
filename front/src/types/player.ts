@@ -32,3 +32,12 @@ export interface PlayerPreview {
   username: string;
   last_competition_name?: string | null;
 }
+
+/**
+ * Interface pour le ViewModel des arbitres utilisé dans la vue
+ * Aligné sur le contrat attendu par RefereeManagement
+ */
+export interface RefereeListItem {
+  id: string | null;
+  name: string;
+}

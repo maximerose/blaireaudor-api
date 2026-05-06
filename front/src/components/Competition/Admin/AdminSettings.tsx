@@ -103,10 +103,7 @@ export const AdminSettings = ({
           >
             {/* Section 1 : Configuration (Moins massive) */}
             <section className="space-y-3">
-              <CompetitionGeneralSettings
-                competition={competition}
-                onRefresh={refresh}
-              />
+              <CompetitionGeneralSettings competition={competition} />
             </section>
 
             {/* Section 2 : Actions rapides (Horizontal Grid) */}

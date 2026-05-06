@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { getCompetitionReferees } from '@/utils';
 import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
-import type { Player, Competition } from '@/types';
+import type { Player, Competition, RefereeListItem } from '@/types';
 
 export const useRefereeManagementUI = (
   competition: Competition,
@@ -42,18 +42,18 @@ export const useRefereeManagementUI = (
     }
   };
 
-  const handleRemoveRequest = async (ref: any, isMe: boolean) => {
+  const handleRemoveRequest = async (ref: RefereeListItem, isMe: boolean) => {
     const confirmMsg = isMe
       ? "Êtes-vous sûr de vouloir démissionner de l'arbitrage ?"
-      : `Voulez-vous vraiment révoquer les droits de ${ref.display_name} ?`;
+      : `Voulez-vous vraiment révoquer les droits de ${ref.name} ?`;
 
     if (window.confirm(confirmMsg)) {
+      if (!ref.id) return;
+
       const success = await removeReferee(ref.id);
       if (success) {
         toast.success(
-          isMe
-            ? "Vous avez quitté l'arbitrage."
-            : `${ref.display_name} révoqué.`,
+          isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} révoqué.`,
         );
       } else {
         toast.error('Échec de la révocation.');

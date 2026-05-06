@@ -5,12 +5,21 @@ import {
 } from '@/components/Competition';
 import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
-import type { CompetitionFormData } from '@/types';
+import type { CompetitionFormData, FormParticipant } from '@/types';
 import { FORM, ICONS, BUTTONS } from '@/constants';
+import { useRefereeStepLogic } from '@/hooks/competition/useRefereeStepLogic';
+
+interface SearchState {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  search: (term: string) => void;
+  searching: boolean;
+  results: FormParticipant[];
+}
 
 interface RefereeStepProps {
   formData: CompetitionFormData;
-  searchState: any;
+  searchState: SearchState;
   updateField: <K extends keyof CompetitionFormData>(
     field: K,
     value: CompetitionFormData[K],
@@ -32,13 +41,8 @@ export const CompetitionRefereeStep = ({
 }: RefereeStepProps) => {
   const { user } = useAuth();
   const { searchTerm, setSearchTerm, search, searching, results } = searchState;
-
-  const externalReferees = formData.referees.filter(
-    (ref: any) => !formData.players.some((p: any) => p.id === ref.id),
-  );
-
-  const hasNoReferee =
-    !formData.isCreatorReferee && formData.referees.length === 0;
+  const { players, referees, externalReferees, hasNoReferee } =
+    useRefereeStepLogic(formData);
 
   return (
     <div className="space-y-6 animate-slide-up">
@@ -141,7 +145,7 @@ export const CompetitionRefereeStep = ({
           </div>
         )}
 
-        {formData.players.length > 0 && (
+        {players.length > 0 && (
           <div className="space-y-2">
             <Text
               variant="micro"
@@ -149,9 +153,9 @@ export const CompetitionRefereeStep = ({
             >
               {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
             </Text>
-            {formData.players.map((player: any) => {
-              const isRef = formData.referees.some(
-                (r: any) => r.id === player.id,
+            {players.map((player: FormParticipant) => {
+              const isRef = referees.some(
+                (r: FormParticipant) => r.id === player.id,
               );
               return (
                 <Card

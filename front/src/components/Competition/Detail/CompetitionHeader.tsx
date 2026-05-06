@@ -7,7 +7,7 @@ import {
 } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { useCompetition } from '@/hooks';
-import type { BonusDay, Competition } from '@/types';
+import type { BonusDay, Competition, RefereeListItem } from '@/types';
 import { COMPETITION_UI, ICONS } from '@/constants';
 
 interface CompetitionHeaderProps {
@@ -101,7 +101,7 @@ export const CompetitionHeader = ({
                   referees.length,
                 )}
               </Text>
-              {referees.map((ref: any) => (
+              {referees.map((ref: RefereeListItem) => (
                 <Badge
                   key={ref.id}
                   variant="info"

@@ -2,7 +2,7 @@ import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
 import { useAuth, useCompetition } from '@/hooks';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
-import type { Player } from '@/types';
+import type { Player, RefereeListItem } from '@/types';
 
 export const RefereeManagement = () => {
   const { competition, refresh } = useCompetition();
@@ -34,7 +34,7 @@ export const RefereeManagement = () => {
 
       {/* Liste des arbitres actuels */}
       <div className="flex flex-wrap items-center justify-center gap-2">
-        {referees.map((ref: any) => {
+        {referees.map((ref: RefereeListItem) => {
           const isMe = String(ref.id) === myPlayerId;
           const isRemoving = loadingAction === `remove-${ref.id}`;
           const canRemove = (!isLastRef && isMe) || (!isMe && myPlayerId);
