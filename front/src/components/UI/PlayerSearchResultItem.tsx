@@ -1,7 +1,7 @@
 import type React from 'react';
 import { Badge, Text } from '@/components/UI';
 import { usePlayerSearchResultUI } from '@/hooks';
-import { ICONS } from '@/constants';
+import { FORM, ICONS } from '@/constants';
 
 interface Player {
   id: string;
@@ -28,57 +28,48 @@ export const PlayerSearchResultItem = ({
   className = '',
   ...props
 }: Props) => {
-  const { name, lastComp, itemClasses, actionIconClasses } =
-    usePlayerSearchResultUI(player, className);
+  const { name, lastComp, classes } = usePlayerSearchResultUI(
+    player,
+    className,
+  );
 
   return (
     <button
       type="button"
       onClick={() => onClick(player)}
       role="option"
-      aria-label={`Sélectionner ${name}`}
-      className={itemClasses}
+      aria-label={FORM.ADMIN.ENROLLMENT.SELECT_ARIA(name || '')}
+      className={classes.container}
       {...props}
     >
-      <div className="flex flex-col min-w-0 pointer-events-none">
-        <Text
-          as="span"
-          className="text-sm text-gold font-bold truncate group-hover:text-gold transition-default"
-        >
+      <div className={classes.infoWrapper}>
+        <Text as="span" className={classes.name}>
           {name}
         </Text>
 
-        <Text
-          as="span"
-          className="text-[10px] text-gold/30 font-mono italic leading-none mt-0.5 truncate"
-        >
+        <Text as="span" className={classes.username}>
           @{player.username}
         </Text>
 
         {lastComp ? (
-          <div className="flex items-center gap-1 mt-1 overflow-hidden">
-            <Text
-              as="span"
-              className="text-[9px] text-white/20 italic font-light shrink-0"
-            >
-              Dernier tournoi :
+          <div className={classes.lastCompWrapper}>
+            <Text as="span" className={classes.lastCompLabel}>
+              {FORM.ADMIN.ENROLLMENT.LAST_COMPETITION}
             </Text>
-            <Text
-              as="span"
-              className="text-[9px] text-info-bright/60 italic font-medium truncate"
-            >
+            <Text as="span" className={classes.lastCompValue}>
               {lastComp}
             </Text>
           </div>
         ) : (
-          <Badge variant="info" className="py-0 px-1.5 mt-1 w-fit opacity-60">
-            Nouveau joueur <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
+          <Badge variant="info" className={classes.newPlayerBadge}>
+            {FORM.ADMIN.ENROLLMENT.NEW_PLAYER_HINT}{' '}
+            <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
           </Badge>
         )}
       </div>
 
-      <div className="ml-4 shrink-0" aria-hidden="true">
-        <span className={actionIconClasses}>{actionIcon}</span>
+      <div className={classes.actionWrapper} aria-hidden="true">
+        <span className={classes.actionIcon}>{actionIcon}</span>
       </div>
     </button>
   );

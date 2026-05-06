@@ -158,6 +158,8 @@ export const FORM = {
       NEW_PLAYER_HINT: 'Nouveau joueur',
       SELECTED_PLAYERS: 'Joueurs sélectionnés',
       NO_PLAYER_SELECTED_HINT: 'Aucun joueur sélectionné',
+      LAST_COMPETITION: 'Dernière compétition : ',
+      SELECT_ARIA: (name: string) => `Sélectionner ${name}`,
       CREATE_NEW: (name: string) => `+ créer "${name}"`,
       SAVE_COUNT: (count: number) => `Recruter(${count})`,
     },
