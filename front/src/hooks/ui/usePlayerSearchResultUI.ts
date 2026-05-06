@@ -1,17 +1,12 @@
+import type { PlayerPreview } from '@/types';
 import { cn } from '@/utils';
 
-interface Player {
-  id: string;
-  displayName?: string;
-  display_name?: string;
-  username: string;
-  lastCompetitionName?: string;
-  last_competition_name?: string;
-}
-
-export const usePlayerSearchResultUI = (player: Player, className: string) => {
-  const name = player.display_name || player.displayName;
-  const lastComp = player.last_competition_name || player.lastCompetitionName;
+export const usePlayerSearchResultUI = (
+  player: PlayerPreview,
+  className: string,
+) => {
+  const name = player.display_name;
+  const lastComp = player.last_competition_name;
 
   const classes = {
     container: cn(

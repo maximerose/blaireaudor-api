@@ -91,7 +91,7 @@ export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
                 key={p.id}
                 player={p}
                 role="option"
-                onClick={addExistingPlayer}
+                onClick={() => addExistingPlayer(p)}
                 actionIcon={BUTTONS.ADD}
               />
             ))}
@@ -132,7 +132,7 @@ export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
 
       <div className="flex justify-center gap-2 mt-2">
         <Button
-          onClick={saveEnrollment}
+          onClick={() => saveEnrollment()}
           isLoading={loading}
           disabled={newPlayers.length === 0}
           aria-live="polite"

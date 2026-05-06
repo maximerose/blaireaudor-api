@@ -29,5 +29,6 @@ export type FormParticipant =
 export interface PlayerPreview {
   id: string;
   display_name: string;
+  username: string;
   last_competition_name?: string | null;
 }

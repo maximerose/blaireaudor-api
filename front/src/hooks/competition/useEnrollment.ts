@@ -4,7 +4,7 @@ import { ROUTES } from '@/constants/routes';
 import { useAuth, usePlayerSearch } from '@/hooks';
 import { ERRORS, QUERY_KEYS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Player } from '@/types';
+import type { PlayerPreview } from '@/types';
 import { competitionService } from '@/services/api/competition';
 import toast from 'react-hot-toast';
 
@@ -33,7 +33,7 @@ export const useEnrollment = (
     );
   }, [rawSearchResults, participants]);
 
-  const addExistingPlayer = (player: Player) => {
+  const addExistingPlayer = (player: PlayerPreview) => {
     if (!participants.find((p) => String(p.id) === String(player.id))) {
       setParticipants([
         ...participants,
