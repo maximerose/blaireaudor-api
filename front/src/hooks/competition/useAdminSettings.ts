@@ -14,7 +14,7 @@ export const useAdminSettings = ({
   refresh,
 }: UseAdminSettingsProps) => {
   const { updateCompetition, isUpdating } = useCompetitionAdmin(
-    competition.id,
+    competition.id || '',
     refresh,
   );
 

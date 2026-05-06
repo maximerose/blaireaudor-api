@@ -36,7 +36,7 @@ final class ActionManager
      */
     public function createActionFromPayload(Competition $competition, User $author, array $data): Action
     {
-        if (!isset($data['player'], $data['description'], $data['points'])) {
+        if (!isset($data['player'], $data['description'], $data['points'], $data['date_action'])) {
             throw new \InvalidArgumentException('Données incomplètes pour créer l\'action.');
         }
 
@@ -59,6 +59,12 @@ final class ActionManager
         $action->setDescription($data['description']);
         $action->setPoints((int) $data['points']);
         $action->setParticipation($participation);
+
+        try {
+            $action->setDateAction(new \DateTimeImmutable($data['date_action']));
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException('Format de date invalide.');
+        }
 
         $isAdmin = $competition->getCreatedBy() === $author;
         $action->setStatus($isAdmin ? ActionStatus::VALIDATED : ActionStatus::PENDING);

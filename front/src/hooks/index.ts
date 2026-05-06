@@ -19,6 +19,7 @@ export * from './competition/useCompetitionDateLimits';
 export * from './competition/useCompetitionDelete';
 export * from './competition/useCompetitionDetailUI';
 export * from './competition/useCompetitionReferees';
+export * from './competition/useCompetitionSettings';
 export * from './competition/useCreateCompetition';
 export * from './competition/useCreateCompetitionForm';
 export * from './competition/useCreateCompetitionPageUI';

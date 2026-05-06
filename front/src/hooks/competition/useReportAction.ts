@@ -4,6 +4,7 @@ import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 import { toast } from 'react-hot-toast';
 import { ActionStatus, type Competition } from '@/types';
 import { API } from '@/constants';
+import { formatToApiISO } from '@/utils';
 
 export const useReportAction = (
   competition: Competition,
@@ -45,7 +46,7 @@ export const useReportAction = (
     setLoading(true);
     const payload = {
       description: formData.description,
-      dateAction: formData.dateAction,
+      date_action: formatToApiISO(formData.dateAction),
       points: Number(formData.points),
       player: API.IRI.PLAYER(formData.targetPlayerId),
       competition: API.IRI.COMPETITION(competition.id),

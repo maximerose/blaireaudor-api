@@ -1,6 +1,6 @@
 import { Button, Text } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
-import { useAdmin } from '@/context/AdminProvider';
+import { useAdmin } from '@/context/AdminContext';
 import { cn } from '@/utils';
 
 export const CloseCompetitionAction = () => {

@@ -1,25 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { AdminContext } from './AdminContext';
-import type { AdminContextType } from './types';
-import { ERRORS } from '@/constants';
+import { useAdminSettings } from '@/hooks';
+import type { Competition, Action } from '@/types';
 
 interface AdminProviderProps {
   children: React.ReactNode;
-  value: AdminContextType;
+  competition: Competition;
+  actions: Action[];
+  refresh: () => void;
 }
 
-export const AdminProvider = ({ children, value }: AdminProviderProps) => {
+export const AdminProvider = ({ children, ...props }: AdminProviderProps) => {
+  const value = useAdminSettings(props);
+
   return (
     <AdminContext.Provider value={value}>{children}</AdminContext.Provider>
   );
-};
-
-export const useAdmin = () => {
-  const context = useContext(AdminContext);
-  if (!context) {
-    throw new Error(
-      ERRORS.DEVELOPER.HOOK_OUTSIDE_PROVIDER('useAdmin', 'AdminProvider'),
-    );
-  }
-  return context;
 };

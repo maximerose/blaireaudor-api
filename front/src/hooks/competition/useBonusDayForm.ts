@@ -1,24 +1,35 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import {
   useBonusDayAdmin,
+  useBonusDays,
   useCompetition,
   useCompetitionDateLimits,
 } from '@/hooks';
 import type { BonusDay } from '@/types';
+import { sortByDate } from '@/utils';
 
 export const useBonusDayForm = () => {
-  const { competition, bonusDays } = useCompetition();
-  const { addBonus, deleteBonus, isAdding } = useBonusDayAdmin(competition.id);
+  const { competition, refresh } = useCompetition();
+  const { data: freshBonusDays } = useBonusDays(competition.id);
+  const { addBonus, deleteBonus, isAdding } = useBonusDayAdmin(
+    competition.id,
+    refresh,
+  );
   const { minDate, maxDate } = useCompetitionDateLimits(competition, false);
 
   const [newDate, setNewDate] = useState('');
   const [multiplier, setMultiplier] = useState(2);
 
+  const sortedBonusDays = useMemo(
+    () => sortByDate(freshBonusDays || [], 'date'),
+    [freshBonusDays],
+  );
+
   const handleAdd = () => {
     if (!newDate) return;
 
-    const isDuplicate = bonusDays?.some(
+    const isDuplicate = (freshBonusDays || []).some(
       (bd: BonusDay) => bd.date.split('T')[0] === newDate,
     );
 
@@ -38,7 +49,7 @@ export const useBonusDayForm = () => {
     handleAdd,
     deleteBonus,
     isAdding,
-    bonusDays,
+    bonusDays: sortedBonusDays,
     minDate,
     maxDate,
   };

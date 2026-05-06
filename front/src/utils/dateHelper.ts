@@ -4,29 +4,36 @@
  */
 export const formatToApiISO = (
   date: string,
-  time: string,
-  isFullDay: boolean,
-  isEndDate: boolean,
+  time?: string,
+  isFullDay: boolean = false,
+  isEndDate: boolean = false,
 ): string => {
   if (!date) return '';
 
   const cleanDate = date.includes('T') ? date.split('T')[0] : date;
 
-  const timePart = isFullDay
-    ? isEndDate
-      ? '23:59'
-      : '00:00'
-    : time || '00:00';
+  let timePart: string;
+
+  if (isFullDay) {
+    // Pour les limites de compétition (00:00 ou 23:59:59)
+    timePart = isEndDate ? '23:59:59' : '00:00:00';
+  } else if (time) {
+    // Si une heure est spécifiée (ex: '14:30')
+    timePart = time.length === 5 ? `${time}:00` : time;
+  } else {
+    // LOGIQUE : Si pas d'heure, on prend l'heure actuelle locale
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    timePart = `${h}:${m}:${s}`;
+  }
 
   const localDate = new Date(`${cleanDate}T${timePart}`);
 
   if (isNaN(localDate.getTime())) {
     console.error(`[dateHelper] Échec du parsing :`, { cleanDate, timePart });
     return '';
-  }
-
-  if (isEndDate && isFullDay) {
-    localDate.setSeconds(59);
   }
 
   return localDate.toISOString();

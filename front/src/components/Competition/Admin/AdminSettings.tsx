@@ -1,5 +1,4 @@
 import { Badge, Button, Card, Text } from '@/components/UI';
-import { useAdminSettings } from '@/hooks';
 import { FogOfWarToggle } from './FogOfWarToggle';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
 import { RefereeManagement } from './RefereeManagement';
@@ -24,12 +23,16 @@ export const AdminSettings = ({
 }: AdminSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const adminState = useAdminSettings({ competition, actions, refresh });
+  if (!competition) return null;
 
-  const { isFogActive } = adminState;
+  const isFogActive = competition.fog_of_war;
 
   return (
-    <AdminProvider value={adminState}>
+    <AdminProvider
+      competition={competition}
+      actions={actions}
+      refresh={refresh}
+    >
       <Card
         variant="dark"
         className={cn(
@@ -100,15 +103,6 @@ export const AdminSettings = ({
           >
             {/* Section 1 : Configuration (Moins massive) */}
             <section className="space-y-3">
-              <header className="flex items-center gap-2 opacity-40">
-                <span className="text-xs">{ICONS.SETTINGS}</span>
-                <Text
-                  variant="micro"
-                  className="uppercase font-bold tracking-tighter"
-                >
-                  {COMPETITION_UI.ADMIN.GENERAL.CONFIG_TITLE}
-                </Text>
-              </header>
               <CompetitionGeneralSettings
                 competition={competition}
                 onRefresh={refresh}
@@ -125,17 +119,7 @@ export const AdminSettings = ({
 
             {/* Section 3 : Arbitrage */}
             <section className="space-y-3">
-              <header className="flex items-center gap-2 opacity-40">
-                <span className="text-xs">{ICONS.REFEREE}</span>
-                <Text
-                  variant="micro"
-                  className="uppercase font-bold tracking-tighter"
-                >
-                  {COMPETITION_UI.ADMIN.REFEREE.TITLE}
-                </Text>
-              </header>
               <RefereeManagement />
-
               <BonusDayManagement />
             </section>
           </div>

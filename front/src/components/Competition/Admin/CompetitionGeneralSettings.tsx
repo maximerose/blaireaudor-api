@@ -3,7 +3,7 @@ import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
 
-export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
+export const CompetitionGeneralSettings = ({ competition }: any) => {
   const {
     isEditing,
     setIsEditing,
@@ -11,7 +11,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
     updateField,
     handleSave,
     loading,
-  } = useEditCompetition(competition, onRefresh);
+  } = useEditCompetition(competition);
 
   if (!isEditing) {
     return (
@@ -50,7 +50,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
         />
         <Input
           label={FORM.COMPETITION.LABELS.JOIN_CODE}
-          value={formData.joinCode}
+          value={formData.joinCode ?? ''}
           onChange={(e: any) =>
             updateField('joinCode', e.target.value.toUpperCase())
           }
@@ -173,7 +173,7 @@ export const CompetitionGeneralSettings = ({ competition, onRefresh }: any) => {
         <Button variant="ghost" onClick={() => setIsEditing(false)}>
           {BUTTONS.CANCEL}
         </Button>
-        <Button onClick={handleSave} isLoading={loading}>
+        <Button onClick={() => handleSave()} isLoading={loading}>
           {BUTTONS.SAVE}
         </Button>
       </div>

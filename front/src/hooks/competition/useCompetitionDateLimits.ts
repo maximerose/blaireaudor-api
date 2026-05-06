@@ -7,11 +7,19 @@ export const useCompetitionDateLimits = (
   return useMemo(() => {
     if (!competition) return { minDate: '', maxDate: '' };
 
-    const start = competition.start_date.split('T')[0];
+    const toLocalYYYYMMDD = (dateStr: string | Date) => {
+      const d = new Date(dateStr);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const start = toLocalYYYYMMDD(competition.start_date);
     const end = competition.end_date
-      ? competition.end_date.split('T')[0]
+      ? toLocalYYYYMMDD(competition.end_date)
       : null;
-    const today = new Date().toISOString().split('T')[0];
+    const today = toLocalYYYYMMDD(new Date());
 
     const limitEnd = capAtToday ? (end && end < today ? end : today) : end;
 

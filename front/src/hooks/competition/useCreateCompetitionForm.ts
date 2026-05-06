@@ -49,10 +49,10 @@ export const useCreateCompetitionForm = (
   };
 
   const handleAddPlayer = (player: Player) => {
-    if (!formData.players.find((p) => p.id === player.id)) {
+    if (!(formData.players || []).find((p) => p.id === player.id)) {
       setFormData((prev) => ({
         ...prev,
-        players: [...prev.players, { ...player, isNew: false }],
+        players: [...(prev.players || []), { ...player, isNew: false }],
       }));
     }
     clearSearch();
@@ -65,7 +65,7 @@ export const useCreateCompetitionForm = (
       setFormData((prev) => ({
         ...prev,
         players: [
-          ...prev.players,
+          ...(prev.players || []),
           { id: tempId, display_name: trimmedName, isNew: true },
         ],
       }));
@@ -76,7 +76,7 @@ export const useCreateCompetitionForm = (
   const handleRemovePlayer = (id: string) => {
     setFormData((prev) => ({
       ...prev,
-      players: prev.players.filter((p) => p.id !== id),
+      players: (prev.players || []).filter((p) => p.id !== id),
     }));
   };
 
@@ -85,12 +85,13 @@ export const useCreateCompetitionForm = (
     isNewInput: boolean = false,
   ) => {
     setFormData((prev) => {
-      const isAlreadyRef = prev.referees.some((r) => r.id === person.id);
+      const currentReferees = prev.referees || [];
+      const isAlreadyRef = currentReferees.some((r) => r.id === person.id);
 
       if (isAlreadyRef) {
         return {
           ...prev,
-          referees: prev.referees.filter((r) => r.id !== person.id),
+          referees: currentReferees.filter((r) => r.id !== person.id),
         };
       }
 
@@ -101,7 +102,7 @@ export const useCreateCompetitionForm = (
 
       return {
         ...prev,
-        referees: [...prev.referees, refereeToAdd],
+        referees: [...currentReferees, refereeToAdd],
       };
     });
     clearSearch();
@@ -119,21 +120,21 @@ export const useCreateCompetitionForm = (
   const submit = async () => {
     const competition = await create({
       ...formData,
-      joinCode: cleanJoinCode(formData.joinCode),
+      joinCode: cleanJoinCode(formData.joinCode || ''),
     });
 
     if (!competition) return;
 
-    const existingIds = formData.players
+    const existingIds = (formData.players || [])
       .filter((p) => !p.isNew)
       .map((p) => p.id);
-    const newNames = formData.players
+    const newNames = (formData.players || [])
       .filter((p) => p.isNew)
       .map((p) => p.display_name);
-    const existingReferees = formData.referees
+    const existingReferees = (formData.referees || [])
       .filter((r) => !r.isNew)
       .map((r) => r.id);
-    const newReferees = formData.referees
+    const newReferees = (formData.referees || [])
       .filter((r) => r.isNew)
       .map((r) => r.display_name);
 

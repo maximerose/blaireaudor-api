@@ -1,6 +1,6 @@
 import { Button, Text, Badge } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
-import { useAdmin } from '@/context/AdminProvider';
+import { useAdmin } from '@/context/AdminContext';
 import { cn } from '@/utils';
 
 export const FogOfWarToggle = () => {

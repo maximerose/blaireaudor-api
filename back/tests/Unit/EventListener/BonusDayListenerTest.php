@@ -10,60 +10,64 @@ use App\EventListener\BonusDayListener;
 use App\Factory\BonusDayFactory;
 use App\Factory\CompetitionFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PostPersistEventArgs;
-use Doctrine\ORM\Event\PostRemoveEventArgs;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\Event\LifecycleEventArgs; // Utilise le parent non-final
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class BonusDayListenerTest extends TestCase
 {
     private EntityManagerInterface|MockObject $entityManagerMock;
+    private UnitOfWork|MockObject $uowMock;
     private BonusDayListener $listener;
 
     protected function setUp(): void
     {
         $this->entityManagerMock = $this->createMock(EntityManagerInterface::class);
+        $this->uowMock = $this->createMock(UnitOfWork::class);
+
+        $this->entityManagerMock->method('getUnitOfWork')->willReturn($this->uowMock);
+        $this->entityManagerMock->method('getClassMetadata')->willReturn($this->createMock(ClassMetadata::class));
+
         $this->listener = new BonusDayListener($this->entityManagerMock);
     }
 
-    public function testPostPersistTriggersScoreRecalculationAndFlush(): void
+    public function testPrePersistTriggersScoreRecalculationAndChangeSet(): void
     {
         $bonusDay = $this->createBonusDayWithParticipations();
-        $eventArgs = new PostPersistEventArgs($bonusDay, $this->entityManagerMock);
 
-        $this->entityManagerMock->expects($this->once())->method('flush');
+        // On mocke la classe parente LifecycleEventArgs au lieu de la classe final
+        $eventArgs = $this->createMock(LifecycleEventArgs::class);
+        $eventArgs->method('getObjectManager')->willReturn($this->entityManagerMock);
 
-        $this->listener->postPersist($bonusDay, $eventArgs);
+        $this->uowMock->expects($this->once())->method('computeChangeSet');
+
+        $this->listener->prePersist($bonusDay, $this->castToDoctrineEvent($eventArgs));
     }
 
-    public function testPostUpdateTriggersScoreRecalculationAndFlush(): void
+    public function testPreRemoveTriggersScoreRecalculationAndChangeSet(): void
     {
         $bonusDay = $this->createBonusDayWithParticipations();
-        $eventArgs = new PostUpdateEventArgs($bonusDay, $this->entityManagerMock);
+        $eventArgs = $this->createMock(LifecycleEventArgs::class);
+        $eventArgs->method('getObjectManager')->willReturn($this->entityManagerMock);
 
-        $this->entityManagerMock->expects($this->once())->method('flush');
+        $this->uowMock->expects($this->once())->method('computeChangeSet');
 
-        $this->listener->postUpdate($bonusDay, $eventArgs);
-    }
-
-    public function testPostRemoveTriggersScoreRecalculationAndFlush(): void
-    {
-        $bonusDay = $this->createBonusDayWithParticipations();
-        $eventArgs = new PostRemoveEventArgs($bonusDay, $this->entityManagerMock);
-
-        $this->entityManagerMock->expects($this->once())->method('flush');
-
-        $this->listener->postRemove($bonusDay, $eventArgs);
+        $this->listener->preRemove($bonusDay, $this->castToDoctrineEvent($eventArgs));
     }
 
     /**
-     * Helper pour créer un BonusDay lié à une Compétition contenant des Participations.
+     * Helper pour contourner le typage strict dans les tests.
      */
+    private function castToDoctrineEvent(MockObject $mock): mixed
+    {
+        return $mock;
+    }
+
     private function createBonusDayWithParticipations(): BonusDay
     {
         $competition = CompetitionFactory::new()->withoutPersisting()->create();
-
         $participationMock = $this->createMock(Participation::class);
         $participationMock->expects($this->once())->method('updateScore');
 

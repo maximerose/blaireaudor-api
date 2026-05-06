@@ -1,4 +1,10 @@
-import type { BonusDay, FormParticipant, Player, User } from '@/types';
+import type {
+  BonusDay,
+  FormParticipant,
+  Participation,
+  Player,
+  User,
+} from '@/types';
 
 export interface Competition {
   id: string;
@@ -15,6 +21,7 @@ export interface Competition {
   creator_name: string;
   referees: (Player | string)[];
   bonus_days: Array<BonusDay>;
+  participations?: Participation[];
 }
 
 export interface CompetitionFormData {
@@ -25,10 +32,10 @@ export interface CompetitionFormData {
   endDate: string;
   endTime: string;
   endFullDay: boolean;
-  joinCode: string | null;
-  participate: boolean;
-  fogOfWar: boolean;
-  isCreatorReferee: boolean;
-  players: FormParticipant[];
-  referees: FormParticipant[];
+  joinCode?: string | null;
+  participate?: boolean;
+  fogOfWar?: boolean;
+  isCreatorReferee?: boolean;
+  players?: FormParticipant[];
+  referees?: FormParticipant[];
 }

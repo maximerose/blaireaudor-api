@@ -5,8 +5,12 @@ import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competition';
+import type { CompetitionFormData, Competition } from '@/types';
 
-export const useEditCompetition = (competition: any) => {
+export const useEditCompetition = (
+  competition: Competition,
+  onRefresh?: () => void,
+) => {
   const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -14,7 +18,7 @@ export const useEditCompetition = (competition: any) => {
   const start = parseFromApiISO(competition.start_date);
   const end = parseFromApiISO(competition.end_date);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CompetitionFormData>({
     name: competition.name,
     joinCode: competition.join_code,
     startDate: start.date,
@@ -25,13 +29,16 @@ export const useEditCompetition = (competition: any) => {
     endFullDay: end.time === '23:59' || end.time === '00:00',
   });
 
-  const updateField = (field: string, value: any) => {
+  const updateField = <K extends keyof CompetitionFormData>(
+    field: K,
+    value: CompetitionFormData[K],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload = {
+      const payload: Partial<Record<string, any>> = {
         name: formData.name,
         join_code: formData.joinCode,
         end_date: formatToApiISO(
@@ -40,15 +47,17 @@ export const useEditCompetition = (competition: any) => {
           formData.endFullDay,
           true,
         ),
-        ...(!competition.has_started && {
-          start_date: formatToApiISO(
-            formData.startDate,
-            formData.startTime,
-            formData.startFullDay,
-            false,
-          ),
-        }),
       };
+
+      if (!competition.has_started) {
+        payload.start_date = formatToApiISO(
+          formData.startDate,
+          formData.startTime,
+          formData.startFullDay,
+          false,
+        );
+      }
+
       return competitionService.update(competition.id, payload);
     },
     onSuccess: () => {
@@ -56,8 +65,9 @@ export const useEditCompetition = (competition: any) => {
       setIsEditing(false);
 
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
+      onRefresh?.();
 
-      if (formData.joinCode !== competition.join_code) {
+      if (formData.joinCode && formData.joinCode !== competition.join_code) {
         navigate(ROUTES.NAV.COMPETITION_DETAIL(formData.joinCode), {
           replace: true,
         });

@@ -1,9 +1,7 @@
 import { useContext } from 'react';
-import {
-  CompetitionContext,
-  type CompetitionContextType,
-} from '@/context/CompetitionContext';
+import { CompetitionContext } from '@/context/CompetitionContext';
 import { ERRORS } from '@/constants';
+import type { CompetitionContextType } from '@/context/contextTypes';
 
 export const useCompetition = (): CompetitionContextType => {
   const context = useContext(CompetitionContext);

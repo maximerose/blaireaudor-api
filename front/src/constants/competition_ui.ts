@@ -24,6 +24,9 @@ export const COMPETITION_UI = {
       LAST_REF_WARNING: `${ICONS.DANGER} Vous êtes le dernier arbitre. Ajoutez un successeur avant de pouvoir démissionner.`,
       APPOINT: 'Nommer',
     },
+    MULTIPLIER: {
+      TITLE: 'Multiplicateurs',
+    },
     FOG: {
       LABEL: 'Brouillard :',
       ENABLE: 'Activer le brouillard',
