@@ -1,12 +1,12 @@
-import { apiFetch } from '@/services/api/config';
 import { useAuth } from '@/hooks';
-import { API } from '@/constants';
+import { ERRORS } from '@/constants';
+import { competitionService } from '@/services/api/competition';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const { refreshUser } = useAuth();
 
   const deleteParticipation = async (
-    participatoinId: string,
+    participationId: string,
     playerName: string,
     hasActions: boolean,
   ): Promise<boolean> => {
@@ -21,22 +21,12 @@ export const useParticipationDelete = (onSuccess: () => void) => {
       return false;
 
     try {
-      const response = await apiFetch(
-        API.ENDPOINTS.PARTICIPATIONS.DETAIL(participatoinId),
-        {
-          method: 'DELETE',
-        },
-      );
-
-      if (response.ok) {
-        await refreshUser();
-        onSuccess();
-        return true;
-      }
-
-      return false;
+      await competitionService.removeParticipation(participationId);
+      await refreshUser();
+      onSuccess();
+      return true;
     } catch (error) {
-      console.error('Erreur lors de la suppression du joueur', error);
+      console.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED, error);
       return false;
     }
   };

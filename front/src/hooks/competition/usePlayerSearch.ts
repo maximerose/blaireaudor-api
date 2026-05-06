@@ -12,6 +12,7 @@ export const usePlayerSearch = (debounceDelay = 400) => {
     const timer = setTimeout(() => {
       setDebouncedTerm(searchTerm);
     }, debounceDelay);
+
     return () => clearTimeout(timer);
   }, [searchTerm, debounceDelay]);
 

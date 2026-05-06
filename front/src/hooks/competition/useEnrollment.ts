@@ -1,9 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '@/services/api/config';
 import { ROUTES } from '@/constants/routes';
 import { useAuth, usePlayerSearch } from '@/hooks';
-import { API } from '@/constants';
+import { ERRORS, QUERY_KEYS } from '@/constants';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { Player } from '@/types';
+import { competitionService } from '@/services/api/competition';
+import toast from 'react-hot-toast';
 
 export const useEnrollment = (
   competitionId: string,
@@ -11,9 +14,10 @@ export const useEnrollment = (
   onSuccess?: () => void,
 ) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { refreshUser } = useAuth();
+
   const [participants, setParticipants] = useState(initialParticipants);
-  const [loading, setLoading] = useState(false);
 
   const {
     searchTerm,
@@ -29,13 +33,13 @@ export const useEnrollment = (
     );
   }, [rawSearchResults, participants]);
 
-  const addExistingPlayer = (player: any) => {
+  const addExistingPlayer = (player: Player) => {
     if (!participants.find((p) => String(p.id) === String(player.id))) {
       setParticipants([
         ...participants,
         {
           id: player.id,
-          display_name: player.display_name || player.displayName,
+          display_name: player.display_name,
           isNew: false,
         },
       ]);
@@ -56,44 +60,38 @@ export const useEnrollment = (
     setParticipants((prev) => prev.filter((p) => p.id !== playerId));
   };
 
-  const saveEnrollment = async () => {
-    setLoading(true);
+  const enrollmentMutation = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        existing_players_ids: participants
+          .filter((p) => !p.isNew)
+          .map((p) => p.id),
+        new_players: participants
+          .filter((p) => p.isNew)
+          .map((p) => p.display_name),
+        existing_referees_ids: [], // Optionnel selon ton service
+        new_referees: [], // Optionnel selon ton service
+      };
 
-    const existingIds = participants.filter((p) => !p.isNew).map((p) => p.id);
-    const newNames = participants
-      .filter((p) => p.isNew)
-      .map((p) => p.display_name);
+      return competitionService.addParticipation(competitionId, payload);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
 
-    try {
-      const response = await apiFetch(
-        API.ENDPOINTS.ADMIN.ADD_PARTICIPANTS(competitionId),
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            existing_players_ids: existingIds,
-            new_players: newNames,
-          }),
-        },
-      );
+      await refreshUser();
 
-      if (response.ok) {
-        await refreshUser();
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          navigate(ROUTES.NAV.DASHBOARD);
-        }
+      if (onSuccess) {
+        onSuccess();
       } else {
-        const errorData = await response.json();
-        alert(errorData.error || 'Une erreur est survenue');
+        navigate(ROUTES.NAV.DASHBOARD);
       }
-    } catch (error) {
-      console.error('Erreur technique', error);
-      alert('Impossible de joindre le serveur');
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      toast.success('Liste des participants mise à jour !');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
+    },
+  });
 
   return {
     participants,
@@ -103,8 +101,8 @@ export const useEnrollment = (
     addExistingPlayer,
     addNewPlayer,
     removePlayer,
-    saveEnrollment,
-    loading,
+    saveEnrollment: enrollmentMutation.mutate,
+    loading: enrollmentMutation.isPending,
     isSearching,
   };
 };

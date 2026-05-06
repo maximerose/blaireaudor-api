@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competition';
-import { QUERY_KEYS } from '@/constants';
+import { ERRORS, QUERY_KEYS } from '@/constants';
 
 export const useCompetitionData = (code: string) => {
   const queryClient = useQueryClient();
@@ -30,8 +30,8 @@ export const useCompetitionData = (code: string) => {
    * Fonction de rafraîchissement global :
    * Invalide toutes les requêtes liées à cette compétition pour forcer un re-fetch.
    */
-  const refresh = () => {
-    queryClient.invalidateQueries({
+  const refresh = async () => {
+    await queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.competition.byCode(code),
     });
 
@@ -46,14 +46,23 @@ export const useCompetitionData = (code: string) => {
     competitionQuery.isLoading ||
     (!!competitionId && (leaderboardQuery.isLoading || actionsQuery.isLoading));
 
+  const getErrorMessage = () => {
+    if (competitionQuery.isError) return ERRORS.COMPETITION.NOT_FOUND(code);
+    if (leaderboardQuery.isError) return ERRORS.COMPETITION.FETCH_LEADERBOARD;
+    if (actionsQuery.isError) return ERRORS.COMPETITION.FETCH_ACTIONS;
+    return null;
+  };
+
   return {
     competition: competitionQuery.data,
     leaderboard: leaderboardQuery.data ?? [],
     actions: actionsQuery.data ?? [],
     isReady: !isInitialLoading,
-    isRefreshing: competitionQuery.isFetching || leaderboardQuery.isFetching,
-    error:
-      competitionQuery.error || leaderboardQuery.error || actionsQuery.error,
+    isRefreshing:
+      competitionQuery.isFetching ||
+      leaderboardQuery.isFetching ||
+      actionsQuery.isFetching,
+    error: getErrorMessage(),
     refresh,
   };
 };

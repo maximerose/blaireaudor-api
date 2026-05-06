@@ -145,7 +145,7 @@ export const useCreateCompetitionForm = (
     ) {
       setIsAddingPlayers(true);
       try {
-        await competitionService.addParticipants(competition.id, {
+        await competitionService.addParticipation(competition.id, {
           existing_players_ids: existingIds,
           new_players: newNames,
           existing_referees_ids: existingReferees,

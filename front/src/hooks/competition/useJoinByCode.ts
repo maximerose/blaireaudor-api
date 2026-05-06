@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/hooks';
-import { apiFetch } from '@/services/api/config';
-import { API } from '@/constants';
+import { competitionService } from '@/services/api/competition';
+import { ERRORS } from '@/constants';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {
   const { user, refreshUser } = useAuth();
@@ -11,29 +11,13 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
       const playerId = user?.player?.id;
 
       if (!playerId) {
-        throw new Error('Action impossible : profil joueur introuvable.');
+        throw new Error(ERRORS.AUTH.SESSION_EXPIRED);
       }
 
-      const checkRes = await apiFetch(
-        API.ENDPOINTS.COMPETITIONS.BY_CODE(joinCode),
-      );
-      if (checkRes.status === 404) throw new Error("Cette arène n'existe pas.");
+      const competition = await competitionService.getByCode(joinCode);
 
-      const competition = await checkRes.json();
-      const joinRes = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
-        method: 'POST',
-        body: JSON.stringify({
-          player: API.IRI.PLAYER(playerId),
-          competition: API.IRI.COMPETITION(competition.id),
-        }),
-      });
+      await competitionService.join(playerId, competition.id);
 
-      if (!joinRes.ok) {
-        const errorData = await joinRes.json();
-        throw new Error(
-          errorData.violations?.[0]?.message || "Erreur lors de l'inscription",
-        );
-      }
       return joinCode;
     },
     onSuccess: async (code) => {

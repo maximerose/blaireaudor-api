@@ -1,6 +1,6 @@
 import { apiFetch } from './config';
 import { formatToApiISO } from '@/utils';
-import { API } from '@/constants';
+import { API, ERRORS } from '@/constants';
 
 export const competitionService = {
   create: async (data: any) => {
@@ -30,8 +30,8 @@ export const competitionService = {
     const result = await response.json();
 
     if (!response.ok) {
-      console.error("Détails de l'erreur Symfony:", result);
-      throw new Error('Erreur lors de la création de la compétition');
+      console.error(ERRORS.SYMFONY_DETAILS, result);
+      throw new Error(ERRORS.COMPETITION.CREATE_FAILED);
     }
 
     return result;
@@ -43,35 +43,56 @@ export const competitionService = {
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
-    return { ok: response.ok, data: await response.json() };
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.UPDATE_FAILED);
+    return response.json();
   },
 
   delete: async (id: string) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'DELETE',
     });
-    return response.ok;
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.DELETE_FAILED);
+    return true;
   },
 
   getByCode: async (code: string) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code));
-    if (!response.ok) throw new Error(`Arène introuvable (code: ${code})`);
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.NOT_FOUND(code));
+    return response.json();
+  },
+
+  join: async (playerId: string, competitionId: string) => {
+    const response = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
+      method: 'POST',
+      body: JSON.stringify({
+        player: API.IRI.PLAYER(playerId),
+        competition: API.IRI.COMPETITION(competitionId),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.violations?.[0]?.message ||
+          ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED,
+      );
+    }
     return response.json();
   },
 
   getLeaderboard: async (id: string) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.LEADERBOARD(id));
-    if (!response.ok) throw new Error('Erreur chargement classement');
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_LEADERBOARD);
     return response.json();
   },
 
   getActions: async (id: string) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.ACTIONS(id));
-    if (!response.ok) throw new Error('Erreur chargement actions');
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_ACTIONS);
     return response.json();
   },
 
-  addParticipants: async (
+  addParticipation: async (
     competitionId: string,
     participants: {
       existing_players_ids: string[];
@@ -89,21 +110,49 @@ export const competitionService = {
     );
 
     if (!response.ok)
-      throw new Error("Erreur lors de l'ajout des participants");
+      throw new Error(ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
     return response.json();
   },
 
+  /**
+   * Supprime une participation spécifique (retire un joueur de la compétition)
+   */
+  removeParticipation: async (participationId: string) => {
+    const response = await apiFetch(
+      API.ENDPOINTS.PARTICIPATIONS.DETAIL(participationId),
+      {
+        method: 'DELETE',
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
+    }
+
+    return true;
+  },
+
   addReferee: async (competitionId: string, playerId: string) => {
-    return apiFetch(API.ENDPOINTS.ADMIN.ADD_REFEREE(competitionId), {
-      method: 'POST',
-      body: JSON.stringify({ player_id: playerId }),
-    });
+    const response = await apiFetch(
+      API.ENDPOINTS.ADMIN.ADD_REFEREE(competitionId),
+      {
+        method: 'POST',
+        body: JSON.stringify({ player_id: playerId }),
+      },
+    );
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
+    return response.json();
   },
 
   removeReferee: async (competitionId: string, playerId: string) => {
-    return apiFetch(API.ENDPOINTS.ADMIN.REMOVE_REFEREE(competitionId), {
-      method: 'POST',
-      body: JSON.stringify({ player_id: playerId }),
-    });
+    const response = await apiFetch(
+      API.ENDPOINTS.ADMIN.REMOVE_REFEREE(competitionId),
+      {
+        method: 'POST',
+        body: JSON.stringify({ player_id: playerId }),
+      },
+    );
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
+    return response.json();
   },
 };

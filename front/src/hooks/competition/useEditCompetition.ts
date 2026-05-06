@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { apiFetch } from '@/services/api/config';
 import { toast } from 'react-hot-toast';
-import { ROUTES, API } from '@/constants';
+import { ROUTES, QUERY_KEYS, ERRORS } from '@/constants';
 import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { competitionService } from '@/services/api/competition';
 
-export const useEditCompetition = (competition: any, onRefresh: () => void) => {
+export const useEditCompetition = (competition: any) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const start = parseFromApiISO(competition.start_date);
@@ -28,64 +29,51 @@ export const useEditCompetition = (competition: any, onRefresh: () => void) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = async () => {
-    setLoading(true);
-
-    const finalStart = formatToApiISO(
-      formData.startDate,
-      formData.startTime,
-      formData.startFullDay,
-      false,
-    );
-    const finalEnd = formatToApiISO(
-      formData.endDate,
-      formData.endTime,
-      formData.endFullDay,
-      true,
-    );
-
-    try {
-      const response = await apiFetch(
-        API.ENDPOINTS.COMPETITIONS.DETAIL(competition.id),
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
-          body: JSON.stringify({
-            name: formData.name,
-            join_code: formData.joinCode,
-            ...(!competition.has_started && { start_date: finalStart }),
-            end_date: finalEnd,
-          }),
-        },
-      );
-
-      if (!response.ok) throw new Error();
-
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        name: formData.name,
+        join_code: formData.joinCode,
+        end_date: formatToApiISO(
+          formData.endDate,
+          formData.endTime,
+          formData.endFullDay,
+          true,
+        ),
+        ...(!competition.has_started && {
+          start_date: formatToApiISO(
+            formData.startDate,
+            formData.startTime,
+            formData.startFullDay,
+            false,
+          ),
+        }),
+      };
+      return competitionService.update(competition.id, payload);
+    },
+    onSuccess: () => {
       toast.success('Configuration mise à jour !');
       setIsEditing(false);
 
-      const hasCodeChanged = formData.joinCode !== competition.join_code;
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
 
-      if (hasCodeChanged) {
+      if (formData.joinCode !== competition.join_code) {
         navigate(ROUTES.NAV.COMPETITION_DETAIL(formData.joinCode), {
           replace: true,
         });
-      } else {
-        onRefresh();
       }
-    } catch {
-      toast.error('Erreur lors de la sauvegarde');
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onError: () => {
+      toast.error(ERRORS.COMPETITION.UPDATE_FAILED);
+    },
+  });
 
   return {
     isEditing,
     setIsEditing,
     formData,
     updateField,
-    handleSave,
-    loading,
+    handleSave: mutation.mutate,
+    loading: mutation.isPending,
   };
 };
