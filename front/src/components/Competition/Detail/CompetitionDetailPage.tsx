@@ -98,7 +98,7 @@ const CompetitionDetailPage = () => {
               onRefresh={refresh}
             />
             {!competition.is_finished && (
-              <InlineEnrollment competition={competition} onRefresh={refresh} />
+              <InlineEnrollment onRefresh={refresh} />
             )}
           </section>
 

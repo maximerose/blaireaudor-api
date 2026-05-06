@@ -7,15 +7,14 @@ import {
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
-import { FORM, BUTTONS } from '@/constants';
+import { FORM, BUTTONS, ICONS } from '@/constants';
+import type React from 'react';
 
-export const InlineEnrollment = ({
-  competition,
-  onRefresh,
-}: {
-  competition: any;
+interface InlineEnrollmentProps {
   onRefresh: () => void;
-}) => {
+}
+
+export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
   const {
     isOpen,
     setIsOpen,
@@ -31,7 +30,7 @@ export const InlineEnrollment = ({
     saveEnrollment,
     loading,
     isSearching,
-  } = useInlineEnrollmentUI(competition, onRefresh);
+  } = useInlineEnrollmentUI(onRefresh);
 
   if (!isOwner) return null;
 
@@ -69,8 +68,10 @@ export const InlineEnrollment = ({
           label={FORM.PLAYER.LABELS.SEARCH_PLAYER}
           placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
           value={searchTerm}
-          onChange={(e: any) => setSearchTerm(e.target.value)}
-          icon={isSearching ? '⏳' : '🔍'}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(e.target.value)
+          }
+          icon={isSearching ? ICONS.LOADING : ICONS.SEARCH}
           className="bg-black/40"
           role="combobox"
           aria-autocomplete="list"
