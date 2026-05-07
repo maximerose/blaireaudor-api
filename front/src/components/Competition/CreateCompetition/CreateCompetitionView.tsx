@@ -28,7 +28,7 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
   } = useCreateCompetitionForm(onSuccess);
 
   return (
-    <div className="w-full max-w-md mx-auto animate-fade-in space-y-8">
+    <div className="w-full animate-fade-in space-y-8">
       <CreateCompetitionStepper step={step} />
 
       {step === 1 && (

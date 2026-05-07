@@ -1,4 +1,4 @@
-import { Input, Button, Text, Card, Badge } from '@/components/UI';
+import { Input, Button, Text, Card, Badge, Switch } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
@@ -105,19 +105,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
-            <div
-              className={cn(
-                'w-8 h-4 rounded-full relative transition-default',
-                formData.startFullDay ? 'bg-gold' : 'bg-white/10',
-              )}
-            >
-              <div
-                className={cn(
-                  'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
-                  formData.startFullDay ? 'left-4.5' : 'left-0.5',
-                )}
-              />
-            </div>
+            <Switch checked={formData.startFullDay} onChange={() => {}} />
           </Card>
           {!formData.startFullDay && (
             <Input
@@ -153,19 +141,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
-            <div
-              className={cn(
-                'w-8 h-4 rounded-full relative transition-default',
-                formData.endFullDay ? 'bg-gold' : 'bg-white/10',
-              )}
-            >
-              <div
-                className={cn(
-                  'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
-                  formData.endFullDay ? 'left-4.5' : 'left-0.5',
-                )}
-              />
-            </div>
+            <Switch checked={formData.endFullDay} onChange={() => {}} />
           </Card>
           {!formData.endFullDay && (
             <Input

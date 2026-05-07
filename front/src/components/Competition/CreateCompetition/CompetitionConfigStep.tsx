@@ -1,4 +1,4 @@
-import { Input, Button, Text, Card } from '@/components/UI';
+import { Input, Button, Text, Card, Switch } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
@@ -95,7 +95,7 @@ export const CompetitionConfigStep = ({
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-6">
           {/* BLOC DÉBUT */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
             <Text
@@ -129,19 +129,7 @@ export const CompetitionConfigStep = ({
               >
                 {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
-              <div
-                className={cn(
-                  'w-8 h-4 rounded-full relative transition-default',
-                  formData.startFullDay ? 'bg-gold' : 'bg-white/10',
-                )}
-              >
-                <div
-                  className={cn(
-                    'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
-                    formData.startFullDay ? 'left-4.5' : 'left-0.5',
-                  )}
-                />
-              </div>
+              <Switch checked={formData.startFullDay} onChange={() => {}} />
             </Card>
 
             {!formData.startFullDay && (
@@ -183,19 +171,7 @@ export const CompetitionConfigStep = ({
               >
                 {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
-              <div
-                className={cn(
-                  'w-8 h-4 rounded-full relative transition-default',
-                  formData.endFullDay ? 'bg-gold' : 'bg-white/10',
-                )}
-              >
-                <div
-                  className={cn(
-                    'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default',
-                    formData.endFullDay ? 'left-4.5' : 'left-0.5',
-                  )}
-                />
-              </div>
+              <Switch checked={formData.endFullDay} onChange={() => {}} />
             </Card>
 
             {!formData.endFullDay && (

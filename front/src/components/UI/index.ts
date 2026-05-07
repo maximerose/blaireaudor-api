@@ -11,4 +11,5 @@ export * from './RankBadge';
 export * from './RankedScore';
 export * from './RoleBadge';
 export * from './ScrollToTop';
+export * from './Switch';
 export * from './Typography';
