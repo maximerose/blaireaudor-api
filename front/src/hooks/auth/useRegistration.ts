@@ -20,6 +20,7 @@ export const useRegistration = (redirectUrl: string) => {
     setSearchTerm,
     results: rawSearchResults,
     searching,
+    clearSearch,
   } = usePlayerSearch();
   const {
     status: usernameStatus,
@@ -128,6 +129,7 @@ export const useRegistration = (redirectUrl: string) => {
       setSearchTerm,
       results: filteredResults,
       searching,
+      clearSearch,
       onSelect: handlePlayerSelect,
       onCloseSearch: () => setSearchTerm(''),
       onClear: handleClearPlayer,

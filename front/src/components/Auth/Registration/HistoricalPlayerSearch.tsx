@@ -1,22 +1,19 @@
 import { Input, PlayerSearchResultItem, Card, Text } from '@/components/UI';
-import { useHistoricalSearchUI } from '@/hooks';
+import { useHistoricalSearchUI, type PlayerSearchLogic } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
 import type { Player } from '@/types';
 import { AUTH_UI, ICONS, FORM } from '@/constants';
 
-interface SearchLogicProps {
-  searchTerm: string;
-  setSearchTerm: (query: string) => void;
-  results: Player[];
-  searching: boolean;
+export interface HistoricalSearchUIProps extends PlayerSearchLogic {
   onSelect: (player: Player) => void;
   onClear: () => void;
   onCloseSearch: () => void;
   isLinked: boolean;
+  hasResults?: boolean;
 }
 
 interface HistoricalPlayerSearchProps {
-  searchProps: SearchLogicProps;
+  searchProps: HistoricalSearchUIProps;
   selectedName?: string;
 }
 

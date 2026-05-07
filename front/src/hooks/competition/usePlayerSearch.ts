@@ -4,7 +4,15 @@ import { playerService } from '@/services/api/playerService';
 import type { Player } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 
-export const usePlayerSearch = (debounceDelay = 400) => {
+export interface PlayerSearchLogic {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  results: Player[];
+  searching: boolean;
+  clearSearch: () => void;
+}
+
+export const usePlayerSearch = (debounceDelay = 400): PlayerSearchLogic => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedTerm, setDebouncedTerm] = useState('');
 
