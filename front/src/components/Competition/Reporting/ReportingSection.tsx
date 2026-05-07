@@ -88,16 +88,13 @@ export const ReportingSection = ({
           size="md"
           className="group"
           onClick={() => toggleReporting()}
+          icon={
+            <span className="text-xl inline-block group-hover:animate-bounce-subtle">
+              {ICONS.ALARM}
+            </span>
+          }
         >
-          <span
-            className="text-xl mr-4 group-hover:animate-bounce"
-            aria-hidden="true"
-          >
-            {ICONS.ALARM}
-          </span>
-          <span className="tracking-widest">
-            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
-          </span>
+          {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
         </Button>
       ) : (
         <ReportActionForm
