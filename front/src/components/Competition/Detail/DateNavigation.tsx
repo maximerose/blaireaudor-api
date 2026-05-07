@@ -3,7 +3,17 @@ import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation, useCompetition } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
 
-export const DateNavigation = ({ dates, selectedDate, onSelect }: any) => {
+interface DateNavigationProps {
+  dates: string[];
+  selectedDate: string | null;
+  onSelect: (date: string | null) => void;
+}
+
+export const DateNavigation = ({
+  dates,
+  selectedDate,
+  onSelect,
+}: DateNavigationProps) => {
   const { getMultiplier } = useCompetition();
   const { scrollRef, showMask, handleScroll } = useDateNavigation(dates);
 
