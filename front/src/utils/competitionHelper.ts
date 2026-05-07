@@ -87,6 +87,11 @@ export const getStatusWeight = (status: CompetitionStatusType): number => {
 };
 
 export const formatShortDate = (dateString: string | Date): string => {
+  if (!dateString) return '-';
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '-';
+
   return new Date(dateString)
     .toLocaleDateString('fr-FR', {
       day: '2-digit',
