@@ -6,9 +6,12 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterData extends LoginCredentials {
-  email?: string;
+export interface RegisterData {
+  username: string;
+  plain_password: string;
   display_name?: string;
+  email?: string;
+  player_id?: string | null;
 }
 
 export interface AuthResponseData {
