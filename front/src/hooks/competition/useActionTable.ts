@@ -1,14 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
 import { getUniqueDates } from '@/utils';
-import { ActionStatus, type Action, type User } from '@/types';
-
-type ActionSortField =
-  | 'date_action'
-  | 'player'
-  | 'points'
-  | 'status'
-  | 'description';
+import {
+  ActionStatus,
+  type Action,
+  type ActionSortField,
+  type User,
+} from '@/types';
 
 export const useActionTable = (initialActions: Action[]) => {
   const { user } = useAuth();

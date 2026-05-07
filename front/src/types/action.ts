@@ -7,6 +7,12 @@ export const ActionStatus = {
 } as const;
 
 export type ActionStatus = (typeof ActionStatus)[keyof typeof ActionStatus];
+export type ActionSortField =
+  | 'date_action'
+  | 'player'
+  | 'points'
+  | 'status'
+  | 'description';
 
 export interface Action {
   id: string;

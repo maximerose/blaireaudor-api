@@ -1,8 +1,17 @@
 import { Text } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
+import type { ActionSortField } from '@/types';
 import { cn } from '@/utils';
 
-const TABLE_COLUMNS = [
+interface Column {
+  id: ActionSortField;
+  label: string;
+  colSpan: string;
+  align: 'text-left' | 'text-center' | 'text-right';
+  noSort?: boolean;
+}
+
+const TABLE_COLUMNS: Column[] = [
   {
     id: 'date_action',
     label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_DATE,
@@ -31,9 +40,14 @@ const TABLE_COLUMNS = [
 ];
 
 interface TableHeaderProps {
-  onSort: (field: string) => void;
-  getAriaSort: (field: string) => 'ascending' | 'descending' | undefined;
-  getSortIndicator: (field: string) => { char: string; className: string };
+  onSort: (field: ActionSortField) => void;
+  getAriaSort: (
+    field: ActionSortField,
+  ) => 'ascending' | 'descending' | undefined;
+  getSortIndicator: (field: ActionSortField) => {
+    char: string;
+    className: string;
+  };
 }
 
 export const TableHeader = ({
