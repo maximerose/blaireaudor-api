@@ -33,3 +33,8 @@ export interface ActionRowProps {
   onUpdate: OnActionUpdate;
   onStatusChange: OnActionStatusChange;
 }
+
+export interface ActionEditData {
+  description: string;
+  points: number | string;
+}

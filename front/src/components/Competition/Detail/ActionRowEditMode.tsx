@@ -1,9 +1,10 @@
 import { Input, Button } from '@/components/UI';
 import { FORM, BUTTONS } from '@/constants';
+import type { ActionEditData } from '@/types';
 
 interface ActionRowEditModeProps {
-  editData: { description: string; points: number | string };
-  setEditData: (data: any) => void;
+  editData: ActionEditData;
+  setEditData: (data: ActionEditData) => void;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -34,7 +35,9 @@ export const ActionRowEditMode = ({
           label={FORM.REPORT_ACTION.LABELS.POINTS}
           type="number"
           value={editData.points}
-          onChange={(e) => setEditData({ ...editData, points: e.target.value })}
+          onChange={(e) =>
+            setEditData({ ...editData, points: Number(e.target.value) })
+          }
         />
       </div>
     </div>
