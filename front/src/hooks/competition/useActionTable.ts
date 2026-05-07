@@ -1,7 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
 import { getUniqueDates } from '@/utils';
-import { ActionStatus, type Action } from '@/types';
+import { ActionStatus, type Action, type User } from '@/types';
+
+type ActionSortField =
+  | 'date_action'
+  | 'player'
+  | 'points'
+  | 'status'
+  | 'description';
 
 export const useActionTable = (initialActions: Action[]) => {
   const { user } = useAuth();
@@ -9,7 +16,9 @@ export const useActionTable = (initialActions: Action[]) => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const getEntityId = (entity: any) =>
+  const getEntityId = (
+    entity: User | string | undefined | null,
+  ): string | undefined =>
     typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
 
   const availableDates = useMemo(
@@ -19,20 +28,38 @@ export const useActionTable = (initialActions: Action[]) => {
 
   const processedActions = useMemo(() => {
     let result = [...initialActions];
+
     if (selectedDate) {
       result = result.filter((a) => a.date_action.startsWith(selectedDate));
     }
 
-    return result.sort((a: any, b: any) => {
-      const valA =
-        sortField === 'player'
-          ? a.player?.display_name || ''
-          : String(a[sortField] || '');
-      const valB =
-        sortField === 'player'
-          ? b.player?.display_name || ''
-          : String(b[sortField] || '');
-      const comp = valA.localeCompare(valB, 'fr', { sensitivity: 'base' });
+    return result.sort((a, b) => {
+      const getValue = (action: Action): string | number => {
+        switch (sortField) {
+          case 'player':
+            return action.player?.display_name || '';
+          case 'points':
+            return action.points;
+          case 'date_action':
+          case 'status':
+          case 'description':
+            return action[sortField] || '';
+          default:
+            return '';
+        }
+      };
+
+      const valA = getValue(a);
+      const valB = getValue(b);
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return sortOrder === 'asc' ? valA - valB : valB - valA;
+      }
+
+      const comp = String(valA).localeCompare(String(valB), 'fr', {
+        sensitivity: 'base',
+      });
+
       return sortOrder === 'asc' ? comp : -comp;
     });
   }, [initialActions, sortField, sortOrder, selectedDate]);
@@ -57,20 +84,21 @@ export const useActionTable = (initialActions: Action[]) => {
     };
   }, [processedActions, user]);
 
-  const handleSort = (field: string) => {
-    if (field === sortField) setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    else {
+  const handleSort = (field: ActionSortField) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
       setSortField(field);
       setSortOrder('desc');
     }
   };
 
-  const getAriaSort = (field: string) => {
+  const getAriaSort = (field: ActionSortField) => {
     if (sortField !== field) return undefined;
     return sortOrder === 'asc' ? 'ascending' : 'descending';
   };
 
-  const getSortIndicator = (field: string) => {
+  const getSortIndicator = (field: ActionSortField) => {
     if (sortField !== field) {
       return { char: '↕', className: 'ml-1 opacity-10 transition-default' };
     }
