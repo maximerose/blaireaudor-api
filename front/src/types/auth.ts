@@ -30,7 +30,7 @@ export interface AuthContextType {
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
   loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<{ ok: boolean; data: any }>;
+  login: (credentials: LoginCredentials) => Promise<AuthResult>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
