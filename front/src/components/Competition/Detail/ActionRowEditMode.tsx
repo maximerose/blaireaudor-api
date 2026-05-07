@@ -43,11 +43,21 @@ export const ActionRowEditMode = ({
     </div>
 
     {/* Actions du formulaire */}
-    <div className="flex justify-end gap-2 pt-2">
-      <Button size="sm" variant="ghost" onClick={onCancel} type="button">
+    <div className="flex gap-2 pt-2">
+      <Button
+        className="flex-1"
+        variant="ghost"
+        onClick={onCancel}
+        type="button"
+      >
         {BUTTONS.CANCEL}
       </Button>
-      <Button size="sm" variant="primary" onClick={onSave} type="button">
+      <Button
+        className="flex-1"
+        variant="primary"
+        onClick={onSave}
+        type="button"
+      >
         {BUTTONS.SAVE}
       </Button>
     </div>

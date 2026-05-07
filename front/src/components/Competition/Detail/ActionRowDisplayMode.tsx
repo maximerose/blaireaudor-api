@@ -32,7 +32,7 @@ export const ActionRowDisplayMode = ({
       </div>
 
       {/* Corps de l'action */}
-      <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 overflow-hidden">
+      <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 items-center overflow-hidden">
         <Text
           variant="h3"
           className="md:col-span-3 truncate italic text-xs group-hover:text-gold transition-default"
@@ -40,7 +40,12 @@ export const ActionRowDisplayMode = ({
           {playerName}
         </Text>
 
-        <div className="md:col-span-5 flex flex-col">
+        <div
+          className={cn(
+            'md:col-span-5 flex flex-col',
+            isPending && isAdmin && 'border-l border-white/10',
+          )}
+        >
           <Text
             variant="body"
             className="text-[10px] md:text-xs text-white italic truncate"
@@ -59,7 +64,7 @@ export const ActionRowDisplayMode = ({
 
           {/* Boutons de Modération */}
           {isPending && isAdmin && (
-            <div className="mt-2 flex justify-center gap-4 animate-fade-in border-l border-white/10 pl-3">
+            <div className="mt-2 flex justify-center gap-4 animate-fade-in">
               <button
                 onClick={() =>
                   onStatusChange(action.id, ActionStatus.VALIDATED)
