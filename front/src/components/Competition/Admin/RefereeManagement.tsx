@@ -5,7 +5,7 @@ import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagement
 import type { Player, RefereeListItem } from '@/types';
 
 export const RefereeManagement = () => {
-  const { competition, refresh } = useCompetition();
+  const { competition } = useCompetition();
   const { user: currentUser } = useAuth();
   const {
     referees,
@@ -17,7 +17,7 @@ export const RefereeManagement = () => {
     isSearching,
     handleAdd,
     handleRemoveRequest,
-  } = useRefereeManagementUI(competition, refresh);
+  } = useRefereeManagementUI(competition);
 
   const myPlayerId = currentUser?.player?.id
     ? String(currentUser.player.id)

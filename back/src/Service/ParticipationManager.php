@@ -42,4 +42,13 @@ class ParticipationManager
 
         return $participation;
     }
+
+    public function removeParticipation(Participation $participation): void
+    {
+        if ($participation->getActions()->count() > 0) {
+            throw new \LogicException('Impossible de retirer ce joueur : il a déjà des actions enregistrées.');
+        }
+
+        $this->entityManager->remove($participation);
+    }
 }

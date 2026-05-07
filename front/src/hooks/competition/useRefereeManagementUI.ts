@@ -4,13 +4,10 @@ import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
 import type { Player, Competition, RefereeListItem } from '@/types';
 
-export const useRefereeManagementUI = (
-  competition: Competition,
-  onRefresh: () => void,
-) => {
+export const useRefereeManagementUI = (competition: Competition) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(
     competition.id,
-    onRefresh,
+    competition.join_code,
   );
 
   const referees = useMemo(

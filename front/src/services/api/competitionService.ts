@@ -138,7 +138,11 @@ export const competitionService = {
         body: JSON.stringify({ player_id: playerId }),
       },
     );
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || ERRORS.COMPETITION.REFEREE_ADD_FAILED);
+    }
     return response.json();
   },
 
@@ -150,7 +154,11 @@ export const competitionService = {
         body: JSON.stringify({ player_id: playerId }),
       },
     );
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
-    return response.json();
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
+    }
+    return true;
   },
 };

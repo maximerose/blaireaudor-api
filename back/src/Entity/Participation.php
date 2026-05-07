@@ -11,6 +11,7 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
+use App\State\Participation\ParticipationDeleteProcessor;
 use App\Validator\IsNotFinished;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,7 +34,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
     errorPath: 'competition'
 )]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new \ApiPlatform\Metadata\Get(),
+        new \ApiPlatform\Metadata\Post(),
+        new \ApiPlatform\Metadata\Delete(
+            processor: ParticipationDeleteProcessor::class
+        ),
+    ]
+)]
 class Participation
 {
     use UuidTrait;
@@ -75,6 +84,7 @@ class Participation
     private ?int $rank = null;
 
     #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
+    #[Groups(['competition:read'])]
     private Collection $actions;
 
     public function __construct()

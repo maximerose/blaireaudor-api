@@ -12,9 +12,6 @@ export const useLeaderboardRow = (
   isAdmin: boolean,
   competition: Competition,
 ) => {
-  const canDelete =
-    isAdmin && (!participation.actions || participation.actions.length === 0);
-
   const medal = getRankMedal(participation.rank);
   const playerName = participation.player?.display_name || 'Anonyme';
 
@@ -22,6 +19,9 @@ export const useLeaderboardRow = (
 
   const isReferee = isPlayerReferee(competition, playerId);
   const isCreator = isPlayerCreator(competition, participation.player);
+
+  const canDelete =
+    isAdmin && (!participation.actions || participation.actions.length === 0);
 
   return {
     canDelete,
