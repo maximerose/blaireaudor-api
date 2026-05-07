@@ -40,8 +40,10 @@ export const competitionService = {
     return true;
   },
 
-  getByCode: async (code: string) => {
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code));
+  getByCode: async (code: string, signal?: AbortSignal) => {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code), {
+      signal,
+    });
     if (!response.ok) throw new Error(ERRORS.COMPETITION.NOT_FOUND(code));
     return response.json();
   },
@@ -65,14 +67,19 @@ export const competitionService = {
     return response.json();
   },
 
-  getLeaderboard: async (id: string) => {
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.LEADERBOARD(id));
+  getLeaderboard: async (id: string, signal?: AbortSignal) => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.LEADERBOARD(id),
+      { signal },
+    );
     if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_LEADERBOARD);
     return response.json();
   },
 
-  getActions: async (id: string) => {
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.ACTIONS(id));
+  getActions: async (id: string, signal?: AbortSignal) => {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.ACTIONS(id), {
+      signal,
+    });
     if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_ACTIONS);
     return response.json();
   },

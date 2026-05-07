@@ -9,7 +9,7 @@ export const useBonusDays = (competitionId: string) => {
 
   return useQuery({
     queryKey: QUERY_KEYS.competition.byId(idToUse).bonus,
-    queryFn: () => bonusDayService.getByCompetition(idToUse!),
+    queryFn: ({ signal }) => bonusDayService.getByCompetition(idToUse!, signal),
     enabled: !!idToUse,
   });
 };

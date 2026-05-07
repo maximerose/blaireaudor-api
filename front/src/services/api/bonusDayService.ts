@@ -25,9 +25,13 @@ export const bonusDayService = {
     if (!response.ok) throw new Error('Erreur lors de la suppression du bonus');
   },
 
-  getByCompetition: async (competitionId: string): Promise<BonusDay[]> => {
+  getByCompetition: async (
+    competitionId: string,
+    signal?: AbortSignal,
+  ): Promise<BonusDay[]> => {
     const response = await apiFetch(
       API.ENDPOINTS.BONUS.BY_COMPETITION(competitionId),
+      { signal },
     );
 
     if (!response.ok) {

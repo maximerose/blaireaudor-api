@@ -7,7 +7,7 @@ export const useCompetitionData = (code: string) => {
 
   const competitionQuery = useQuery({
     queryKey: QUERY_KEYS.competition.byCode(code),
-    queryFn: () => competitionService.getByCode(code),
+    queryFn: ({ signal }) => competitionService.getByCode(code, signal),
     enabled: !!code,
     staleTime: 1000 * 60 * 5,
   });
@@ -16,13 +16,15 @@ export const useCompetitionData = (code: string) => {
 
   const leaderboardQuery = useQuery({
     queryKey: QUERY_KEYS.competition.byId(competitionId).leaderboard,
-    queryFn: () => competitionService.getLeaderboard(competitionId!),
+    queryFn: ({ signal }) =>
+      competitionService.getLeaderboard(competitionId!, signal),
     enabled: !!competitionId,
   });
 
   const actionsQuery = useQuery({
     queryKey: QUERY_KEYS.competition.byId(competitionId).actions,
-    queryFn: () => competitionService.getActions(competitionId!),
+    queryFn: ({ signal }) =>
+      competitionService.getActions(competitionId!, signal),
     enabled: !!competitionId,
   });
 
