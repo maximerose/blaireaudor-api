@@ -18,7 +18,7 @@ export const usePlayerSearch = (debounceDelay = 400) => {
 
   const { data: results = [], isFetching: searching } = useQuery<Player[]>({
     queryKey: QUERY_KEYS.player.search(debouncedTerm),
-    queryFn: () => playerService.search(debouncedTerm),
+    queryFn: ({ signal }) => playerService.search(debouncedTerm, signal),
     enabled: debouncedTerm.trim().length >= 2,
     staleTime: 1000 * 60 * 5,
   });
