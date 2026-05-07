@@ -7,8 +7,13 @@ import {
   TableHeader,
 } from '@/components/Competition';
 import { COMPETITION_UI, ICONS } from '@/constants';
+import type { ActionTableProps } from '@/types';
 
-export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
+export const ActionTable = ({
+  actions,
+  onUpdate,
+  onStatusChange,
+}: ActionTableProps) => {
   const {
     categories,
     selectedDate,
@@ -88,7 +93,12 @@ export const ActionTable = ({ actions, onUpdate, onStatusChange }: any) => {
           </Text>
           <div className="divide-y divide-white/5 bg-black/20 rounded-xl overflow-hidden border border-white/5">
             {categories.rejected.map((action) => (
-              <ActionRow key={action.id} action={action} isAdmin={false} />
+              <ActionRow
+                key={action.id}
+                action={action}
+                onUpdate={onUpdate}
+                onStatusChange={onStatusChange}
+              />
             ))}
           </div>
         </section>

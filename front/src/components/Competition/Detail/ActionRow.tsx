@@ -3,8 +3,13 @@ import {
   ActionRowEditMode,
   ActionRowDisplayMode,
 } from '@/components/Competition';
+import type { ActionRowProps } from '@/types';
 
-export const ActionRow = ({ action, onUpdate, onStatusChange }: any) => {
+export const ActionRow = ({
+  action,
+  onUpdate,
+  onStatusChange,
+}: ActionRowProps) => {
   const { isPending, playerName } = useActionRow(action);
   const { isAdmin } = useCompetition();
 

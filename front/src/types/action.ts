@@ -17,3 +17,18 @@ export interface Action {
   status: ActionStatus;
   created_by: User | string;
 }
+
+export type OnActionUpdate = (action: Action) => void;
+export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
+
+export interface ActionTableProps {
+  actions: Action[];
+  onUpdate: OnActionUpdate;
+  onStatusChange: OnActionStatusChange;
+}
+
+export interface ActionRowProps {
+  action: Action;
+  onUpdate: OnActionUpdate;
+  onStatusChange: OnActionStatusChange;
+}

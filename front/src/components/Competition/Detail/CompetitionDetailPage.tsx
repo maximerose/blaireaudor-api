@@ -26,7 +26,7 @@ const CompetitionDetailPage = () => {
     entriesCount,
   } = useCompetitionDetailUI();
 
-  const { handleActionStatus, updateAction } = useCompetitionAdmin(
+  const { handleActionStatus, handleUpdate } = useCompetitionAdmin(
     competition?.id,
     refresh,
   );
@@ -114,11 +114,8 @@ const CompetitionDetailPage = () => {
             </header>
             <ActionTable
               actions={actions || []}
-              isAdmin={isReferee}
-              hidePoints={isFogActive}
-              onUpdate={updateAction}
+              onUpdate={handleUpdate}
               onStatusChange={handleActionStatus}
-              competition={competition}
             />
           </section>
         </div>

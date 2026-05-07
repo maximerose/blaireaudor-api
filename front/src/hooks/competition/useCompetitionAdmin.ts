@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { actionService } from '@/services/api/action';
 import { competitionService } from '@/services/api/competition';
-import type { ActionStatus } from '@/types';
+import type { Action, ActionStatus } from '@/types';
 
 export const useCompetitionAdmin = (
   competitionId: string | undefined,
@@ -26,6 +26,10 @@ export const useCompetitionAdmin = (
   const handleActionStatus = (actionId: string, status: ActionStatus) =>
     updateAction(actionId, { status });
 
+  const handleUpdate = async (action: Action) => {
+    return await updateAction(action.id, action);
+  };
+
   const updateCompetition = async (data: any) => {
     if (!competitionId) return;
 
@@ -41,5 +45,11 @@ export const useCompetitionAdmin = (
     setIsUpdating(false);
   };
 
-  return { handleActionStatus, updateAction, updateCompetition, isUpdating };
+  return {
+    handleActionStatus,
+    updateAction,
+    handleUpdate,
+    updateCompetition,
+    isUpdating,
+  };
 };
