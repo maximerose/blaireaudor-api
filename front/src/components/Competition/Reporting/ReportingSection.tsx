@@ -5,13 +5,21 @@ import {
   ReportActionForm,
 } from '@/components/Competition';
 import { COMPETITION_UI, ICONS } from '@/constants';
+import type { Competition, Participation } from '@/types';
+
+interface ReportingSectionProps {
+  competition: Competition;
+  leaderboard: Participation[];
+  isReferee: boolean;
+  refresh: () => void | Promise<void>;
+}
 
 export const ReportingSection = ({
   competition,
   leaderboard,
   isReferee,
   refresh,
-}: any) => {
+}: ReportingSectionProps) => {
   const { isReporting, toggleReporting, potentialTargets } = useReporting({
     leaderboard,
   });
@@ -30,15 +38,17 @@ export const ReportingSection = ({
           <Text variant="h2" className="text-gold/30 italic font-medium">
             {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_TITLE}
           </Text>
-          <Text variant="body" className="mt-2 opacity-60">
-            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_SUBTITLE}
+          <div className="mt-2 opacity-60">
+            <Text variant="body" className="mt-2 opacity-60">
+              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_SUBTITLE}
+            </Text>
             <CompetitionCountdown
               targetDate={competition.start_date}
               elapsedText={
                 COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_ELAPSED
               }
             />
-          </Text>
+          </div>
         </Card>
       </section>
     );
@@ -51,7 +61,9 @@ export const ReportingSection = ({
           variant="dark"
           className="border-danger-bright/30 bg-danger-dark/20 p-4 flex items-center gap-4 animate-pulse"
         >
-          <span className="text-3xl">{ICONS.FIRE}</span>
+          <span className="text-3xl" aria-hidden="true">
+            {ICONS.FIRE}
+          </span>
           <div className="flex-1">
             <Text
               as="p"
@@ -77,7 +89,10 @@ export const ReportingSection = ({
           className="group"
           onClick={() => toggleReporting()}
         >
-          <span className="text-xl mr-4 group-hover:animate-bounce">
+          <span
+            className="text-xl mr-4 group-hover:animate-bounce"
+            aria-hidden="true"
+          >
             {ICONS.ALARM}
           </span>
           <span className="tracking-widest">
