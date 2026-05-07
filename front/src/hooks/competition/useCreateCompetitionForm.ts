@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
+import { useAuth, usePlayerSearch } from '@/hooks';
 import {
   formatJoinCode,
   cleanJoinCode,
@@ -15,16 +15,17 @@ import type {
   PlayerCompact,
   CompetitionCreatePayload,
 } from '@/types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
 ) => {
   const [step, setStep] = useState(1);
-  const { user } = useAuth();
-  const { create, loading: creating } = useCreateCompetition();
+  const { user, refreshUser } = useAuth();
   const { results, searching, searchTerm, setSearchTerm, clearSearch } =
     usePlayerSearch();
-  const [isAddingPlayers, setIsAddingPlayers] = useState(false);
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<CompetitionFormData>({
     name: '',
@@ -134,68 +135,71 @@ export const useCreateCompetitionForm = (
     return !!(formData.name && formData.startDate);
   }, [formData.name, formData.startDate]);
 
-  const submit = async () => {
-    const payload: CompetitionCreatePayload = {
-      name: formData.name,
-      start_date: formatToApiISO(
-        formData.startDate,
-        formData.startTime,
-        formData.startFullDay,
-        false,
-      ),
-      end_date: formData.endDate
-        ? formatToApiISO(
-            formData.endDate,
-            formData.endTime,
-            formData.endFullDay,
-            true,
-          )
-        : null,
-      join_code: cleanJoinCode(formData.joinCode || ''),
-      participate: formData.participate ?? true,
-      fog_of_war: formData.fogOfWar,
-    };
+  const creationMutation = useMutation({
+    mutationFn: async () => {
+      const payload: CompetitionCreatePayload = {
+        name: formData.name,
+        start_date: formatToApiISO(
+          formData.startDate,
+          formData.startTime,
+          formData.startFullDay,
+          false,
+        ),
+        end_date: formData.endDate
+          ? formatToApiISO(
+              formData.endDate,
+              formData.endTime,
+              formData.endFullDay,
+              true,
+            )
+          : null,
+        join_code: cleanJoinCode(formData.joinCode || ''),
+        participate: formData.participate ?? true,
+        fog_of_war: formData.fogOfWar,
+      };
 
-    const competition = await create(payload);
+      const competition = await competitionService.create(payload);
 
-    if (!competition) return;
+      const existingIds = (formData.players || [])
+        .filter((p) => !p.isNew)
+        .map((p) => p.id);
+      const newNames = (formData.players || [])
+        .filter((p) => p.isNew)
+        .map((p) => p.display_name);
+      const existingReferees = (formData.referees || [])
+        .filter((r) => !r.isNew)
+        .map((r) => r.id);
+      const newReferees = (formData.referees || [])
+        .filter((r) => r.isNew)
+        .map((r) => r.display_name);
 
-    const existingIds = (formData.players || [])
-      .filter((p) => !p.isNew)
-      .map((p) => p.id);
-    const newNames = (formData.players || [])
-      .filter((p) => p.isNew)
-      .map((p) => p.display_name);
-    const existingReferees = (formData.referees || [])
-      .filter((r) => !r.isNew)
-      .map((r) => r.id);
-    const newReferees = (formData.referees || [])
-      .filter((r) => r.isNew)
-      .map((r) => r.display_name);
-
-    if (
-      existingIds.length > 0 ||
-      newNames.length > 0 ||
-      existingReferees.length > 0 ||
-      newReferees.length > 0
-    ) {
-      setIsAddingPlayers(true);
-      try {
+      if (
+        existingIds.length > 0 ||
+        newNames.length > 0 ||
+        existingReferees.length > 0 ||
+        newReferees.length > 0
+      ) {
         await competitionService.addParticipation(competition.id, {
           existing_players_ids: existingIds,
           new_players: newNames,
           existing_referees_ids: existingReferees,
           new_referees: newReferees,
         });
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsAddingPlayers(false);
       }
-    }
 
-    onSuccess(competition);
-  };
+      return competition;
+    },
+    onSuccess: async (competition) => {
+      await refreshUser();
+
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
+
+      onSuccess(competition);
+    },
+    onError: (error) => {
+      console.error('Échec du workflow de création :', error);
+    },
+  });
 
   return {
     step,
@@ -219,7 +223,8 @@ export const useCreateCompetitionForm = (
     refereesActions: {
       toggle: handleToggleReferee,
     },
-    submit,
-    loading: creating || isAddingPlayers,
+
+    submit: () => creationMutation.mutate(),
+    loading: creationMutation.isPending,
   };
 };
