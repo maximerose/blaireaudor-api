@@ -1,8 +1,16 @@
 import { Text } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
 import { useActionRow, useCompetition } from '@/hooks';
-import { ActionStatus } from '@/types';
+import { ActionStatus, type Action, type OnActionStatusChange } from '@/types';
 import { cn, formatShortDate } from '@/utils';
+
+interface ActionRowDisplayModeProps {
+  action: Action;
+  playerName: string;
+  isPending: boolean;
+  onEdit: () => void;
+  onStatusChange: OnActionStatusChange;
+}
 
 export const ActionRowDisplayMode = ({
   action,
@@ -10,7 +18,7 @@ export const ActionRowDisplayMode = ({
   isPending,
   onEdit,
   onStatusChange,
-}: any) => {
+}: ActionRowDisplayModeProps) => {
   const { isAdmin, hidePoints } = useCompetition();
   const { displayColor, pointsDisplay, multiplier } = useActionRow(action);
 

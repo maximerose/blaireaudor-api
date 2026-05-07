@@ -16,6 +16,7 @@ export interface Action {
   player?: { id: string; display_name: string };
   status: ActionStatus;
   created_by: User | string;
+  creator_name?: string;
 }
 
 export type OnActionUpdate = (action: Action) => void;
