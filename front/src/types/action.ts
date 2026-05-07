@@ -25,6 +25,23 @@ export interface Action {
   creator_name?: string;
 }
 
+/**
+ * PAYLOADS (Transfert de données vers l'API)
+ */
+export interface ActionCreatePayload {
+  description: string;
+  points: number;
+  date_action: string;
+  player: string; // IRI du joueur (ex: /api/players/123)
+}
+
+export type ActionUpdatePayload = Partial<
+  Omit<ActionCreatePayload, 'player'> & {
+    status: ActionStatus;
+    player: string;
+  }
+>;
+
 export type OnActionUpdate = (action: Action) => void;
 export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
 
@@ -43,4 +60,10 @@ export interface ActionRowProps {
 export interface ActionEditData {
   description: string;
   points: number | string;
+}
+
+export interface DateNavigationProps {
+  dates: string[];
+  selectedDate: string | null;
+  onSelect: (date: string | null) => void;
 }

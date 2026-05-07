@@ -2,12 +2,7 @@ import { Button } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation, useCompetition } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
-
-interface DateNavigationProps {
-  dates: string[];
-  selectedDate: string | null;
-  onSelect: (date: string | null) => void;
-}
+import type { DateNavigationProps } from '@/types';
 
 export const DateNavigation = ({
   dates,
