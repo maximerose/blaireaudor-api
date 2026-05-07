@@ -1,15 +1,21 @@
+import type { Participation } from '@/types';
 import { useState, useMemo } from 'react';
 
-interface Props {
-  leaderboard: any[];
+interface ReportingTarget {
+  id: string;
+  display_name: string;
 }
 
-export const useReporting = ({ leaderboard }: Props) => {
+interface UseReportingProps {
+  leaderboard: Participation[];
+}
+
+export const useReporting = ({ leaderboard }: UseReportingProps) => {
   const [isReporting, setIsReporting] = useState(false);
 
-  const potentialTargets = useMemo(
+  const potentialTargets = useMemo<ReportingTarget[]>(
     () =>
-      leaderboard?.map((item: any) => ({
+      leaderboard?.map((item) => ({
         id: item.player.id,
         display_name: item.player.display_name,
       })) || [],
