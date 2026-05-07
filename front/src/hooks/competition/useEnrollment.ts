@@ -86,7 +86,7 @@ export const useEnrollment = (
 
       toast.success('Liste des participants mise à jour !');
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message || ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
     },
   });
