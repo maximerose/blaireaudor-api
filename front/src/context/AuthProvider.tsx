@@ -1,7 +1,12 @@
 import { useState, useEffect, type ReactNode, useRef, useMemo } from 'react';
 import { authService } from '@/services/api/auth';
 import { AuthContext } from '@/context/AuthContext';
-import type { User, AuthContextType } from '@/types';
+import type {
+  User,
+  AuthContextType,
+  LoginCredentials,
+  AuthResult,
+} from '@/types';
 import { LOG_MESSAGES } from '@/constants';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -30,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []);
 
-  const login = async (credentials: any) => {
+  const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
     const result = await authService.login(credentials);
     if (result.ok && result.data.token) {
       const userData = await authService.me();

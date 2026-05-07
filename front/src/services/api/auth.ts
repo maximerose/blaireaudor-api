@@ -1,11 +1,12 @@
 import { API } from '@/constants';
 import { apiFetch } from './config';
+import type { AuthResult, LoginCredentials, RegisterData, User } from '@/types';
 
 export const authService = {
   /**
    * Envoie les données d'inscription au backend
    */
-  register: async (formData: any) => {
+  register: async (formData: RegisterData): Promise<AuthResult> => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -24,7 +25,7 @@ export const authService = {
   /**
    * Identifie l'utilisateur et stocke le Token JWT
    */
-  login: async (credentials: any) => {
+  login: async (credentials: LoginCredentials): Promise<AuthResult> => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
       body: JSON.stringify(credentials),
@@ -63,7 +64,7 @@ export const authService = {
   /**
    * Récupère les informations de l'utilisateur connecté via le Token
    */
-  me: async () => {
+  me: async (): Promise<User | null> => {
     const token = localStorage.getItem('token');
     if (!token) return null;
 
