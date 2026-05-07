@@ -1,7 +1,8 @@
+import type { Competition } from '@/types';
 import { useMemo } from 'react';
 
 export const useCompetitionDateLimits = (
-  competition: any,
+  competition: Competition,
   capAtToday: boolean = false,
 ) => {
   return useMemo(() => {
