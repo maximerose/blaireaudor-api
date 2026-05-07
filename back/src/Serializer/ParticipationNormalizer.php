@@ -23,9 +23,8 @@ final class ParticipationNormalizer implements NormalizerInterface, NormalizerAw
 
     public function normalize($object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
-        if ($object instanceof Participation) {
-            // Calcul du rang : 1 + nombre de gens ayant un score > au mien dans cette compétition
-            $rank = $this->repository->countHigherScores(
+        if ($object instanceof Participation && null === $object->getRank()) {
+            $rank = $this->repository->countDistinctHigherScores(
                 $object->getCompetition(),
                 $object->getScore()
             ) + 1;

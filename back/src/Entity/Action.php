@@ -63,13 +63,18 @@ class Action
 
     #[ORM\ManyToOne(targetEntity: Participation::class, inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:write', 'action:read'])]
+    #[Groups(['action:write'])]
     private ?Participation $participation = null;
 
-    #[Groups(['action:read'])]
-    public function getPlayer(): ?Player
+    #[Groups(['action:read', 'competition:read'])]
+    public function getPlayer(): array
     {
-        return $this->participation?->getPlayer();
+        $player = $this->participation?->getPlayer();
+
+        return [
+            'id' => $player?->getId(),
+            'display_name' => $player?->getDisplayName(),
+        ];
     }
 
     public function getCompetition(): ?Competition

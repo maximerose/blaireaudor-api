@@ -70,9 +70,21 @@ final class CompetitionController extends AbstractController
             return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
         }
 
-        $sortBy = $request->query->get('sort', 'dateAction');
-        $actions = $actionRepository->findByCompetition($competition, $sortBy);
+        $page = $request->query->getInt('page', 1);
+        $limit = 50;
+        $offset = ($page - 1) * $limit;
 
-        return $this->json($actions, Response::HTTP_OK, [], ['groups' => ['action:read', 'competition:read', 'player:read']]);
+        $sortBy = $request->query->get('sort', 'dateAction');
+        $actions = $actionRepository->findByCompetition($competition, $sortBy, 'DESC', $limit, $offset);
+        $total = $actionRepository->countByCompetition($competition);
+
+        return $this->json([
+            'data' => $actions,
+            'meta' => [
+                'total' => $total,
+                'page' => $page,
+                'last_page' => ceil($total / $limit),
+            ],
+        ], Response::HTTP_OK, [], ['groups' => ['action:read', 'player:read']]);
     }
 }

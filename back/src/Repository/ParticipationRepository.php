@@ -23,10 +23,10 @@ class ParticipationRepository extends ServiceEntityRepository
         parent::__construct($registry, Participation::class);
     }
 
-    public function countHigherScores(Competition $competition, int $score): int
+    public function countDistinctHigherScores(Competition $competition, int $score): int
     {
         return (int) $this->createQueryBuilder('p')
-            ->select('count(p.id)')
+            ->select('count(DISTINCT p.score)')
             ->where('p.competition = :competition')
             ->andWhere('p.score > :score')
             ->setParameter('competition', $competition)
@@ -37,14 +37,27 @@ class ParticipationRepository extends ServiceEntityRepository
 
     public function findLeaderboard(Competition $competition): array
     {
-        return $this->createQueryBuilder('p')
-            ->join('p.player', 'player')
-            ->addSelect('player')
-            ->where('p.competition = :competition')
-            ->setParameter('competition', $competition)
-            ->orderBy('p.score', 'DESC')
-            ->addOrderBy('player.displayName', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $results = $this->createQueryBuilder('p')
+        ->join('p.player', 'player')
+        ->addSelect('player')
+        ->where('p.competition = :competition')
+        ->setParameter('competition', $competition)
+        ->orderBy('p.score', 'DESC')
+        ->addOrderBy('player.displayName', 'ASC')
+        ->getQuery()
+        ->getResult();
+
+        $currentRank = 0;
+        $lastScore = null;
+
+        foreach ($results as $participation) {
+            if ($participation->getScore() !== $lastScore) {
+                ++$currentRank;
+                $lastScore = $participation->getScore();
+            }
+            $participation->setRank($currentRank);
+        }
+
+        return $results;
     }
 }

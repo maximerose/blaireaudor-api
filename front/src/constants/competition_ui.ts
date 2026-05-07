@@ -91,6 +91,8 @@ export const COMPETITION_UI = {
       ACTIONS: {
         TITLE: 'Journal des actions',
         ENTRIES: (count: number) => `${count} entrées`,
+        LOADING: 'Chargement des actions...',
+        END: 'Fin des actions',
         TABLE: {
           COLUMN_DATE: 'Date',
           COLUMN_PLAYER: 'Joueur',

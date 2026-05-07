@@ -1,23 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/hooks';
-import { getUniqueDates } from '@/utils';
-import {
-  ActionStatus,
-  type Action,
-  type ActionSortField,
-  type User,
-} from '@/types';
+import { getUniqueDates, getIdFromData } from '@/utils';
+import { ActionStatus, type Action, type ActionSortField } from '@/types';
 
 export const useActionTable = (initialActions: Action[]) => {
   const { user } = useAuth();
-  const [sortField, setSortField] = useState<string>('date_action');
+  const [sortField, setSortField] = useState<ActionSortField>('date_action');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-  const getEntityId = (
-    entity: User | string | undefined | null,
-  ): string | undefined =>
-    typeof entity === 'string' ? entity.split('/').pop() : entity?.id;
 
   const availableDates = useMemo(
     () => getUniqueDates(initialActions),
@@ -26,25 +16,14 @@ export const useActionTable = (initialActions: Action[]) => {
 
   const processedActions = useMemo(() => {
     let result = [...initialActions];
-
     if (selectedDate) {
       result = result.filter((a) => a.date_action.startsWith(selectedDate));
     }
 
     return result.sort((a, b) => {
-      const getValue = (action: Action): string | number => {
-        switch (sortField) {
-          case 'player':
-            return action.player?.display_name || '';
-          case 'points':
-            return action.points;
-          case 'date_action':
-          case 'status':
-          case 'description':
-            return action[sortField] || '';
-          default:
-            return '';
-        }
+      const getValue = (action: Action) => {
+        if (sortField === 'player') return action.player?.display_name || '';
+        return action[sortField as keyof Action] || '';
       };
 
       const valA = getValue(a);
@@ -53,11 +32,9 @@ export const useActionTable = (initialActions: Action[]) => {
       if (typeof valA === 'number' && typeof valB === 'number') {
         return sortOrder === 'asc' ? valA - valB : valB - valA;
       }
-
       const comp = String(valA).localeCompare(String(valB), 'fr', {
         sensitivity: 'base',
       });
-
       return sortOrder === 'asc' ? comp : -comp;
     });
   }, [initialActions, sortField, sortOrder, selectedDate]);
@@ -66,11 +43,12 @@ export const useActionTable = (initialActions: Action[]) => {
     const pending = processedActions.filter(
       (a) => a.status === ActionStatus.PENDING,
     );
+    const userId = user?.id;
 
     return {
-      myPending: pending.filter((a) => getEntityId(a.created_by) === user?.id),
+      myPending: pending.filter((a) => getIdFromData(a.created_by) === userId),
       othersPending: pending.filter(
-        (a) => getEntityId(a.created_by) !== user?.id,
+        (a) => getIdFromData(a.created_by) !== userId,
       ),
       validated: processedActions.filter(
         (a) => a.status === ActionStatus.VALIDATED,
@@ -82,6 +60,7 @@ export const useActionTable = (initialActions: Action[]) => {
     };
   }, [processedActions, user]);
 
+  // --- Helpers pour le TableHeader ---
   const handleSort = (field: ActionSortField) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -114,6 +93,5 @@ export const useActionTable = (initialActions: Action[]) => {
     handleSort,
     getAriaSort,
     getSortIndicator,
-    sortInfo: { field: sortField, order: sortOrder },
   };
 };

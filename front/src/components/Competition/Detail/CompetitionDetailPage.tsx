@@ -113,7 +113,6 @@ const CompetitionDetailPage = () => {
               </Badge>
             </header>
             <ActionTable
-              actions={actions || []}
               onUpdate={handleUpdate}
               onStatusChange={handleActionStatus}
             />

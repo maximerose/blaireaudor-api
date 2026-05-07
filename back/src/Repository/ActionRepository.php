@@ -23,8 +23,13 @@ class ActionRepository extends ServiceEntityRepository
         parent::__construct($registry, Action::class);
     }
 
-    public function findByCompetition(Competition $competition, string $sortBy = 'dateAction', string $order = 'DESC'): array
-    {
+    public function findByCompetition(
+        Competition $competition,
+        string $sortBy = 'dateAction',
+        string $order = 'DESC',
+        ?int $limit = null,
+        ?int $offset = null,
+    ): array {
         $sortMap = [
             'dateAction' => 'a.dateAction',
             'points' => 'a.points',
@@ -34,14 +39,33 @@ class ActionRepository extends ServiceEntityRepository
         $sortField = $sortMap[$sortBy] ?? 'a.dateAction';
         $order = 'ASC' === strtoupper($order) ? 'ASC' : 'DESC';
 
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
         ->join('a.participation', 'part')
         ->join('part.player', 'p')
-        ->addSelect('part', 'p')
+        ->leftJoin('p.associatedUser', 'u')
+        ->addSelect('part', 'p', 'u')
         ->where('part.competition = :comp')
         ->setParameter('comp', $competition)
-        ->orderBy($sortField, $order)
-        ->getQuery()
-        ->getResult();
+        ->orderBy($sortField, $order);
+
+        if (null !== $limit) {
+            $qb->setMaxResults($limit);
+        }
+        if (null !== $offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countByCompetition(Competition $competition): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->join('a.participation', 'p')
+            ->where('p.competition = :comp')
+            ->setParameter('comp', $competition)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

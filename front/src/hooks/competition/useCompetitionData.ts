@@ -21,13 +21,6 @@ export const useCompetitionData = (code: string) => {
     enabled: !!competitionId,
   });
 
-  const actionsQuery = useQuery({
-    queryKey: QUERY_KEYS.competition.byId(competitionId).actions,
-    queryFn: ({ signal }) =>
-      competitionService.getActions(competitionId!, signal),
-    enabled: !!competitionId,
-  });
-
   /**
    * Fonction de rafraîchissement global :
    * Invalide toutes les requêtes liées à cette compétition pour forcer un re-fetch.
@@ -46,25 +39,18 @@ export const useCompetitionData = (code: string) => {
 
   const isInitialLoading =
     competitionQuery.isLoading ||
-    (!!competitionId && (leaderboardQuery.isLoading || actionsQuery.isLoading));
-
-  const getErrorMessage = () => {
-    if (competitionQuery.isError) return ERRORS.COMPETITION.NOT_FOUND(code);
-    if (leaderboardQuery.isError) return ERRORS.COMPETITION.FETCH_LEADERBOARD;
-    if (actionsQuery.isError) return ERRORS.COMPETITION.FETCH_ACTIONS;
-    return null;
-  };
+    (!!competitionId && leaderboardQuery.isLoading);
 
   return {
     competition: competitionQuery.data,
     leaderboard: leaderboardQuery.data ?? [],
-    actions: actionsQuery.data ?? [],
     isReady: !isInitialLoading,
-    isRefreshing:
-      competitionQuery.isFetching ||
-      leaderboardQuery.isFetching ||
-      actionsQuery.isFetching,
-    error: getErrorMessage(),
+    isRefreshing: competitionQuery.isFetching || leaderboardQuery.isFetching,
+    error: competitionQuery.isError
+      ? ERRORS.COMPETITION.NOT_FOUND(code)
+      : leaderboardQuery.isError
+        ? ERRORS.COMPETITION.FETCH_LEADERBOARD
+        : null,
     refresh,
   };
 };

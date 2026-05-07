@@ -1,4 +1,4 @@
-import { useActionTable, useCompetition } from '@/hooks';
+import { useActionTable, useCompetition, useInfiniteActions } from '@/hooks';
 import { Card, EmptyState, Text } from '@/components/UI';
 import {
   DateNavigation,
@@ -9,11 +9,11 @@ import {
 import { COMPETITION_UI, ICONS } from '@/constants';
 import type { ActionTableProps } from '@/types';
 
-export const ActionTable = ({
-  actions,
-  onUpdate,
-  onStatusChange,
-}: ActionTableProps) => {
+export const ActionTable = ({ onUpdate, onStatusChange }: ActionTableProps) => {
+  const { competition, isAdmin } = useCompetition();
+  const { actions, loadMoreRef, isFetchingNextPage, hasNextPage } =
+    useInfiniteActions(competition?.id);
+
   const {
     categories,
     selectedDate,
@@ -23,7 +23,6 @@ export const ActionTable = ({
     getAriaSort,
     getSortIndicator,
   } = useActionTable(actions);
-  const { isAdmin } = useCompetition();
 
   return (
     <div
@@ -79,6 +78,24 @@ export const ActionTable = ({
               }
             />
           )}
+          <div
+            ref={loadMoreRef}
+            className="p-8 flex justify-center border-t border-white/5"
+          >
+            {isFetchingNextPage ? (
+              <Text variant="micro" className="animate-pulse text-gold">
+                {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.LOADING}
+              </Text>
+            ) : hasNextPage ? (
+              <div className="h-1" />
+            ) : (
+              actions.length > 0 && (
+                <Text variant="micro" className="opacity-20 italic">
+                  {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.END}
+                </Text>
+              )
+            )}
+          </div>
         </Card>
       </section>
 

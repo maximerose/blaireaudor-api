@@ -26,9 +26,7 @@ export const useLeaderboardUI = (
   const enrichedParticipations = useLeaderboardLogic(participations);
 
   const displayableParticipations = useMemo(() => {
-    if (!isFogOfWarActive) {
-      return enrichedParticipations;
-    }
+    if (!isFogOfWarActive) return enrichedParticipations;
 
     return [...enrichedParticipations].sort((participationA, participationB) =>
       (participationA.player.display_name || '').localeCompare(

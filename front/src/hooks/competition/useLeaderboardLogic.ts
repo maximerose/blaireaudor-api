@@ -15,23 +15,10 @@ export const useLeaderboardLogic = (participations: Participation[]) => {
   const currentPlayerId = user?.player?.id?.toString();
 
   return useMemo(() => {
-    const rankedParticipations = [...participations].sort(
-      (participationA, participationB) => {
-        if (participationB.score !== participationA.score)
-          return participationB.score - participationA.score;
+    let currentRankPosition = 0;
+    let previousScore: number | null = null;
 
-        const playerNameA = (
-          participationA.player.display_name || ''
-        ).toLowerCase();
-        const playerNameB = (
-          participationB.player.display_name || ''
-        ).toLowerCase();
-
-        return playerNameA.localeCompare(playerNameB);
-      },
-    );
-
-    const scoreFrequencies = rankedParticipations.reduce(
+    const scoreFrequencies = participations.reduce(
       (frequencies, currentParticipation) => {
         const currentScore = currentParticipation.score;
         frequencies[currentScore] = (frequencies[currentScore] || 0) + 1;
@@ -41,14 +28,11 @@ export const useLeaderboardLogic = (participations: Participation[]) => {
       {} as Record<number, number>,
     );
 
-    let currentRankPosition = 0;
-    let previousScore = -1;
-
-    return rankedParticipations.map((participation, index) => {
+    return participations.map((participation) => {
       if (participation.score !== previousScore) {
-        currentRankPosition = index + 1;
+        currentRankPosition++;
+        previousScore = participation.score;
       }
-      previousScore = participation.score;
 
       return {
         ...participation,

@@ -84,7 +84,7 @@ class Participation
     private ?int $rank = null;
 
     #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
-    #[Groups(['competition:read'])]
+    #[Groups(['participation:actions'])]
     private Collection $actions;
 
     public function __construct()

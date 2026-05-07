@@ -76,10 +76,13 @@ export const competitionService = {
     return response.json();
   },
 
-  getActions: async (id: string, signal?: AbortSignal) => {
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.ACTIONS(id), {
-      signal,
-    });
+  getActions: async (id: string, page: number = 1, signal?: AbortSignal) => {
+    const response = await apiFetch(
+      `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?page=${page}`,
+      {
+        signal,
+      },
+    );
     if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_ACTIONS);
     return response.json();
   },
