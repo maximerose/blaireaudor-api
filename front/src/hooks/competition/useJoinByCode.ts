@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/hooks';
-import { competitionService } from '@/services/api/competition';
+import { competitionService } from '@/services/api/competitionService';
 import { ERRORS } from '@/constants';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {

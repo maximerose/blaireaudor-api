@@ -1,13 +1,19 @@
 import { useMemo, useState } from 'react';
 import { useAuth, useCreateCompetition, usePlayerSearch } from '@/hooks';
-import { formatJoinCode, cleanJoinCode, generateClientSideCode } from '@/utils';
-import { competitionService } from '@/services/api/competition';
+import {
+  formatJoinCode,
+  cleanJoinCode,
+  generateClientSideCode,
+  formatToApiISO,
+} from '@/utils';
+import { competitionService } from '@/services/api/competitionService';
 import type {
   FormParticipant,
   Player,
   Competition,
   CompetitionFormData,
   PlayerCompact,
+  CompetitionCreatePayload,
 } from '@/types';
 
 export const useCreateCompetitionForm = (
@@ -129,10 +135,28 @@ export const useCreateCompetitionForm = (
   }, [formData.name, formData.startDate]);
 
   const submit = async () => {
-    const competition = await create({
-      ...formData,
-      joinCode: cleanJoinCode(formData.joinCode || ''),
-    });
+    const payload: CompetitionCreatePayload = {
+      name: formData.name,
+      start_date: formatToApiISO(
+        formData.startDate,
+        formData.startTime,
+        formData.startFullDay,
+        false,
+      ),
+      end_date: formData.endDate
+        ? formatToApiISO(
+            formData.endDate,
+            formData.endTime,
+            formData.endFullDay,
+            true,
+          )
+        : null,
+      join_code: cleanJoinCode(formData.joinCode || ''),
+      participate: formData.participate ?? true,
+      fog_of_war: formData.fogOfWar,
+    };
+
+    const competition = await create(payload);
 
     if (!competition) return;
 

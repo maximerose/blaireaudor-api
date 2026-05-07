@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks';
 import { ERRORS } from '@/constants';
-import { competitionService } from '@/services/api/competition';
+import { competitionService } from '@/services/api/competitionService';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const { refreshUser } = useAuth();

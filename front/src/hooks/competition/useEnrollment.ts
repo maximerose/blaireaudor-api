@@ -5,7 +5,7 @@ import { useAuth, usePlayerSearch } from '@/hooks';
 import { ERRORS, QUERY_KEYS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { FormParticipant, PlayerCompact } from '@/types';
-import { competitionService } from '@/services/api/competition';
+import { competitionService } from '@/services/api/competitionService';
 import toast from 'react-hot-toast';
 
 export const useEnrollment = (

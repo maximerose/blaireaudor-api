@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { bonusDayService } from '@/services/api/bonusDay';
+import { bonusDayService } from '@/services/api/bonusDayService';
 import { QUERY_KEYS } from '@/constants';
 
 export const useBonusDays = (competitionId: string) => {

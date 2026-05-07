@@ -4,11 +4,11 @@ import { ROUTES, QUERY_KEYS, ERRORS } from '@/constants';
 import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { competitionService } from '@/services/api/competition';
+import { competitionService } from '@/services/api/competitionService';
 import type {
   CompetitionFormData,
   Competition,
-  UpdateCompetitionPayload,
+  CompetitionUpdatePayload,
 } from '@/types';
 
 export const useEditCompetition = (
@@ -42,7 +42,7 @@ export const useEditCompetition = (
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload: UpdateCompetitionPayload = {
+      const payload: CompetitionUpdatePayload = {
         name: formData.name,
         join_code: formData.joinCode,
         end_date: formatToApiISO(

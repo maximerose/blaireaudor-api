@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { actionService } from '@/services/api/action';
-import { competitionService } from '@/services/api/competition';
+import { actionService } from '@/services/api/actionService';
+import { competitionService } from '@/services/api/competitionService';
 import type {
   Action,
   ActionStatus,
   ActionUpdatePayload,
-  UpdateCompetitionPayload,
+  CompetitionUpdatePayload,
 } from '@/types';
 
 export const useCompetitionAdmin = (
@@ -41,7 +41,7 @@ export const useCompetitionAdmin = (
     return await updateAction(action.id, payload);
   };
 
-  const updateCompetition = async (data: UpdateCompetitionPayload) => {
+  const updateCompetition = async (data: CompetitionUpdatePayload) => {
     if (!competitionId) return;
 
     setIsUpdating(true);

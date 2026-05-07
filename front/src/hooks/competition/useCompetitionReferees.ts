@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { competitionService } from '@/services/api/competition';
+import { competitionService } from '@/services/api/competitionService';
 
 export const useCompetitionReferees = (
   competitionId: string,

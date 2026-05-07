@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { actionService } from '@/services/api/action';
+import { actionService } from '@/services/api/actionService';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 import { toast } from 'react-hot-toast';
 import { ActionStatus, type Competition } from '@/types';

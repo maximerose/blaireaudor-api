@@ -1,31 +1,15 @@
-import { apiFetch } from './config';
-import { formatToApiISO } from '@/utils';
+import { apiFetch } from './configService';
 import { API, ERRORS } from '@/constants';
-import type { CompetitionFormData, UpdateCompetitionPayload } from '@/types';
+import type {
+  CompetitionCreatePayload,
+  CompetitionUpdatePayload,
+} from '@/types';
 
 export const competitionService = {
-  create: async (data: CompetitionFormData) => {
-    const formattedStartDate = formatToApiISO(
-      data.startDate,
-      data.startTime,
-      data.startFullDay,
-      false,
-    );
-    const formattedEndDate = data.endDate
-      ? formatToApiISO(data.endDate, data.endTime, data.endFullDay, true)
-      : null;
-
+  create: async (payload: CompetitionCreatePayload) => {
     const response = await apiFetch(API.ENDPOINTS.ADMIN.COMPETITION_CREATE, {
       method: 'POST',
-      body: JSON.stringify({
-        name: data.name,
-        start_date: formattedStartDate,
-        end_date: formattedEndDate,
-        join_code: data.joinCode || null,
-        participate: data.participate ?? true,
-        fog_of_war: data.fogOfWar,
-        is_creator_referee: data.isCreatorReferee ?? true,
-      }),
+      body: JSON.stringify(payload),
     });
 
     const result = await response.json();
@@ -38,7 +22,7 @@ export const competitionService = {
     return result;
   },
 
-  update: async (id: string, data: UpdateCompetitionPayload) => {
+  update: async (id: string, data: CompetitionUpdatePayload) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'PATCH',
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },

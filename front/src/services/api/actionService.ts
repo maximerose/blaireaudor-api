@@ -1,5 +1,5 @@
 import type { ActionCreatePayload, ActionUpdatePayload } from '@/types';
-import { apiFetch } from './config';
+import { apiFetch } from './configService';
 import { API } from '@/constants';
 
 export const actionService = {

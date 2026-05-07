@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { finalizeSlug, slugify } from '@/utils';
-import { authService } from '@/services/api/auth';
+import { authService } from '@/services/api/authService';
 import { useAuth, usePlayerSearch, useUsernameCheck } from '@/hooks';
 import type { Player } from '@/types';
 import { AUTH_UI, FORM, ERRORS, ICONS } from '@/constants';

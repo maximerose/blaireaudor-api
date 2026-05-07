@@ -24,13 +24,23 @@ export interface Competition {
   participations?: Participation[];
 }
 
-export type UpdateCompetitionPayload = Partial<{
+/**
+ * PAYLOADS (Transfert vers l'API)
+ */
+export interface CompetitionCreatePayload {
   name: string;
-  join_code: string | null;
-  start_date: string;
-  end_date: string | null;
-  fog_of_war: boolean;
-}>;
+  start_date: string; // Format ISO string
+  end_date?: string | null;
+  join_code?: string | null;
+  fog_of_war?: boolean;
+  referees?: string[]; // Tableau d'IRIs (ex: ["/api/players/1"])
+  players?: string[]; // Tableau d'IRIs
+  participate?: boolean; // Si le créateur veut s'auto-inscrire
+}
+
+export type CompetitionUpdatePayload = Partial<
+  Omit<CompetitionCreatePayload, 'participate'>
+>;
 
 export interface CompetitionFormData {
   name: string;

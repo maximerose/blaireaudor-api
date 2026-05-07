@@ -1,5 +1,5 @@
 import type { Player } from '@/types/player';
-import { apiFetch } from './config';
+import { apiFetch } from './configService';
 import { API } from '@/constants';
 
 export const playerService = {
