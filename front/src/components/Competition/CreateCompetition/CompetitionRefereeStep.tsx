@@ -8,6 +8,7 @@ import { cn } from '@/utils';
 import type {
   CompetitionFormData,
   FormParticipant,
+  Player,
   PlayerCompact,
 } from '@/types';
 import { FORM, ICONS, BUTTONS } from '@/constants';
@@ -27,7 +28,10 @@ interface RefereeStepProps {
     field: K,
     value: CompetitionFormData[K],
   ) => void;
-  onToggleReferee: (person: any, isNew?: boolean) => void;
+  onToggleReferee: (
+    person: Player | PlayerCompact | FormParticipant,
+    isNew?: boolean,
+  ) => void;
   onBack: () => void;
   onSubmit: () => void;
   loading: boolean;
@@ -142,7 +146,10 @@ export const CompetitionRefereeStep = ({
             </Text>
             <SelectedPlayersList
               participants={externalReferees}
-              onRemove={(id) => onToggleReferee({ id })}
+              onRemove={(id) => {
+                const person = externalReferees.find((p) => p.id === id);
+                if (person) onToggleReferee(person);
+              }}
             />
           </div>
         )}

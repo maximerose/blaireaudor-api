@@ -103,10 +103,13 @@ export const useCreateCompetitionForm = (
         };
       }
 
-      const refereeToAdd: FormParticipant =
-        'username' in person
-          ? { ...person, isNew: false }
-          : ({ ...person, isNew: isNewInput } as FormParticipant);
+      let refereeToAdd: FormParticipant;
+
+      if ('isNew' in person) {
+        refereeToAdd = person;
+      } else {
+        refereeToAdd = { ...person, isNew: isNewInput } as FormParticipant;
+      }
 
       return {
         ...prev,

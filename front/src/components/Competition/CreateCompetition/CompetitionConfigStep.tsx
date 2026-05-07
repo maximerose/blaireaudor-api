@@ -2,6 +2,7 @@ import { Input, Button, Text, Card } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
+import type React from 'react';
 
 interface ConfigStepProps {
   formData: CompetitionFormData;
@@ -9,7 +10,7 @@ interface ConfigStepProps {
     field: K,
     value: CompetitionFormData[K],
   ) => void;
-  handleJoinCodeChange: (e: any) => void;
+  handleJoinCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onNext: () => void;
   onGenerateCode: () => void;
   canNext: boolean;
