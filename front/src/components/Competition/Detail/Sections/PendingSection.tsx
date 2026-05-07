@@ -2,16 +2,38 @@ import { Card, Text, Badge } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
-import type { Action } from '@/types';
+import type { Action, OnActionStatusChange, OnActionUpdate } from '@/types';
+
+interface PendingSectionProps {
+  myPending: Action[];
+  othersPending: Action[];
+  onUpdate: OnActionUpdate;
+  onStatusChange: OnActionStatusChange;
+}
 
 export const PendingSection = ({
   myPending,
   othersPending,
   onUpdate,
   onStatusChange,
-}: any) => {
+}: PendingSectionProps) => {
   const total = myPending.length + othersPending.length;
+
   if (total === 0) return null;
+
+  const sections = [
+    {
+      label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.MY_SUBMISSIONS,
+      data: myPending,
+      border: 'border-gold/20 shadow-gold/5',
+    },
+    {
+      label:
+        COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.OTHER_SUBMISSIONS,
+      data: othersPending,
+      border: 'border-white/5',
+    },
+  ] as const;
 
   return (
     <section className="space-y-6 animate-slide-up">
@@ -29,22 +51,7 @@ export const PendingSection = ({
       </div>
 
       <div className="space-y-8">
-        {[
-          {
-            label:
-              COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS
-                .MY_SUBMISSIONS,
-            data: myPending,
-            border: 'border-gold/20 shadow-gold/5',
-          },
-          {
-            label:
-              COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS
-                .OTHER_SUBMISSIONS,
-            data: othersPending,
-            border: 'border-white/5',
-          },
-        ].map(
+        {sections.map(
           (section) =>
             section.data.length > 0 && (
               <div key={section.label} className="space-y-3">
