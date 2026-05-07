@@ -16,13 +16,11 @@ export const useCompetitionSettings = ({
   hidePoints,
   refresh,
 }: UseCompetitionProps): CompetitionContextType => {
-  // Logique : Tri des jours bonus
   const bonusDays = useMemo(
     () => sortByDate(competition.bonus_days || [], 'date'),
     [competition.bonus_days],
   );
 
-  // Logique : Calcul du multiplicateur
   const getMultiplier = useCallback(
     (date: string | null) => {
       if (!date) return undefined;

@@ -1,9 +1,9 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { cn } from '@/utils';
 
 interface InputStylesProps {
   align: 'left' | 'center';
-  icon?: any;
+  icon?: ReactNode;
   className: string;
 }
 

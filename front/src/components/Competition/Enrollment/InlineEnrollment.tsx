@@ -68,9 +68,7 @@ export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
           label={FORM.PLAYER.LABELS.SEARCH_PLAYER}
           placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
           value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchTerm(e.target.value)
-          }
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={isSearching ? ICONS.LOADING : ICONS.SEARCH}
           className="bg-black/40"
           role="combobox"

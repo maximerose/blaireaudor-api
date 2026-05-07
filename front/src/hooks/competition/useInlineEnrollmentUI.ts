@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAuth, useCompetition, useEnrollment } from '@/hooks';
-import type { Participation, Player } from '@/types';
+import type {
+  FormParticipant,
+  Participation,
+  Player,
+  PlayerCompact,
+} from '@/types';
 import { isCompetitionCreator } from '@/utils';
 
 const getNewPlayers = (
-  participants: Player[],
-  existingPlayers: Player[] = [],
+  participants: FormParticipant[],
+  existingPlayers: FormParticipant[] = [],
 ) => {
   return participants.filter(
-    (p) => !existingPlayers.some((cp: Player) => cp.id === p.id),
+    (p) => !existingPlayers.some((cp: PlayerCompact) => cp.id === p.id),
   );
 };
 
@@ -30,8 +35,14 @@ export const useInlineEnrollmentUI = (onRefresh: () => void) => {
 
   const isOwner = isCompetitionCreator(competition, user);
 
-  const existingPlayers =
-    competition?.participations?.map((p: Participation) => p.player) || [];
+  const existingPlayers: FormParticipant[] = useMemo(() => {
+    return (
+      competition?.participations?.map((p: Participation) => ({
+        ...p.player,
+        isNew: false as const,
+      })) || []
+    );
+  }, [competition?.participations]);
 
   const enrollment = useEnrollment(
     competition?.id || '',

@@ -66,7 +66,7 @@ export const ReportActionForm = ({
                 value={search}
                 required
                 onFocus={() => setShowDropdown(true)}
-                onChange={(e: any) => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
                 className={INPUT_STYLE}
                 icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
               />
@@ -82,7 +82,7 @@ export const ReportActionForm = ({
               label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
               placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
               value={formData.description}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setFormData((p) => ({ ...p, description: e.target.value }))
               }
               required
@@ -95,8 +95,8 @@ export const ReportActionForm = ({
                 type="number"
                 icon={ICONS.POINTS}
                 value={formData.points}
-                onChange={(e: any) =>
-                  setFormData((p) => ({ ...p, points: e.target.value }))
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, points: Number(e.target.value) }))
                 }
                 required
                 className={INPUT_STYLE}
@@ -107,7 +107,7 @@ export const ReportActionForm = ({
                 min={dateLimits.minDate}
                 max={dateLimits.maxDate}
                 value={formData.dateAction}
-                onChange={(e: any) =>
+                onChange={(e) =>
                   setFormData((p) => ({ ...p, dateAction: e.target.value }))
                 }
                 required

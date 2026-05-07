@@ -24,6 +24,14 @@ export interface Competition {
   participations?: Participation[];
 }
 
+export type UpdateCompetitionPayload = Partial<{
+  name: string;
+  join_code: string | null;
+  start_date: string;
+  end_date: string | null;
+  fog_of_war: boolean;
+}>;
+
 export interface CompetitionFormData {
   name: string;
   startDate: string;

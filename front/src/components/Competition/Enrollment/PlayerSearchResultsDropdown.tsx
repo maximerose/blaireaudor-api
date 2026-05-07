@@ -1,10 +1,11 @@
 import { Card, Text, PlayerSearchResultItem } from '@/components/UI';
 import { FORM } from '@/constants';
+import type { PlayerCompact } from '@/types';
 
 interface PlayerSearchResultsDropdownProps {
-  results: any[];
+  results: PlayerCompact[];
   searchTerm?: string;
-  onSelect: (player: any) => void;
+  onSelect: (player: PlayerCompact) => void;
   onCreateNew?: (name: string) => void;
 }
 

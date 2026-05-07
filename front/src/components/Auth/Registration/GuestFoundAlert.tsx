@@ -1,9 +1,9 @@
 import { Badge, Button, Text } from '@/components/UI';
 import { AUTH_UI, ICONS } from '@/constants';
-import type { PlayerPreview } from '@/types';
+import type { PlayerCompact } from '@/types';
 
 interface GuestFoundAlertProps {
-  foundGuest: PlayerPreview;
+  foundGuest: PlayerCompact;
   username: string;
   onLink: () => void;
 }

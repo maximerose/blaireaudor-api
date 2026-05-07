@@ -1,8 +1,9 @@
 import { Card, Text } from '@/components/UI';
 import { FORM } from '@/constants';
+import type { PlayerCompact } from '@/types';
 
 interface PlayerDropdownListProps {
-  filteredPlayers: any[];
+  filteredPlayers: PlayerCompact[];
   selectPlayer: (id: string, name: string) => void;
 }
 

@@ -4,20 +4,21 @@ import { ROUTES } from '@/constants/routes';
 import { useAuth, usePlayerSearch } from '@/hooks';
 import { ERRORS, QUERY_KEYS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { PlayerPreview } from '@/types';
+import type { FormParticipant, PlayerCompact } from '@/types';
 import { competitionService } from '@/services/api/competition';
 import toast from 'react-hot-toast';
 
 export const useEnrollment = (
   competitionId: string,
-  initialParticipants: any[],
+  initialParticipants: FormParticipant[],
   onSuccess?: () => void,
 ) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { refreshUser } = useAuth();
 
-  const [participants, setParticipants] = useState(initialParticipants);
+  const [participants, setParticipants] =
+    useState<FormParticipant[]>(initialParticipants);
 
   const {
     searchTerm,
@@ -28,18 +29,17 @@ export const useEnrollment = (
 
   const searchResults = useMemo(() => {
     return rawSearchResults.filter(
-      (result: any) =>
+      (result: PlayerCompact) =>
         !participants.some((p) => String(p.id) === String(result.id)),
     );
   }, [rawSearchResults, participants]);
 
-  const addExistingPlayer = (player: PlayerPreview) => {
+  const addExistingPlayer = (player: PlayerCompact) => {
     if (!participants.find((p) => String(p.id) === String(player.id))) {
       setParticipants([
         ...participants,
         {
-          id: player.id,
-          display_name: player.display_name,
+          ...player,
           isNew: false,
         },
       ]);
@@ -69,8 +69,6 @@ export const useEnrollment = (
         new_players: participants
           .filter((p) => p.isNew)
           .map((p) => p.display_name),
-        existing_referees_ids: [], // Optionnel selon ton service
-        new_referees: [], // Optionnel selon ton service
       };
 
       return competitionService.addParticipation(competitionId, payload);

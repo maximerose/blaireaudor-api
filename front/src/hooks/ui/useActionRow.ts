@@ -1,6 +1,7 @@
 import { useCompetition } from '@/hooks';
+import type { Action } from '@/types';
 
-export const useActionRow = (action: any) => {
+export const useActionRow = (action: Action) => {
   const { hidePoints, getMultiplier } = useCompetition();
 
   const isPending = action.status?.toUpperCase() === 'PENDING';

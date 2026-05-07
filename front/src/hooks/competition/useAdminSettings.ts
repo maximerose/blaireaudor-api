@@ -1,10 +1,11 @@
 import toast from 'react-hot-toast';
 import { useCompetitionAdmin } from '@/hooks';
 import { useMemo } from 'react';
+import type { Action, Competition } from '@/types';
 
 interface UseAdminSettingsProps {
-  competition: any;
-  actions: any[];
+  competition: Competition;
+  actions: Action[];
   refresh: () => void;
 }
 

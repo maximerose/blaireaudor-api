@@ -1,9 +1,10 @@
 import { Badge, Text } from '@/components/UI';
 import { FORM, ICONS } from '@/constants';
+import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
 
 interface SelectedPlayersListProps {
-  participants: any[];
+  participants: PlayerCompact[];
   onRemove?: (id: string) => void;
 }
 
@@ -30,7 +31,7 @@ export const SelectedPlayersList = ({
           variant="gold"
           className="animate-fade-in py-1 px-3 flex items-center gap-2"
         >
-          {p.display_name || p.displayName}
+          {p.display_name}
 
           {onRemove && (
             <button

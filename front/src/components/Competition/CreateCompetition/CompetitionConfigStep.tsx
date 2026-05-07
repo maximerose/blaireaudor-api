@@ -54,7 +54,7 @@ export const CompetitionConfigStep = ({
           label={FORM.COMPETITION.LABELS.NAME}
           placeholder={FORM.COMPETITION.PLACEHOLDERS.NAME}
           value={formData.name}
-          onChange={(e: any) => updateField('name', e.target.value)}
+          onChange={(e) => updateField('name', e.target.value)}
           required
           align="center"
         />
@@ -107,7 +107,7 @@ export const CompetitionConfigStep = ({
             <Input
               type="date"
               value={formData.startDate}
-              onChange={(e: any) => updateField('startDate', e.target.value)}
+              onChange={(e) => updateField('startDate', e.target.value)}
               required
             />
 
@@ -148,9 +148,7 @@ export const CompetitionConfigStep = ({
                 <Input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e: any) =>
-                    updateField('startTime', e.target.value)
-                  }
+                  onChange={(e) => updateField('startTime', e.target.value)}
                 />
               </div>
             )}
@@ -168,7 +166,7 @@ export const CompetitionConfigStep = ({
             <Input
               type="date"
               value={formData.endDate}
-              onChange={(e: any) => updateField('endDate', e.target.value)}
+              onChange={(e) => updateField('endDate', e.target.value)}
             />
 
             <Card
@@ -204,7 +202,7 @@ export const CompetitionConfigStep = ({
                 <Input
                   type="time"
                   value={formData.endTime}
-                  onChange={(e: any) => updateField('endTime', e.target.value)}
+                  onChange={(e) => updateField('endTime', e.target.value)}
                 />
               </div>
             )}

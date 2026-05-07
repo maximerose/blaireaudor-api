@@ -28,7 +28,8 @@ export const useRefereeManagementUI = (
 
   const searchResults = useMemo(() => {
     return rawSearchResults.filter(
-      (p: Player) => !referees.some((r: any) => String(r.id) === String(p.id)),
+      (p: Player) =>
+        !referees.some((r: RefereeListItem) => String(r.id) === String(p.id)),
     );
   }, [rawSearchResults, referees]);
 

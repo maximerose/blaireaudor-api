@@ -10,7 +10,7 @@ import type {
   Competition,
   Participation,
   Player,
-  PlayerPreview,
+  PlayerCompact,
 } from '@/types';
 
 export const useCompetitionCard = (
@@ -39,7 +39,7 @@ export const useCompetitionCard = (
     const idToMatch = currentPlayerId || currentUserId;
 
     return referees.some(
-      (ref: string | Player | PlayerPreview) =>
+      (ref: string | Player | PlayerCompact) =>
         getIdFromData(ref) === idToMatch,
     );
   }, [competition.referees, currentPlayerId, currentUserId]);

@@ -1,8 +1,9 @@
 import { Badge, Text } from '@/components/UI';
 import { BUTTONS, ICONS } from '@/constants';
+import type { PlayerCompact } from '@/types';
 
 interface SelectedPlayerBadgeProps {
-  player: any;
+  player: PlayerCompact;
   onRemove: (id: string) => void;
 }
 

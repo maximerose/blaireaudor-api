@@ -4,15 +4,14 @@ import {
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
 import { FORM, ICONS, BUTTONS } from '@/constants';
-import type { CompetitionFormData, FormParticipant, Player } from '@/types';
+import type { CompetitionFormData, Player, PlayerCompact } from '@/types';
 
 interface PlayerManagement {
   searchTerm: string;
-  results: FormParticipant[];
+  results: PlayerCompact[];
   setSearchTerm: (term: string) => void;
-  search: (term: string) => void;
   searching: boolean;
-  add: (player: Player) => void;
+  add: (player: Player | PlayerCompact) => void;
   addNew: (name: string) => void;
   remove: (id: string) => void;
 }
@@ -50,9 +49,8 @@ export const CompetitionRecruitmentStep = ({
           align="center"
           placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
           value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e) => {
             players.setSearchTerm(e.target.value);
-            players.search(e.target.value);
           }}
           icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
         />

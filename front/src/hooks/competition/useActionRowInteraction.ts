@@ -1,7 +1,7 @@
-import { ActionStatus } from '@/types';
+import { ActionStatus, type Action } from '@/types';
 import { useState } from 'react';
 
-export const useActionRowInteraction = (action: any, onUpdate: any) => {
+export const useActionRowInteraction = (action: Action, onUpdate: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     description: action.description,

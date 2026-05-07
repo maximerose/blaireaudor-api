@@ -1,9 +1,10 @@
 import { apiFetch } from './config';
 import { formatToApiISO } from '@/utils';
 import { API, ERRORS } from '@/constants';
+import type { CompetitionFormData, UpdateCompetitionPayload } from '@/types';
 
 export const competitionService = {
-  create: async (data: any) => {
+  create: async (data: CompetitionFormData) => {
     const formattedStartDate = formatToApiISO(
       data.startDate,
       data.startTime,
@@ -37,7 +38,7 @@ export const competitionService = {
     return result;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: UpdateCompetitionPayload) => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'PATCH',
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
@@ -95,17 +96,23 @@ export const competitionService = {
   addParticipation: async (
     competitionId: string,
     participants: {
-      existing_players_ids: string[];
-      new_players: string[];
-      existing_referees_ids: string[];
-      new_referees: string[];
+      existing_players_ids?: string[];
+      new_players?: string[];
+      existing_referees_ids?: string[];
+      new_referees?: string[];
     },
   ) => {
     const response = await apiFetch(
       API.ENDPOINTS.ADMIN.ADD_PARTICIPANTS(competitionId),
       {
         method: 'POST',
-        body: JSON.stringify(participants),
+        body: JSON.stringify({
+          existing_players_ids: [],
+          new_players: [],
+          existing_referees_ids: [],
+          new_referees: [],
+          ...participants,
+        }),
       },
     );
 

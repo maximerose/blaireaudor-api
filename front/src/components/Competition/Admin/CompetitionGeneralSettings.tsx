@@ -51,14 +51,12 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
         <Input
           label={FORM.COMPETITION.LABELS.NAME}
           value={formData.name}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            updateField('name', e.target.value)
-          }
+          onChange={(e) => updateField('name', e.target.value)}
         />
         <Input
           label={FORM.COMPETITION.LABELS.JOIN_CODE}
           value={formData.joinCode ?? ''}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChange={(e) =>
             updateField('joinCode', e.target.value.toUpperCase())
           }
         />
@@ -85,9 +83,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
           <Input
             type="date"
             value={formData.startDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              updateField('startDate', e.target.value)
-            }
+            onChange={(e) => updateField('startDate', e.target.value)}
             disabled={competition.has_started}
           />
           <Card
@@ -127,9 +123,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
             <Input
               type="time"
               value={formData.startTime}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('startTime', e.target.value)
-              }
+              onChange={(e) => updateField('startTime', e.target.value)}
               disabled={competition.has_started}
             />
           )}
@@ -146,9 +140,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
           <Input
             type="date"
             value={formData.endDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              updateField('endDate', e.target.value)
-            }
+            onChange={(e) => updateField('endDate', e.target.value)}
           />
           <Card
             variant="dark"
@@ -179,9 +171,7 @@ export const CompetitionGeneralSettings = ({ competition }: Props) => {
             <Input
               type="time"
               value={formData.endTime}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateField('endTime', e.target.value)
-              }
+              onChange={(e) => updateField('endTime', e.target.value)}
             />
           )}
         </div>

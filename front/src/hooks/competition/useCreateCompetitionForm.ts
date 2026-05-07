@@ -7,6 +7,7 @@ import type {
   Player,
   Competition,
   CompetitionFormData,
+  PlayerCompact,
 } from '@/types';
 
 export const useCreateCompetitionForm = (
@@ -48,11 +49,14 @@ export const useCreateCompetitionForm = (
     updateField('joinCode', formatJoinCode(e.target.value));
   };
 
-  const handleAddPlayer = (player: Player) => {
+  const handleAddPlayer = (player: Player | PlayerCompact) => {
     if (!(formData.players || []).find((p) => p.id === player.id)) {
       setFormData((prev) => ({
         ...prev,
-        players: [...(prev.players || []), { ...player, isNew: false }],
+        players: [
+          ...(prev.players || []),
+          { ...player, isNew: false } as FormParticipant,
+        ],
       }));
     }
     clearSearch();
@@ -66,7 +70,11 @@ export const useCreateCompetitionForm = (
         ...prev,
         players: [
           ...(prev.players || []),
-          { id: tempId, display_name: trimmedName, isNew: true },
+          {
+            id: tempId,
+            display_name: trimmedName,
+            isNew: true,
+          } as FormParticipant,
         ],
       }));
     }
@@ -81,7 +89,7 @@ export const useCreateCompetitionForm = (
   };
 
   const handleToggleReferee = (
-    person: Player | FormParticipant,
+    person: Player | PlayerCompact | FormParticipant,
     isNewInput: boolean = false,
   ) => {
     setFormData((prev) => {
@@ -98,7 +106,7 @@ export const useCreateCompetitionForm = (
       const refereeToAdd: FormParticipant =
         'username' in person
           ? { ...person, isNew: false }
-          : { ...person, isNew: isNewInput || (person as any).isNew };
+          : ({ ...person, isNew: isNewInput } as FormParticipant);
 
       return {
         ...prev,

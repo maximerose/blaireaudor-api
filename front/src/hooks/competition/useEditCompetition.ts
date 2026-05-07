@@ -5,7 +5,11 @@ import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competition';
-import type { CompetitionFormData, Competition } from '@/types';
+import type {
+  CompetitionFormData,
+  Competition,
+  UpdateCompetitionPayload,
+} from '@/types';
 
 export const useEditCompetition = (
   competition: Competition,
@@ -38,7 +42,7 @@ export const useEditCompetition = (
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const payload: Partial<Record<string, any>> = {
+      const payload: UpdateCompetitionPayload = {
         name: formData.name,
         join_code: formData.joinCode,
         end_date: formatToApiISO(
@@ -46,7 +50,7 @@ export const useEditCompetition = (
           formData.endTime,
           formData.endFullDay,
           true,
-        ),
+        ) as string,
       };
 
       if (!competition.has_started) {

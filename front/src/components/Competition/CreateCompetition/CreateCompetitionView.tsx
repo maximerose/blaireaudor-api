@@ -5,9 +5,10 @@ import {
   CompetitionRecruitmentStep,
 } from '@/components/Competition';
 import { CompetitionRefereeStep } from './CompetitionRefereeStep';
+import type { Competition } from '@/types';
 
 interface Props {
-  onSuccess: (_competition: any) => void;
+  onSuccess: (competition: Competition) => void;
 }
 
 export const CreateCompetitionView = ({ onSuccess }: Props) => {

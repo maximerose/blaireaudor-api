@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { authService } from '@/services/api/auth';
-import type { PlayerPreview } from '@/types';
+import type { PlayerCompact } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 
 export const useUsernameCheck = (
@@ -35,7 +35,7 @@ export const useUsernameCheck = (
     isLoading,
     foundGuest:
       data?.is_guest_profile && data.player
-        ? (data.player as PlayerPreview)
+        ? (data.player as PlayerCompact)
         : null,
   };
 };

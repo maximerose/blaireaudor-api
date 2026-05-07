@@ -39,10 +39,8 @@ export const BonusDayManagement = () => {
             min={minDate}
             max={maxDate}
             className="scheme-dark"
-            onKeyDown={(e: React.KeyboardEvent) => e.preventDefault()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setNewDate(e.target.value)
-            }
+            onKeyDown={(e) => e.preventDefault()}
+            onChange={(e) => setNewDate(e.target.value)}
           />
         </div>
         <div className="w-24">
@@ -51,9 +49,7 @@ export const BonusDayManagement = () => {
             label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
             min={2}
             value={multiplier}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setMultiplier(parseInt(e.target.value))
-            }
+            onChange={(e) => setMultiplier(parseInt(e.target.value))}
           />
         </div>
         <Button onClick={handleAdd} isLoading={isAdding} disabled={!newDate}>

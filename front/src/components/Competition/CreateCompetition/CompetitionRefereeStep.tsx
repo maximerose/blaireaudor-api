@@ -5,16 +5,19 @@ import {
 } from '@/components/Competition';
 import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
-import type { CompetitionFormData, FormParticipant } from '@/types';
+import type {
+  CompetitionFormData,
+  FormParticipant,
+  PlayerCompact,
+} from '@/types';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import { useRefereeStepLogic } from '@/hooks/competition/useRefereeStepLogic';
 
 interface SearchState {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  search: (term: string) => void;
   searching: boolean;
-  results: FormParticipant[];
+  results: PlayerCompact[];
 }
 
 interface RefereeStepProps {
@@ -40,7 +43,7 @@ export const CompetitionRefereeStep = ({
   loading,
 }: RefereeStepProps) => {
   const { user } = useAuth();
-  const { searchTerm, setSearchTerm, search, searching, results } = searchState;
+  const { searchTerm, setSearchTerm, searching, results } = searchState;
   const { players, referees, externalReferees, hasNoReferee } =
     useRefereeStepLogic(formData);
 
@@ -60,9 +63,8 @@ export const CompetitionRefereeStep = ({
           align="center"
           placeholder={FORM.COMPETITION.PLACEHOLDERS.EXTERNAL_REFEREE}
           value={searchTerm}
-          onChange={(e: any) => {
+          onChange={(e) => {
             setSearchTerm(e.target.value);
-            search(e.target.value);
           }}
           icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         />

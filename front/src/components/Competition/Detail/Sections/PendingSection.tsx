@@ -2,6 +2,7 @@ import { Card, Text, Badge } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
+import type { Action } from '@/types';
 
 export const PendingSection = ({
   myPending,
@@ -60,7 +61,7 @@ export const PendingSection = ({
                     section.border,
                   )}
                 >
-                  {section.data.map((action: any) => (
+                  {section.data.map((action: Action) => (
                     <ActionRow
                       key={action.id}
                       action={action}

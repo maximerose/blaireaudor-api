@@ -19,17 +19,16 @@ export interface Player {
  * Permet de gérer à la fois les joueurs existants et les profils temporaires
  */
 export type FormParticipant =
-  | (Player & { isNew: false })
+  | (PlayerCompact & { isNew: false })
   | { id: string; display_name: string; isNew: true };
 
 /**
- * Type utilisé pour les aperçus rapides lors de l'inscription
- * ou de la recherche, sans charger tout l'historique.
+ * Type utilisé pour les résultats de recherche et les affichages rapides
  */
-export interface PlayerPreview {
+export interface PlayerCompact {
   id: string;
   display_name: string;
-  username: string;
+  username?: string;
   last_competition_name?: string | null;
 }
 

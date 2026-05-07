@@ -22,7 +22,7 @@ export const ActionRowEditMode = ({
           label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
           placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
           value={editData.description}
-          onChange={(e: any) =>
+          onChange={(e) =>
             setEditData({ ...editData, description: e.target.value })
           }
         />
@@ -34,9 +34,7 @@ export const ActionRowEditMode = ({
           label={FORM.REPORT_ACTION.LABELS.POINTS}
           type="number"
           value={editData.points}
-          onChange={(e: any) =>
-            setEditData({ ...editData, points: e.target.value })
-          }
+          onChange={(e) => setEditData({ ...editData, points: e.target.value })}
         />
       </div>
     </div>

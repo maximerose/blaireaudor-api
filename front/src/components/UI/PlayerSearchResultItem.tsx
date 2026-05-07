@@ -2,14 +2,14 @@ import type React from 'react';
 import { Badge, Text } from '@/components/UI';
 import { usePlayerSearchResultUI } from '@/hooks';
 import { FORM, ICONS } from '@/constants';
-import type { PlayerPreview } from '@/types';
+import type { PlayerCompact } from '@/types';
 
 interface Props extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   'onClick'
 > {
-  player: PlayerPreview;
-  onClick: (player: PlayerPreview) => void;
+  player: PlayerCompact;
+  onClick: (player: PlayerCompact) => void;
   actionIcon?: string | React.ReactNode;
 }
 

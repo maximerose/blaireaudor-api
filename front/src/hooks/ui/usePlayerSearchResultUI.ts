@@ -1,8 +1,8 @@
-import type { PlayerPreview } from '@/types';
+import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
 
 export const usePlayerSearchResultUI = (
-  player: PlayerPreview,
+  player: PlayerCompact,
   className: string,
 ) => {
   const name = player.display_name;
