@@ -96,9 +96,10 @@ export const authService = {
   /**
    * Vérifie si un nom d'utilisateur est déjà pris
    */
-  checkUsername: async (username: string) => {
+  checkUsername: async (username: string, signal?: AbortSignal) => {
     const response = await apiFetch(
       API.ENDPOINTS.USER.CHECK_USERNAME(username),
+      { signal },
     );
     return await response.json();
   },

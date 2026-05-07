@@ -17,7 +17,7 @@ export const useUsernameCheck = (
 
   const { data, isLoading } = useQuery({
     queryKey: QUERY_KEYS.auth.usernameCheck(debouncedTerm),
-    queryFn: () => authService.checkUsername(debouncedTerm),
+    queryFn: ({ signal }) => authService.checkUsername(debouncedTerm, signal),
     enabled: debouncedTerm.length >= 2,
     staleTime: 1000 * 60 * 5,
   });
