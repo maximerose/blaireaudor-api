@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\State\Action;
+namespace App\State\BonusDay;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Entity\Action;
+use App\Entity\BonusDay;
 use App\Service\ActionManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class ActionPersistProcessor implements ProcessorInterface
+final class BonusDayPersistProcessor implements ProcessorInterface
 {
     public function __construct(
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
@@ -23,8 +23,8 @@ final class ActionPersistProcessor implements ProcessorInterface
     {
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
 
-        if ($result instanceof Action && $result->getParticipation()) {
-            $this->actionManager->updateScore($result->getParticipation());
+        if ($result instanceof BonusDay && $result->getCompetition()) {
+            $this->actionManager->updateAllCompetitionScores($result->getCompetition());
         }
 
         return $result;

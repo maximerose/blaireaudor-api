@@ -9,7 +9,6 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
-use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
 use App\State\Participation\ParticipationDeleteProcessor;
 use App\Validator\IsNotFinished;
@@ -138,38 +137,6 @@ class Participation
         $this->rank = $rank;
 
         return $this;
-    }
-
-    public function updateScore(): void
-    {
-        error_log('--- Début calcul score ---');
-        $competition = $this->getCompetition();
-        if (!$competition) {
-            $this->score = 0;
-
-            return;
-        }
-
-        $bonusMap = [];
-        foreach ($competition->getBonusDays() as $bonusDay) {
-            $bonusMap[$bonusDay->getDate()->format('Y-m-d')] = $bonusDay->getMultiplier();
-        }
-
-        $totalScore = 0;
-        foreach ($this->actions as $action) {
-            error_log('Action: '.$action->getDescription().' | Points : '.$action->getPoints().'| Status: '.$action->getStatus()->value);
-            if (ActionStatus::VALIDATED !== $action->getStatus()) {
-                error_log('Action ignorée (pas VALIDATED)');
-                continue;
-            }
-
-            $dateKey = $action->getDateAction()->format('Y-m-d');
-            $multiplier = $bonusMap[$dateKey] ?? 1;
-            $totalScore += ($action->getPoints() * $multiplier);
-        }
-
-        error_log('Score final calculé: '.$totalScore);
-        $this->score = $totalScore;
     }
 
     public function getActions(): Collection

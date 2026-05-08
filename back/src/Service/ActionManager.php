@@ -76,9 +76,20 @@ final class ActionManager
 
     public function updateScore(Participation $participation): void
     {
-        $participation->updateScore();
+        $repo = $this->entityManager->getRepository(Action::class);
+        $newScore = $repo->getCalculatedScore($participation);
+
+        $participation->setScore($newScore);
 
         $this->entityManager->persist($participation);
-        $this->entityManager->flush();
+    }
+
+    public function updateAllCompetitionScores(Competition $competition): void
+    {
+        $repo = $this->entityManager->getRepository(Action::class);
+
+        $repo->updateAllScoresForCompetition($competition);
+
+        $this->entityManager->clear();
     }
 }

@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Action;
 use App\Entity\Competition;
+use App\Entity\Participation;
 use App\Enum\ActionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -101,5 +102,54 @@ class ActionRepository extends ServiceEntityRepository
             ->setParameter('status', ActionStatus::PENDING)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getCalculatedScore(Participation $participation): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT SUM(a.points * COALESCE(b.multiplier, 1))
+            FROM action a
+            LEFT JOIN bonus_day b ON (
+                DATE(a.date_action) = b.date 
+                AND b.competition_id = :competition_id
+            )
+            WHERE a.participation_id = :participation_id
+            AND a.status = :status
+        ';
+
+        $result = $conn->fetchOne($sql, [
+            'participation_id' => $participation->getId(),
+            'competition_id' => $participation->getCompetition()->getId(),
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        return (int) $result ?: 0;
+    }
+
+    public function updateAllScoresForCompetition(Competition $competition): void
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            UPDATE participation
+            SET score = (
+                SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
+                FROM action a
+                LEFT JOIN bonus_day b ON (
+                    DATE(a.date_action) = b.date 
+                    AND b.competition_id = participation.competition_id
+                )
+                WHERE a.participation_id = participation.id
+                AND a.status = :status
+            )
+            WHERE competition_id = :competition_id
+        ';
+
+        $conn->executeStatement($sql, [
+            'competition_id' => (string) $competition->getId(),
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
     }
 }
