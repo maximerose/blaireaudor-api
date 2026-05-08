@@ -1,24 +1,34 @@
 import { useState, useMemo } from 'react';
-import { useAuth } from '@/hooks';
-import { getUniqueDates, getIdFromData } from '@/utils';
+import { useAuth, useInfiniteActions } from '@/hooks';
+import { getIdFromData } from '@/utils';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
+import { competitionService } from '@/services/api/competitionService';
+import { useQuery } from '@tanstack/react-query';
 
-export const useActionTable = (initialActions: Action[]) => {
+export const useActionTable = (competitionId: string | undefined) => {
   const { user } = useAuth();
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [sortField, setSortField] = useState<ActionSortField>('date_action');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const availableDates = useMemo(
-    () => getUniqueDates(initialActions),
-    [initialActions],
-  );
+  const { data: availableDates = [] } = useQuery({
+    queryKey: ['competition', competitionId, 'action-dates'],
+    queryFn: () => competitionService.getActionsDates(competitionId!),
+    enabled: !!competitionId,
+  });
+
+  const {
+    actions,
+    totalActions,
+    isLoadingActions,
+    loadMoreRef,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteActions(competitionId, selectedDate);
 
   const processedActions = useMemo(() => {
-    let result = [...initialActions];
-    if (selectedDate) {
-      result = result.filter((a) => a.date_action.startsWith(selectedDate));
-    }
+    const result = [...actions];
 
     return result.sort((a, b) => {
       const getValue = (action: Action) => {
@@ -37,7 +47,7 @@ export const useActionTable = (initialActions: Action[]) => {
       });
       return sortOrder === 'asc' ? comp : -comp;
     });
-  }, [initialActions, sortField, sortOrder, selectedDate]);
+  }, [actions, sortField, sortOrder]);
 
   const categories = useMemo(() => {
     const pending = processedActions.filter(
@@ -87,9 +97,14 @@ export const useActionTable = (initialActions: Action[]) => {
 
   return {
     categories,
+    availableDates,
     selectedDate,
     setSelectedDate,
-    availableDates,
+    totalActions,
+    isLoadingActions,
+    loadMoreRef,
+    isFetchingNextPage,
+    hasNextPage,
     handleSort,
     getAriaSort,
     getSortIndicator,

@@ -1,17 +1,17 @@
 import toast from 'react-hot-toast';
 import { useCompetitionAdmin } from '@/hooks';
-import { useMemo } from 'react';
-import type { Action, Competition } from '@/types';
+import type { Competition } from '@/types';
+import { ICONS } from '@/constants';
+import { useQuery } from '@tanstack/react-query';
+import { competitionService } from '@/services/api/competitionService';
 
 interface UseAdminSettingsProps {
   competition: Competition;
-  actions: Action[];
   refresh: () => void;
 }
 
 export const useAdminSettings = ({
   competition,
-  actions,
   refresh,
 }: UseAdminSettingsProps) => {
   const { updateCompetition, isUpdating } = useCompetitionAdmin(
@@ -19,21 +19,22 @@ export const useAdminSettings = ({
     refresh,
   );
 
-  const pendingCount = useMemo(
-    () => actions?.filter((a) => a.status === 'pending').length || 0,
-    [actions],
-  );
-
   const handleToggleFog = () => {
     updateCompetition({ fog_of_war: !competition.fog_of_war });
   };
+
+  const { data: pendingCount = 0 } = useQuery({
+    queryKey: ['competition', competition.id, 'pending-count'],
+    queryFn: () => competitionService.getPendingCount(competition.id!),
+    enabled: !!competition.id,
+  });
 
   const handleCloseCompetition = () => {
     if (pendingCount > 0) {
       toast.error(
         `Impossible de clôturer ! Il reste ${pendingCount} signalement(s) à trancher.`,
         {
-          icon: '⚖️',
+          icon: ICONS.REFEREE,
           style: { borderRadius: '10px', background: '#333', color: '#fff' },
         },
       );

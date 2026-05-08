@@ -1,12 +1,11 @@
 import React from 'react';
 import { AdminContext } from './AdminContext';
 import { useAdminSettings } from '@/hooks';
-import type { Competition, Action } from '@/types';
+import type { Competition } from '@/types';
 
 interface AdminProviderProps {
   children: React.ReactNode;
   competition: Competition;
-  actions: Action[];
   refresh: () => void;
 }
 

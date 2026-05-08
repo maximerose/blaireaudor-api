@@ -4,10 +4,9 @@ import { cn } from '@/utils';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
+  layout?: 'fullscreen' | 'local';
 }
 
-const CONTAINER_BASE =
-  'fixed inset-0 z-50 flex items-center justify-center bg-dark transition-default animate-fade-in';
 const SPINNER_BASE = 'relative flex items-center justify-center';
 const BAR_CONTAINER = 'w-12 h-px bg-gold/10 relative overflow-hidden';
 const BAR_ANIMATION =
@@ -15,12 +14,19 @@ const BAR_ANIMATION =
 
 export const LoadingScreen = ({
   message = 'Chargement...',
+  layout = 'fullscreen',
   className = '',
   ...props
 }: LoadingScreenProps) => {
   return (
     <div
-      className={cn(CONTAINER_BASE, className)}
+      className={cn(
+        'flex items-center justify-center transition-default animate-fade-in',
+        layout === 'fullscreen'
+          ? 'fixed inset-0 z-50 bg-dark'
+          : 'relative w-full min-h-75 bg-transparent',
+        className,
+      )}
       role="status"
       aria-live="polite"
       aria-busy="true"

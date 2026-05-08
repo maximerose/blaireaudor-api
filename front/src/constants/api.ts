@@ -29,6 +29,8 @@ export const API = {
       DETAIL: (id: string) => `/competitions/${id}`,
       LEADERBOARD: (id: string) => `/competitions/${id}/leaderboard`,
       ACTIONS: (id: string) => `/competitions/${id}/actions`,
+      ACTIONS_DATES: (id: string) => `/competitions/${id}/action-dates`,
+      PENDING_COUNT: (id: string) => `/competitions/${id}/pending-count`,
     },
 
     // ACTIONS & PARTICIPATIONS

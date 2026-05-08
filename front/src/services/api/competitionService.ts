@@ -76,14 +76,39 @@ export const competitionService = {
     return response.json();
   },
 
-  getActions: async (id: string, page: number = 1, signal?: AbortSignal) => {
+  getActions: async (
+    id: string,
+    page: number = 1,
+    selectedDate?: string | null,
+    signal?: AbortSignal,
+  ) => {
+    const params = new URLSearchParams({ page: page.toString() });
+
+    if (selectedDate) {
+      params.append('date', selectedDate);
+    }
+
     const response = await apiFetch(
-      `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?page=${page}`,
+      `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?${params.toString()}`,
       {
         signal,
       },
     );
     if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_ACTIONS);
+    return response.json();
+  },
+
+  getActionsDates: async (id: string, signal?: AbortSignal) => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.ACTIONS_DATES(id),
+      {
+        signal,
+      },
+    );
+
+    if (!response.ok)
+      throw new Error('Impossible de récupérer les dates des actions');
+
     return response.json();
   },
 
@@ -113,6 +138,21 @@ export const competitionService = {
     if (!response.ok)
       throw new Error(ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
     return response.json();
+  },
+
+  getPendingCount: async (competitionId: string, signal?: AbortSignal) => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.PENDING_COUNT(competitionId),
+      { signal },
+    );
+
+    if (!response.ok)
+      throw new Error(
+        "Impossible de récupérer le compteur d'actions en attente",
+      );
+
+    const data = await response.json();
+    return data.count;
   },
 
   /**

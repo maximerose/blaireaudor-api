@@ -7,20 +7,15 @@ import { useState } from 'react';
 import { cn } from '@/utils';
 import { BonusDayManagement } from './BonusDayManagement';
 import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
-import type { Action, Competition } from '@/types';
+import type { Competition } from '@/types';
 import { AdminProvider } from '@/context/AdminProvider';
 
 interface AdminSettingsProps {
   competition: Competition;
-  actions: Action[];
   refresh: () => void;
 }
 
-export const AdminSettings = ({
-  competition,
-  actions,
-  refresh,
-}: AdminSettingsProps) => {
+export const AdminSettings = ({ competition, refresh }: AdminSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!competition) return null;
@@ -28,11 +23,7 @@ export const AdminSettings = ({
   const isFogActive = competition.fog_of_war;
 
   return (
-    <AdminProvider
-      competition={competition}
-      actions={actions}
-      refresh={refresh}
-    >
+    <AdminProvider competition={competition} refresh={refresh}>
       <Card
         variant="dark"
         className={cn(

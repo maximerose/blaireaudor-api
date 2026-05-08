@@ -4,13 +4,24 @@ import { useInView } from 'react-intersection-observer';
 import { competitionService } from '@/services/api/competitionService';
 import { QUERY_KEYS } from '@/constants';
 
-export const useInfiniteActions = (competitionId: string | undefined) => {
+export const useInfiniteActions = (
+  competitionId: string | undefined,
+  selectedDate: string | null,
+) => {
   const { ref, inView } = useInView();
 
   const query = useInfiniteQuery({
-    queryKey: QUERY_KEYS.competition.byId(competitionId!).actions,
+    queryKey: [
+      QUERY_KEYS.competition.byId(competitionId!).actions,
+      { date: selectedDate },
+    ],
     queryFn: ({ pageParam = 1, signal }) =>
-      competitionService.getActions(competitionId!, pageParam, signal),
+      competitionService.getActions(
+        competitionId!,
+        pageParam,
+        selectedDate,
+        signal,
+      ),
     initialPageParam: 1,
     enabled: !!competitionId,
     getNextPageParam: (lastPage) => {

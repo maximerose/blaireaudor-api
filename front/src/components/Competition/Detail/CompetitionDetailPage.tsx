@@ -6,7 +6,7 @@ import {
   InlineEnrollment,
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
-import { Badge, Text, LoadingScreen } from '@/components/UI';
+import { Text, LoadingScreen } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionDetailUI, useCompetitionAdmin } from '@/hooks';
@@ -15,7 +15,6 @@ const CompetitionDetailPage = () => {
   const {
     competition,
     leaderboard,
-    actions,
     isReady,
     isRefreshing,
     refresh,
@@ -23,7 +22,6 @@ const CompetitionDetailPage = () => {
     isReferee,
     isCreator,
     creatorName,
-    entriesCount,
   } = useCompetitionDetailUI();
 
   const { handleActionStatus, handleUpdate } = useCompetitionAdmin(
@@ -42,7 +40,6 @@ const CompetitionDetailPage = () => {
     );
 
   const isFogActive = competition.fog_of_war && !isReferee;
-  const hasActions = actions && actions.length > 0;
 
   return (
     <CompetitionProvider
@@ -59,7 +56,7 @@ const CompetitionDetailPage = () => {
       <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
         <DetailNavigation
           competition={competition}
-          hasActions={hasActions}
+          hasActions={true}
           isCreator={isCreator}
           onDelete={deleteCompetition}
         />
@@ -70,11 +67,7 @@ const CompetitionDetailPage = () => {
         />
 
         {(isReferee || isCreator) && !competition.is_finished && (
-          <AdminSettings
-            competition={competition}
-            actions={actions}
-            refresh={refresh}
-          />
+          <AdminSettings competition={competition} refresh={refresh} />
         )}
 
         <ReportingSection
@@ -103,15 +96,6 @@ const CompetitionDetailPage = () => {
           </section>
 
           <section className="lg:col-span-8 space-y-6">
-            <header className="flex items-center px-1">
-              <Text variant="caption" className="whitespace-nowrap font-bold">
-                {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
-              </Text>
-              <div className="h-px w-full bg-white/5" />
-              <Badge variant="ghost" className="opacity-60 text-[8px]">
-                {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ENTRIES(entriesCount)}
-              </Badge>
-            </header>
             <ActionTable
               onUpdate={handleUpdate}
               onStatusChange={handleActionStatus}

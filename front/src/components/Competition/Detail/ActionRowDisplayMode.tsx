@@ -40,12 +40,7 @@ export const ActionRowDisplayMode = ({
           {playerName}
         </Text>
 
-        <div
-          className={cn(
-            'md:col-span-5 flex flex-col',
-            isPending && isAdmin && 'border-l border-white/10',
-          )}
-        >
+        <div className="md:col-span-5 flex flex-col">
           <Text
             variant="body"
             className="text-[10px] md:text-xs text-white italic truncate"

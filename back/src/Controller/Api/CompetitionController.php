@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Repository\ActionRepository;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,13 +71,19 @@ final class CompetitionController extends AbstractController
             return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
         }
 
+        $date = $request->query->get('date');
+
+        if (in_array($date, ['undefined', 'null', ''], true)) {
+            $date = null;
+        }
+
         $page = $request->query->getInt('page', 1);
         $limit = 50;
         $offset = ($page - 1) * $limit;
 
         $sortBy = $request->query->get('sort', 'dateAction');
-        $actions = $actionRepository->findByCompetition($competition, $sortBy, 'DESC', $limit, $offset);
-        $total = $actionRepository->countByCompetition($competition);
+        $actions = $actionRepository->findByCompetition($competition, $sortBy, 'DESC', $limit, $offset, $date);
+        $total = $actionRepository->countByCompetition($competition, $date);
 
         return $this->json([
             'data' => $actions,
@@ -86,5 +93,45 @@ final class CompetitionController extends AbstractController
                 'last_page' => ceil($total / $limit),
             ],
         ], Response::HTTP_OK, [], ['groups' => ['action:read', 'player:read']]);
+    }
+
+    #[Route('/{id}/action-dates', name: 'action_dates', methods: ['GET'])]
+    public function getActionDates(string $id, CompetitionRepository $compRepo, EntityManagerInterface $em): JsonResponse
+    {
+        $competition = $compRepo->find($id);
+        if (!$competition) {
+            return $this->json(['message' => 'Not found'], 404);
+        }
+
+        $results = $em->createQuery('
+            SELECT a.dateAction 
+            FROM App\Entity\Action a 
+            JOIN a.participation p 
+            WHERE p.competition = :comp 
+            ORDER BY a.dateAction DESC
+        ')
+        ->setParameter('comp', $competition)
+        ->getResult();
+
+        $dates = [];
+        foreach ($results as $row) {
+            $dateStr = $row['dateAction']->format('Y-m-d');
+            $dates[$dateStr] = true;
+        }
+
+        return $this->json(array_keys($dates));
+    }
+
+    #[Route('/{id}/pending-count', name: 'pending_count', methods: ['GET'])]
+    public function getPendingCount(string $id, CompetitionRepository $compRepo, ActionRepository $actionRepo): JsonResponse
+    {
+        $competition = $compRepo->find($id);
+        if (!$competition) {
+            return $this->json(['message' => 'Not found'], 404);
+        }
+
+        $count = $actionRepo->countPendingByCompetition($competition);
+
+        return $this->json(['count' => $count]);
     }
 }
