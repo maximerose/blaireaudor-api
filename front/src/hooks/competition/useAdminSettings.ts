@@ -1,30 +1,23 @@
 import toast from 'react-hot-toast';
 import { useCompetitionAdmin } from '@/hooks';
 import type { Competition } from '@/types';
-import { ICONS } from '@/constants';
+import { ICONS, QUERY_KEYS } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
 
 interface UseAdminSettingsProps {
   competition: Competition;
-  refresh: () => void;
 }
 
-export const useAdminSettings = ({
-  competition,
-  refresh,
-}: UseAdminSettingsProps) => {
-  const { updateCompetition, isUpdating } = useCompetitionAdmin(
-    competition.id || '',
-    refresh,
-  );
+export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
+  const { updateCompetition, isUpdating } = useCompetitionAdmin(competition);
 
   const handleToggleFog = () => {
     updateCompetition({ fog_of_war: !competition.fog_of_war });
   };
 
   const { data: pendingCount = 0 } = useQuery({
-    queryKey: ['competition', competition.id, 'pending-count'],
+    queryKey: QUERY_KEYS.competition.byId(competition.id).pendingCount,
     queryFn: () => competitionService.getPendingCount(competition.id!),
     enabled: !!competition.id,
   });

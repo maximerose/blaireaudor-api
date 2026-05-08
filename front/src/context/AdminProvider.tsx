@@ -6,7 +6,6 @@ import type { Competition } from '@/types';
 interface AdminProviderProps {
   children: React.ReactNode;
   competition: Competition;
-  refresh: () => void;
 }
 
 export const AdminProvider = ({ children, ...props }: AdminProviderProps) => {

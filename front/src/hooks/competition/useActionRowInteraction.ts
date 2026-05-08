@@ -1,25 +1,30 @@
-import { ActionStatus, type Action, type ActionEditData } from '@/types';
+import {
+  ActionStatus,
+  type Action,
+  type ActionEditData,
+  type OnActionUpdate,
+} from '@/types';
 import { useState } from 'react';
 
 export const useActionRowInteraction = (
   action: Action,
-  onUpdate: (action: Action) => void,
+  onUpdate: OnActionUpdate,
 ) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<ActionEditData>({
     description: action.description,
-    points: action.points, // Sera converti en string/number selon l'input
+    points: action.points,
   });
 
   const handleSave = async (isAdmin: boolean) => {
-    const updatedAction: Action = {
-      ...action,
+    const payload = {
       description: editData.description,
       points: Number(editData.points),
       ...(isAdmin ? { status: ActionStatus.VALIDATED } : {}),
     };
 
-    await onUpdate(updatedAction);
+    await onUpdate(action.id, payload);
+
     setIsEditing(false);
   };
 

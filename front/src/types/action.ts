@@ -32,7 +32,9 @@ export interface ActionCreatePayload {
   description: string;
   points: number;
   date_action: string;
-  player: string; // IRI du joueur (ex: /api/players/123)
+  player: string;
+  competition?: string;
+  status?: ActionStatus;
 }
 
 export type ActionUpdatePayload = Partial<
@@ -42,7 +44,7 @@ export type ActionUpdatePayload = Partial<
   }
 >;
 
-export type OnActionUpdate = (action: Action) => void;
+export type OnActionUpdate = (id: string, data: ActionUpdatePayload) => void;
 export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
 
 export interface ActionTableProps {

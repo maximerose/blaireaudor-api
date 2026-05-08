@@ -13,6 +13,8 @@ export const QUERY_KEYS = {
         root,
         leaderboard: [...root, 'leaderboard'] as const,
         actions: [...root, 'actions'] as const,
+        actionDates: [...root, 'action-dates'] as const,
+        pendingCount: [...root, 'pending-count'] as const,
         bonus: [...root, 'bonus'] as const,
       };
     },

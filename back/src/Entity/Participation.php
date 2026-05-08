@@ -142,6 +142,7 @@ class Participation
 
     public function updateScore(): void
     {
+        error_log('--- Début calcul score ---');
         $competition = $this->getCompetition();
         if (!$competition) {
             $this->score = 0;
@@ -156,7 +157,9 @@ class Participation
 
         $totalScore = 0;
         foreach ($this->actions as $action) {
+            error_log('Action: '.$action->getDescription().' | Points : '.$action->getPoints().'| Status: '.$action->getStatus()->value);
             if (ActionStatus::VALIDATED !== $action->getStatus()) {
+                error_log('Action ignorée (pas VALIDATED)');
                 continue;
             }
 
@@ -165,6 +168,7 @@ class Participation
             $totalScore += ($action->getPoints() * $multiplier);
         }
 
+        error_log('Score final calculé: '.$totalScore);
         $this->score = $totalScore;
     }
 

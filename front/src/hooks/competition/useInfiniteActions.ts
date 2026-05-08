@@ -12,7 +12,7 @@ export const useInfiniteActions = (
 
   const query = useInfiniteQuery({
     queryKey: [
-      QUERY_KEYS.competition.byId(competitionId!).actions,
+      ...QUERY_KEYS.competition.byId(competitionId!).actions,
       { date: selectedDate },
     ],
     queryFn: ({ pageParam = 1, signal }) =>

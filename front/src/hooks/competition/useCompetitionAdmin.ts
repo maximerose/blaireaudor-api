@@ -1,66 +1,64 @@
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { actionService } from '@/services/api/actionService';
-import { competitionService } from '@/services/api/competitionService';
 import type {
-  Action,
   ActionStatus,
   ActionUpdatePayload,
+  Competition,
   CompetitionUpdatePayload,
 } from '@/types';
+import { useInvalidateCompetition } from './useInvalidateCompetition';
+import { useMutation } from '@tanstack/react-query';
+import { competitionService } from '@/services/api/competitionService';
 
-export const useCompetitionAdmin = (
-  competitionId: string | undefined,
-  refresh: () => void,
-) => {
-  const [isUpdating, setIsUpdating] = useState(false);
+export const useCompetitionAdmin = (competition: Competition) => {
+  const { invalidateAll } = useInvalidateCompetition();
 
-  const updateAction = async (actionId: string, data: ActionUpdatePayload) => {
-    const { ok } = await actionService.update(actionId, data);
+  const compMutation = useMutation({
+    mutationFn: (data: CompetitionUpdatePayload) =>
+      competitionService.update(competition.id!, data),
+    onSuccess: () => {
+      invalidateAll(competition.id, competition.join_code);
+    },
+  });
 
-    if (ok) {
-      toast.success('Action mise à jour.');
-      refresh();
-      return true;
-    } else {
-      toast.error('Erreur lors de la modification.');
-      return false;
-    }
-  };
+  const statusMutation = useMutation({
+    mutationFn: ({
+      actionId,
+      status,
+    }: {
+      actionId: string;
+      status: ActionStatus;
+    }) => actionService.update(actionId, { status }),
+    onSuccess: async () => {
+      await invalidateAll(competition.id, competition.join_code);
+    },
+    onError: (error) => {
+      console.error('Erreur lors du changement de statut', error);
+    },
+  });
 
-  const handleActionStatus = (actionId: string, status: ActionStatus) =>
-    updateAction(actionId, { status });
-
-  const handleUpdate = async (action: Action) => {
-    const payload: ActionUpdatePayload = {
-      description: action.description,
-      points: action.points,
-      date_action: action.date_action,
-      status: action.status,
-    };
-    return await updateAction(action.id, payload);
-  };
-
-  const updateCompetition = async (data: CompetitionUpdatePayload) => {
-    if (!competitionId) return;
-
-    setIsUpdating(true);
-    const { ok } = await competitionService.update(competitionId, data);
-
-    if (ok) {
-      toast.success('Compétition mise à jour.');
-      refresh();
-    } else {
-      toast.error('Échec de la mise à jour.');
-    }
-    setIsUpdating(false);
-  };
+  const updateMutation = useMutation({
+    mutationFn: ({
+      actionId,
+      data,
+    }: {
+      actionId: string;
+      data: ActionUpdatePayload;
+    }) => actionService.update(actionId, data),
+    onSuccess: async () => {
+      await invalidateAll(competition.id, competition.join_code);
+    },
+  });
 
   return {
-    handleActionStatus,
-    updateAction,
-    handleUpdate,
-    updateCompetition,
-    isUpdating,
+    updateCompetition: (data: CompetitionUpdatePayload) =>
+      compMutation.mutate(data),
+    handleActionStatus: (actionId: string, status: ActionStatus) =>
+      statusMutation.mutate({ actionId, status }),
+
+    handleUpdate: (actionId: string, data: ActionUpdatePayload) =>
+      updateMutation.mutate({ actionId, data }),
+    isUpdating: compMutation.isPending,
+    isChangingStatus: statusMutation.isPending,
+    isUpdatingAction: updateMutation.isPending,
   };
 };

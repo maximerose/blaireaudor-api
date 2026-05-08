@@ -24,10 +24,7 @@ const CompetitionDetailPage = () => {
     creatorName,
   } = useCompetitionDetailUI();
 
-  const { handleActionStatus, handleUpdate } = useCompetitionAdmin(
-    competition?.id,
-    refresh,
-  );
+  const { handleActionStatus, handleUpdate } = useCompetitionAdmin(competition);
 
   if (!isReady) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
@@ -67,7 +64,7 @@ const CompetitionDetailPage = () => {
         />
 
         {(isReferee || isCreator) && !competition.is_finished && (
-          <AdminSettings competition={competition} refresh={refresh} />
+          <AdminSettings competition={competition} />
         )}
 
         <ReportingSection

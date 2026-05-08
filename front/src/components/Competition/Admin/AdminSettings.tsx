@@ -12,10 +12,9 @@ import { AdminProvider } from '@/context/AdminProvider';
 
 interface AdminSettingsProps {
   competition: Competition;
-  refresh: () => void;
 }
 
-export const AdminSettings = ({ competition, refresh }: AdminSettingsProps) => {
+export const AdminSettings = ({ competition }: AdminSettingsProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!competition) return null;
@@ -23,7 +22,7 @@ export const AdminSettings = ({ competition, refresh }: AdminSettingsProps) => {
   const isFogActive = competition.fog_of_war;
 
   return (
-    <AdminProvider competition={competition} refresh={refresh}>
+    <AdminProvider competition={competition}>
       <Card
         variant="dark"
         className={cn(

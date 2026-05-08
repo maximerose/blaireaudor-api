@@ -73,4 +73,12 @@ final class ActionManager
 
         return $action;
     }
+
+    public function updateScore(Participation $participation): void
+    {
+        $participation->updateScore();
+
+        $this->entityManager->persist($participation);
+        $this->entityManager->flush();
+    }
 }

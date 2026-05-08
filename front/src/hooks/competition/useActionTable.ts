@@ -4,6 +4,7 @@ import { getIdFromData } from '@/utils';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
 import { competitionService } from '@/services/api/competitionService';
 import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants';
 
 export const useActionTable = (competitionId: string | undefined) => {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ export const useActionTable = (competitionId: string | undefined) => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const { data: availableDates = [] } = useQuery({
-    queryKey: ['competition', competitionId, 'action-dates'],
+    queryKey: QUERY_KEYS.competition.byId(competitionId).actionDates,
     queryFn: () => competitionService.getActionsDates(competitionId!),
     enabled: !!competitionId,
   });
