@@ -23,7 +23,7 @@ class ActionScoreListener
         $participation = $action->getParticipation();
 
         if ($participation) {
-            $this->actionManager->updateScore($participation);
+            $this->actionManager->updateScore($action);
             error_log('DELETE UPDATE: Score synchronisé via SQL après suppression.');
         }
     }

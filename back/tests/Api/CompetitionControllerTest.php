@@ -53,7 +53,7 @@ final class CompetitionControllerTest extends WebTestCase
             'player' => $ghostPlayer
         ]);
 
-        $client->request('GET','/api/competitions/check-code/SUCCESS');
+        $client->request('GET','/api/competitions/by-code/SUCCESS');
 
         $this->assertResponseIsSuccessful();
 
@@ -75,7 +75,7 @@ final class CompetitionControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/api/competitions/check-code/EXISTE_PAS');
+        $client->request('GET', '/api/competitions/by-code/EXISTE_PAS');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }

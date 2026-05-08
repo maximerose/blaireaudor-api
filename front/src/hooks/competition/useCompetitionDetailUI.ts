@@ -6,9 +6,9 @@ import {
   isPlayerReferee,
   resolveCreatorName,
 } from '@/utils';
-import { type Participation } from '@/types';
 
 export const useCompetitionDetailUI = () => {
+  console.log('Je passe dans useCompetitionDetailUI');
   const { user } = useAuth();
   const { code } = useParams<{ code: string }>();
 
@@ -16,16 +16,8 @@ export const useCompetitionDetailUI = () => {
     useCompetitionData(code || '');
 
   const { deleteCompetition } = useCompetitionDelete();
-  const [isReporting, setIsReporting] = useState(false);
 
-  const potentialTargets = useMemo(
-    () =>
-      leaderboard?.map((item: Participation) => ({
-        id: item.player.id,
-        display_name: item.player.display_name,
-      })) || [],
-    [leaderboard],
-  );
+  const [isReporting, setIsReporting] = useState(false);
 
   const isReferee = isPlayerReferee(competition, user?.player?.id);
   const isCreator = isCompetitionCreator(competition, user);
@@ -44,7 +36,6 @@ export const useCompetitionDetailUI = () => {
     deleteCompetition,
     isReporting,
     setIsReporting,
-    potentialTargets,
     isReferee,
     isCreator,
     creatorName,

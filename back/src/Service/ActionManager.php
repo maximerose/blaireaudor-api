@@ -68,25 +68,40 @@ class ActionManager
             throw new \InvalidArgumentException('Format de date invalide.');
         }
 
-        $isAdmin = $competition->getCreatedBy() === $author;
-        $action->setStatus($isAdmin ? ActionStatus::VALIDATED : ActionStatus::PENDING);
+        $canAutoValidate = $this->canAutoValidate($competition, $author);
+        $action->setStatus($canAutoValidate ? ActionStatus::VALIDATED : ActionStatus::PENDING);
 
         $this->entityManager->persist($action);
 
         return $action;
     }
 
-    public function updateScore(Participation $participation): void
+    public function updateScore(Action $action): void
     {
-        $newScore = $this->actionRepository->getCalculatedScore($participation);
+        $participation = $action->getParticipation();
+        if (!$participation) {
+            return;
+        }
 
-        $participation->setScore($newScore);
-
-        $this->entityManager->persist($participation);
+        $this->actionRepository->incrementParticipationScoreSql(
+            $participation,
+            $action->getPoints(),
+            $action->getDateAction()
+        );
     }
 
     public function updateAllCompetitionScores(Competition $competition): void
     {
         $this->actionRepository->updateAllScoresForCompetition($competition);
+    }
+
+    public function canAutoValidate(Competition $competition, User $user): bool
+    {
+        $player = $user->getPlayer();
+
+        $isCreator = $competition->getCreatedBy() === $user;
+        $isReferee = $competition->getReferees()->contains($player);
+
+        return $isCreator || $isReferee;
     }
 }

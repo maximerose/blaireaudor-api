@@ -31,21 +31,24 @@ final class CompetitionController extends AbstractController
      *
      * @return JsonResponse la compétition avec ses joueurs ou une erreur 404
      */
-    #[Route('/check-code/{code}', name: 'check_code', methods: 'GET')]
-    public function checkCode(string $code, CompetitionRepository $repository): JsonResponse
-    {
-        $competition = $repository->findByCodeWithAllPlayers($code);
+    #[Route('/by-code/{code}', name: 'by_code', methods: 'GET')]
+    public function getByCode(
+        string $code,
+        CompetitionRepository $repository,
+        ParticipationRepository $partRepo,
+    ): JsonResponse {
+        $competition = $repository->findOneBy(['joinCode' => $code]);
 
-        if (null === $competition) {
-            return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
+        if (!$competition) {
+            return $this->json(['message' => 'Compétition introuvable'], 404);
         }
 
-        return $this->json(
-            $competition,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['competition:read']]
-        );
+        $leaderboard = $partRepo->findLeaderboard($competition);
+
+        return $this->json([
+            'competition' => $competition,
+            'leaderboard' => $leaderboard,
+        ], Response::HTTP_OK, [], ['groups' => ['competition:read']]);
     }
 
     #[Route('/{id}/leaderboard', name: 'leaderboard', methods: ['GET'])]
@@ -59,7 +62,7 @@ final class CompetitionController extends AbstractController
 
         $leaderboard = $participationRepository->findLeaderboard($competition);
 
-        return $this->json($leaderboard, Response::HTTP_OK, [], ['groups' => ['competition:read', 'player:read']]);
+        return $this->json($leaderboard, Response::HTTP_OK, [], ['groups' => ['competition:read']]);
     }
 
     #[Route('/{id}/actions', name: 'actions', methods: ['GET'])]

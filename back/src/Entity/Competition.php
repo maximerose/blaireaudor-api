@@ -39,14 +39,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['competition:write']]
         ),
         new Get(normalizationContext: ['groups' => 'competition:read']),
-        new Get(
-            uriTemplate: '/competitions/by-code/{joinCode}',
-            uriVariables: [
-                'joinCode' => 'joinCode',
-            ],
-            normalizationContext: ['groups' => ['competition:read']],
-            name: 'get_by_code'
-        ),
         new Patch(
             denormalizationContext: ['groups' => ['competition:write']],
             normalizationContext: ['groups' => ['competition:read']]

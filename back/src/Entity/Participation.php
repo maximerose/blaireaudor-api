@@ -83,7 +83,6 @@ class Participation
     private ?int $rank = null;
 
     #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
-    #[Groups(['participation:actions'])]
     private Collection $actions;
 
     public function __construct()
@@ -142,5 +141,11 @@ class Participation
     public function getActions(): Collection
     {
         return $this->actions;
+    }
+
+    #[Groups(['competition:read'])]
+    public function getHasActions(): bool
+    {
+        return !$this->actions->isEmpty();
     }
 }

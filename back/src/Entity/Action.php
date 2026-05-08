@@ -12,7 +12,6 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
-use App\State\Action\ActionPersistProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,7 +27,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['action:read']],
     denormalizationContext: ['groups' => ['action:write']],
     forceEager: true,
-    processor: ActionPersistProcessor::class
 )]
 class Action
 {
@@ -140,10 +138,6 @@ class Action
     public function setParticipation(?Participation $participation): static
     {
         $this->participation = $participation;
-
-        if ($participation && !$participation->getActions()->contains($this)) {
-            $participation->getActions()->add($this);
-        }
 
         return $this;
     }

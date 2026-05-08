@@ -1,59 +1,54 @@
-import { useNavigate } from 'react-router-dom';
-import {
-  useAuth,
-  useParticipationDelete,
-  useLeaderboardLogic,
-  type EnrichedLeaderboardItem,
-} from '@/hooks';
-import { ROUTES } from '@/constants/routes';
+import { useAuth, useParticipationDelete } from '@/hooks';
 import { canManageCompetition } from '@/utils';
 import type { Competition, Participation } from '@/types';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/constants';
 
 export const useLeaderboardUI = (
   participations: Participation[],
   competition: Competition,
   onRefresh: () => void,
 ) => {
+  console.log('Je passe dans useLeaderboardUI');
+
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const isAdmin = canManageCompetition(competition, user);
-  const isFogOfWarActive = competition.fog_of_war && !isAdmin;
+  const isFogActive = competition.fog_of_war && !isAdmin;
 
   const { deleteParticipation } = useParticipationDelete(onRefresh);
 
-  const enrichedParticipations = useLeaderboardLogic(participations);
-
   const displayableParticipations = useMemo(() => {
-    if (!isFogOfWarActive) return enrichedParticipations;
+    const enriched = participations.map((p) => ({
+      ...p,
+      isMe: p.player.id === user?.player?.id,
+      isExAequo:
+        participations.filter((other) => other.score === p.score).length > 1,
+    }));
 
-    return [...enrichedParticipations].sort((participationA, participationB) =>
-      (participationA.player.display_name || '').localeCompare(
-        participationB.player.display_name || '',
-      ),
+    if (!isFogActive) return enriched;
+
+    return [...enriched].sort((a, b) =>
+      (a.player.display_name || '').localeCompare(b.player.display_name || ''),
     );
-  }, [enrichedParticipations, isFogOfWarActive]);
+  }, [participations, isFogActive, user]);
 
-  const handleParticipationDelete = async (
-    participationToDelete: EnrichedLeaderboardItem,
-  ) => {
-    const playerName = participationToDelete.player?.display_name;
-    const isDeleteSuccessful = await deleteParticipation(
-      participationToDelete.id,
-      playerName,
+  const handleDelete = async (p: Participation) => {
+    const success = await deleteParticipation(
+      p.id,
+      p.player.display_name,
       false,
     );
-
-    if (isDeleteSuccessful && participationToDelete.isMe) {
+    if (success && p.player.id === user?.player?.id) {
       navigate(ROUTES.NAV.DASHBOARD);
     }
   };
 
   return {
     dislpayedParticipations: displayableParticipations,
-    isFogActive: isFogOfWarActive,
+    isFogActive,
     isAdmin,
-    handleDelete: handleParticipationDelete,
+    handleDelete,
   };
 };

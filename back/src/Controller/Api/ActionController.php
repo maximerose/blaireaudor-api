@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\Competition;
+use App\Enum\ActionStatus;
 use App\Service\ActionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,16 +38,24 @@ final class ActionController extends AbstractController
         ActionManager $actionManager,
     ): JsonResponse {
         $data = $request->toArray();
+        $user = $this->getUser();
 
-        $action = $actionManager->createActionFromPayload($competition, $this->getUser(), $data);
+        $action = $entityManager->wrapInTransaction(function () use ($competition, $user, $data, $actionManager, $entityManager) {
+            // A. Création
+            $action = $actionManager->createActionFromPayload($competition, $user, $data);
 
-        $entityManager->flush();
+            // B. Persistence de l'action
+            $entityManager->persist($action);
+            $entityManager->flush();
 
-        return $this->json(
-            $action,
-            Response::HTTP_CREATED,
-            [],
-            ['groups' => ['action:read']]
-        );
+            // C. Incrémentation atomique
+            if (ActionStatus::VALIDATED === $action->getStatus()) {
+                $actionManager->updateScore($action);
+            }
+
+            return $action;
+        });
+
+        return $this->json($action, Response::HTTP_CREATED, [], ['groups' => ['action:read']]);
     }
 }
