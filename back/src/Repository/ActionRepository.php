@@ -132,20 +132,20 @@ class ActionRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = '
+        $sql = "
             UPDATE participation
             SET score = (
                 SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
                 FROM action a
                 LEFT JOIN bonus_day b ON (
-                    DATE(a.date_action) = b.date 
+                    DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Paris') = b.date 
                     AND b.competition_id = participation.competition_id
                 )
                 WHERE a.participation_id = participation.id
                 AND a.status = :status
             )
             WHERE competition_id = :competition_id
-        ';
+        ";
 
         $conn->executeStatement($sql, [
             'competition_id' => (string) $competition->getId(),

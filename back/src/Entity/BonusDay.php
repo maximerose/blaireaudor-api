@@ -16,7 +16,6 @@ use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\BonusDayRepository;
-use App\State\BonusDay\BonusDayPersistProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -58,7 +57,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Seul un arbitre peut supprimer ce jour bonus.'
         ),
     ],
-    processor: BonusDayPersistProcessor::class,
 )]
 #[ORM\HasLifecycleCallbacks]
 class BonusDay

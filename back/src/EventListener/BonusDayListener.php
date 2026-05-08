@@ -15,7 +15,7 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: BonusDay::class)]
 #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: BonusDay::class)]
 #[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: BonusDay::class)]
-class BonusDayListener
+final class BonusDayListener
 {
     public function __construct(
         private ActionManager $actionManager,
@@ -40,13 +40,8 @@ class BonusDayListener
     private function refreshScores(BonusDay $bonusDay): void
     {
         $competition = $bonusDay->getCompetition();
-        if (!$competition) {
-            return;
+        if ($competition) {
+            $this->actionManager->updateAllCompetitionScores($competition);
         }
-
-        // On appelle le manager qui va lancer la grosse requête SQL
-        $this->actionManager->updateAllCompetitionScores($competition);
-
-        error_log('BONUS SYNC: Tous les scores de la compétition ont été recalculés.');
     }
 }

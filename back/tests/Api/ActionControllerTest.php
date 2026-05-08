@@ -24,7 +24,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class ActionControllerTest extends WebTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testUserCanCreateActionAsPending(): void
     {
@@ -48,15 +49,16 @@ final class ActionControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/api/competitions/' . $competition->getId() . '/actions',
+            '/api/competitions/'.$competition->getId().'/actions',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'description' => 'Chute à ski',
                 'points' => 10,
-                'player' => '/api/players/' . $playerB->getId(),
-                'competition' => '/api/competitions/' . $competition->getId(),
+                'player' => '/api/players/'.$playerB->getId(),
+                'competition' => '/api/competitions/'.$competition->getId(),
+                'date_action' => '2026-05-08',
             ])
         );
 
@@ -80,15 +82,16 @@ final class ActionControllerTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/api/competitions/' . $competition->getId() . '/actions',
+            '/api/competitions/'.$competition->getId().'/actions',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'description' => 'Troll',
                 'points' => 100,
-                'player' => '/api/players/' . $player->getId(),
-                'competition' => '/api/competitions/' . $competition->getId(),
+                'player' => '/api/players/'.$player->getId(),
+                'competition' => '/api/competitions/'.$competition->getId(),
+                'date_action' => '2026-05-08',
             ])
         );
 

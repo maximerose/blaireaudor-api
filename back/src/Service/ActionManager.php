@@ -9,6 +9,7 @@ use App\Entity\Competition;
 use App\Entity\Participation;
 use App\Entity\User;
 use App\Enum\ActionStatus;
+use App\Repository\ActionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -17,10 +18,11 @@ use Symfony\Component\Uid\Uuid;
  * * Centralise la logique de création des actions et applique les règles métier
  * liées au statut (auto-validation par l'arbitre).
  */
-final class ActionManager
+class ActionManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private ActionRepository $actionRepository,
     ) {
     }
 
@@ -76,8 +78,7 @@ final class ActionManager
 
     public function updateScore(Participation $participation): void
     {
-        $repo = $this->entityManager->getRepository(Action::class);
-        $newScore = $repo->getCalculatedScore($participation);
+        $newScore = $this->actionRepository->getCalculatedScore($participation);
 
         $participation->setScore($newScore);
 
@@ -86,10 +87,6 @@ final class ActionManager
 
     public function updateAllCompetitionScores(Competition $competition): void
     {
-        $repo = $this->entityManager->getRepository(Action::class);
-
-        $repo->updateAllScoresForCompetition($competition);
-
-        $this->entityManager->clear();
+        $this->actionRepository->updateAllScoresForCompetition($competition);
     }
 }
