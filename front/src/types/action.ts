@@ -1,5 +1,3 @@
-import type { User } from '@/types';
-
 export const ActionStatus = {
   PENDING: 'pending',
   VALIDATED: 'validated',
@@ -19,9 +17,10 @@ export interface Action {
   description: string;
   points: number;
   date_action: string;
-  player?: { id: string; display_name: string };
+  player_id: string;
+  player_name: string;
   status: ActionStatus;
-  created_by: User | string;
+  created_by: string;
   creator_name?: string;
 }
 

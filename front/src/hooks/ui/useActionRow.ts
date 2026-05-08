@@ -19,7 +19,7 @@ export const useActionRow = (action: Action) => {
       ? 'text-danger'
       : 'text-success-bright';
 
-  const playerName = action.player?.display_name || 'Anonyme';
+  const playerName = action.player_name || 'Anonyme';
 
   const displayColor = hidePoints ? 'text-white/20' : pointsColorClass;
 

@@ -66,7 +66,7 @@ class Action
     #[Groups(['action:write'])]
     private ?Participation $participation = null;
 
-    #[Groups(['action:read', 'competition:read'])]
+    #[Groups(['competition:read'])]
     public function getPlayer(): array
     {
         $player = $this->participation?->getPlayer();
@@ -75,6 +75,18 @@ class Action
             'id' => $player?->getId(),
             'display_name' => $player?->getDisplayName(),
         ];
+    }
+
+    #[Groups(['action:read'])]
+    public function getPlayerName(): string
+    {
+        return $this->participation->getPlayer()->getDisplayName();
+    }
+
+    #[Groups(['action:read'])]
+    public function getCreatorName(): string
+    {
+        return $this->getCreatedBy()?->getPlayer()?->getDisplayName() ?? 'Anonyme';
     }
 
     public function getCompetition(): ?Competition

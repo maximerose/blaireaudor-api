@@ -104,24 +104,22 @@ class ActionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function incrementParticipationScoreSql(Participation $participation, int $basePoints, \DateTimeInterface $dateAction): void
+    public function incrementParticipationScoreSql(Participation $participation, int $points, \DateTimeInterface $date): void
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+        UPDATE participation 
+        SET score = score + (:points * COALESCE(
+            (SELECT multiplier FROM bonus_day WHERE competition_id = :comp_id AND date = :date LIMIT 1), 
+            1
+        ))
+        WHERE id = :part_id
+    ';
 
-        // 1. On cherche le multiplicateur pour la date de l'action
-        $sqlBonus = 'SELECT multiplier FROM bonus_day WHERE competition_id = :comp_id AND date = :date LIMIT 1';
-        $multiplier = $conn->fetchOne($sqlBonus, [
+        $this->getEntityManager()->getConnection()->executeStatement($sql, [
+            'points' => $points,
             'comp_id' => $participation->getCompetition()->getId(),
-            'date' => $dateAction->format('Y-m-d'),
-        ]) ?: 1;
-
-        $finalPoints = $basePoints * (int) $multiplier;
-
-        // 2. On incrémente le score (Atomic Update)
-        $sqlIncrement = 'UPDATE participation SET score = score + :points WHERE id = :id';
-        $conn->executeStatement($sqlIncrement, [
-            'points' => $finalPoints,
-            'id' => $participation->getId(),
+            'date' => $date->format('Y-m-d'),
+            'part_id' => $participation->getId(),
         ]);
     }
 

@@ -33,7 +33,7 @@ export const useActionTable = (competitionId: string | undefined) => {
 
     return result.sort((a, b) => {
       const getValue = (action: Action) => {
-        if (sortField === 'player') return action.player?.display_name || '';
+        if (sortField === 'player') return action.player_name || '';
         return action[sortField as keyof Action] || '';
       };
 
