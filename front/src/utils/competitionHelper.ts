@@ -1,6 +1,10 @@
-import type { Player, Competition, User } from '@/types';
+import type {
+  Player,
+  Competition,
+  User,
+  EnrichedLeaderboardItem,
+} from '@/types';
 import { getIdFromData } from './api';
-import type { EnrichedLeaderboardItem } from '@/hooks';
 
 export const CompetitionStatus = {
   ACTIVE: 'ACTIVE',

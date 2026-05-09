@@ -122,7 +122,6 @@ class Player
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
             if ($participation->getPlayer() === $this) {
                 $participation->setPlayer(null);
             }

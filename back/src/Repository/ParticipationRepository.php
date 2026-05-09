@@ -40,7 +40,6 @@ class ParticipationRepository extends ServiceEntityRepository
         $results = $this->createQueryBuilder('p')
         ->select('p', 'player')
         ->join('p.player', 'player')
-        ->leftJoin('p.actions', 'a')
         ->where('p.competition = :competition')
         ->setParameter('competition', $competition)
         ->orderBy('p.score', 'DESC')

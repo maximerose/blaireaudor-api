@@ -103,7 +103,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -168,12 +167,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setPlayer(?Player $player): static
     {
-        // unset the owning side of the relation if necessary
         if (null === $player && null !== $this->player) {
             $this->player->setAssociatedUser(null);
         }
 
-        // set the owning side of the relation if necessary
         if (null !== $player && $player->getAssociatedUser() !== $this) {
             $player->setAssociatedUser($this);
         }

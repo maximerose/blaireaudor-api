@@ -39,16 +39,14 @@ export default defineConfig([
       'indent': ['off'],
       'react/jsx-indent': ['off'],
       'react/jsx-indent-props': ['off'],
-      // 1. DÉSACTIVER la règle de base (JS) pour éviter les doublons et conflits
       'no-unused-vars': 'off',
 
-      // 2. CONFIGURER la règle TypeScript pour accepter le "_"
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          'argsIgnorePattern': '^_', // Ignore les arguments de fonction commençant par _
-          'varsIgnorePattern': '^_', // Ignore les variables locales commençant par _
-          'caughtErrorsIgnorePattern': '^_' // Ignore les erreurs de catch commençant par _
+          'argsIgnorePattern': '^_', 
+          'varsIgnorePattern': '^_',
+          'caughtErrorsIgnorePattern': '^_'
         }
       ],
 

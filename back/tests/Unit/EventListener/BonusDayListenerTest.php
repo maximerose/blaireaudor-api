@@ -21,19 +21,16 @@ class BonusDayListenerTest extends TestCase
 
     protected function setUp(): void
     {
-        // Le Manager reste un Mock car on veut vérifier ses appels (expects)
         $this->actionManagerMock = $this->createMock(ActionManager::class);
         $this->listener = new BonusDayListener($this->actionManagerMock);
     }
 
     public function testPostPersistTriggersScoreRecalculation(): void
     {
-        // On utilise des Stubs pour les entités (plus de notices)
         $competition = $this->createStub(Competition::class);
         $bonusDay = $this->createStub(BonusDay::class);
         $bonusDay->method('getCompetition')->willReturn($competition);
 
-        // On instancie la VRAIE classe au lieu de la moquer
         $eventArgs = new PostPersistEventArgs(
             $bonusDay,
             $this->createStub(EntityManagerInterface::class)
@@ -52,7 +49,6 @@ class BonusDayListenerTest extends TestCase
         $bonusDay = $this->createStub(BonusDay::class);
         $bonusDay->method('getCompetition')->willReturn($competition);
 
-        // Idem ici : instanciation réelle
         $eventArgs = new PostRemoveEventArgs(
             $bonusDay,
             $this->createStub(EntityManagerInterface::class)

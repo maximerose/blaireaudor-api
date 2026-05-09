@@ -41,14 +41,11 @@ final class ActionController extends AbstractController
         $user = $this->getUser();
 
         $action = $entityManager->wrapInTransaction(function () use ($competition, $user, $data, $actionManager, $entityManager) {
-            // A. Création
             $action = $actionManager->createActionFromPayload($competition, $user, $data);
 
-            // B. Persistence de l'action
             $entityManager->persist($action);
             $entityManager->flush();
 
-            // C. Incrémentation atomique
             if (ActionStatus::VALIDATED === $action->getStatus()) {
                 $actionManager->updateScore($action);
             }

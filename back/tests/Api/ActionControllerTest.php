@@ -34,8 +34,8 @@ final class ActionControllerTest extends WebTestCase
         $createdBy = UserFactory::createOne();
         $competition = CompetitionFactory::createOne(['createdBy' => $createdBy]);
 
-        $userA = UserFactory::createOne(); // Le dénonciateur
-        $userB = UserFactory::createOne(); // La victime
+        $userA = UserFactory::createOne(); 
+        $userB = UserFactory::createOne();
 
         $playerA = PlayerFactory::createOne(['associatedUser' => $userA]);
         $playerB = PlayerFactory::createOne(['associatedUser' => $userB]);

@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react';
-import { sortByDate } from '@/utils';
+import { getLocalDayString, sortByDate } from '@/utils';
 import type { Competition, BonusDay } from '@/types';
 import type { CompetitionContextType } from '@/context/contextTypes';
 
@@ -24,9 +24,11 @@ export const useCompetitionSettings = ({
   const getMultiplier = useCallback(
     (date: string | null) => {
       if (!date) return undefined;
-      const cleanDate = date.split('T')[0];
+
+      const targetDay = getLocalDayString(date);
+
       return bonusDays.find(
-        (bd: BonusDay) => bd.date.split('T')[0] === cleanDate,
+        (bd: BonusDay) => getLocalDayString(bd.date) === targetDay,
       )?.multiplier;
     },
     [bonusDays],

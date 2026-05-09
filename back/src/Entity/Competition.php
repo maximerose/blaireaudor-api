@@ -208,7 +208,6 @@ class Competition
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
             if ($participation->getCompetition() === $this) {
                 $participation->setCompetition(null);
             }
@@ -264,7 +263,6 @@ class Competition
     public function removeReferee(Player $referee): static
     {
         if ($this->referees->removeElement($referee)) {
-            // set the owning side to null (unless already changed)
             if ($referee->getRefereedCompetitions()->contains($this)) {
                 $referee->removeRefereedCompetition($this);
             }
@@ -294,7 +292,6 @@ class Competition
     public function removeBonusDay(BonusDay $bonusDay): static
     {
         if ($this->bonusDays->removeElement($bonusDay)) {
-            // set the owning side to null (unless already changed)
             if ($bonusDay->getCompetition() === $this) {
                 $bonusDay->setCompetition(null);
             }
