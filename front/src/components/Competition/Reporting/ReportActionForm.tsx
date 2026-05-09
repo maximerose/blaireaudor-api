@@ -65,6 +65,7 @@ export const ReportActionForm = ({
                 placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.PLAYER}
                 value={search}
                 required
+                autoComplete="off"
                 onFocus={() => setShowDropdown(true)}
                 onChange={(e) => setSearch(e.target.value)}
                 className={INPUT_STYLE}
@@ -82,6 +83,7 @@ export const ReportActionForm = ({
               label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
               placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
               value={formData.description}
+              autoComplete="off"
               onChange={(e) =>
                 setFormData((p) => ({ ...p, description: e.target.value }))
               }
@@ -95,6 +97,7 @@ export const ReportActionForm = ({
                 type="number"
                 icon={ICONS.POINTS}
                 value={formData.points}
+                step="10"
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, points: Number(e.target.value) }))
                 }

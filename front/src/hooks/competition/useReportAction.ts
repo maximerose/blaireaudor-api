@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { actionService } from '@/services/api/actionService';
 import { useCompetitionDateLimits } from './useCompetitionDateLimits';
 import { toast } from 'react-hot-toast';
@@ -8,7 +8,7 @@ import {
   type Competition,
 } from '@/types';
 import { API } from '@/constants';
-import { formatToApiISO } from '@/utils';
+import { formatToApiISO, normalizeString } from '@/utils';
 import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
 
@@ -33,19 +33,44 @@ export const useReportAction = (
 
   const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
 
-  const filteredPlayers = useMemo(
-    () =>
-      players.filter((p) =>
-        p.display_name.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [players, search],
-  );
+  const filteredPlayers = useMemo(() => {
+    const searchTerms = normalizeString(search);
+
+    const filtered = players.filter((p) =>
+      normalizeString(p.display_name).includes(searchTerms),
+    );
+
+    return filtered.sort((a, b) =>
+      a.display_name.localeCompare(b.display_name, 'fr', {
+        sensitivity: 'base',
+      }),
+    );
+  }, [players, search]);
 
   const selectPlayer = (id: string, name: string) => {
     setFormData((prev) => ({ ...prev, targetPlayerId: id }));
     setSearch(name);
     setShowDropdown(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside); // Priorité Mobile
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
 
   const createMutation = useMutation({
     mutationFn: (

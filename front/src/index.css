@@ -84,7 +84,7 @@
 
   /* Barre de défilement stylisée */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   ::-webkit-scrollbar-track {
     @apply bg-dark;

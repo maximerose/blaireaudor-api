@@ -1,4 +1,14 @@
 /**
+ * Normalise une chaîne : enlève les accents et passe en minuscule.
+ */
+export const normalizeString = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+};
+
+/**
  * Transforme une chaîne de caractères en "slug" (minuscules, sans espaces, sans caractères spéciaux).
  * Exemple : "Jean-Édouard de la Tour" -> "jean-edouard-de-la-tour"
  */
