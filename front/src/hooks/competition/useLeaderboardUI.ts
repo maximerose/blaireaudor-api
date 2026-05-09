@@ -10,8 +10,6 @@ export const useLeaderboardUI = (
   competition: Competition,
   onRefresh: () => void,
 ) => {
-  console.log('Je passe dans useLeaderboardUI');
-
   const navigate = useNavigate();
   const { user } = useAuth();
   const isAdmin = canManageCompetition(competition, user);

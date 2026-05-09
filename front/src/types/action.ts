@@ -20,7 +20,7 @@ export interface Action {
   player_id: string;
   player_name: string;
   status: ActionStatus;
-  created_by: string;
+  created_by_id: string;
   creator_name?: string;
 }
 

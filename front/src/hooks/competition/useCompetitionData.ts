@@ -3,7 +3,6 @@ import { competitionService } from '@/services/api/competitionService';
 import { ERRORS, QUERY_KEYS } from '@/constants';
 
 export const useCompetitionData = (code: string) => {
-  console.log('Je passe dans useCompetitionData');
   const queryClient = useQueryClient();
 
   const query = useQuery({

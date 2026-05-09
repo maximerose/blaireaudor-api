@@ -8,7 +8,6 @@ import {
 } from '@/utils';
 
 export const useCompetitionDetailUI = () => {
-  console.log('Je passe dans useCompetitionDetailUI');
   const { user } = useAuth();
   const { code } = useParams<{ code: string }>();
 

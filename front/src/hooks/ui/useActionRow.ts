@@ -1,8 +1,9 @@
-import { useCompetition } from '@/hooks';
+import { useAuth, useCompetition } from '@/hooks';
 import type { Action } from '@/types';
 
 export const useActionRow = (action: Action) => {
   const { hidePoints, getMultiplier } = useCompetition();
+  const { user } = useAuth();
 
   const isPending = action.status?.toUpperCase() === 'PENDING';
   const isPositive = action.points >= 0;
@@ -22,6 +23,8 @@ export const useActionRow = (action: Action) => {
   const playerName = action.player_name || 'Anonyme';
 
   const displayColor = hidePoints ? 'text-white/20' : pointsColorClass;
+  const playerIsMe = action.player_id === user?.player?.id;
+  const creatorIsMe = action.created_by_id === user?.id;
 
   return {
     isPending,
@@ -29,5 +32,7 @@ export const useActionRow = (action: Action) => {
     displayColor,
     playerName,
     multiplier,
+    playerIsMe,
+    creatorIsMe,
   };
 };

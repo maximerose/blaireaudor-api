@@ -20,7 +20,8 @@ export const ActionRowDisplayMode = ({
   onStatusChange,
 }: ActionRowDisplayModeProps) => {
   const { isAdmin, hidePoints } = useCompetition();
-  const { displayColor, pointsDisplay, multiplier } = useActionRow(action);
+  const { displayColor, pointsDisplay, multiplier, playerIsMe, creatorIsMe } =
+    useActionRow(action);
 
   return (
     <div className="grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/2 transition-default group relative">
@@ -33,12 +34,17 @@ export const ActionRowDisplayMode = ({
 
       {/* Corps de l'action */}
       <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 items-center overflow-hidden">
-        <Text
-          variant="h3"
-          className="md:col-span-3 truncate italic text-xs group-hover:text-gold transition-default"
-        >
-          {playerName}
-        </Text>
+        <div className="md:col-span-3 flex items-center gap-2 overflow-hidden">
+          <Text
+            variant="h3"
+            className={cn(
+              'truncate italic text-xs group-hover:text-gold transition-default',
+              playerIsMe && 'text-info-bright group-hover:text-info',
+            )}
+          >
+            {playerName}
+          </Text>
+        </div>
 
         <div className="md:col-span-5 flex flex-col">
           <Text
@@ -53,7 +59,14 @@ export const ActionRowDisplayMode = ({
               className="text-[8px] md:text-[10px] text-white/50"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}
-              <span className="text-info-bright">{action.creator_name}</span>
+              <span
+                className={cn(
+                  'text-success-bright',
+                  creatorIsMe && 'text-info-bright',
+                )}
+              >
+                {action.creator_name}
+              </span>
             </Text>
           )}
 

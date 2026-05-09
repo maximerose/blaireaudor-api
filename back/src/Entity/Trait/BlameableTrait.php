@@ -22,7 +22,7 @@ trait BlameableTrait
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['action:read', 'participation:read', 'competition:read'])]
+    #[Groups(['action:read', 'competition:read'])]
     private ?User $createdBy = null;
 
     /**

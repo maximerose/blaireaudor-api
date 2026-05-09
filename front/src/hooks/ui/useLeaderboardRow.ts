@@ -11,8 +11,6 @@ export const useLeaderboardRow = (
   isAdmin: boolean,
   competition: Competition,
 ) => {
-  console.log('Je passe dans useLeaderboardRow');
-  console.log('participation', participation);
   const medal = getRankMedal(participation.rank);
   const playerName = participation.player?.display_name || 'Anonyme';
 
