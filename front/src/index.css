@@ -28,6 +28,15 @@
   --color-info: #1e3a8a;
   --color-info-bright: #60a5fa;
 
+  --color-player-me: var(--color-gold);
+  --color-player-other: var(--color-silver-light);
+
+  --color-player-me-bg: color-mix(
+    in srgb,
+    var(--color-player-me),
+    transparent 95%
+  );
+
   /* --- ANIMATIONS --- */
   --animate-fade-in: fade-in 0.4s ease-out;
   --animate-slide-up: slide-up 0.5s cubic-bezier(0, 0, 0.2, 1);
@@ -51,7 +60,7 @@
   html {
     /* 16px par défaut -> passe à 14.4px sur mobile */
     font-size: 90%;
-    @apply bg-dark text-white font-sans antialiased;
+    @apply bg-dark text-silver font-sans antialiased;
     cursor: default;
   }
 
@@ -62,7 +71,7 @@
   }
 
   body {
-    @apply bg-dark text-white font-sans antialiased;
+    @apply bg-dark text-silver font-sans antialiased;
     cursor: default;
   }
   a,

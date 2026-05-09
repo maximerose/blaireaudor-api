@@ -24,7 +24,14 @@ export const ActionRowDisplayMode = ({
     useActionRow(action);
 
   return (
-    <div className="grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/2 transition-default group relative">
+    <div
+      className={cn(
+        'grid grid-cols-12 gap-2 p-4 items-center transition-default group relative',
+        playerIsMe
+          ? 'bg-player-me-bg hover:bg-player-me/7'
+          : 'hover:bg-white/2',
+      )}
+    >
       {/* Date */}
       <div className="col-span-3 md:col-span-2">
         <Text variant="mono" className="text-[10px] text-white/40">
@@ -38,8 +45,8 @@ export const ActionRowDisplayMode = ({
           <Text
             variant="h3"
             className={cn(
-              'truncate italic text-xs group-hover:text-gold transition-default',
-              playerIsMe && 'text-info-bright group-hover:text-info',
+              'truncate italic text-xs text-player-other transition-default',
+              playerIsMe && 'text-player-me',
             )}
           >
             {playerName}
@@ -49,20 +56,21 @@ export const ActionRowDisplayMode = ({
         <div className="md:col-span-5 flex flex-col">
           <Text
             variant="body"
-            className="text-[10px] md:text-xs text-white italic truncate"
+            className="text-[10px] md:text-xs text-info-bright"
           >
-            "{action.description}"
+            {action.description}
           </Text>
           {action.creator_name && (
             <Text
               variant="body"
-              className="text-[8px] md:text-[10px] text-white/50"
+              className="text-[8px] md:text-[10px] text-silver"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}
               <span
                 className={cn(
-                  'text-success-bright',
-                  creatorIsMe && 'text-info-bright',
+                  'font-bold',
+                  'text-player-other',
+                  creatorIsMe && 'text-player-me',
                 )}
               >
                 {action.creator_name}

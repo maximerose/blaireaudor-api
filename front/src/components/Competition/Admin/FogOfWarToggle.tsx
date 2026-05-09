@@ -14,14 +14,16 @@ export const FogOfWarToggle = () => {
         isLoading={isUpdating}
         className={cn(
           'w-full sm:w-auto min-w-70 h-20 transition-all duration-500',
-          isFogActive ? 'border-gold/50 bg-gold/10' : 'border-white/10',
+          isFogActive
+            ? 'border-gold/50 bg-gold/10 hover:bg-gold-light/10'
+            : 'border-white/10',
         )}
       >
         <div className="flex items-center gap-4 text-left w-full">
           <div
             className={cn(
               'w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-inner',
-              isFogActive ? 'bg-gold text-black' : 'bg-white/5 text-white/20',
+              isFogActive ? 'bg-gold' : 'bg-white/5',
             )}
           >
             {ICONS.FOG_STATUS(isFogActive)}

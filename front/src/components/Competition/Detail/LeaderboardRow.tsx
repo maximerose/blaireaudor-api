@@ -71,7 +71,7 @@ export const LeaderboardRow = ({
               as="span"
               className={cn(
                 'truncate normal-case italic max-w-30 sm:max-w-none',
-                participation.isMe ? 'text-gold' : 'text-white/90',
+                participation.isMe ? 'text-player-me' : 'text-player-other',
               )}
             >
               {playerName}
