@@ -14,6 +14,7 @@ export * from './Detail/DateNavigation';
 export * from './Detail/DetailNavigation';
 export * from './Detail/Leaderboard';
 export * from './Detail/LeaderboardRow';
+export * from './Detail/PlayerFilter';
 export * from './Detail/Sections/PendingSection';
 export * from './Detail/Sections/TableHeader';
 export * from './Enrollment/InlineEnrollment';

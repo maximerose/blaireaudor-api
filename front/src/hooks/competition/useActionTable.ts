@@ -10,6 +10,7 @@ export const useActionTable = (competitionId: string | undefined) => {
   const { user } = useAuth();
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<ActionSortField>('date_action');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -26,7 +27,13 @@ export const useActionTable = (competitionId: string | undefined) => {
     loadMoreRef,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteActions(competitionId, selectedDate);
+  } = useInfiniteActions(
+    competitionId,
+    selectedDate,
+    selectedPlayerId,
+    sortField,
+    sortOrder,
+  );
 
   const processedActions = useMemo(() => {
     const result = [...actions];
@@ -101,6 +108,8 @@ export const useActionTable = (competitionId: string | undefined) => {
     availableDates,
     selectedDate,
     setSelectedDate,
+    selectedPlayerId,
+    setSelectedPlayerId,
     totalActions,
     isLoadingActions,
     loadMoreRef,

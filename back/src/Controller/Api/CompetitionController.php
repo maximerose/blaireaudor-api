@@ -74,13 +74,20 @@ final class CompetitionController extends AbstractController
             $date = null;
         }
 
+        $playerId = $request->query->get('playerId');
+
+        if (in_array($playerId, ['undefined', 'null', ''], true)) {
+            $playerId = null;
+        }
+
         $page = $request->query->getInt('page', 1);
         $limit = 50;
         $offset = ($page - 1) * $limit;
 
         $sortBy = $request->query->get('sort', 'dateAction');
-        $actions = $actionRepository->findByCompetition($competition, $sortBy, 'DESC', $limit, $offset, $date);
-        $total = $actionRepository->countByCompetition($competition, $date);
+        $order = $request->query->get('order', 'DESC');
+        $actions = $actionRepository->findByCompetition($competition, $sortBy, $order, $limit, $offset, $date, $playerId);
+        $total = $actionRepository->countByCompetition($competition, $date, $playerId);
 
         return $this->json([
             'data' => $actions,

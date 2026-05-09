@@ -35,4 +35,5 @@ export const ICONS = {
   FAILURE: '❌',
   SETTINGS: '⚙️',
   EMPTY: '🏜️',
+  CHEVRON_DOWN: '▽',
 } as const;

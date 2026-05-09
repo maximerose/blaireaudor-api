@@ -80,12 +80,27 @@ export const competitionService = {
     id: string,
     page: number = 1,
     selectedDate?: string | null,
+    selectedPlayerId?: string | null,
+    sortField?: string | null,
+    sortOrder?: 'asc' | 'desc',
     signal?: AbortSignal,
   ) => {
     const params = new URLSearchParams({ page: page.toString() });
 
     if (selectedDate) {
       params.append('date', selectedDate);
+    }
+
+    if (selectedPlayerId) {
+      params.append('playerId', selectedPlayerId);
+    }
+
+    if (sortField) {
+      params.append('sort', sortField);
+    }
+
+    if (sortOrder) {
+      params.append('order', sortOrder);
     }
 
     const response = await apiFetch(

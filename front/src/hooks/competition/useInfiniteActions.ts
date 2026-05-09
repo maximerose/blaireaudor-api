@@ -7,19 +7,30 @@ import { QUERY_KEYS } from '@/constants';
 export const useInfiniteActions = (
   competitionId: string | undefined,
   selectedDate: string | null,
+  selectedPlayerId: string | null,
+  sortField: string,
+  sortOrder: 'asc' | 'desc',
 ) => {
   const { ref, inView } = useInView();
 
   const query = useInfiniteQuery({
     queryKey: [
       ...QUERY_KEYS.competition.byId(competitionId!).actions,
-      { date: selectedDate },
+      {
+        date: selectedDate,
+        playerId: selectedPlayerId,
+        sort: sortField,
+        order: sortOrder,
+      },
     ],
     queryFn: ({ pageParam = 1, signal }) =>
       competitionService.getActions(
         competitionId!,
         pageParam,
         selectedDate,
+        selectedPlayerId,
+        sortField,
+        sortOrder,
         signal,
       ),
     initialPageParam: 1,

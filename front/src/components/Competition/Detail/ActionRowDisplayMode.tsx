@@ -41,7 +41,7 @@ export const ActionRowDisplayMode = ({
 
       {/* Corps de l'action */}
       <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 items-center overflow-hidden">
-        <div className="md:col-span-3 flex items-center gap-2 overflow-hidden">
+        <div className="md:col-span-3 flex items-center justify-center gap-2 overflow-hidden">
           <Text
             variant="h3"
             className={cn(

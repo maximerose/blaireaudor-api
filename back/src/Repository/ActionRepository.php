@@ -26,6 +26,7 @@ class ActionRepository extends ServiceEntityRepository
         ?int $limit = null,
         ?int $offset = null,
         ?string $date = null,
+        ?string $playerId = null,
     ): array {
         $connection = $this->getEntityManager()->getConnection();
 
@@ -43,7 +44,7 @@ class ActionRepository extends ServiceEntityRepository
                 TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
                 p.display_name as player_name, 
                 p.id as player_id,
-                COALESCE(cp.display_name, u.username, \'Anonyme\') as creator_name
+                COALESCE(cp.display_name, u.username, null) as creator_name
             FROM action a
             JOIN participation part ON a.participation_id = part.id
             JOIN player p ON part.player_id = p.id
@@ -60,7 +61,16 @@ class ActionRepository extends ServiceEntityRepository
             $params['targetDate'] = $date;
         }
 
+        if ($playerId) {
+            $sql .= ' AND p.id = :player_id';
+            $params['player_id'] = $playerId;
+        }
+
         $sql .= " ORDER BY {$sortField} {$order}";
+
+        // if ('a.date_action' !== $sortField) {
+        //     $sql .= ', a.date_action DESC';
+        // }
 
         if ($limit) {
             $sql .= ' LIMIT :limit OFFSET :offset';
@@ -71,7 +81,7 @@ class ActionRepository extends ServiceEntityRepository
         return $connection->fetchAllAssociative($sql, $params);
     }
 
-    public function countByCompetition(Competition $competition, ?string $date = null): int
+    public function countByCompetition(Competition $competition, ?string $date = null, ?string $playerId = null): int
     {
         $connection = $this->getEntityManager()->getConnection();
 
@@ -88,6 +98,11 @@ class ActionRepository extends ServiceEntityRepository
             $sql .= " AND DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
             $params['tz'] = AppConstants::TIMEZONE;
             $params['targetDate'] = $date;
+        }
+
+        if ($playerId) {
+            $sql .= ' AND p.player_id = :player_id';
+            $params['player_id'] = $playerId;
         }
 
         return (int) $connection->fetchOne($sql, $params);

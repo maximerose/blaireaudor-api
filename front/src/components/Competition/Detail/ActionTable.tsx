@@ -1,15 +1,17 @@
-import { useActionTable, useCompetition } from '@/hooks';
+import { useActionTable, useAuth, useCompetition } from '@/hooks';
 import { Badge, Card, EmptyState, LoadingScreen, Text } from '@/components/UI';
 import {
   DateNavigation,
   ActionRow,
   PendingSection,
   TableHeader,
+  PlayerFilter,
 } from '@/components/Competition';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import type { ActionTableProps } from '@/types';
 
 export const ActionTable = ({ onUpdate, onStatusChange }: ActionTableProps) => {
+  const { user } = useAuth();
   const { competition, isAdmin } = useCompetition();
 
   const {
@@ -17,6 +19,8 @@ export const ActionTable = ({ onUpdate, onStatusChange }: ActionTableProps) => {
     availableDates,
     selectedDate,
     setSelectedDate,
+    selectedPlayerId,
+    setSelectedPlayerId,
     totalActions,
     isLoadingActions,
     loadMoreRef,
@@ -53,6 +57,19 @@ export const ActionTable = ({ onUpdate, onStatusChange }: ActionTableProps) => {
 
         {/* 2. Journal principal : Validated */}
         <section className="space-y-4">
+          <PlayerFilter
+            // On récupère la liste des joueurs depuis la compétition (leaderboard)
+            players={
+              competition?.participations?.map((p) => ({
+                id: p.player?.id,
+                display_name: p.player?.display_name,
+              })) || []
+            }
+            selectedId={selectedPlayerId}
+            onSelect={setSelectedPlayerId}
+            currentUserId={user?.player?.id}
+          />
+
           <DateNavigation
             dates={availableDates}
             selectedDate={selectedDate}

@@ -1,5 +1,6 @@
 import type {
   BonusDay,
+  EnrichedLeaderboardItem,
   FormParticipant,
   Participation,
   Player,
@@ -22,6 +23,7 @@ export interface Competition {
   referees: (Player | string)[];
   bonus_days: Array<BonusDay>;
   participations?: Participation[];
+  leaderboard?: EnrichedLeaderboardItem[];
 }
 
 /**

@@ -216,17 +216,6 @@ class Competition
         return $this;
     }
 
-    /**
-     * Extrait la liste des profils joueurs à partir des participations.
-     *
-     * @return Collection<int, Player>
-     */
-    #[Groups(['competition:read'])]
-    public function getPlayers(): Collection
-    {
-        return $this->participations->map(fn (Participation $p) => $p->getPlayer());
-    }
-
     public function hasFogOfWar(): ?bool
     {
         return $this->fogOfWar;

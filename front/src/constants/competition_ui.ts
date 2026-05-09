@@ -108,6 +108,7 @@ export const COMPETITION_UI = {
           OTHER_SUBMISSIONS: 'Signalements des autres',
           REJECTED: `${ICONS.TRASH} Actions rejetées (Archive)`,
         },
+        OTHER_PLAYERS: 'Autres joueurs...',
         REPORTED_BY: 'Dénoncé par : ',
       },
     },
