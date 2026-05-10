@@ -12,6 +12,7 @@ export const FogOfWarToggle = () => {
         variant={isFogActive ? 'primary' : 'secondary'}
         onClick={handleToggleFog}
         isLoading={isUpdating}
+        disabled={isUpdating}
         size="md"
         className={cn(
           'transition-all duration-500',

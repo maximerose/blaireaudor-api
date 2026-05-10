@@ -55,10 +55,10 @@ export const Button = ({
   );
 
   const content = (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 w-full">
       {isLoading && (
         <div
-          className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"
+          className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full shrink-0"
           aria-hidden="true"
         />
       )}
@@ -70,8 +70,8 @@ export const Button = ({
           {icon}
         </span>
       )}
-      <span className="leading-none">
-        {isLoading ? 'Chargement...' : children}
+      <span className="leading-none flex-1 text-center">
+        {isLoading && typeof children === 'string' ? 'Chargement...' : children}
       </span>
     </div>
   );

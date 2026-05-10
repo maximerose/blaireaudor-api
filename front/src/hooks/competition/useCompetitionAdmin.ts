@@ -16,8 +16,8 @@ export const useCompetitionAdmin = () => {
   const compMutation = useMutation({
     mutationFn: (data: CompetitionUpdatePayload) =>
       competitionService.update(competition.id!, data),
-    onSuccess: () => {
-      invalidateAll(competition.id, competition.join_code);
+    onSuccess: async () => {
+      await invalidateAll(competition.id, competition.join_code);
     },
   });
 
