@@ -1,7 +1,6 @@
 import { Badge, Text } from '@/components/UI';
 import {
-  cn,
-  formatShortDate,
+  formatLongDate,
   getCompetitionReferees,
   getDisplayDateText,
   resolveCreatorName,
@@ -77,7 +76,10 @@ export const CompetitionHeader = () => {
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.HEADER.CREATOR_LABEL}
               </Text>
-              <Text variant="caption" className="text-gold font-medium">
+              <Text
+                variant="caption"
+                className="text-success-bright font-medium"
+              >
                 {creatorName}
               </Text>
             </div>
@@ -105,12 +107,10 @@ export const CompetitionHeader = () => {
               {referees.map((ref: RefereeListItem) => (
                 <Badge
                   key={ref.id}
-                  variant="info"
-                  icon={ICONS.REFEREE}
-                  className={cn(
-                    'py-0.5',
-                    ref.name === creatorName && 'border-gold/60',
-                  )}
+                  variant={ref.name === creatorName ? 'success' : 'info'}
+                  icon={
+                    ref.name === creatorName ? ICONS.CREATOR : ICONS.REFEREE
+                  }
                 >
                   {ref.name}
                 </Badge>
@@ -129,14 +129,17 @@ export const CompetitionHeader = () => {
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.MULTIPLIERS_SECTION_TITLE}
           </Text>
           {bonusDays.map((bd: BonusDay) => (
-            <Badge
+            <div
               key={bd.id}
-              variant="danger"
-              className="text-[8px]"
-              icon={`x${bd.multiplier}`}
+              className="flex items-center rounded-md overflow-hidden border border-warning/30 bg-warning-dark/20"
             >
-              {formatShortDate(bd.date)}
-            </Badge>
+              <span className="px-2 py-1 text-[10px] font-mono text-silver bg-black/40 uppercase">
+                {formatLongDate(bd.date)}
+              </span>
+              <span className="px-2 py-1 text-xs font-black text-warning-bright">
+                x{bd.multiplier}
+              </span>
+            </div>
           ))}
         </div>
       )}

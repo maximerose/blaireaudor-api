@@ -11,8 +11,6 @@ export const useLeaderboardUI = () => {
   const { competition, leaderboard, refresh, isAdmin, hidePoints } =
     useCompetition();
 
-  console.log('Leaderboard', leaderboard);
-
   const { deleteParticipation } = useParticipationDelete(refresh);
 
   const displayableParticipations = useMemo(() => {

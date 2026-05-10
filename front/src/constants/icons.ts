@@ -4,6 +4,7 @@ export const ICONS = {
     SILVER: '🥈',
     BRONZE: '🥉',
   },
+  BADGER: '🦡',
   SECRET: '🔑',
   TRASH: '🗑️',
   DANGER: '⚠️',
@@ -23,7 +24,7 @@ export const ICONS = {
   ALARM: '🚨',
   FOG_STATUS: (isActive: boolean) =>
     isActive ? `${ICONS.FOG_ACTIVE}` : `${ICONS.FOG_INACTIVE}`,
-  FOG_ACTIVE: '🌫️',
+  FOG_ACTIVE: '👻',
   FOG_INACTIVE: '👁️',
   PLAYER: '👤',
   CREATOR: '👑',

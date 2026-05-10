@@ -100,7 +100,7 @@ export const ActionTableContent = () => {
           <section className="opacity-20 grayscale hover:opacity-60 transition-all duration-700">
             <Text
               variant="micro"
-              className="mb-2 px-2 uppercase tracking-tighter italic"
+              className="mb-2 px-2 uppercase tracking-tight italic"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.REJECTED}
             </Text>

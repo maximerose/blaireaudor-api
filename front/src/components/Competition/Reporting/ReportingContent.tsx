@@ -1,4 +1,4 @@
-import { Button, Card, Text } from '@/components/UI';
+import { Badge, Button, Card, Text } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import {
   CompetitionCountdown,
@@ -43,39 +43,40 @@ export const ReportingContent = () => {
       {todayBonus && (
         <Card
           variant="dark"
-          className="border-danger-bright/30 bg-danger-dark/20 p-4 flex items-center gap-4 animate-pulse"
+          className="border-warning-bright/30 bg-warning/20 p-4 flex items-center gap-4 animate-pulse"
         >
-          <span className="text-3xl" aria-hidden="true">
-            {ICONS.FIRE}
-          </span>
-          <div className="flex-1">
-            <Text
-              as="p"
-              variant="caption"
-              className="text-danger-bright font-black uppercase tracking-tighter"
-            >
-              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_WARNING(
-                todayBonus.multiplier,
-              )}
-            </Text>
-            <Text as="p" variant="micro" className="opacity-70 leading-tight">
-              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
-            </Text>
+          <div className="flex-1 flex items-center gap-4">
+            <Badge variant="warning" className="text-xl">
+              x{todayBonus.multiplier}
+            </Badge>
+            <div>
+              <Text
+                variant="caption"
+                className="text-warning-bright font-bold uppercase tracking-wider"
+              >
+                Journée Bonus en cours
+              </Text>
+              <Text as="p" variant="micro" className="opacity-70">
+                {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
+              </Text>
+            </div>
           </div>
-          <span className="text-3xl">{ICONS.FIRE}</span>
+          <Badge variant="warning" className="text-xl">
+            x{todayBonus.multiplier}
+          </Badge>
         </Card>
       )}
 
       {!isReporting ? (
         <Button
-          variant="danger"
+          variant="primary"
           fullWidth
           size="md"
           className="group"
           onClick={() => toggleReporting()}
           icon={
-            <span className="text-xl inline-block group-hover:animate-bounce-subtle">
-              {ICONS.ALARM}
+            <span className="text-xl inline-block animate-bounce-subtle">
+              {ICONS.BADGER}
             </span>
           }
         >

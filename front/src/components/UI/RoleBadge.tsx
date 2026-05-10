@@ -7,7 +7,7 @@ interface RoleBadgeProps {
 
 const ROLE_CONFIG = {
   creator: {
-    variant: 'warning' as const,
+    variant: 'success' as const,
     label: 'Créateur',
     icon: ICONS.CREATOR,
   },

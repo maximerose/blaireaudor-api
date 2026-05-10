@@ -11,7 +11,7 @@ export const COMPETITION_UI = {
       REFEREES_COUNT: (count: number) => `${count} Arbitre(s)`,
     },
     BONUS: {
-      TITLE: `${ICONS.FIRE} Multiplicateurs`,
+      TITLE: `Multiplicateurs`,
       SUBTITLE: 'Multipliez les points de la journée.',
       EMPTY: 'Aucun multiplicateur programmé.',
     },

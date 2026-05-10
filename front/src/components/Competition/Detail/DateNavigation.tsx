@@ -44,24 +44,16 @@ export const DateNavigation = () => {
                 className={cn(
                   'whitespace-nowrap transition-default relative overflow-hidden px-4',
                   !isActive && 'opacity-40 hover:opacity-80',
-                  multiplier && 'animate-danger-glow border-danger/50 pr-8',
+                  multiplier && 'border-warning/50 pr-8',
                 )}
               >
                 {formatLongDate(date)}
 
                 {multiplier && (
-                  <div className="absolute top-0 right-0 w-10 h-10 overflow-hidden pointer-events-none">
-                    <div
-                      className={cn(
-                        'absolute top-0 right-0 bg-danger w-[140%] h-5 rotate-45 translate-x-[30%] -translate-y-[10%]',
-                        'flex items-center justify-center shadow-lg border-b border-white/20',
-                        'animate-pulse',
-                      )}
-                    >
-                      <span className="text-[9px] font-black text-white uppercase tracking-tighter pt-1.5 pl-1">
-                        x{multiplier}
-                      </span>
-                    </div>
+                  <div className="absolute top-0 right-0 bottom-0 w-6 bg-warning flex items-center justify-center border-l border-white/20">
+                    <span className="text-[10px] font-black text-white">
+                      x{multiplier}
+                    </span>
                   </div>
                 )}
               </Button>

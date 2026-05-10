@@ -1,12 +1,9 @@
 import { Input, Button, Card, Text } from '@/components/UI';
 import { useCompetition, useReportAction } from '@/hooks';
-import { preventDefault, cn } from '@/utils';
+import { preventDefault } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
 import { FORM, ICONS } from '@/constants';
 import { useReportingContext } from '@/context/ReportingContext';
-
-const INPUT_STYLE =
-  'bg-white/[0.08] border-white/20 focus:border-gold transition-colors';
 
 export const ReportActionForm = () => {
   const { refresh } = useCompetition();
@@ -32,17 +29,16 @@ export const ReportActionForm = () => {
 
   return (
     <div className="animate-slide-up" role="dialog">
-      <Card
-        variant="dark"
-        className="border-danger-bright/20 shadow-2xl p-5 sm:p-8 bg-danger-dark/10"
-      >
+      <Card variant="glass" className="shadow-2xl p-5 sm:p-8">
         <form onSubmit={preventDefault(submitReport)} className="space-y-6">
           <header className="text-center">
+            <div className="animate-bounce-subtle mb-3">
+              <span className="text-3xl">{ICONS.BADGER}</span>
+            </div>
             <Text
               variant="h2"
-              className="text-danger-bright italic flex items-center justify-center gap-2"
+              className="text-gold italic flex items-center justify-center gap-2"
             >
-              <span className="animate-pulse">{ICONS.ALARM}</span>{' '}
               {FORM.REPORT_ACTION.TITLE}
             </Text>
             <Text variant="caption" className="text-white/60">
@@ -60,7 +56,6 @@ export const ReportActionForm = () => {
                 autoComplete="off"
                 onFocus={() => setShowDropdown(true)}
                 onChange={(e) => setSearch(e.target.value)}
-                className={INPUT_STYLE}
                 icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
               />
               {showDropdown && (
@@ -80,7 +75,6 @@ export const ReportActionForm = () => {
                 setFormData((p) => ({ ...p, description: e.target.value }))
               }
               required
-              className={INPUT_STYLE}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -94,7 +88,6 @@ export const ReportActionForm = () => {
                   setFormData((p) => ({ ...p, points: Number(e.target.value) }))
                 }
                 required
-                className={INPUT_STYLE}
               />
               <Input
                 label={FORM.SHARED.LABELS.DATE}
@@ -106,14 +99,14 @@ export const ReportActionForm = () => {
                   setFormData((p) => ({ ...p, dateAction: e.target.value }))
                 }
                 required
-                className={cn('scheme-dark', INPUT_STYLE)}
+                className="scheme-dark"
               />
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
             <Button
-              variant="danger"
+              variant="primary"
               fullWidth
               type="submit"
               isLoading={loading}

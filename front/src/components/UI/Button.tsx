@@ -70,7 +70,7 @@ export const Button = ({
           {icon}
         </span>
       )}
-      <span className="leading-none pt-0.5">
+      <span className="leading-none">
         {isLoading ? 'Chargement...' : children}
       </span>
     </div>

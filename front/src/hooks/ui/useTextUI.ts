@@ -11,7 +11,7 @@ export type TextVariant =
   | 'mono';
 
 const TEXT_STYLES: Record<TextVariant, string> = {
-  h1: 'text-2xl sm:text-3xl font-black uppercase tracking-tighter italic text-gold',
+  h1: 'text-2xl sm:text-3xl font-black uppercase tracking-tight italic text-gold',
   h2: 'text-lg sm:text-xl font-bold uppercase tracking-tight text-white',
   h3: 'text-sm sm:text-base font-bold text-gold/80 leading-tight',
   body: 'text-sm text-white/90 leading-relaxed',

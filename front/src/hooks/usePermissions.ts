@@ -14,10 +14,6 @@ export const usePermissions = (manualCompetition?: Competition | null) => {
   const _isReferee = isReferee(competition, user);
   const _isParticipant = isParticipant(competition, user);
 
-  console.log('isCreator', _isCreator);
-  console.log('isReferee', _isReferee);
-  console.log('isParticipant', _isParticipant);
-
   return {
     canEditSettings: check(
       _isCreator || _isReferee,

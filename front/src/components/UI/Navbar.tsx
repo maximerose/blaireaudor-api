@@ -11,7 +11,7 @@ const LOGO_TEXT =
   'text-xl sm:text-2xl leading-none group-hover:text-gold-light transition-colors';
 const USER_INFO_WRAPPER = 'text-right flex flex-col justify-center';
 const USER_NAME_TEXT =
-  'text-xs sm:text-sm italic tracking-tighter group-hover:text-gold-light transition-colors';
+  'text-xs sm:text-sm italic tracking-tight group-hover:text-gold-light transition-colors';
 
 export const Navbar = () => {
   const { displayName } = useNavbarUI();

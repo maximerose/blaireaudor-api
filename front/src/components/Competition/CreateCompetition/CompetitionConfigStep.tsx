@@ -77,7 +77,7 @@ export const CompetitionConfigStep = ({
                     'text-gold/60 hover:text-gold transition-all active:scale-95',
                   )}
                 >
-                  <span className="text-xs font-bold uppercase tracking-tighter">
+                  <span className="text-xs font-bold uppercase tracking-tight">
                     {BUTTONS.AUTO}
                   </span>
                   <span className="text-sm">{ICONS.STARS}</span>

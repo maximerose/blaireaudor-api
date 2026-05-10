@@ -43,7 +43,7 @@ export const RefereeManagement = () => {
             <Badge
               key={ref.id}
               variant="info"
-              className={`flex items-center gap-2 pr-1 py-1 ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
+              className={`flex items-center gap-2 pr-1 ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
             >
               <span className="flex items-center gap-1">
                 {ICONS.REFEREE} {ref.name}{' '}

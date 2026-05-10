@@ -24,10 +24,14 @@ export const useActionRow = (action: Action) => {
     hidePoints && !creatorIsMe
       ? 'text-white/20'
       : isPositive
-        ? 'text-danger'
+        ? 'text-warning'
         : 'text-success-bright';
   const displayColor =
-    hidePoints && !creatorIsMe ? 'text-white/20' : pointsColorClass;
+    hidePoints && !creatorIsMe
+      ? 'text-white/20'
+      : multiplier > 1 && !hidePoints
+        ? 'text-warning-bright drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]'
+        : pointsColorClass;
 
   return {
     isPending,

@@ -42,7 +42,7 @@ export const LeaderboardRow = ({
             <span
               className={cn(
                 getMedalStyle(participation.rank),
-                'text-2xl animate-fade-in',
+                'text-2xl animate-bounce-subtle',
               )}
               aria-hidden="true"
             >

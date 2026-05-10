@@ -41,7 +41,7 @@ export const Badge = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tighter shrink-0 transition-default',
+        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tight shrink-0 transition-default',
         BADGE_VARIANTS[variant],
         isPulse && 'animate-pulse motion-reduce:animate-none',
         className,

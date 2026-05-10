@@ -1,5 +1,5 @@
 import { Text, Input, Button, Badge } from '@/components/UI';
-import { formatShortDate } from '@/utils';
+import { formatLongDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
 import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
 import type { BonusDay } from '@/types';
@@ -21,7 +21,7 @@ export const BonusDayManagement = () => {
   return (
     <div className="space-y-6 pt-6 border-t border-white/5">
       <header className="flex flex-col gap-1">
-        <Text variant="h3" className="text-gold italic">
+        <Text variant="h3" className="text-gold">
           {COMPETITION_UI.ADMIN.BONUS.TITLE}
         </Text>
         <Text variant="micro" className="opacity-30">
@@ -58,15 +58,15 @@ export const BonusDayManagement = () => {
 
       <div className="flex flex-wrap justify-center gap-2">
         {bonusDays.map((bd: BonusDay) => (
-          <Badge key={bd.id} variant="gold" className="pl-3 pr-1 py-1 gap-3">
+          <Badge key={bd.id} variant="warning" className="pl-3 pr-1 gap-3">
             <span className="font-mono text-[10px]">
-              {formatShortDate(bd.date)} —{' '}
-              <span className="text-white">x{bd.multiplier}</span>
+              {formatLongDate(bd.date)} —{' '}
+              <span className="text-silver-light">x{bd.multiplier}</span>
             </span>
             <button
               type="button"
               onClick={() => deleteBonus(bd.id)}
-              className="w-5 h-5 flex items-center justify-center rounded-md bg-danger/20 text-danger-bright hover:bg-danger hover:text-white transition-default"
+              className="w-5 h-5 flex items-center justify-center rounded-md text-warning-bright hover:text-warning transition-default"
             >
               {ICONS.CANCEL}
             </button>

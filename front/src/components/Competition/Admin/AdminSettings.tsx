@@ -108,7 +108,7 @@ export const AdminSettings = () => {
             )}
 
             {/* Section 3 : Arbitrage */}
-            <section className="space-y-3">
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {canManageParticipants.allowed && <RefereeManagement />}
               {canManageGame.allowed && <BonusDayManagement />}
             </section>
