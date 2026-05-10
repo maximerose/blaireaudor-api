@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\Competition;
-use App\Enum\ActionStatus;
 use App\Security\Voter\CompetitionVoter;
 use App\Service\ActionManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,10 +45,6 @@ final class ActionController extends AbstractController
 
             $entityManager->persist($action);
             $entityManager->flush();
-
-            if (ActionStatus::VALIDATED === $action->getStatus()) {
-                $actionManager->updateScore($action);
-            }
 
             return $action;
         });

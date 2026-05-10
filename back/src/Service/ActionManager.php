@@ -83,11 +83,7 @@ class ActionManager
             return;
         }
 
-        $this->actionRepository->incrementParticipationScoreSql(
-            $participation,
-            $action->getPoints(),
-            $action->getDateAction()
-        );
+        $this->actionRepository->recalculateParticipationScore($participation);
     }
 
     public function updateAllCompetitionScores(Competition $competition): void

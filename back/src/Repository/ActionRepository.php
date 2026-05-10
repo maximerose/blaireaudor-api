@@ -108,24 +108,27 @@ class ActionRepository extends ServiceEntityRepository
         return (int) $connection->fetchOne($sql, $params);
     }
 
-    public function incrementParticipationScoreSql(Participation $participation, int $points, \DateTimeInterface $date): void
+    public function recalculateParticipationScore(Participation $participation): void
     {
         $sql = "
-            UPDATE participation 
-            SET score = score + (:points * COALESCE(
-                (SELECT multiplier FROM bonus_day 
-                WHERE competition_id = :comp_id 
-                AND date = DATE(:date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) LIMIT 1), 
-                1
-            ))
-            WHERE id = :part_id
-        ";
+        UPDATE participation
+        SET score = (
+            SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
+            FROM action a
+            LEFT JOIN bonus_day b ON (
+                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                AND b.competition_id = :comp_id
+            )
+            WHERE a.participation_id = :part_id
+            AND a.status = :status
+        )
+        WHERE id = :part_id
+    ";
 
         $this->getEntityManager()->getConnection()->executeStatement($sql, [
-            'points' => $points,
-            'comp_id' => $participation->getCompetition()->getId(),
-            'part_id' => $participation->getId(),
-            'date_action' => $date->format('Y-m-d H:i:s'),
+            'comp_id' => (string) $participation->getCompetition()->getId(),
+            'part_id' => (string) $participation->getId(),
+            'status' => ActionStatus::VALIDATED->value,
             'tz' => AppConstants::TIMEZONE,
         ]);
     }
