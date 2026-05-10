@@ -1,10 +1,5 @@
 import type { Competition, EnrichedLeaderboardItem } from '@/types';
-import {
-  getIdFromData,
-  getRankMedal,
-  isPlayerCreator,
-  isPlayerReferee,
-} from '@/utils';
+import { getIdFromData, getRankMedal, isCreator, isReferee } from '@/utils';
 
 export const useLeaderboardRow = (
   participation: EnrichedLeaderboardItem,
@@ -16,16 +11,13 @@ export const useLeaderboardRow = (
 
   const playerId = getIdFromData(participation.player);
 
-  const isReferee = isPlayerReferee(competition, playerId);
-  const isCreator = isPlayerCreator(competition, participation.player);
-
   const canDelete = isAdmin && !participation.has_actions;
 
   return {
     canDelete,
     medal,
     playerName,
-    isPlayerReferee: isReferee,
-    isPlayerCreator: isCreator,
+    isReferee: isReferee(competition, playerId),
+    isCreator: isCreator(competition, participation.player),
   };
 };

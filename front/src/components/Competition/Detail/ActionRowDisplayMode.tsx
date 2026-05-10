@@ -1,27 +1,29 @@
 import { Text } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
-import { useActionRow, useCompetition } from '@/hooks';
-import { ActionStatus, type Action, type OnActionStatusChange } from '@/types';
+import { useActionRow, useCompetition, useCompetitionAdmin } from '@/hooks';
+import { ActionStatus, type Action } from '@/types';
 import { cn, formatShortDate } from '@/utils';
 
 interface ActionRowDisplayModeProps {
   action: Action;
-  playerName: string;
-  isPending: boolean;
   onEdit: () => void;
-  onStatusChange: OnActionStatusChange;
 }
 
 export const ActionRowDisplayMode = ({
   action,
-  playerName,
-  isPending,
   onEdit,
-  onStatusChange,
 }: ActionRowDisplayModeProps) => {
+  const { handleActionStatus } = useCompetitionAdmin();
   const { isAdmin, hidePoints } = useCompetition();
-  const { displayColor, pointsDisplay, multiplier, playerIsMe, creatorIsMe } =
-    useActionRow(action);
+  const {
+    displayColor,
+    pointsDisplay,
+    multiplier,
+    playerIsMe,
+    creatorIsMe,
+    playerName,
+    isPending,
+  } = useActionRow(action);
 
   return (
     <div
@@ -83,14 +85,16 @@ export const ActionRowDisplayMode = ({
             <div className="mt-2 flex justify-center gap-4 animate-fade-in">
               <button
                 onClick={() =>
-                  onStatusChange(action.id, ActionStatus.VALIDATED)
+                  handleActionStatus(action.id, ActionStatus.VALIDATED)
                 }
                 className="text-[10px] font-black text-success hover:underline uppercase tracking-widest"
               >
                 {BUTTONS.ACCEPT} {ICONS.CHECK}
               </button>
               <button
-                onClick={() => onStatusChange(action.id, ActionStatus.REJECTED)}
+                onClick={() =>
+                  handleActionStatus(action.id, ActionStatus.REJECTED)
+                }
                 className="text-[10px] font-black text-danger hover:underline uppercase tracking-widest"
               >
                 {BUTTONS.REJECT} {ICONS.CANCEL}
@@ -119,7 +123,7 @@ export const ActionRowDisplayMode = ({
       </div>
 
       {/* Bouton Edit (Flottant) */}
-      {isPending && isAdmin && (
+      {isAdmin && (
         <button
           onClick={onEdit}
           className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-default"

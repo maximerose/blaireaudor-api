@@ -10,30 +10,30 @@ export const useActionRowInteraction = (
   action: Action,
   onUpdate: OnActionUpdate,
 ) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<ActionEditData>({
     description: action.description,
     points: action.points,
   });
 
-  const handleSave = async (isAdmin: boolean) => {
+  const handleSave = async (isAdmin: boolean): Promise<boolean> => {
     const payload = {
       description: editData.description,
       points: Number(editData.points),
       ...(isAdmin ? { status: ActionStatus.VALIDATED } : {}),
     };
 
-    await onUpdate(action.id, payload);
-
-    setIsEditing(false);
+    try {
+      await onUpdate(action.id, payload);
+      return true;
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'action", error);
+      return false;
+    }
   };
 
   return {
-    isEditing,
     editData,
     setEditData,
-    startEditing: () => setIsEditing(true),
-    stopEditing: () => setIsEditing(false),
     handleSave,
   };
 };

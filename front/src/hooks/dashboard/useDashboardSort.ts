@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
-import {
-  CompetitionStatus,
-  getCompetitionStatus,
-  getStatusWeight,
-} from '@/utils';
-import type { Participation } from '@/types';
+import { getCompetitionStatus, getStatusWeight } from '@/utils';
+import { CompetitionStatus, type Participation } from '@/types';
 
 export const useDashboardSort = (participations: Participation[]) => {
   return useMemo(() => {

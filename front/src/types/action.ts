@@ -43,13 +43,15 @@ export type ActionUpdatePayload = Partial<
   }
 >;
 
+export interface ActionFormData {
+  targetPlayerId: string;
+  description: string;
+  points: number;
+  dateAction: string;
+}
+
 export type OnActionUpdate = (id: string, data: ActionUpdatePayload) => void;
 export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
-
-export interface ActionTableProps {
-  onUpdate: OnActionUpdate;
-  onStatusChange: OnActionStatusChange;
-}
 
 export interface ActionRowProps {
   action: Action;

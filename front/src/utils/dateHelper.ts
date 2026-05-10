@@ -86,3 +86,41 @@ export const getLocalDayString = (dateInput: string | Date): string => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const formatFrenchDate = (
+  dateStr: string | null | undefined,
+): string | null => {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  return isNaN(date.getTime())
+    ? null
+    : date.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+};
+
+export const formatShortDate = (dateString: string | Date): string => {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '-';
+  return date
+    .toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
+    .replace('.', '');
+};
+
+export const getDisplayDateText = (
+  startDateStr: string | null | undefined,
+  endDateStr?: string | null,
+) => {
+  if (!startDateStr) return 'Date inconnue';
+  const start = formatFrenchDate(startDateStr);
+  const end = formatFrenchDate(endDateStr);
+  if (start && end) return `Du ${start} au ${end}`;
+  return start
+    ? new Date(startDateStr) < new Date()
+      ? `Débuté le ${start}`
+      : `Débutera le ${start}`
+    : 'Date inconnue';
+};

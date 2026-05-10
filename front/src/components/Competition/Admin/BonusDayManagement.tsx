@@ -3,7 +3,6 @@ import { formatShortDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
 import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
 import type { BonusDay } from '@/types';
-import type React from 'react';
 
 export const BonusDayManagement = () => {
   const {
@@ -30,7 +29,7 @@ export const BonusDayManagement = () => {
         </Text>
       </header>
 
-      <div className="flex items-end gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
+      <div className="flex items-center gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
         <div className="flex-1">
           <Input
             type="date"

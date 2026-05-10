@@ -16,6 +16,7 @@ use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\BonusDayRepository;
+use App\Security\Voter\CompetitionVoter;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -41,19 +42,19 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(normalizationContext: ['groups' => ['bonus:read']]),
         new GetCollection(normalizationContext: ['groups' => ['bonus:read']]),
         new Post(
-            securityPostDenormalize: "is_granted('MANAGE', object.getCompetition())",
+            securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityPostDenormalizeMessage: 'Seul un arbitre peut programmer un jour bonus.',
             denormalizationContext: ['groups' => ['bonus:write']],
             normalizationContext: ['groups' => ['bonus:read']]
         ),
         new Patch(
-            security: "is_granted('MANAGE', object.getCompetition())",
+            security: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityMessage: 'Seul un arbitre peut modifier ce jour bonus.',
             denormalizationContext: ['groups' => ['bonus:write']],
             normalizationContext: ['groups' => ['bonus:read']]
         ),
         new Delete(
-            security: "is_granted('MANAGE', object.getCompetition())",
+            security: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityMessage: 'Seul un arbitre peut supprimer ce jour bonus.'
         ),
     ],

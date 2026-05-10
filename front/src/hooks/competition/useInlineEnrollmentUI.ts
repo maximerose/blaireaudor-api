@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react';
-import { useAuth, useCompetition, useEnrollment } from '@/hooks';
+import { useCompetition, useEnrollment, usePermissions } from '@/hooks';
 import type {
   FormParticipant,
   Participation,
   Player,
   PlayerCompact,
 } from '@/types';
-import { isCompetitionCreator } from '@/utils';
 
 const getNewPlayers = (
   participants: FormParticipant[],
@@ -28,12 +27,11 @@ const checkCanCreatePlayer = (searchTerm: string, searchResults: Player[]) => {
   return !hasExactMatch;
 };
 
-export const useInlineEnrollmentUI = (onRefresh: () => void) => {
-  const { user } = useAuth();
-  const { competition } = useCompetition();
-  const [isOpen, setIsOpen] = useState(false);
+export const useInlineEnrollmentUI = () => {
+  const { competition, refresh } = useCompetition();
+  const { roles } = usePermissions();
 
-  const isOwner = isCompetitionCreator(competition, user);
+  const [isOpen, setIsOpen] = useState(false);
 
   const existingPlayers: FormParticipant[] = useMemo(() => {
     return (
@@ -49,7 +47,7 @@ export const useInlineEnrollmentUI = (onRefresh: () => void) => {
     existingPlayers,
     () => {
       setIsOpen(false);
-      onRefresh();
+      refresh();
     },
   );
 
@@ -63,7 +61,7 @@ export const useInlineEnrollmentUI = (onRefresh: () => void) => {
   return {
     isOpen,
     setIsOpen,
-    isOwner,
+    isOwner: roles.isCreator,
     newPlayers,
     canCreatePlayer,
     ...enrollment,

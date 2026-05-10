@@ -1,10 +1,11 @@
 import { useMemo, useCallback } from 'react';
 import { getLocalDayString, sortByDate } from '@/utils';
-import type { Competition, BonusDay } from '@/types';
+import type { Competition, BonusDay, EnrichedLeaderboardItem } from '@/types';
 import type { CompetitionContextType } from '@/context/contextTypes';
 
 interface UseCompetitionProps {
   competition: Competition;
+  leaderboard: EnrichedLeaderboardItem[];
   isAdmin: boolean;
   hidePoints: boolean;
   refresh: () => void;
@@ -12,6 +13,7 @@ interface UseCompetitionProps {
 
 export const useCompetitionSettings = ({
   competition,
+  leaderboard,
   isAdmin,
   hidePoints,
   refresh,
@@ -35,12 +37,16 @@ export const useCompetitionSettings = ({
   );
 
   const getTodayBonus = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0];
-    return bonusDays.find((bd: BonusDay) => bd.date.split('T')[0] === today);
+    const today = getLocalDayString(new Date());
+
+    return bonusDays.find(
+      (bd: BonusDay) => getLocalDayString(bd.date) === today,
+    );
   }, [bonusDays]);
 
   return {
     competition,
+    leaderboard,
     bonusDays,
     isAdmin,
     hidePoints,

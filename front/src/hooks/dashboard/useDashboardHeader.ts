@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks';
-import { CompetitionStatus, getCompetitionStatus } from '@/utils';
+import { getCompetitionStatus } from '@/utils';
 import { DASHBOARD_UI } from '@/constants';
+import { CompetitionStatus } from '@/types';
 
 export const useDashboardHeader = () => {
   const { user } = useAuth();

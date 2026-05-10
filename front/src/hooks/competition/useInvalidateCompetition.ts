@@ -20,6 +20,11 @@ export const useInvalidateCompetition = () => {
     }
 
     await queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.auth.me,
+      exact: false,
+    });
+
+    await queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.competition.all,
       exact: true,
     });

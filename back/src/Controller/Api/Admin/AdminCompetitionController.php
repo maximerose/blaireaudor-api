@@ -8,6 +8,7 @@ use App\Entity\Competition;
 use App\Entity\User;
 use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
+use App\Security\Voter\CompetitionVoter;
 use App\Service\CompetitionManager;
 use App\Service\ParticipationManager;
 use App\Service\PlayerManager;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -44,16 +46,15 @@ final class AdminCompetitionController extends AbstractController
      * inscrit en tant que joueur à la copétition créée.
      */
     #[Route('', name: 'create', methods: ['POST'])]
-    public function create(Request $request, ValidatorInterface $validator): JsonResponse
+    public function create(Request $request, ValidatorInterface $validator, #[CurrentUser] ?User $user): JsonResponse
     {
-        $data = $request->toArray();
-        $user = $this->getUser();
-
-        if (!$user instanceof User) {
+        if (!$user) {
             return $this->json([
                 'error' => 'Non autorisé',
             ], Response::HTTP_UNAUTHORIZED);
         }
+
+        $data = $request->toArray();
 
         if (!isset($data['start_date'])) {
             return $this->json(['error' => 'La date de début est obligatoire'], Response::HTTP_BAD_REQUEST);
@@ -122,7 +123,7 @@ final class AdminCompetitionController extends AbstractController
      *                      si au moins une erreur survient
      */
     #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
-    #[IsGranted('MANAGE', subject: 'competition')]
+    #[IsGranted(CompetitionVoter::MANAGE, subject: 'competition')]
     public function addPlayers(
         Competition $competition,
         Request $request,
@@ -235,7 +236,7 @@ final class AdminCompetitionController extends AbstractController
      * Ajoute un arbitre à la compétition.
      */
     #[Route('/{id}/referees/add', name: 'add_referee', methods: ['POST'])]
-    #[IsGranted('MANAGE', subject: 'competition')]
+    #[IsGranted(CompetitionVoter::MANAGE, subject: 'competition')]
     public function addReferee(
         Competition $competition,
         Request $request,
@@ -258,7 +259,7 @@ final class AdminCompetitionController extends AbstractController
      * Retire un arbitre de la compétition.
      */
     #[Route('/{id}/referees/remove', name: 'remove_referee', methods: ['POST'])]
-    #[IsGranted('MANAGE', subject: 'competition')]
+    #[IsGranted(CompetitionVoter::MANAGE, subject: 'competition')]
     public function removeReferee(
         Competition $competition,
         Request $request,

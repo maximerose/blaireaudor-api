@@ -2,14 +2,15 @@ import { actionService } from '@/services/api/actionService';
 import type {
   ActionStatus,
   ActionUpdatePayload,
-  Competition,
   CompetitionUpdatePayload,
 } from '@/types';
 import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
+import { useCompetition } from './useCompetition';
 
-export const useCompetitionAdmin = (competition: Competition) => {
+export const useCompetitionAdmin = () => {
+  const { competition } = useCompetition();
   const { invalidateAll } = useInvalidateCompetition();
 
   const compMutation = useMutation({
@@ -56,7 +57,7 @@ export const useCompetitionAdmin = (competition: Competition) => {
       statusMutation.mutate({ actionId, status }),
 
     handleUpdate: (actionId: string, data: ActionUpdatePayload) =>
-      updateMutation.mutate({ actionId, data }),
+      updateMutation.mutateAsync({ actionId, data }),
     isUpdating: compMutation.isPending,
     isChangingStatus: statusMutation.isPending,
     isUpdatingAction: updateMutation.isPending,

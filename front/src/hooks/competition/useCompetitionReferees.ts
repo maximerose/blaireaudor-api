@@ -1,28 +1,19 @@
 import { competitionService } from '@/services/api/competitionService';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants';
+import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { useInvalidateCompetition } from './useInvalidateCompetition';
 
 export const useCompetitionReferees = (
   competitionId: string,
   joinCode: string,
 ) => {
-  const queryClient = useQueryClient();
-
-  const invalidateQueries = (competitionId: string, joinCode: string) => {
-    queryClient.invalidateQueries({
-      queryKey: QUERY_KEYS.competition.byCode(joinCode),
-    });
-    queryClient.invalidateQueries({
-      queryKey: QUERY_KEYS.competition.byId(competitionId).root,
-    });
-  };
+  const { invalidateAll } = useInvalidateCompetition();
 
   const addMutation = useMutation({
     mutationFn: (playerId: string) =>
       competitionService.addReferee(competitionId, playerId),
     onSuccess: () => {
-      invalidateQueries(competitionId, joinCode);
+      invalidateAll(competitionId, joinCode);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -33,7 +24,7 @@ export const useCompetitionReferees = (
     mutationFn: (playerId: string) =>
       competitionService.removeReferee(competitionId, playerId),
     onSuccess: () => {
-      invalidateQueries(competitionId, joinCode);
+      invalidateAll(competitionId, joinCode);
     },
     onError: (error) => {
       toast.error(error.message);

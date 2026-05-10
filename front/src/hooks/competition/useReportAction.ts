@@ -5,30 +5,34 @@ import { toast } from 'react-hot-toast';
 import {
   ActionStatus,
   type ActionCreatePayload,
-  type Competition,
+  type ActionFormData,
 } from '@/types';
 import { API } from '@/constants';
-import { formatToApiISO, normalizeString } from '@/utils';
+import { formatToApiISO, getLocalDayString, normalizeString } from '@/utils';
 import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
+import { useCompetition } from './useCompetition';
+import { usePermissions } from '../usePermissions';
 
 export const useReportAction = (
-  competition: Competition,
   players: { id: string; display_name: string }[],
   onSuccess: () => void,
-  isAdmin: boolean,
 ) => {
+  const { competition, refresh } = useCompetition();
+  const { roles } = usePermissions();
   const { invalidateAll } = useInvalidateCompetition();
+
+  const isAdmin = roles.isReferee;
 
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ActionFormData>({
     targetPlayerId: '',
     description: '',
     points: 10,
-    dateAction: new Date().toISOString().split('T')[0],
+    dateAction: getLocalDayString(new Date()),
   });
 
   const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
@@ -36,15 +40,9 @@ export const useReportAction = (
   const filteredPlayers = useMemo(() => {
     const searchTerms = normalizeString(search);
 
-    const filtered = players.filter((p) =>
-      normalizeString(p.display_name).includes(searchTerms),
-    );
-
-    return filtered.sort((a, b) =>
-      a.display_name.localeCompare(b.display_name, 'fr', {
-        sensitivity: 'base',
-      }),
-    );
+    return players
+      .filter((p) => normalizeString(p.display_name).includes(searchTerms))
+      .sort((a, b) => a.display_name.localeCompare(b.display_name, 'fr'));
   }, [players, search]);
 
   const selectPlayer = (id: string, name: string) => {
@@ -85,23 +83,28 @@ export const useReportAction = (
         isAdmin ? 'Méfait enregistré !' : "Dénonciation transmise à l'arbitre.",
       );
       onSuccess();
+      refresh();
     },
     onError: () => {
       toast.error('Erreur lors du signalement.');
     },
   });
 
-  const submitReport = () => {
+  const submitReport = async () => {
     if (!formData.targetPlayerId || !formData.description) return;
 
-    createMutation.mutate({
-      description: formData.description,
-      date_action: formatToApiISO(formData.dateAction),
-      points: Number(formData.points),
-      player: API.IRI.PLAYER(formData.targetPlayerId),
-      competition: API.IRI.COMPETITION(competition.id),
-      status: isAdmin ? ActionStatus.VALIDATED : ActionStatus.PENDING,
-    });
+    try {
+      await createMutation.mutateAsync({
+        description: formData.description,
+        date_action: formatToApiISO(formData.dateAction),
+        points: Number(formData.points),
+        player: API.IRI.PLAYER(formData.targetPlayerId),
+        competition: API.IRI.COMPETITION(competition.id),
+        status: isAdmin ? ActionStatus.VALIDATED : ActionStatus.PENDING,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -40,11 +41,16 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Get(normalizationContext: ['groups' => 'competition:read']),
         new Patch(
+            security: "is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::MANAGE'), object)",
+            securityMessage: 'Seul un gestionnaire peut modifier la compétition.',
             denormalizationContext: ['groups' => ['competition:write']],
             normalizationContext: ['groups' => ['competition:read']]
         ),
         new GetCollection(normalizationContext: ['groups' => 'competition:read']),
-        new Delete(),
+        new Delete(
+            security: "is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::CREATOR'), object)",
+            securityMessage: 'Seul le créateur peut supprimer cette compétition.'
+        ),
     ],
 )]
 #[ORM\HasLifecycleCallbacks]
@@ -80,6 +86,12 @@ class Competition
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    #[ApiProperty(
+        securityPostDenormalize: "
+        object.getId() === null or 
+        is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::REFEREE'), object)
+    "
+    )]
     private ?bool $fogOfWar = true;
 
     /**

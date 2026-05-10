@@ -2,21 +2,15 @@ import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 import { COMPETITION_UI, ICONS } from '@/constants';
-import type { Competition, Participation } from '@/types';
 
-interface LeaderboardProps {
-  participations: Participation[];
-  competition: Competition;
-  onRefresh: () => void;
-}
-
-export const Leaderboard = ({
-  participations,
-  competition,
-  onRefresh,
-}: LeaderboardProps) => {
-  const { dislpayedParticipations, isFogActive, isAdmin, handleDelete } =
-    useLeaderboardUI(participations, competition, onRefresh);
+export const Leaderboard = () => {
+  const {
+    dislpayedParticipations,
+    isFogActive,
+    isAdmin,
+    competition,
+    handleDelete,
+  } = useLeaderboardUI();
 
   return (
     <Card

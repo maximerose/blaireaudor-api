@@ -1,32 +1,20 @@
 import { Input, Button, Card, Text } from '@/components/UI';
-import { useReportAction } from '@/hooks';
+import { useCompetition, useReportAction } from '@/hooks';
 import { preventDefault, cn } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
-import type { Competition } from '@/types';
 import { FORM, ICONS } from '@/constants';
+import { useReportingContext } from '@/context/ReportingContext';
 
 const INPUT_STYLE =
   'bg-white/[0.08] border-white/20 focus:border-gold transition-colors';
 
-interface Props {
-  competition: Competition;
-  players: { id: string; display_name: string }[];
-  isAdmin: boolean;
-  onSuccess: () => void;
-  onCancel: () => void;
-}
+export const ReportActionForm = () => {
+  const { refresh } = useCompetition();
+  const { potentialTargets, toggleReporting } = useReportingContext();
 
-export const ReportActionForm = ({
-  competition,
-  players,
-  isAdmin,
-  onSuccess,
-  onCancel,
-}: Props) => {
   const {
     formData,
     loading,
-    dateLimits,
     setFormData,
     submitReport,
     search,
@@ -36,7 +24,11 @@ export const ReportActionForm = ({
     searchContainerRef,
     filteredPlayers,
     selectPlayer,
-  } = useReportAction(competition, players, onSuccess, isAdmin);
+    dateLimits,
+  } = useReportAction(potentialTargets, () => {
+    toggleReporting();
+    refresh();
+  });
 
   return (
     <div className="animate-slide-up" role="dialog">
@@ -128,7 +120,12 @@ export const ReportActionForm = ({
             >
               {FORM.REPORT_ACTION.BUTTONS.SUBMIT}
             </Button>
-            <Button variant="ghost" fullWidth onClick={onCancel} size="sm">
+            <Button
+              variant="ghost"
+              fullWidth
+              onClick={toggleReporting}
+              size="sm"
+            >
               {FORM.REPORT_ACTION.BUTTONS.CANCEL}
             </Button>
           </div>

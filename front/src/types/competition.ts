@@ -59,3 +59,12 @@ export interface CompetitionFormData {
   players?: FormParticipant[];
   referees?: FormParticipant[];
 }
+
+export const CompetitionStatus = {
+  ACTIVE: 'ACTIVE',
+  UPCOMING: 'UPCOMING',
+  FINISHED: 'FINISHED',
+} as const;
+
+export type CompetitionStatusType =
+  (typeof CompetitionStatus)[keyof typeof CompetitionStatus];

@@ -4,23 +4,24 @@ import {
   formatShortDate,
   getCompetitionReferees,
   getDisplayDateText,
+  resolveCreatorName,
 } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
-import { useCompetition } from '@/hooks';
-import type { BonusDay, Competition, RefereeListItem } from '@/types';
+import { useAuth, useCompetition } from '@/hooks';
+import type { BonusDay, RefereeListItem } from '@/types';
 import { COMPETITION_UI, ICONS } from '@/constants';
+import { useMemo } from 'react';
 
-interface CompetitionHeaderProps {
-  competition: Competition;
-  creatorName: string | null;
-}
+export const CompetitionHeader = () => {
+  const { user } = useAuth();
+  const { competition, leaderboard, bonusDays } = useCompetition();
 
-export const CompetitionHeader = ({
-  competition,
-  creatorName,
-}: CompetitionHeaderProps) => {
   const referees = getCompetitionReferees(competition);
-  const { bonusDays } = useCompetition();
+
+  const creatorName = useMemo(
+    () => resolveCreatorName(competition, leaderboard, user),
+    [competition, leaderboard, user],
+  );
 
   return (
     <header className="mb-10 text-center space-y-5">

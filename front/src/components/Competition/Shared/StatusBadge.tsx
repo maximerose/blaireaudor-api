@@ -1,7 +1,5 @@
 import { Badge } from '@/components/UI';
-import { CompetitionStatus } from '@/utils';
-
-type StatusType = (typeof CompetitionStatus)[keyof typeof CompetitionStatus];
+import { CompetitionStatus, type CompetitionStatusType } from '@/types';
 
 const STATUS_CONFIG = {
   [CompetitionStatus.ACTIVE]: {
@@ -22,9 +20,9 @@ const STATUS_CONFIG = {
     ariaLabel: 'Compétition terminée',
     label: 'Terminé',
   },
-};
+} as const;
 
-export const StatusBadge = ({ status }: { status: StatusType }) => {
+export const StatusBadge = ({ status }: { status: CompetitionStatusType }) => {
   const config = STATUS_CONFIG[status];
 
   if (!config) return null;

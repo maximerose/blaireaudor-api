@@ -9,22 +9,12 @@ import { DetailNavigation, ReportingSection } from '@/components/Competition';
 import { Text, LoadingScreen } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
-import { useCompetitionDetailUI, useCompetitionAdmin } from '@/hooks';
+import { useCompetitionData } from '@/hooks';
+import { useParams } from 'react-router-dom';
 
 const CompetitionDetailPage = () => {
-  const {
-    competition,
-    leaderboard,
-    isReady,
-    isRefreshing,
-    refresh,
-    deleteCompetition,
-    isReferee,
-    isCreator,
-    creatorName,
-  } = useCompetitionDetailUI();
-
-  const { handleActionStatus, handleUpdate } = useCompetitionAdmin(competition);
+  const { code } = useParams<{ code: string }>();
+  const { isReady, competition } = useCompetitionData(code || '');
 
   if (!isReady) return <LoadingScreen message="Récupération de l'arène..." />;
   if (!competition)
@@ -36,43 +26,16 @@ const CompetitionDetailPage = () => {
       </div>
     );
 
-  const isFogActive = competition.fog_of_war && !isReferee;
-
   return (
-    <CompetitionProvider
-      competition={competition}
-      isAdmin={isReferee}
-      hidePoints={isFogActive}
-      refresh={refresh}
-    >
-      {isRefreshing && (
-        <div className="fixed top-4 right-4 animate-pulse text-[10px] text-white/40 uppercase tracking-widest">
-          {COMPETITION_UI.DETAIL.SYNCING}
-        </div>
-      )}
+    <CompetitionProvider code={code!}>
       <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
-        <DetailNavigation
-          competition={competition}
-          hasActions={true}
-          isCreator={isCreator}
-          onDelete={deleteCompetition}
-        />
+        <DetailNavigation />
 
-        <CompetitionHeader
-          competition={competition}
-          creatorName={creatorName}
-        />
+        <CompetitionHeader />
 
-        {(isReferee || isCreator) && !competition.is_finished && (
-          <AdminSettings competition={competition} />
-        )}
+        <AdminSettings />
 
-        <ReportingSection
-          competition={competition}
-          leaderboard={leaderboard}
-          isReferee={isReferee}
-          refresh={refresh}
-        />
+        <ReportingSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           <section className="lg:col-span-4 space-y-6">
@@ -82,21 +45,12 @@ const CompetitionDetailPage = () => {
               </Text>
               <div className="h-px w-full bg-white/5" />
             </header>
-            <Leaderboard
-              participations={leaderboard || []}
-              competition={competition}
-              onRefresh={refresh}
-            />
-            {!competition.is_finished && (
-              <InlineEnrollment onRefresh={refresh} />
-            )}
+            <Leaderboard />
+            {!competition.is_finished && <InlineEnrollment />}
           </section>
 
           <section className="lg:col-span-8 space-y-6">
-            <ActionTable
-              onUpdate={handleUpdate}
-              onStatusChange={handleActionStatus}
-            />
+            <ActionTable />
           </section>
         </div>
       </main>

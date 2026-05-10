@@ -2,15 +2,14 @@ import { Button } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation, useCompetition } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
-import type { DateNavigationProps } from '@/types';
+import { useActionTableContext } from '@/context/ActionTableContext';
 
-export const DateNavigation = ({
-  dates,
-  selectedDate,
-  onSelect,
-}: DateNavigationProps) => {
+export const DateNavigation = () => {
+  const { availableDates, selectedDate, setSelectedDate } =
+    useActionTableContext();
   const { getMultiplier } = useCompetition();
-  const { scrollRef, showMask, handleScroll } = useDateNavigation(dates);
+  const { scrollRef, showMask, handleScroll } =
+    useDateNavigation(availableDates);
 
   return (
     <nav
@@ -26,13 +25,13 @@ export const DateNavigation = ({
         <Button
           variant={selectedDate === null ? 'primary' : 'secondary'}
           size="sm"
-          onClick={() => onSelect(null)}
+          onClick={() => setSelectedDate(null)}
           className={cn(selectedDate !== null && 'opacity-40')}
         >
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ALL_DATES}
         </Button>
 
-        {dates.map((date: string) => {
+        {availableDates.map((date: string) => {
           const multiplier = getMultiplier(date);
           const isActive = selectedDate === date;
 
@@ -41,7 +40,7 @@ export const DateNavigation = ({
               <Button
                 variant={isActive ? 'primary' : 'secondary'}
                 size="sm"
-                onClick={() => onSelect(date)}
+                onClick={() => setSelectedDate(date)}
                 className={cn(
                   'whitespace-nowrap transition-default relative overflow-hidden px-4',
                   !isActive && 'opacity-40 hover:opacity-80',

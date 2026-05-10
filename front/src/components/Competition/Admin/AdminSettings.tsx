@@ -7,17 +7,16 @@ import { useState } from 'react';
 import { cn } from '@/utils';
 import { BonusDayManagement } from './BonusDayManagement';
 import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
-import type { Competition } from '@/types';
 import { AdminProvider } from '@/context/AdminProvider';
+import { useCompetition, usePermissions } from '@/hooks';
 
-interface AdminSettingsProps {
-  competition: Competition;
-}
-
-export const AdminSettings = ({ competition }: AdminSettingsProps) => {
+export const AdminSettings = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { competition } = useCompetition();
+  const { roles, canEditSettings, canManageGame, canManageParticipants } =
+    usePermissions();
 
-  if (!competition) return null;
+  if (!roles.isManager || competition.is_finished) return null;
 
   const isFogActive = competition.fog_of_war;
 
@@ -92,22 +91,26 @@ export const AdminSettings = ({ competition }: AdminSettingsProps) => {
             )}
           >
             {/* Section 1 : Configuration (Moins massive) */}
-            <section className="space-y-3">
-              <CompetitionGeneralSettings competition={competition} />
-            </section>
+            {canEditSettings.allowed && (
+              <section className="space-y-3">
+                <CompetitionGeneralSettings />
+              </section>
+            )}
 
             {/* Section 2 : Actions rapides (Horizontal Grid) */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5">
-              <FogOfWarToggle />
-              <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
-                <CloseCompetitionAction />
-              </div>
-            </section>
+            {canManageGame.allowed && (
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                <FogOfWarToggle />
+                <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
+                  <CloseCompetitionAction />
+                </div>
+              </section>
+            )}
 
             {/* Section 3 : Arbitrage */}
             <section className="space-y-3">
-              <RefereeManagement />
-              <BonusDayManagement />
+              {canManageParticipants.allowed && <RefereeManagement />}
+              {canManageGame.allowed && <BonusDayManagement />}
             </section>
           </div>
         </div>

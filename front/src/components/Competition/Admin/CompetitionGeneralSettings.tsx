@@ -1,14 +1,10 @@
 import { Input, Button, Text, Card, Badge, Switch } from '@/components/UI';
 import { cn } from '@/utils';
-import { useEditCompetition } from '@/hooks';
+import { useCompetition, useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
-import type { Competition } from '@/types';
 
-interface Props {
-  competition: Competition;
-}
-
-export const CompetitionGeneralSettings = ({ competition }: Props) => {
+export const CompetitionGeneralSettings = () => {
+  const { competition } = useCompetition();
   const {
     isEditing,
     setIsEditing,

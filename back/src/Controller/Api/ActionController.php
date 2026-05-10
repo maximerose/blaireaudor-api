@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Competition;
 use App\Enum\ActionStatus;
+use App\Security\Voter\CompetitionVoter;
 use App\Service\ActionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +31,7 @@ final class ActionController extends AbstractController
      * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
      */
     #[Route('/{id}/actions', name: 'create', methods: 'POST')]
-    #[IsGranted('ACTION_CREATE', subject: 'competition')]
+    #[IsGranted(CompetitionVoter::PLAYER, subject: 'competition')]
     public function create(
         Competition $competition,
         Request $request,

@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
-import { useAuth, useInfiniteActions } from '@/hooks';
+import { useAuth, useCompetition, useInfiniteActions } from '@/hooks';
 import { getIdFromData } from '@/utils';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
 import { competitionService } from '@/services/api/competitionService';
 import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants';
+import { QUERY_KEYS, UI } from '@/constants';
 
 export const useActionTable = (competitionId: string | undefined) => {
+  const { competition } = useCompetition();
   const { user } = useAuth();
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -103,6 +104,21 @@ export const useActionTable = (competitionId: string | undefined) => {
     };
   };
 
+  const filterOptions = useMemo(() => {
+    const participations = competition?.participations || [];
+    const currentUserId = user?.player?.id;
+
+    return {
+      me: currentUserId ? { id: currentUserId, name: UI.ME } : null,
+      others: participations
+        .filter((p) => p.player.id !== currentUserId)
+        .map((p) => ({
+          value: p.player.id,
+          label: p.player.display_name,
+        })),
+    };
+  }, [competition?.participations, user?.player?.id]);
+
   return {
     categories,
     availableDates,
@@ -118,5 +134,6 @@ export const useActionTable = (competitionId: string | undefined) => {
     handleSort,
     getAriaSort,
     getSortIndicator,
+    filterOptions,
   };
 };

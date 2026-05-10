@@ -10,7 +10,7 @@ interface UseAdminSettingsProps {
 }
 
 export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
-  const { updateCompetition, isUpdating } = useCompetitionAdmin(competition);
+  const { updateCompetition, isUpdating } = useCompetitionAdmin();
 
   const handleToggleFog = () => {
     updateCompetition({ fog_of_war: !competition.fog_of_war });

@@ -1,43 +1,43 @@
-import { useAuth, useParticipationDelete } from '@/hooks';
-import { canManageCompetition } from '@/utils';
-import type { Competition, Participation } from '@/types';
+import { useAuth, useCompetition, useParticipationDelete } from '@/hooks';
+import type { Participation } from '@/types';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants';
 
-export const useLeaderboardUI = (
-  participations: Participation[],
-  competition: Competition,
-  onRefresh: () => void,
-) => {
+export const useLeaderboardUI = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isAdmin = canManageCompetition(competition, user);
-  const isFogActive = competition.fog_of_war && !isAdmin;
 
-  const { deleteParticipation } = useParticipationDelete(onRefresh);
+  const { competition, leaderboard, refresh, isAdmin, hidePoints } =
+    useCompetition();
+
+  console.log('Leaderboard', leaderboard);
+
+  const { deleteParticipation } = useParticipationDelete(refresh);
 
   const displayableParticipations = useMemo(() => {
-    const enriched = participations.map((p) => ({
+    const safeLeaderboard = leaderboard || [];
+    const enriched = safeLeaderboard.map((p) => ({
       ...p,
       isMe: p.player.id === user?.player?.id,
       isExAequo:
-        participations.filter((other) => other.score === p.score).length > 1,
+        safeLeaderboard.filter((other) => other.score === p.score).length > 1,
     }));
 
-    if (!isFogActive) return enriched;
+    if (!hidePoints) return enriched;
 
     return [...enriched].sort((a, b) =>
       (a.player.display_name || '').localeCompare(b.player.display_name || ''),
     );
-  }, [participations, isFogActive, user]);
+  }, [leaderboard, hidePoints, user]);
 
   const handleDelete = async (p: Participation) => {
     const success = await deleteParticipation(
       p.id,
       p.player.display_name,
-      false,
+      false, // TODO: à lier plus tard à p.hasActions si tu l'ajoutes au type
     );
+
     if (success && p.player.id === user?.player?.id) {
       navigate(ROUTES.NAV.DASHBOARD);
     }
@@ -45,8 +45,9 @@ export const useLeaderboardUI = (
 
   return {
     dislpayedParticipations: displayableParticipations,
-    isFogActive,
+    isFogActive: hidePoints,
     isAdmin,
+    competition,
     handleDelete,
   };
 };

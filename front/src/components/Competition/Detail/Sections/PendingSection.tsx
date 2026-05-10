@@ -2,21 +2,13 @@ import { Card, Text, Badge } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
-import type { Action, OnActionStatusChange, OnActionUpdate } from '@/types';
+import type { Action } from '@/types';
+import { useActionTableContext } from '@/context/ActionTableContext';
 
-interface PendingSectionProps {
-  myPending: Action[];
-  othersPending: Action[];
-  onUpdate: OnActionUpdate;
-  onStatusChange: OnActionStatusChange;
-}
+export const PendingSection = () => {
+  const { categories } = useActionTableContext();
+  const { myPending, othersPending } = categories;
 
-export const PendingSection = ({
-  myPending,
-  othersPending,
-  onUpdate,
-  onStatusChange,
-}: PendingSectionProps) => {
   const total = myPending.length + othersPending.length;
 
   if (total === 0) return null;
@@ -69,12 +61,7 @@ export const PendingSection = ({
                   )}
                 >
                   {section.data.map((action: Action) => (
-                    <ActionRow
-                      key={action.id}
-                      action={action}
-                      onUpdate={onUpdate}
-                      onStatusChange={onStatusChange}
-                    />
+                    <ActionRow key={action.id} action={action} />
                   ))}
                 </Card>
               </div>

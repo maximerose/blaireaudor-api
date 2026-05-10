@@ -12,11 +12,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 final class CompetitionVoter extends Voter
 {
-    public const MANAGE = 'MANAGE';
+    public const string MANAGE = 'COMPETITION_MANAGE';
+    public const string CREATOR = 'COMPETITION_CREATOR';
+    public const string REFEREE = 'COMPETITION_REFEREE';
+    public const string PLAYER = 'COMPETITION_PLAYER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return self::MANAGE === $attribute && $subject instanceof Competition;
+        return in_array($attribute, [self::MANAGE, self::CREATOR, self::REFEREE, self::PLAYER])
+               && $subject instanceof Competition;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -24,27 +28,29 @@ final class CompetitionVoter extends Voter
         $user = $token->getUser();
 
         if (!$user instanceof User) {
+            error_log('!user instanceof User');
             $vote?->addReason('Vous devez être connecté.');
 
             return false;
         }
 
         $player = $user->getPlayer();
-        if (!$player) {
-            $vote?->addReason('Vous devez être lié à un joueur.');
-
-            return false;
-        }
 
         /** @var Competition $competition */
         $competition = $subject;
 
-        if ($competition->getReferees()->contains($player)) {
-            return true;
-        }
-
-        return $competition->getParticipations()->exists(
-            fn ($key, $participation) => $participation->getPlayer() === $player
+        $isCreator = $competition->getCreatedBy() === $user;
+        $isReferee = $player && $competition->getReferees()->contains($player);
+        $isPlayer = $player && $competition->getParticipations()->exists(
+            fn ($k, $p) => $p->getPlayer() === $player
         );
+
+        return match ($attribute) {
+            self::CREATOR => $isCreator,
+            self::REFEREE => $isReferee,
+            self::PLAYER => $isPlayer,
+            self::MANAGE => $isCreator || $isReferee,
+            default => false,
+        };
     }
 }

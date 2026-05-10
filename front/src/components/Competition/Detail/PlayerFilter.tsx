@@ -1,49 +1,48 @@
 import { Button, Dropdown } from '@/components/UI';
 import { cn } from '@/utils';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
+import { useAuth, useCompetition, usePermissions } from '@/hooks';
+import { useActionTableContext } from '@/context/ActionTableContext';
 
-interface PlayerFilterProps {
-  players: { id: string; display_name: string }[];
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
-  currentUserId?: string;
-}
+export const PlayerFilter = () => {
+  const { selectedPlayerId, setSelectedPlayerId } = useActionTableContext();
+  const { user } = useAuth();
+  const { competition } = useCompetition();
+  const { roles } = usePermissions();
 
-export const PlayerFilter = ({
-  players,
-  selectedId,
-  onSelect,
-  currentUserId,
-}: PlayerFilterProps) => {
-  const otherPlayersOptions = players
-    .filter((p) => p.id !== currentUserId)
+  const currentUserId = user?.player?.id;
+
+  const otherPlayersOptions = (competition?.participations || [])
+    .filter((p) => p.player.id !== currentUserId)
     .map((p) => ({
-      value: p.id,
-      label: p.display_name,
+      value: p.player.id,
+      label: p.player.display_name,
     }));
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-6 animate-fade-in">
       {/* Bouton "Tous" */}
       <Button
-        variant={!selectedId ? 'secondary' : 'ghost'}
+        variant={!selectedPlayerId ? 'secondary' : 'ghost'}
         size="sm"
-        onClick={() => onSelect(null)}
-        className={cn(!selectedId && 'bg-white/10 border-white/20 text-white')}
+        onClick={() => setSelectedPlayerId(null)}
+        className={cn(
+          !selectedPlayerId && 'bg-white/10 border-white/20 text-white',
+        )}
       >
         {UI.ALL}
       </Button>
 
       {/* Raccourci "Moi" en Gold */}
-      {currentUserId && (
+      {currentUserId && roles.isParticipant && (
         <Button
-          variant={selectedId === currentUserId ? 'secondary' : 'ghost'}
+          variant={selectedPlayerId === currentUserId ? 'secondary' : 'ghost'}
           size="sm"
-          onClick={() => onSelect(currentUserId)}
+          onClick={() => setSelectedPlayerId(currentUserId)}
           icon={ICONS.PLAYER}
           className={cn(
             'transition-all duration-300',
-            selectedId === currentUserId
+            selectedPlayerId === currentUserId
               ? 'text-player-me border-player-me bg-player-me/10'
               : 'text-player-me/40 hover:text-player-me border-transparent',
           )}
@@ -56,8 +55,8 @@ export const PlayerFilter = ({
 
       <Dropdown
         options={otherPlayersOptions}
-        value={selectedId !== currentUserId ? selectedId : null}
-        onChange={onSelect}
+        value={selectedPlayerId !== currentUserId ? selectedPlayerId : null}
+        onChange={setSelectedPlayerId}
         placeholder={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.OTHER_PLAYERS}
       />
     </div>

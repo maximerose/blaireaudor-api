@@ -8,13 +8,8 @@ import {
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
 import { FORM, BUTTONS, ICONS } from '@/constants';
-import type React from 'react';
 
-interface InlineEnrollmentProps {
-  onRefresh: () => void;
-}
-
-export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
+export const InlineEnrollment = () => {
   const {
     isOpen,
     setIsOpen,
@@ -30,7 +25,7 @@ export const InlineEnrollment = ({ onRefresh }: InlineEnrollmentProps) => {
     saveEnrollment,
     loading,
     isSearching,
-  } = useInlineEnrollmentUI(onRefresh);
+  } = useInlineEnrollmentUI();
 
   if (!isOwner) return null;
 

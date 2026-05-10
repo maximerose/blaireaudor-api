@@ -1,18 +1,29 @@
 import { type ReactNode } from 'react';
 import { CompetitionContext } from './CompetitionContext';
-import { useCompetitionSettings } from '@/hooks';
-import type { Competition } from '@/types';
+import { useAuth, useCompetitionData, useCompetitionSettings } from '@/hooks';
+import { isReferee } from '@/utils';
 
 interface ProviderProps {
   children: ReactNode;
-  competition: Competition;
-  isAdmin: boolean;
-  hidePoints: boolean;
-  refresh: () => void;
+  code: string;
 }
 
-export const CompetitionProvider = ({ children, ...props }: ProviderProps) => {
-  const value = useCompetitionSettings(props);
+export const CompetitionProvider = ({ children, code }: ProviderProps) => {
+  const { competition, leaderboard, refresh, isReady } =
+    useCompetitionData(code);
+  const { user } = useAuth();
+
+  const isRefereeUser = competition ? isReferee(competition, user) : false;
+
+  const value = useCompetitionSettings({
+    competition,
+    leaderboard,
+    isAdmin: isRefereeUser,
+    hidePoints: competition?.fog_of_war && !isRefereeUser,
+    refresh,
+  });
+
+  if (!isReady || !competition) return null;
 
   return (
     <CompetitionContext.Provider value={value}>

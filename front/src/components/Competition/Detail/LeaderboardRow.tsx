@@ -22,7 +22,7 @@ export const LeaderboardRow = ({
   competition,
   ...props
 }: LeaderboardRowProps) => {
-  const { canDelete, medal, playerName, isPlayerReferee, isPlayerCreator } =
+  const { canDelete, medal, playerName, isReferee, isCreator } =
     useLeaderboardRow(participation, isAdmin, competition);
   const showRealStats = !isFogActive || isAdmin;
 
@@ -83,8 +83,8 @@ export const LeaderboardRow = ({
             )}
 
             <div className="flex items-center gap-1.5 flex-wrap">
-              {isPlayerCreator && <RoleBadge role="creator" />}
-              {isPlayerReferee && <RoleBadge role="referee" />}
+              {isCreator && <RoleBadge role="creator" />}
+              {isReferee && <RoleBadge role="referee" />}
             </div>
           </div>
 
