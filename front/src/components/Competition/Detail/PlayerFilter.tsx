@@ -1,5 +1,5 @@
 import { Button, Dropdown } from '@/components/UI';
-import { cn } from '@/utils';
+import { cn, normalizeString } from '@/utils';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useAuth, useCompetition, usePermissions } from '@/hooks';
 import { useActionTableContext } from '@/context/ActionTableContext';
@@ -14,6 +14,12 @@ export const PlayerFilter = () => {
 
   const otherPlayersOptions = (competition?.participations || [])
     .filter((p) => p.player.id !== currentUserId)
+    .sort((a, b) => {
+      const nameA = normalizeString(a.player.display_name);
+      const nameB = normalizeString(b.player.display_name);
+
+      return nameA.localeCompare(nameB, 'fr');
+    })
     .map((p) => ({
       value: p.player.id,
       label: p.player.display_name,
