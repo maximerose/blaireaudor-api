@@ -19,6 +19,7 @@ export const CloseCompetitionAction = () => {
           variant="danger"
           onClick={handleCloseCompetition}
           isLoading={isUpdating}
+          disabled={pendingCount > 0}
           className={cn(
             'w-full sm:w-auto',
             pendingCount > 0 && 'opacity-50 cursor-not-allowed',

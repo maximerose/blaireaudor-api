@@ -1,12 +1,14 @@
 import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
-import { useAuth, useCompetition } from '@/hooks';
+import { useAuth, useCompetition, usePermissions } from '@/hooks';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
 import type { Player, RefereeListItem } from '@/types';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetition();
-  const { user: currentUser } = useAuth();
+  const { user } = useAuth();
+  const { roles } = usePermissions();
+
   const {
     referees,
     isLastRef,
@@ -18,10 +20,6 @@ export const RefereeManagement = () => {
     handleAdd,
     handleRemoveRequest,
   } = useRefereeManagementUI(competition);
-
-  const myPlayerId = currentUser?.player?.id
-    ? String(currentUser.player.id)
-    : null;
 
   return (
     <div className="space-y-4 pt-6 border-t border-white/10">
@@ -35,30 +33,33 @@ export const RefereeManagement = () => {
       {/* Liste des arbitres actuels */}
       <div className="flex flex-wrap items-center justify-center gap-2">
         {referees.map((ref: RefereeListItem) => {
-          const isMe = String(ref.id) === myPlayerId;
+          const isCreator = ref.userId === competition.created_by?.id;
+          const isMe = user?.player?.id === ref.id;
+
+          const variant = isCreator ? 'success' : isMe ? 'gold' : 'info';
+          const icon = isCreator ? ICONS.CREATOR : ICONS.REFEREE;
+
           const isRemoving = loadingAction === `remove-${ref.id}`;
-          const canRemove = (!isLastRef && isMe) || (!isMe && myPlayerId);
+
+          const canRemove = (!isLastRef && isMe) || (roles.isCreator && !isMe);
 
           return (
             <Badge
               key={ref.id}
-              variant="info"
-              className={`flex items-center gap-2 pr-1 ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
+              variant={variant}
+              icon={icon}
+              className={isRemoving ? 'opacity-50 pointer-events-none' : ''}
             >
               <span className="flex items-center gap-1">
-                {ICONS.REFEREE} {ref.name}{' '}
-                {isMe && (
-                  <span className="text-[9px] opacity-70 uppercase tracking-wider">
-                    ({UI.ME})
-                  </span>
-                )}
+                {ref.name}{' '}
+                {isMe && <span className="opacity-70">({UI.ME})</span>}
               </span>
 
               {canRemove && (
                 <button
                   onClick={() => handleRemoveRequest(ref, isMe)}
                   disabled={isRemoving}
-                  className="hover:text-danger text-white/40 hover:bg-white/10 rounded-full w-5 h-5 flex items-center justify-center transition-colors ml-1"
+                  className="hover:text-danger text-white/40 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors ml-1"
                   title={
                     isMe
                       ? COMPETITION_UI.ADMIN.REFEREE.TOOLTIP_RESIGN

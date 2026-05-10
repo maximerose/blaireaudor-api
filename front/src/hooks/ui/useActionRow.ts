@@ -24,7 +24,7 @@ export const useActionRow = (action: Action) => {
     hidePoints && !creatorIsMe
       ? 'text-white/20'
       : isPositive
-        ? 'text-warning'
+        ? 'text-warning-bright'
         : 'text-success-bright';
   const displayColor =
     hidePoints && !creatorIsMe

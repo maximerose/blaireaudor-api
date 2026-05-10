@@ -41,6 +41,8 @@ export const COMPETITION_UI = {
       SUBMIT: `${ICONS.FLAG} Clôturer la compétition`,
       PENDING_WARNING: (count: number) =>
         `${ICONS.DANGER} ${count} actions en attente`,
+      COMPETITION_NOT_STARTED:
+        'La compétition doit avoir débuté pour être clôturée.',
     },
   },
   DETAIL: {

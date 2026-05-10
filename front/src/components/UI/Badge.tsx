@@ -41,7 +41,7 @@ export const Badge = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tight shrink-0 transition-default',
+        'inline-flex items-center justify-between gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tight shrink-0 transition-default',
         BADGE_VARIANTS[variant],
         isPulse && 'animate-pulse motion-reduce:animate-none',
         className,
@@ -49,7 +49,10 @@ export const Badge = ({
       {...props}
     >
       {icon && (
-        <span aria-hidden="true" className="text-[11px] leading-none">
+        <span
+          aria-hidden="true"
+          className="text-[11px] items-center justify-center leading-none -mt-px"
+        >
           {icon}
         </span>
       )}

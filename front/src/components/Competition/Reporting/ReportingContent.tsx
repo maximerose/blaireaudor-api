@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Text } from '@/components/UI';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 import {
   CompetitionCountdown,
   ReportActionForm,
@@ -74,11 +74,6 @@ export const ReportingContent = () => {
           size="md"
           className="group"
           onClick={() => toggleReporting()}
-          icon={
-            <span className="text-xl inline-block animate-bounce-subtle">
-              {ICONS.BADGER}
-            </span>
-          }
         >
           {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
         </Button>

@@ -6,14 +6,15 @@ import {
   resolveCreatorName,
 } from '@/utils';
 import { CompetitionCountdown } from './CompetitionCountdown';
-import { useAuth, useCompetition } from '@/hooks';
+import { useAuth, useCompetition, usePermissions } from '@/hooks';
 import type { BonusDay, RefereeListItem } from '@/types';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useMemo } from 'react';
 
 export const CompetitionHeader = () => {
   const { user } = useAuth();
   const { competition, leaderboard, bonusDays } = useCompetition();
+  const { roles } = usePermissions();
 
   const referees = getCompetitionReferees(competition);
 
@@ -78,9 +79,14 @@ export const CompetitionHeader = () => {
               </Text>
               <Text
                 variant="caption"
-                className="text-success-bright font-medium"
+                className="font-medium text-success-bright"
               >
                 {creatorName}
+                {roles.isCreator && (
+                  <span className="text-[9px] opacity-60 ml-1 uppercase">
+                    ({UI.ME})
+                  </span>
+                )}
               </Text>
             </div>
           )}
@@ -104,17 +110,21 @@ export const CompetitionHeader = () => {
                   referees.length,
                 )}
               </Text>
-              {referees.map((ref: RefereeListItem) => (
-                <Badge
-                  key={ref.id}
-                  variant={ref.name === creatorName ? 'success' : 'info'}
-                  icon={
-                    ref.name === creatorName ? ICONS.CREATOR : ICONS.REFEREE
-                  }
-                >
-                  {ref.name}
-                </Badge>
-              ))}
+              {referees.map((ref: RefereeListItem) => {
+                const isMe = user?.player?.id === ref.id;
+                const isCreator = ref.userId === competition.created_by.id;
+
+                return (
+                  <Badge
+                    key={ref.id}
+                    variant={isCreator ? 'success' : isMe ? 'gold' : 'info'}
+                    icon={isCreator ? ICONS.CREATOR : ICONS.REFEREE}
+                  >
+                    {ref.name}
+                    {isMe && <span className="opacity-60">({UI.ME})</span>}
+                  </Badge>
+                );
+              })}
             </div>
           )}
         </div>

@@ -99,11 +99,20 @@ export const AdminSettings = () => {
 
             {/* Section 2 : Actions rapides (Horizontal Grid) */}
             {canManageGame.allowed && (
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+              <section
+                className={cn(
+                  'grid gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5',
+                  competition.has_started
+                    ? 'grid-cols-1 md:grid-cols-2'
+                    : 'grid-cols-1',
+                )}
+              >
                 <FogOfWarToggle />
-                <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
-                  <CloseCompetitionAction />
-                </div>
+                {competition.has_started && (
+                  <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
+                    <CloseCompetitionAction />
+                  </div>
+                )}
               </section>
             )}
 

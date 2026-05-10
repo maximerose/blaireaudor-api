@@ -11,7 +11,8 @@ export const useLeaderboardRow = (
 
   const playerId = getIdFromData(participation.player);
 
-  const canDelete = isAdmin && !participation.has_actions;
+  const canDelete =
+    isAdmin && !participation.has_actions && !competition.is_finished;
 
   return {
     canDelete,

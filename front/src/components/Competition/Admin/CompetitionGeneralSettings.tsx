@@ -25,7 +25,7 @@ export const CompetitionGeneralSettings = () => {
             variant="micro"
             className="opacity-40 uppercase tracking-widest"
           >
-            <span className="text-gold">{competition.join_code}</span> •
+            <span className="text-gold">{competition.join_code}</span> •{' '}
             {COMPETITION_UI.ADMIN.GENERAL.SETTINGS_LABEL}
           </Text>
         </div>

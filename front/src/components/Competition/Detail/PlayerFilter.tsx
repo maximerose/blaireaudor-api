@@ -49,7 +49,7 @@ export const PlayerFilter = () => {
           className={cn(
             'transition-all duration-300',
             selectedPlayerId === currentUserId
-              ? 'text-player-me border-player-me bg-player-me/10'
+              ? 'text-player-me border-player-me bg-player-me-bg'
               : 'text-player-me/40 hover:text-player-me border-transparent',
           )}
         >

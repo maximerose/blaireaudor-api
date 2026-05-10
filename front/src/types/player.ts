@@ -39,4 +39,5 @@ export interface PlayerCompact {
 export interface RefereeListItem {
   id: string | null;
   name: string;
+  userId: string | null;
 }

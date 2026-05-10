@@ -3,7 +3,7 @@ import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
 import type { Competition, EnrichedLeaderboardItem } from '@/types';
-import { COMPETITION_UI, ICONS, UI } from '@/constants';
+import { COMPETITION_UI, ICONS } from '@/constants';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   participation: EnrichedLeaderboardItem;
@@ -31,7 +31,11 @@ export const LeaderboardRow = ({
       {...props}
       className={cn(
         'grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-default group',
-        participation.rank <= 3 ? 'bg-white/2' : 'bg-transparent',
+        participation.isMe
+          ? 'bg-player-me-bg hover:bg-player-me/7'
+          : participation.rank <= 3
+            ? 'bg-white/3'
+            : 'bg-transparent',
         isFogActive && !participation.isMe && 'opacity-60',
         className,
       )}
@@ -76,11 +80,6 @@ export const LeaderboardRow = ({
             >
               {playerName}
             </Text>
-            {participation.isMe && (
-              <Badge variant="gold" isPulse aria-label="C'est vous">
-                {UI.ME}
-              </Badge>
-            )}
 
             <div className="flex items-center gap-1.5 flex-wrap">
               {isCreator && <RoleBadge role="creator" />}

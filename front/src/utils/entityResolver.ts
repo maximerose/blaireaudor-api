@@ -82,10 +82,12 @@ export const getCompetitionReferees = (
     const id = getIdFromData(ref);
 
     let name = 'Arbitre';
+    let userId = null;
     if (typeof ref === 'object' && ref !== null) {
       name = ref.display_name || ref.username || 'Arbitre';
+      userId = ref.associated_user?.id || getIdFromData(ref.associated_user);
     }
 
-    return { id, name };
+    return { id, name, userId };
   });
 };

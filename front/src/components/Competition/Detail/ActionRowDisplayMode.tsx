@@ -14,7 +14,7 @@ export const ActionRowDisplayMode = ({
   onEdit,
 }: ActionRowDisplayModeProps) => {
   const { handleActionStatus } = useCompetitionAdmin();
-  const { isAdmin, hidePoints } = useCompetition();
+  const { competition, isAdmin, hidePoints } = useCompetition();
   const {
     displayColor,
     pointsDisplay,
@@ -81,7 +81,7 @@ export const ActionRowDisplayMode = ({
           )}
 
           {/* Boutons de Modération */}
-          {isPending && isAdmin && (
+          {isPending && isAdmin && !competition.is_finished && (
             <div className="mt-2 flex justify-center gap-4 animate-fade-in">
               <button
                 onClick={() =>
@@ -115,9 +115,6 @@ export const ActionRowDisplayMode = ({
               x{multiplier}
             </span>
           </div>
-          // <Text variant="mono" className="text-[9px] line-through opacity-30">
-          //   {action.points} {COMPETITION_UI.DETAIL.POINTS_SHORT}
-          // </Text>
         )}
         <Text
           variant="mono"
@@ -131,7 +128,7 @@ export const ActionRowDisplayMode = ({
       </div>
 
       {/* Bouton Edit (Flottant) */}
-      {isAdmin && (
+      {isAdmin && !competition.is_finished && (
         <button
           onClick={onEdit}
           className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-default"
