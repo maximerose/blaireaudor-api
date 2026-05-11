@@ -6,7 +6,7 @@ import {
   InlineEnrollment,
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
-import { Text, LoadingScreen } from '@/components/UI';
+import { Text, LoadingScreen, NotFoundState } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionData } from '@/hooks';
@@ -14,17 +14,17 @@ import { useParams } from 'react-router-dom';
 
 const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
-  const { isReady, competition } = useCompetitionData(code || '');
+  const { isLoading, isError, competition } = useCompetitionData(code || '');
 
-  if (!isReady) return <LoadingScreen message="Récupération de l'arène..." />;
-  if (!competition)
+  if (isLoading) return <LoadingScreen message="Récupération de l'arène..." />;
+  if (isError || !competition) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Text variant="h2" className="text-white/50">
-          {COMPETITION_UI.DETAIL.NOT_FOUND}
-        </Text>
-      </div>
+      <NotFoundState
+        title={COMPETITION_UI.DETAIL.NOT_FOUND}
+        message={`La compétition ${code} n'a pas été trouvée.`}
+      />
     );
+  }
 
   return (
     <CompetitionProvider code={code!}>

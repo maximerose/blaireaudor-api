@@ -10,6 +10,7 @@ export const useCompetitionData = (code: string) => {
     queryFn: ({ signal }) => competitionService.getByCode(code, signal),
     enabled: !!code,
     staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 
   const refresh = async () => {
@@ -21,6 +22,8 @@ export const useCompetitionData = (code: string) => {
   return {
     competition: query.data?.competition,
     leaderboard: query.data?.leaderboard ?? [],
+    isLoading: query.isLoading,
+    isError: query.isError,
     isReady: query.isSuccess,
     isRefreshing: query.isFetching,
     error: query.isError ? ERRORS.COMPETITION.NOT_FOUND(code) : null,

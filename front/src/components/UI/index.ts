@@ -8,6 +8,7 @@ export * from './EmptyState';
 export * from './Input';
 export * from './LoadingScreen';
 export * from './Navbar';
+export * from './NotFoundState';
 export * from './PlayerSearchResultItem';
 export * from './RankBadge';
 export * from './RankedScore';
