@@ -2,6 +2,7 @@ export * from './AuthCard';
 export * from './Badge';
 export * from './Button';
 export * from './Card';
+export * from './ConfirmModal';
 export * from './Dropdown';
 export * from './EmptyState';
 export * from './Input';

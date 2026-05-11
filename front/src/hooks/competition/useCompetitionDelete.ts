@@ -1,38 +1,39 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks';
+import { useAuth, useConfirmModal } from '@/hooks';
 import { competitionService } from '@/services/api/competitionService';
 import { ROUTES } from '@/constants/routes';
+import toast from 'react-hot-toast';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
+  const { isOpen, config, open, close, confirm } = useConfirmModal();
 
-  const deleteCompetition = async (
-    id: string,
-    name: string,
-    actionCount: number,
-  ) => {
+  const deleteCompetition = (id: string, name: string, actionCount: number) => {
     if (actionCount > 0) {
-      alert(`Impossible de supprimer "${name}" car elle contient des actions.`);
-      return false;
+      toast.error(
+        `Impossible de supprimer "${name}" car elle contient des actions.`,
+      );
+      return;
     }
 
-    if (!window.confirm(`Supprimer définitivement "${name}" ?`)) return false;
-
-    try {
-      const success = await competitionService.delete(id);
-
-      if (success) {
-        await refreshUser();
-        navigate(ROUTES.NAV.DASHBOARD);
-        return true;
-      }
-    } catch (error) {
-      console.error('Erreur technique lors de la suppression', error);
-    }
-
-    return false;
+    const modalConfig = {
+      title: 'Supprimer la compétition',
+      message: `Supprimer définitivement "${name}" ?`,
+      onConfirm: async () => {
+        try {
+          const success = await competitionService.delete(id);
+          if (success) {
+            await refreshUser();
+            navigate(ROUTES.NAV.DASHBOARD);
+          }
+        } catch {
+          toast.error('Erreur lors de la suppression.');
+        }
+      },
+    };
+    open(modalConfig);
   };
 
-  return { deleteCompetition };
+  return { deleteCompetition, modal: { isOpen, config, close, confirm } };
 };

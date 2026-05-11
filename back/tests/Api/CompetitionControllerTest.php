@@ -23,7 +23,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class CompetitionControllerTest extends WebTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testGetCompetitionByCodeSuccess(): void
     {
@@ -46,29 +47,29 @@ final class CompetitionControllerTest extends WebTestCase
 
         $ghostPlayer = PlayerFactory::createOne([
             'displayName' => 'Joueur Fantôme',
-            'associatedUser' => null
+            'associatedUser' => null,
         ]);
         ParticipationFactory::createOne([
-            'competition' => $competition, 
-            'player' => $ghostPlayer
+            'competition' => $competition,
+            'player' => $ghostPlayer,
         ]);
 
-        $client->request('GET','/api/competitions/by-code/SUCCESS');
+        $client->request('GET', '/api/competitions/by-code/SUCCESS');
 
         $this->assertResponseIsSuccessful();
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertEquals('Tournoi de blaireaux', $data['name']);
-        $this->assertEquals('SUCCESS', $data['join_code']);
+        $this->assertEquals('Tournoi de blaireaux', $data['competition']['name']);
+        $this->assertEquals('SUCCESS', $data['competition']['join_code']);
 
-        $this->assertCount(2, $data['players'], 'Le JSON doit contenir tous es joueurs');
-        
-        $this->assertEquals('Maxime Connecté', $data['players'][0]['display_name']);
-        $this->assertTrue($data['players'][0]['has_account']);
+        $this->assertCount(2, $data['competition']['participations'], 'Le JSON doit contenir tous es joueurs');
 
-        $this->assertEquals('Joueur Fantôme', $data['players'][1]['display_name']);
-        $this->assertFalse($data['players'][1]['has_account']);
+        $this->assertEquals('Maxime Connecté', $data['competition']['participations'][0]['player']['display_name']);
+        $this->assertTrue($data['competition']['participations'][0]['player']['has_account']);
+
+        $this->assertEquals('Joueur Fantôme', $data['competition']['participations'][1]['player']['display_name']);
+        $this->assertFalse($data['competition']['participations'][1]['player']['has_account']);
     }
 
     public function testGetCompetitionByCodeNotFound(): void

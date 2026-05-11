@@ -7,6 +7,7 @@ namespace App\EventListener;
 use App\Entity\BonusDay;
 use App\Service\ActionManager;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -19,6 +20,7 @@ final class BonusDayListener
 {
     public function __construct(
         private ActionManager $actionManager,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -40,7 +42,7 @@ final class BonusDayListener
     private function refreshScores(BonusDay $bonusDay): void
     {
         $competition = $bonusDay->getCompetition();
-        if ($competition) {
+        if ($competition && $this->entityManager->contains($competition)) {
             $this->actionManager->updateAllCompetitionScores($competition);
         }
     }

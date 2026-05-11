@@ -1,12 +1,12 @@
 import { ROUTES } from '@/constants/routes';
-import { Button, Badge } from '@/components/UI';
+import { Button, Badge, ConfirmModal } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI } from '@/constants';
 import { useCompetition, useCompetitionDelete, usePermissions } from '@/hooks';
 
 export const DetailNavigation = () => {
   const { competition } = useCompetition();
   const { roles, canDelete } = usePermissions();
-  const { deleteCompetition } = useCompetitionDelete();
+  const { deleteCompetition, modal } = useCompetitionDelete();
 
   return (
     <nav className="mb-10 flex justify-between items-center">
@@ -27,6 +27,15 @@ export const DetailNavigation = () => {
           {COMPETITION_UI.DETAIL.PROTECTED}
         </Badge>
       )}
+
+      <ConfirmModal
+        isOpen={modal.isOpen}
+        title={modal.config?.title ?? ''}
+        message={modal.config?.message ?? ''}
+        confirmLabel={modal.config?.confirmLabel}
+        onConfirm={modal.confirm}
+        onClose={modal.close}
+      />
     </nav>
   );
 };

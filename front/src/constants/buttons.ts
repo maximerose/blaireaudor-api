@@ -10,6 +10,7 @@ export const BUTTONS = {
   REMOVE: 'Retirer',
   REJECT: 'Refuser',
   DELETE: 'Supprimer',
+  CONFIRM: 'Confirmer',
 
   // Navigation
   CONTINUE: 'Continuer →',

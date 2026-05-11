@@ -11,18 +11,23 @@ use App\Service\ActionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class BonusDayListenerTest extends TestCase
 {
     private ActionManager|MockObject $actionManagerMock;
+    private EntityManagerInterface|MockObject $entityManagerMock;
     private BonusDayListener $listener;
 
     protected function setUp(): void
     {
         $this->actionManagerMock = $this->createMock(ActionManager::class);
-        $this->listener = new BonusDayListener($this->actionManagerMock);
+        $this->entityManagerMock = $this->createMock(EntityManagerInterface::class);
+        $this->entityManagerMock->method('contains')->willReturn(true);
+        $this->listener = new BonusDayListener($this->actionManagerMock, $this->entityManagerMock);
     }
 
     public function testPostPersistTriggersScoreRecalculation(): void

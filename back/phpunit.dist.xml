@@ -7,6 +7,7 @@
          failOnDeprecation="true"
          failOnNotice="true"
          failOnWarning="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
          bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
 >
@@ -25,7 +26,6 @@
 
     <source ignoreSuppressionOfDeprecations="true"
             ignoreIndirectDeprecations="true"
-            restrictNotices="true"
             restrictWarnings="true"
     >
         <include>
