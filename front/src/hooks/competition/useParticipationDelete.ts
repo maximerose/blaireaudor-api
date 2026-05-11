@@ -1,35 +1,46 @@
-import { useAuth } from '@/hooks';
-import { ERRORS } from '@/constants';
+import { useAuth, useConfirmModal } from '@/hooks';
+import { ERRORS, ROUTES } from '@/constants';
 import { competitionService } from '@/services/api/competitionService';
+import toast from 'react-hot-toast';
+import type { Participation } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
-  const { refreshUser } = useAuth();
+  const navigate = useNavigate();
+  const { user, refreshUser } = useAuth();
+  const { isOpen, config, open, close, confirm } = useConfirmModal();
 
-  const deleteParticipation = async (
-    participationId: string,
-    playerName: string,
-    hasActions: boolean,
-  ): Promise<boolean> => {
-    if (hasActions) {
-      alert(
-        `Impossible de retirer ${playerName} : Il a déjà des actions enregistrées dans cette compétition.`,
+  const deleteParticipation = (participation: Participation) => {
+    if (participation.has_actions) {
+      toast.error(
+        `Impossible de retirer ${participation.player?.display_name} : Il a déjà des actions enregistrées dans cette compétition.`,
       );
-      return false;
+      return;
     }
 
-    if (!window.confirm(`Retirer ${playerName} de cette compétition ?`))
-      return false;
+    const modalConfig = {
+      title: 'Retirer un joueur',
+      message: `Retirer ${participation.player?.display_name} de cette compétition ?`,
+      onConfirm: async () => {
+        try {
+          const success = await competitionService.removeParticipation(
+            participation.id,
+          );
+          if (success) {
+            await refreshUser();
+            if (success && participation.player.id === user?.player?.id) {
+              navigate(ROUTES.NAV.DASHBOARD);
+            }
+            onSuccess();
+          }
+        } catch {
+          toast.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
+        }
+      },
+    };
 
-    try {
-      await competitionService.removeParticipation(participationId);
-      await refreshUser();
-      onSuccess();
-      return true;
-    } catch (error) {
-      console.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED, error);
-      return false;
-    }
+    open(modalConfig);
   };
 
-  return { deleteParticipation };
+  return { deleteParticipation, modal: { isOpen, config, close, confirm } };
 };
