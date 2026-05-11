@@ -154,6 +154,7 @@ export const CompetitionConfigStep = ({
 
             <Input
               type="date"
+              min={formData.startDate}
               value={formData.endDate}
               onChange={(e) => updateField('endDate', e.target.value)}
             />

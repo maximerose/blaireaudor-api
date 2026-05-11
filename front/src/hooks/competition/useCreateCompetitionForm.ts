@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useAuth, usePlayerSearch } from '@/hooks';
+import { useAuth, useCompetitionForm, usePlayerSearch } from '@/hooks';
 import {
   formatJoinCode,
   cleanJoinCode,
@@ -11,7 +11,6 @@ import type {
   FormParticipant,
   Player,
   Competition,
-  CompetitionFormData,
   PlayerCompact,
   CompetitionCreatePayload,
 } from '@/types';
@@ -27,7 +26,7 @@ export const useCreateCompetitionForm = (
     usePlayerSearch();
   const queryClient = useQueryClient();
 
-  const [formData, setFormData] = useState<CompetitionFormData>({
+  const { formData, setFormData, updateField } = useCompetitionForm({
     name: '',
     startDate: '',
     startTime: '00:00',
@@ -44,13 +43,6 @@ export const useCreateCompetitionForm = (
   });
 
   const filteredResults = results.filter((p) => p.username !== user?.username);
-
-  const updateField = <K extends keyof CompetitionFormData>(
-    field: K,
-    value: CompetitionFormData[K],
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
 
   const handleJoinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateField('joinCode', formatJoinCode(e.target.value));

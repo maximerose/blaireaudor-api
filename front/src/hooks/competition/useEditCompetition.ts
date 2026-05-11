@@ -5,11 +5,8 @@ import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
-import type {
-  CompetitionFormData,
-  Competition,
-  CompetitionUpdatePayload,
-} from '@/types';
+import type { Competition, CompetitionUpdatePayload } from '@/types';
+import { useCompetitionForm } from './useCompetitionForm';
 
 export const useEditCompetition = (
   competition: Competition,
@@ -22,7 +19,7 @@ export const useEditCompetition = (
   const start = parseFromApiISO(competition.start_date);
   const end = parseFromApiISO(competition.end_date);
 
-  const [formData, setFormData] = useState<CompetitionFormData>({
+  const { formData, updateField } = useCompetitionForm({
     name: competition.name,
     joinCode: competition.join_code,
     startDate: start.date,
@@ -32,13 +29,6 @@ export const useEditCompetition = (
     endTime: end.time,
     endFullDay: end.time === '23:59' || end.time === '00:00',
   });
-
-  const updateField = <K extends keyof CompetitionFormData>(
-    field: K,
-    value: CompetitionFormData[K],
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
 
   const mutation = useMutation({
     mutationFn: async () => {

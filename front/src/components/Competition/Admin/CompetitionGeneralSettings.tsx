@@ -123,6 +123,7 @@ export const CompetitionGeneralSettings = () => {
           </Text>
           <Input
             type="date"
+            min={formData.startDate}
             value={formData.endDate}
             onChange={(e) => updateField('endDate', e.target.value)}
           />
