@@ -1,6 +1,6 @@
 import { Text } from '@/components/UI';
 import { DASHBOARD_UI } from '@/constants';
-import { useDashboardHeader } from '@/hooks/dashboard/useDashboardHeader';
+import { useDashboardHeader } from '@/hooks';
 
 export const DashboardHeader = () => {
   const { displayName, totalParticipations, statItems } = useDashboardHeader();

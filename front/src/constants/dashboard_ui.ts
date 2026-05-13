@@ -26,6 +26,7 @@ export const DASHBOARD_UI = {
       STAT_DETAIL: (val: number, label: string) =>
         `${val} ${val > 1 ? 'compétitions' : 'compétition'} ${label.toLowerCase()}`,
     },
+    ADMIN_ACCESS: `${ICONS.REFEREE} Espace d'arbitrage`,
   },
   CARD: {
     ACCESS_LABEL: 'Accès',

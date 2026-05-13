@@ -10,12 +10,17 @@ import { DASHBOARD_UI, ICONS } from '@/constants';
 
 const Dashboard = () => {
   const {
-    sortedParticipations,
-    managedCompetitions,
+    ongoing,
+    upcoming,
+    finished,
+    hasAdminAccess,
     isJoinModalOpen,
     openJoinModal,
     closeJoinModal,
   } = useDashboardUI();
+
+  const isTotallyEmpty =
+    ongoing.length === 0 && upcoming.length === 0 && finished.length === 0;
 
   return (
     <div className="w-full mx-auto min-h-screen flex flex-col p-4 sm:p-6">
@@ -23,7 +28,15 @@ const Dashboard = () => {
 
       <main className="flex-1 space-y-6 sm:space-y-10 animate-fade-in mt-4">
         <DashboardHeader />
-
+        {hasAdminAccess && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="opacity-40 hover:opacity-100"
+          >
+            {DASHBOARD_UI.HEADER.ADMIN_ACCESS}
+          </Button>
+        )}
         <section
           className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           aria-label={DASHBOARD_UI.CARD.ARIA.QUICK_ACTIONS}
@@ -36,28 +49,40 @@ const Dashboard = () => {
           </Button>
         </section>
 
-        {/* --- SECTION GESTION (Admin / Arbitre) --- */}
-        {managedCompetitions.length > 0 && (
-          <CompetitionListSection
-            title={DASHBOARD_UI.CARD.SECTIONS.MANAGEMENT}
-            competitions={managedCompetitions}
-            variant="gold"
+        {isTotallyEmpty ? (
+          <EmptyState
+            layout="dashed"
+            icon={ICONS.EMPTY}
+            title={DASHBOARD_UI.CARD.EMPTY.TITLE}
+            message={DASHBOARD_UI.CARD.EMPTY.MESSAGE}
           />
-        )}
-
-        {/* --- SECTION JOUEUR --- */}
-        <CompetitionListSection
-          title={DASHBOARD_UI.CARD.SECTIONS.PARTICIPATIONS}
-          participations={sortedParticipations}
-          emptyState={
-            <EmptyState
-              layout="dashed"
-              icon={ICONS.EMPTY}
-              title={DASHBOARD_UI.CARD.EMPTY.TITLE}
-              message={DASHBOARD_UI.CARD.EMPTY.MESSAGE}
+        ) : (
+          <div className="space-y-10">
+            <CompetitionListSection
+              title="🟢 En cours"
+              items={ongoing}
+              variant="gold"
+              emptyState={
+                <div className="col-span-full opacity-40 text-sm italic text-center py-6 border border-dashed border-white/10 rounded-xl">
+                  Aucune compétition actuellement en cours.
+                </div>
+              }
             />
-          }
-        />
+
+            {/* À VENIR (Masqué si vide) */}
+            <CompetitionListSection
+              title="⏳ À venir" // À mettre dans tes constantes !
+              items={upcoming}
+            />
+
+            {/* TERMINÉES (Masqué si vide) */}
+            <CompetitionListSection
+              title="🏁 Terminées" // À mettre dans tes constantes !
+              items={finished}
+              variant="dimmed"
+            />
+          </div>
+        )}
 
         {isJoinModalOpen && (
           <JoinCompetitionModal

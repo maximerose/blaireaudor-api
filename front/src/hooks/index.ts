@@ -38,7 +38,7 @@ export * from './competition/useRefereeManagementUI';
 export * from './competition/useReportAction';
 export * from './competition/useReporting';
 
-export * from './dashboard/useDashboardSort';
+export * from './dashboard/useDashboardHeader';
 export * from './dashboard/useDashboardUI';
 
 export * from './ui/useActionRow';
