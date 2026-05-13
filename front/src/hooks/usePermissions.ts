@@ -9,6 +9,8 @@ export const usePermissions = (manualCompetition?: Competition | null) => {
 
   const context = useContext(CompetitionContext);
   const competition = manualCompetition ?? context?.competition;
+  const hasActions =
+    competition?.participations?.some((p) => p.has_actions) ?? false;
 
   const _isCreator = isCreator(competition, user);
   const _isReferee = isReferee(competition, user);
@@ -23,7 +25,10 @@ export const usePermissions = (manualCompetition?: Competition | null) => {
       _isCreator || _isReferee,
       'Réservé aux gestionnaires.',
     ),
-    canDelete: check(_isCreator, 'Seul le créateur peut supprimer.'),
+    canDelete: check(
+      _isCreator && !hasActions,
+      'Seul le créateur peut supprimer.',
+    ),
     canManageGame: check(
       _isReferee,
       'Seul un arbitre actif peut modifier la mécanique de jeu.',

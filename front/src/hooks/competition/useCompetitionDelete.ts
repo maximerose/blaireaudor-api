@@ -11,8 +11,8 @@ export const useCompetitionDelete = () => {
   const { refreshUser } = useAuth();
   const { openModal } = useConfirmModal();
 
-  const deleteCompetition = (id: string, name: string, actionCount: number) => {
-    if (actionCount > 0) {
+  const deleteCompetition = (id: string, name: string, hasActions: boolean) => {
+    if (hasActions) {
       toast.error(ERRORS.COMPETITION.DELETE_HAS_ACTIONS(name));
       return;
     }

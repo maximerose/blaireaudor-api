@@ -5,9 +5,10 @@ import { useCompetition, useCompetitionDelete, usePermissions } from '@/hooks';
 
 export const DetailNavigation = () => {
   const { competition } = useCompetition();
-  const { roles, canDelete } = usePermissions();
+  const { canDelete } = usePermissions();
   const { deleteCompetition } = useCompetitionDelete();
-  console.log(canDelete);
+  const hasActions =
+    competition?.participations?.some((p) => p.has_actions) ?? false;
 
   return (
     <nav className="mb-10 flex justify-between items-center">
@@ -15,11 +16,13 @@ export const DetailNavigation = () => {
         {BUTTONS.BACK}
       </Button>
 
-      {roles.isCreator && canDelete.allowed ? (
+      {canDelete.allowed ? (
         <Button
           variant="danger"
           size="sm"
-          onClick={() => deleteCompetition(competition.id, competition.name, 0)}
+          onClick={() =>
+            deleteCompetition(competition.id, competition.name, hasActions)
+          }
         >
           {BUTTONS.DELETE}
         </Button>
