@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bonusDayService } from '@/services/api/bonusDayService';
 import { toast } from 'react-hot-toast';
-import { QUERY_KEYS } from '@/constants';
+import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
 
 export const useBonusDayAdmin = (
   competitionId: string,
@@ -26,16 +26,16 @@ export const useBonusDayAdmin = (
       bonusDayService.create(competitionId, date, multiplier),
     onSuccess: () => {
       invalidateCompetition();
-      toast.success('Jour multiplicateur ajouté !');
+      toast.success(SUCCESS.BONUS.ADDED);
     },
-    onError: () => toast.error("Erreur (Vérifiez les dates de l'arène)"),
+    onError: () => toast.error(ERRORS.BONUS.CREATE_FAILED),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (bonusDayId: string) => bonusDayService.delete(bonusDayId),
     onSuccess: () => {
       invalidateCompetition();
-      toast.success('Bonus supprimé');
+      toast.success(SUCCESS.BONUS.DELETED);
     },
   });
 

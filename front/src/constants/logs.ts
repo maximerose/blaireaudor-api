@@ -3,10 +3,25 @@ export const LOG_MESSAGES = {
     INIT_FAILED: "[AUTH_SERVICE] Échec de l'initialisation de la session",
     REFRESH_FAILED:
       '[AUTH_SERVICE] Impossible de rafraîchir les données utilisateur',
-    LOGOUT_SERVER_ERROR:
-      '[AUTH_SERVICE] Erreur lors de la déconnexion côté serveur',
+    LOGOUT_FAILED: '[AUTH_SERVICE] Erreur lors de la déconnexion côté serveur',
+    REGISTRATION_FAILED: "[AUTH_SERVICE] Erreur d'inscription :",
+    FETCH_USER_FAILED:
+      '[AUTH_SERVICE] Erreur lors de la récupération du profil utilisateur',
   },
   API: {
     FETCH_ERROR: '[API_SERVICE] Erreur lors de la récupération des données',
+  },
+  COMPETITION: {
+    CREATE_FAILED:
+      '[COMPETITION_SERVICE] Échec de la création de la compétition :',
+  },
+  ACTION: {
+    UPDATE_FAILED:
+      "[ACTION_SERVICE] Erreur lors de la mise à jour de l'action :",
+    STATUS_UPDATE_FAILED:
+      '[ACTION_SERVICE] Erreur lors du changement de statut :',
+  },
+  UTILS: {
+    DATE_PARSING_FAILED: '[UTILS] Échec du parsing de la date :',
   },
 } as const;

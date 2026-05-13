@@ -8,6 +8,7 @@ import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
 import { useCompetition } from './useCompetition';
+import { LOG_MESSAGES } from '@/constants';
 
 export const useCompetitionAdmin = () => {
   const { competition } = useCompetition();
@@ -33,7 +34,7 @@ export const useCompetitionAdmin = () => {
       await invalidateAll(competition.id, competition.join_code);
     },
     onError: (error) => {
-      console.error('Erreur lors du changement de statut', error);
+      console.error(LOG_MESSAGES.ACTION.STATUS_UPDATE_FAILED, error);
     },
   });
 

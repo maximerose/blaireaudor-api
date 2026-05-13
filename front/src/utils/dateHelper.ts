@@ -1,3 +1,5 @@
+import { LOG_MESSAGES } from '@/constants';
+
 /**
  * Transforme les composants d'une date locale en chaîne ISO UTC pour l'API.
  * Gère les secondes pour les fins de journée (23:59:59).
@@ -32,7 +34,10 @@ export const formatToApiISO = (
   const localDate = new Date(`${cleanDate}T${timePart}`);
 
   if (isNaN(localDate.getTime())) {
-    console.error(`[dateHelper] Échec du parsing :`, { cleanDate, timePart });
+    console.error(LOG_MESSAGES.UTILS.DATE_PARSING_FAILED, {
+      cleanDate,
+      timePart,
+    });
     return '';
   }
 

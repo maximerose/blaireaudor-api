@@ -8,6 +8,7 @@ import {
 } from '@/hooks';
 import type { BonusDay } from '@/types';
 import { sortByDate } from '@/utils';
+import { ERRORS } from '@/constants';
 
 export const useBonusDayForm = () => {
   const { competition, refresh } = useCompetition();
@@ -34,7 +35,7 @@ export const useBonusDayForm = () => {
     );
 
     if (isDuplicate) {
-      return toast.error('Un bonus existe déjà pour cette date');
+      return toast.error(ERRORS.BONUS.DUPLICATE_DATE);
     }
 
     addBonus({ date: newDate, multiplier });

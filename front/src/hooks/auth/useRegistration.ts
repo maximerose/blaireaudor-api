@@ -4,7 +4,7 @@ import { authService } from '@/services/api/authService';
 import { useAuth, usePlayerSearch, useUsernameCheck } from '@/hooks';
 import { useRegistrationForm } from './useRegistrationForm'; // <-- Notre nouveau hook
 import type { Player } from '@/types';
-import { AUTH_UI, FORM, ERRORS, ICONS } from '@/constants';
+import { AUTH_UI, FORM, ERRORS, ICONS, LOG_MESSAGES } from '@/constants';
 import { useMutation } from '@tanstack/react-query';
 
 export const useRegistration = (redirectUrl: string) => {
@@ -89,12 +89,7 @@ export const useRegistration = (redirectUrl: string) => {
       navigate(redirectUrl);
     },
     onError: (error) => {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : `${ICONS.DANGER} ${ERRORS.NETWORK.SERVER}`,
-      );
-      console.error("Erreur d'inscription:", error);
+      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, error);
     },
   });
 

@@ -3,6 +3,7 @@ import { getCompetitionReferees } from '@/utils';
 import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
 import type { Player, Competition, RefereeListItem } from '@/types';
+import { CONFIRMS, ERRORS, SUCCESS } from '@/constants';
 
 export const useRefereeManagementUI = (competition: Competition) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(
@@ -34,16 +35,16 @@ export const useRefereeManagementUI = (competition: Competition) => {
     const success = await addReferee(player.id);
     if (success) {
       setSearchQuery('');
-      toast.success(`${player.display_name} est désormais arbitre.`);
+      toast.success(SUCCESS.REFEREE.ADDED(player.display_name));
     } else {
-      toast.error(`Impossible de nommer ce joueur.`);
+      toast.error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
     }
   };
 
   const handleRemoveRequest = async (ref: RefereeListItem, isMe: boolean) => {
     const confirmMsg = isMe
-      ? "Êtes-vous sûr de vouloir démissionner de l'arbitrage ?"
-      : `Voulez-vous vraiment révoquer les droits de ${ref.name} ?`;
+      ? CONFIRMS.REFEREE.RESIGN
+      : CONFIRMS.REFEREE.REVOKE(ref.name);
 
     if (window.confirm(confirmMsg)) {
       if (!ref.id) return;
@@ -51,10 +52,10 @@ export const useRefereeManagementUI = (competition: Competition) => {
       const success = await removeReferee(ref.id);
       if (success) {
         toast.success(
-          isMe ? "Vous avez quitté l'arbitrage." : `${ref.name} révoqué.`,
+          isMe ? SUCCESS.REFEREE.RESIGNED : SUCCESS.REFEREE.REVOKED(ref.name),
         );
       } else {
-        toast.error('Échec de la révocation.');
+        toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
       }
     }
   };

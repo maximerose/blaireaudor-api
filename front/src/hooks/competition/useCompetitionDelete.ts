@@ -3,6 +3,7 @@ import { useAuth, useConfirmModal } from '@/hooks';
 import { competitionService } from '@/services/api/competitionService';
 import { ROUTES } from '@/constants/routes';
 import toast from 'react-hot-toast';
+import { CONFIRMS, ERRORS } from '@/constants';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
@@ -11,15 +12,13 @@ export const useCompetitionDelete = () => {
 
   const deleteCompetition = (id: string, name: string, actionCount: number) => {
     if (actionCount > 0) {
-      toast.error(
-        `Impossible de supprimer "${name}" car elle contient des actions.`,
-      );
+      toast.error(ERRORS.COMPETITION.DELETE_HAS_ACTIONS(name));
       return;
     }
 
     const modalConfig = {
-      title: 'Supprimer la compétition',
-      message: `Supprimer définitivement "${name}" ?`,
+      title: CONFIRMS.COMPETITION.DELETE_TITLE,
+      message: CONFIRMS.COMPETITION.DELETE_MESSAGE(name),
       onConfirm: async () => {
         try {
           const success = await competitionService.delete(id);
@@ -28,7 +27,7 @@ export const useCompetitionDelete = () => {
             navigate(ROUTES.NAV.DASHBOARD);
           }
         } catch {
-          toast.error('Erreur lors de la suppression.');
+          toast.error(ERRORS.COMPETITION.DELETE_FAILED);
         }
       },
     };

@@ -7,7 +7,7 @@ import {
   type ActionCreatePayload,
   type ActionFormData,
 } from '@/types';
-import { API } from '@/constants';
+import { API, ERRORS, SUCCESS } from '@/constants';
 import { formatToApiISO, getLocalDayString, normalizeString } from '@/utils';
 import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
@@ -80,13 +80,13 @@ export const useReportAction = (
     onSuccess: async () => {
       await invalidateAll(competition.id, competition.join_code);
       toast.success(
-        isAdmin ? 'Méfait enregistré !' : "Dénonciation transmise à l'arbitre.",
+        isAdmin ? SUCCESS.ACTION.REPORTED_ADMIN : SUCCESS.ACTION.REPORTED_USER,
       );
       onSuccess();
       refresh();
     },
     onError: () => {
-      toast.error('Erreur lors du signalement.');
+      toast.error(ERRORS.ACTION.REPORT_FAILED);
     },
   });
 
@@ -103,7 +103,7 @@ export const useReportAction = (
         status: isAdmin ? ActionStatus.VALIDATED : ActionStatus.PENDING,
       });
     } catch (error) {
-      console.error(error);
+      console.error(ERRORS.ACTION.REPORT_FAILED, error);
     }
   };
 

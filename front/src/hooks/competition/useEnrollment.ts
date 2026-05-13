@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { useAuth, usePlayerSearch } from '@/hooks';
-import { ERRORS, QUERY_KEYS } from '@/constants';
+import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { FormParticipant, PlayerCompact } from '@/types';
 import { competitionService } from '@/services/api/competitionService';
@@ -84,10 +84,10 @@ export const useEnrollment = (
         navigate(ROUTES.NAV.DASHBOARD);
       }
 
-      toast.success('Liste des participants mise à jour !');
+      toast.success(SUCCESS.COMPETITION.PARTICIPANTS_UPDATED);
     },
-    onError: (error) => {
-      toast.error(error.message || ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
+    onError: () => {
+      toast.error(ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
     },
   });
 

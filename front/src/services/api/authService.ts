@@ -1,4 +1,4 @@
-import { API } from '@/constants';
+import { API, LOG_MESSAGES } from '@/constants';
 import { apiFetch } from './configService';
 import type { AuthResult, LoginCredentials, RegisterData, User } from '@/types';
 
@@ -52,10 +52,7 @@ export const authService = {
         method: 'GET',
       });
     } catch (error) {
-      console.error(
-        'Erreur lors de la notification de déconnexion au serveur',
-        error,
-      );
+      console.error(LOG_MESSAGES.AUTH.LOGOUT_FAILED, error);
     } finally {
       localStorage.removeItem('token');
     }
@@ -77,7 +74,7 @@ export const authService = {
       }
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error(LOG_MESSAGES.AUTH.FETCH_USER_FAILED, error);
       localStorage.removeItem('token');
       return null;
     }

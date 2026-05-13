@@ -15,7 +15,7 @@ import type {
   CompetitionCreatePayload,
 } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants';
+import { LOG_MESSAGES, QUERY_KEYS } from '@/constants';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
@@ -189,7 +189,7 @@ export const useCreateCompetitionForm = (
       onSuccess(competition);
     },
     onError: (error) => {
-      console.error('Échec du workflow de création :', error);
+      console.error(LOG_MESSAGES.COMPETITION.CREATE_FAILED, error);
     },
   });
 

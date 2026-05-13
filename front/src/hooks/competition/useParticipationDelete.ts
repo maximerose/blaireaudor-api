@@ -1,5 +1,5 @@
 import { useAuth, useConfirmModal } from '@/hooks';
-import { ERRORS, ROUTES } from '@/constants';
+import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
 import { competitionService } from '@/services/api/competitionService';
 import toast from 'react-hot-toast';
 import type { Participation } from '@/types';
@@ -13,14 +13,18 @@ export const useParticipationDelete = (onSuccess: () => void) => {
   const deleteParticipation = (participation: Participation) => {
     if (participation.has_actions) {
       toast.error(
-        `Impossible de retirer ${participation.player?.display_name} : Il a déjà des actions enregistrées dans cette compétition.`,
+        ERRORS.COMPETITION.PARTICIPATION_HAS_ACTIONS(
+          participation.player?.display_name,
+        ),
       );
       return;
     }
 
     const modalConfig = {
-      title: 'Retirer un joueur',
-      message: `Retirer ${participation.player?.display_name} de cette compétition ?`,
+      title: CONFIRMS.PARTICIPATION.REMOVE_TITLE,
+      message: CONFIRMS.PARTICIPATION.REMOVE_MESSAGE(
+        participation.player?.display_name,
+      ),
       onConfirm: async () => {
         try {
           const success = await competitionService.removeParticipation(

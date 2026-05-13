@@ -13,7 +13,7 @@ export const useLogout = () => {
     try {
       await authService.logout();
     } catch (e) {
-      console.error(LOG_MESSAGES.AUTH.LOGOUT_SERVER_ERROR, e);
+      console.error(LOG_MESSAGES.AUTH.LOGOUT_FAILED, e);
     } finally {
       localStorage.removeItem('token');
       setUser(null);

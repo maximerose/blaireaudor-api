@@ -2,6 +2,7 @@ import { competitionService } from '@/services/api/competitionService';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useInvalidateCompetition } from './useInvalidateCompetition';
+import { ERRORS } from '@/constants';
 
 export const useCompetitionReferees = (
   competitionId: string,
@@ -15,8 +16,8 @@ export const useCompetitionReferees = (
     onSuccess: () => {
       invalidateAll(competitionId, joinCode);
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: () => {
+      toast.error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
     },
   });
 
@@ -26,8 +27,8 @@ export const useCompetitionReferees = (
     onSuccess: () => {
       invalidateAll(competitionId, joinCode);
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: () => {
+      toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
     },
   });
 

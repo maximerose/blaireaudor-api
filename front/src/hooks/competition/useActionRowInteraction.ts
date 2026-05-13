@@ -1,3 +1,4 @@
+import { LOG_MESSAGES } from '@/constants';
 import {
   ActionStatus,
   type Action,
@@ -23,10 +24,10 @@ export const useActionRowInteraction = (
     };
 
     try {
-      await onUpdate(action.id, payload);
+      onUpdate(action.id, payload);
       return true;
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de l'action", error);
+      console.error(LOG_MESSAGES.ACTION.UPDATE_FAILED, error);
       return false;
     }
   };

@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { useCompetitionAdmin } from '@/hooks';
 import type { Competition } from '@/types';
-import { ICONS, QUERY_KEYS } from '@/constants';
+import { CONFIRMS, ERRORS, QUERY_KEYS } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
 
@@ -24,19 +24,11 @@ export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
 
   const handleCloseCompetition = () => {
     if (pendingCount > 0) {
-      toast.error(
-        `Impossible de clôturer ! Il reste ${pendingCount} signalement(s) à trancher.`,
-        {
-          icon: ICONS.REFEREE,
-          style: { borderRadius: '10px', background: '#333', color: '#fff' },
-        },
-      );
+      toast.error(ERRORS.COMPETITION.CLOSE_PENDING_ACTIONS(pendingCount));
       return;
     }
 
-    const confirmed = window.confirm(
-      '🚩 CONFIRMATION : Terminer la compétition maintenant ? Le classement sera gelé et plus aucun signalement ne sera possible.',
-    );
+    const confirmed = window.confirm(CONFIRMS.COMPETITION.CLOSE);
 
     if (confirmed) {
       updateCompetition({ end_date: new Date().toISOString() });
