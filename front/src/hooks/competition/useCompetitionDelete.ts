@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth, useConfirmModal } from '@/hooks';
+import { useAuth } from '@/hooks';
 import { competitionService } from '@/services/api/competitionService';
 import { ROUTES } from '@/constants/routes';
 import toast from 'react-hot-toast';
 import { CONFIRMS, ERRORS } from '@/constants';
+import { useConfirmModal } from '@/context/ConfirmModalContext';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
-  const { isOpen, config, open, close, confirm } = useConfirmModal();
+  const { openModal } = useConfirmModal();
 
   const deleteCompetition = (id: string, name: string, actionCount: number) => {
     if (actionCount > 0) {
@@ -16,7 +17,7 @@ export const useCompetitionDelete = () => {
       return;
     }
 
-    const modalConfig = {
+    openModal({
       title: CONFIRMS.COMPETITION.DELETE_TITLE,
       message: CONFIRMS.COMPETITION.DELETE_MESSAGE(name),
       onConfirm: async () => {
@@ -30,9 +31,8 @@ export const useCompetitionDelete = () => {
           toast.error(ERRORS.COMPETITION.DELETE_FAILED);
         }
       },
-    };
-    open(modalConfig);
+    });
   };
 
-  return { deleteCompetition, modal: { isOpen, config, close, confirm } };
+  return { deleteCompetition };
 };

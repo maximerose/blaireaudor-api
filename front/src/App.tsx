@@ -17,6 +17,7 @@ import CompetitionDetailPage from './components/Competition/Detail/CompetitionDe
 import { ScrollToTop } from './components/UI/ScrollToTop';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConfirmModalProvider } from './context/ConfirmModalProvider';
 
 const queryClient = new QueryClient();
 
@@ -37,74 +38,76 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Toaster position="bottom-right" reverseOrder={false} />
-        <ScrollToTop />
-        <div className="min-h-screen w-full bg-dark">
-          <Routes>
-            <Route
-              path={ROUTES.NAV.DASHBOARD}
-              element={
-                user ? (
-                  <Dashboard />
-                ) : (
-                  <Navigate to={ROUTES.NAV.LOGIN} replace />
-                )
-              }
-            />
-            <Route
-              path={ROUTES.NAV.LOGIN}
-              element={
-                user ? (
-                  <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                ) : (
-                  <LoginForm />
-                )
-              }
-            />
-            <Route
-              path={ROUTES.NAV.HOME}
-              element={
-                <Navigate
-                  to={user ? ROUTES.NAV.DASHBOARD : ROUTES.NAV.LOGIN}
-                  replace
-                />
-              }
-            />
-            <Route
-              path={ROUTES.NAV.REGISTER}
-              element={
-                user ? (
-                  <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                ) : (
-                  <RegistrationForm />
-                )
-              }
-            />
-            <Route
-              path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
-              element={
-                user ? (
-                  <CreateCompetitionPage />
-                ) : (
-                  <Navigate to={ROUTES.NAV.LOGIN} />
-                )
-              }
-            />
-            <Route
-              path={ROUTES.NAV.COMPETITION_DETAIL_PATH}
-              element={
-                user ? (
-                  <CompetitionDetailPage />
-                ) : (
-                  <Navigate to={ROUTES.NAV.LOGIN} replace />
-                )
-              }
-            />
-            <Route path={ROUTES.NAV.LOGOUT} element={<LogoutHandler />} />
-          </Routes>
-        </div>
-      </Router>
+      <ConfirmModalProvider>
+        <Router>
+          <Toaster position="bottom-right" reverseOrder={false} />
+          <ScrollToTop />
+          <div className="min-h-screen w-full bg-dark">
+            <Routes>
+              <Route
+                path={ROUTES.NAV.DASHBOARD}
+                element={
+                  user ? (
+                    <Dashboard />
+                  ) : (
+                    <Navigate to={ROUTES.NAV.LOGIN} replace />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.LOGIN}
+                element={
+                  user ? (
+                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
+                  ) : (
+                    <LoginForm />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.HOME}
+                element={
+                  <Navigate
+                    to={user ? ROUTES.NAV.DASHBOARD : ROUTES.NAV.LOGIN}
+                    replace
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.NAV.REGISTER}
+                element={
+                  user ? (
+                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
+                  ) : (
+                    <RegistrationForm />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
+                element={
+                  user ? (
+                    <CreateCompetitionPage />
+                  ) : (
+                    <Navigate to={ROUTES.NAV.LOGIN} />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.COMPETITION_DETAIL_PATH}
+                element={
+                  user ? (
+                    <CompetitionDetailPage />
+                  ) : (
+                    <Navigate to={ROUTES.NAV.LOGIN} replace />
+                  )
+                }
+              />
+              <Route path={ROUTES.NAV.LOGOUT} element={<LogoutHandler />} />
+            </Routes>
+          </div>
+        </Router>
+      </ConfirmModalProvider>
     </QueryClientProvider>
   );
 }

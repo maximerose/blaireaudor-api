@@ -3,6 +3,7 @@ export * from './api';
 export * from './auth';
 export * from './bonusDay';
 export * from './competition';
+export * from './modal';
 export * from './participation';
 export * from './player';
 export * from './user';

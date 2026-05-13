@@ -42,7 +42,6 @@ export * from './dashboard/useDashboardSort';
 export * from './dashboard/useDashboardUI';
 
 export * from './ui/useActionRow';
-export * from './ui/useConfirmModal';
 export * from './ui/useDateNavigation';
 export * from './ui/useEmptyStateUI';
 export * from './ui/useHistoricalSearchUI';

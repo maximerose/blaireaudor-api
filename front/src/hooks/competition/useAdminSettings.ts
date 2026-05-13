@@ -4,6 +4,7 @@ import type { Competition } from '@/types';
 import { CONFIRMS, ERRORS, QUERY_KEYS } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services/api/competitionService';
+import { useConfirmModal } from '@/context/ConfirmModalContext';
 
 interface UseAdminSettingsProps {
   competition: Competition;
@@ -11,6 +12,7 @@ interface UseAdminSettingsProps {
 
 export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
   const { updateCompetition, isUpdating } = useCompetitionAdmin();
+  const { openModal } = useConfirmModal();
 
   const handleToggleFog = () => {
     updateCompetition({ fog_of_war: !competition.fog_of_war });
@@ -28,11 +30,13 @@ export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
       return;
     }
 
-    const confirmed = window.confirm(CONFIRMS.COMPETITION.CLOSE);
-
-    if (confirmed) {
-      updateCompetition({ end_date: new Date().toISOString() });
-    }
+    openModal({
+      title: CONFIRMS.COMPETITION.CLOSE_TITLE,
+      message: CONFIRMS.COMPETITION.CLOSE_MESSAGE,
+      onConfirm: () => {
+        updateCompetition({ end_date: new Date().toISOString() });
+      },
+    });
   };
 
   return {

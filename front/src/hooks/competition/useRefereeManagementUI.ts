@@ -4,12 +4,15 @@ import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
 import type { Player, Competition, RefereeListItem } from '@/types';
 import { CONFIRMS, ERRORS, SUCCESS } from '@/constants';
+import { useConfirmModal } from '@/context/ConfirmModalContext';
 
 export const useRefereeManagementUI = (competition: Competition) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(
     competition.id,
     competition.join_code,
   );
+
+  const { openModal } = useConfirmModal();
 
   const referees = useMemo(
     () => getCompetitionReferees(competition),
@@ -42,22 +45,26 @@ export const useRefereeManagementUI = (competition: Competition) => {
   };
 
   const handleRemoveRequest = async (ref: RefereeListItem, isMe: boolean) => {
-    const confirmMsg = isMe
-      ? CONFIRMS.REFEREE.RESIGN
-      : CONFIRMS.REFEREE.REVOKE(ref.name);
+    openModal({
+      title: isMe
+        ? CONFIRMS.REFEREE.RESIGN_TITLE
+        : CONFIRMS.REFEREE.REVOKE_TITLE,
+      message: isMe
+        ? CONFIRMS.REFEREE.RESIGN_MESSAGE
+        : CONFIRMS.REFEREE.REVOKE_MESSAGE(ref.name),
+      onConfirm: async () => {
+        if (!ref.id) return;
 
-    if (window.confirm(confirmMsg)) {
-      if (!ref.id) return;
-
-      const success = await removeReferee(ref.id);
-      if (success) {
-        toast.success(
-          isMe ? SUCCESS.REFEREE.RESIGNED : SUCCESS.REFEREE.REVOKED(ref.name),
-        );
-      } else {
-        toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
-      }
-    }
+        const success = await removeReferee(ref.id);
+        if (success) {
+          toast.success(
+            isMe ? SUCCESS.REFEREE.RESIGNED : SUCCESS.REFEREE.REVOKED(ref.name),
+          );
+        } else {
+          toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
+        }
+      },
+    });
   };
 
   return {

@@ -6,6 +6,7 @@ import type {
   ActionSortField,
   PlayerCompact,
   ActionFormData,
+  ModalConfig,
 } from '@/types';
 
 export interface AdminContextType {
@@ -73,4 +74,9 @@ export interface ReportActionContextType {
   searchContainerRef: React.RefObject<HTMLDivElement | null>;
   filteredPlayers: PlayerCompact[];
   selectPlayer: (id: string, name: string) => void;
+}
+
+export interface ConfirmModalContextType {
+  openModal: (config: ModalConfig) => void;
+  closeModal: () => void;
 }

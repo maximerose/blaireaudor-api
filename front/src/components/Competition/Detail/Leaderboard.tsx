@@ -1,4 +1,4 @@
-import { Card, ConfirmModal, EmptyState, Text } from '@/components/UI';
+import { Card, EmptyState, Text } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 import { COMPETITION_UI, ICONS } from '@/constants';
@@ -8,7 +8,6 @@ export const Leaderboard = () => {
     dislpayedParticipations,
     isFogActive,
     isAdmin,
-    modal,
     competition,
     handleDelete,
   } = useLeaderboardUI();
@@ -57,15 +56,6 @@ export const Leaderboard = () => {
           />
         )}
       </Card>
-
-      <ConfirmModal
-        isOpen={modal.isOpen}
-        title={modal.config?.title ?? ''}
-        message={modal.config?.message ?? ''}
-        confirmLabel={modal.config?.confirmLabel}
-        onConfirm={modal.confirm}
-        onClose={modal.close}
-      />
     </>
   );
 };

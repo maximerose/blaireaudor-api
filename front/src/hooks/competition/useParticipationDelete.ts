@@ -1,14 +1,15 @@
-import { useAuth, useConfirmModal } from '@/hooks';
+import { useAuth } from '@/hooks';
 import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
 import { competitionService } from '@/services/api/competitionService';
 import toast from 'react-hot-toast';
 import type { Participation } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { useConfirmModal } from '@/context/ConfirmModalContext';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
-  const { isOpen, config, open, close, confirm } = useConfirmModal();
+  const { openModal } = useConfirmModal();
 
   const deleteParticipation = (participation: Participation) => {
     if (participation.has_actions) {
@@ -20,7 +21,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
       return;
     }
 
-    const modalConfig = {
+    openModal({
       title: CONFIRMS.PARTICIPATION.REMOVE_TITLE,
       message: CONFIRMS.PARTICIPATION.REMOVE_MESSAGE(
         participation.player?.display_name,
@@ -41,10 +42,8 @@ export const useParticipationDelete = (onSuccess: () => void) => {
           toast.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
         }
       },
-    };
-
-    open(modalConfig);
+    });
   };
 
-  return { deleteParticipation, modal: { isOpen, config, close, confirm } };
+  return { deleteParticipation };
 };

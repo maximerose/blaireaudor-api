@@ -8,7 +8,7 @@ export const useLeaderboardUI = () => {
   const { competition, leaderboard, refresh, isAdmin, hidePoints } =
     useCompetition();
 
-  const { deleteParticipation, modal } = useParticipationDelete(refresh);
+  const { deleteParticipation } = useParticipationDelete(refresh);
 
   const displayableParticipations = useMemo(() => {
     const safeLeaderboard = leaderboard || [];
@@ -32,7 +32,6 @@ export const useLeaderboardUI = () => {
 
   return {
     dislpayedParticipations: displayableParticipations,
-    modal,
     isFogActive: hidePoints,
     isAdmin,
     competition,
