@@ -52,12 +52,12 @@ export const useDashboardHeader = () => {
     {
       label: DASHBOARD_UI.HEADER.STATS.CREATED,
       val: stats.created,
-      color: 'text-gold',
+      color: 'text-role-creator-bright',
     },
     {
       label: DASHBOARD_UI.HEADER.STATS.REFEREED,
       val: stats.refereed,
-      color: 'text-info-bright',
+      color: 'text-role-referee-bright',
     },
   ];
 

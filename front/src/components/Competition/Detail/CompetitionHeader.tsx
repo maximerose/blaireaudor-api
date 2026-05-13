@@ -141,12 +141,12 @@ export const CompetitionHeader = () => {
           {bonusDays.map((bd: BonusDay) => (
             <div
               key={bd.id}
-              className="flex items-center rounded-md overflow-hidden border border-warning/30 bg-warning-dark/20"
+              className="flex items-center rounded-md overflow-hidden border border-game-bonus/30 bg-game-bonus/20"
             >
               <span className="px-2 py-1 text-[10px] font-mono text-silver bg-black/40 uppercase">
                 {formatLongDate(bd.date)}
               </span>
-              <span className="px-2 py-1 text-xs font-black text-warning-bright">
+              <span className="px-2 py-1 text-xs font-black text-game-bonus-bright">
                 x{bd.multiplier}
               </span>
             </div>

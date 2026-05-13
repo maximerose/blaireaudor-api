@@ -17,7 +17,7 @@ export const DashboardHeader = () => {
             {DASHBOARD_UI.HEADER.GREETING}
             {displayName && (
               <>
-                , <span className="text-gold">{displayName}</span>
+                , <span className="text-player-me">{displayName}</span>
               </>
             )}
           </Text>

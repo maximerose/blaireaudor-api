@@ -62,6 +62,7 @@ export const COMPETITION_UI = {
         MULTIPLIERS_SECTION_TITLE: `Calendrier des Bonus ${ICONS.FIRE}`,
       },
       REPORTING: {
+        BONUS_DAY: 'Journée bonus en cours !',
         NOT_STARTED_TITLE: "L'heure de la délation n'a pas sonné...",
         NOT_STARTED_SUBTITLE: 'Ouverture ',
         NOT_STARTED_ELAPSED: 'lancée !',

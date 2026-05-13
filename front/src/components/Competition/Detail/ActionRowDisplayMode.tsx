@@ -111,7 +111,7 @@ export const ActionRowDisplayMode = ({
             <Text variant="mono" className="text-[9px] line-through opacity-40">
               {action.points}
             </Text>
-            <span className="text-[8px] font-black text-warning-bright bg-warning/20 px-1 rounded">
+            <span className="text-[8px] font-black text-game-bonus-bright bg-game-bonus/20 px-1 rounded">
               x{multiplier}
             </span>
           </div>

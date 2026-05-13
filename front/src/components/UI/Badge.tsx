@@ -9,7 +9,11 @@ export type BadgeVariant =
   | 'danger'
   | 'info'
   | 'warning'
-  | 'ghost';
+  | 'ghost'
+  | 'creator'
+  | 'referee'
+  | 'guest'
+  | 'bonus';
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
@@ -28,6 +32,12 @@ const BADGE_VARIANTS: Record<BadgeVariant, string> = {
   info: 'bg-info/20 text-info-bright border-info-bright/20',
   warning: 'bg-warning/20 text-warning-bright border-warning-bright/20',
   ghost: 'bg-white/5 text-white/40 border-white/10',
+  creator:
+    'bg-role-creator/20 text-role-creator-bright border-role-creator-bright/20',
+  referee:
+    'bg-role-referee/20 text-role-referee-bright border-role-referee-bright/20',
+  guest: 'bg-role-guest/10 text-role-guest border-role-guest/20',
+  bonus: 'bg-game-bonus/20 text-game-bonus-bright border-game-bonus-bright/20',
 };
 
 export const Badge = ({

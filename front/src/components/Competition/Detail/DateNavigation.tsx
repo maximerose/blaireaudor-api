@@ -44,13 +44,13 @@ export const DateNavigation = () => {
                 className={cn(
                   'whitespace-nowrap transition-default relative overflow-hidden px-4',
                   !isActive && 'opacity-40 hover:opacity-80',
-                  multiplier && 'border-warning/50 pr-8',
+                  multiplier && 'border-game-bonus/50 pr-8',
                 )}
               >
                 {formatLongDate(date)}
 
                 {multiplier && (
-                  <div className="absolute top-0 right-0 bottom-0 w-6 bg-warning flex items-center justify-center border-l border-white/20">
+                  <div className="absolute top-0 right-0 bottom-0 w-6 bg-game-bonus flex items-center justify-center border-l border-white/20">
                     <span className="text-[10px] font-black text-white">
                       x{multiplier}
                     </span>

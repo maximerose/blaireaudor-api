@@ -28,14 +28,27 @@
   --color-info: #1e3a8a;
   --color-info-bright: #60a5fa;
 
+  /* --- SÉMANTIQUE MÉTIER : LES RÔLES --- */
+  --color-role-creator: var(--color-success);
+  --color-role-creator-bright: var(--color-success-bright);
+
+  --color-role-referee: var(--color-info);
+  --color-role-referee-bright: var(--color-info-bright);
+
+  --color-role-guest: #888888;
+
+  /* --- SÉMANTIQUE MÉTIER : LES JOUEURS --- */
   --color-player-me: var(--color-gold);
   --color-player-other: var(--color-silver-light);
-
   --color-player-me-bg: color-mix(
     in srgb,
     var(--color-player-me),
     transparent 95%
   );
+
+  /* --- SÉMANTIQUE MÉTIER : GAMEPLAY --- */
+  --color-game-bonus: var(--color-warning);
+  --color-game-bonus-bright: var(--color-warning-bright);
 
   /* --- ANIMATIONS --- */
   --animate-fade-in: fade-in 0.4s ease-out;

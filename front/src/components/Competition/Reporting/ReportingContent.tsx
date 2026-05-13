@@ -43,7 +43,7 @@ export const ReportingContent = () => {
       {todayBonus && (
         <Card
           variant="dark"
-          className="border-warning-bright/30 bg-warning/20 p-4 flex items-center gap-4 animate-pulse"
+          className="border-game-bonus-bright/30 bg-game-bonus/20 p-4 flex items-center gap-4 animate-pulse"
         >
           <div className="flex-1 flex items-center gap-4">
             <Badge variant="warning" className="text-xl">
@@ -52,9 +52,9 @@ export const ReportingContent = () => {
             <div>
               <Text
                 variant="caption"
-                className="text-warning-bright font-bold uppercase tracking-wider"
+                className="text-game-bonus-bright font-bold uppercase tracking-wider"
               >
-                Journée Bonus en cours
+                {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_DAY}
               </Text>
               <Text as="p" variant="micro" className="opacity-70">
                 {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}

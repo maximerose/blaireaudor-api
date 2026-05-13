@@ -7,19 +7,19 @@ interface RoleBadgeProps {
 
 const ROLE_CONFIG = {
   creator: {
-    variant: 'success' as const,
+    variant: 'creator' as const,
     label: 'Créateur',
     icon: ICONS.CREATOR,
     className: '',
   },
   referee: {
-    variant: 'info' as const,
+    variant: 'referee' as const,
     label: 'Arbitre',
     icon: ICONS.REFEREE,
     className: '',
   },
   guest: {
-    variant: 'ghost' as const,
+    variant: 'guest' as const,
     label: 'Invité',
     icon: undefined,
     className: 'opacity-60 text-[8px] py-0 px-1.5',

@@ -66,7 +66,7 @@ export const BonusDayManagement = () => {
             <button
               type="button"
               onClick={() => deleteBonus(bd.id)}
-              className="w-5 h-5 flex items-center justify-center rounded-md text-warning-bright hover:text-warning transition-default"
+              className="w-5 h-5 flex items-center justify-center rounded-md text-game-bonus-bright hover:text-game-bonus transition-default"
             >
               {ICONS.CANCEL}
             </button>
