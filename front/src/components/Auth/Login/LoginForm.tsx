@@ -1,6 +1,6 @@
 import { useLogin } from '@/hooks';
 import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
-import { Input, Button, AuthCard, Text } from '@/components/UI';
+import { Input, Button, AuthCard, Text, TEXT_VARIANT } from '@/components/UI';
 import { preventDefault } from '@/utils';
 
 const LoginForm = () => {
@@ -12,7 +12,10 @@ const LoginForm = () => {
       title={AUTH_UI.LOGIN.TITLE}
       onSubmit={preventDefault(handleSubmit)}
     >
-      <Text variant="caption" className="text-gold/50 mb-6 block text-center">
+      <Text
+        variant={TEXT_VARIANT.CAPTION}
+        className="text-gold/50 mb-6 block text-center"
+      >
         {AUTH_UI.LOGIN.SUBTITLE}
       </Text>
 
@@ -22,7 +25,7 @@ const LoginForm = () => {
           role="alert"
         >
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="text-danger-bright text-center opacity-100"
           >
             <span aria-hidden="true">{ICONS.DANGER} </span>
@@ -65,7 +68,7 @@ const LoginForm = () => {
       </Button>
 
       <div className="text-center pt-4 border-t border-white/5 mt-4">
-        <Text variant="micro" className="block mb-2">
+        <Text variant={TEXT_VARIANT.MICRO} className="block mb-2">
           {AUTH_UI.LOGIN.NO_ACCOUNT}
         </Text>
         <Button

@@ -5,6 +5,7 @@ import {
   Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { useCompetition, useReportAction } from '@/hooks';
 import { preventDefault } from '@/utils';
@@ -43,12 +44,12 @@ export const ReportActionForm = () => {
               <span className="text-3xl">{ICONS.BADGER}</span>
             </div>
             <Text
-              variant="h2"
+              variant={TEXT_VARIANT.H2}
               className="text-gold italic flex items-center justify-center gap-2"
             >
               {FORM.REPORT_ACTION.TITLE}
             </Text>
-            <Text variant="caption" className="text-white/60">
+            <Text variant={TEXT_VARIANT.CAPTION} className="text-white/60">
               {FORM.REPORT_ACTION.SUBTITLE}
             </Text>
           </header>

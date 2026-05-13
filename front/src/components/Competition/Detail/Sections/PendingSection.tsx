@@ -1,4 +1,10 @@
-import { Card, Text, Badge, BADGE_VARIANT } from '@/components/UI';
+import {
+  Card,
+  Text,
+  Badge,
+  BADGE_VARIANT,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
@@ -31,7 +37,7 @@ export const PendingSection = () => {
     <section className="space-y-6 animate-slide-up">
       <div className="flex items-center gap-3 px-1">
         <Text
-          variant="caption"
+          variant={TEXT_VARIANT.CAPTION}
           className="text-gold uppercase font-bold tracking-widest opacity-80"
         >
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.PENDING}
@@ -48,7 +54,7 @@ export const PendingSection = () => {
             section.data.length > 0 && (
               <div key={section.label} className="space-y-3">
                 <Text
-                  variant="micro"
+                  variant={TEXT_VARIANT.MICRO}
                   className="ml-4 opacity-40 uppercase font-black italic"
                 >
                   {section.label}

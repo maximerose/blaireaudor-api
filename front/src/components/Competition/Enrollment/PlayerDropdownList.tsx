@@ -1,4 +1,4 @@
-import { Card, Text } from '@/components/UI';
+import { Card, Text, TEXT_VARIANT } from '@/components/UI';
 import { FORM } from '@/constants';
 import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
@@ -33,7 +33,7 @@ export const PlayerDropdownList = ({
             onClick={() => selectPlayer(p.id, p.display_name)}
           >
             <Text
-              variant="body"
+              variant={TEXT_VARIANT.BODY}
               as="span"
               className="group-hover:text-gold transition-default font-bold"
             >
@@ -44,7 +44,7 @@ export const PlayerDropdownList = ({
       </>
     ) : (
       <div className="p-4 text-center">
-        <Text variant="micro" className="opacity-40 italic">
+        <Text variant={TEXT_VARIANT.MICRO} className="opacity-40 italic">
           {FORM.PLAYER.HINT.NOT_FOUND}
         </Text>
       </div>

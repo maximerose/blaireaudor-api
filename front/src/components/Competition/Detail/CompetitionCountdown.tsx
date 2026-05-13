@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { useCompetitionCountdown } from '@/hooks';
 import { cn } from '@/utils';
 
@@ -23,11 +23,11 @@ export const CompetitionCountdown = ({
   if (!timeLeft) return null;
 
   if (timeLeft.isElapsed) {
-    return <Text variant="mono">{elapsedText || 'Terminée'}</Text>;
+    return <Text variant={TEXT_VARIANT.MONO}>{elapsedText || 'Terminée'}</Text>;
   }
 
   return (
-    <Text variant="mono">
+    <Text variant={TEXT_VARIANT.MONO}>
       {prefix && <span className="mr-1 opacity-60">{prefix} </span>}
 
       <span

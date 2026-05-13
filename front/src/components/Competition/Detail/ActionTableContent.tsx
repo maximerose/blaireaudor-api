@@ -5,6 +5,7 @@ import {
   EmptyState,
   LoadingScreen,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import { useActionTableContext } from '@/context/ActionTableContext';
@@ -29,7 +30,10 @@ export const ActionTableContent = () => {
   return (
     <section className="space-y-6">
       <header className="flex items-center px-1 animate-fade-in">
-        <Text variant="caption" className="whitespace-nowrap font-bold">
+        <Text
+          variant={TEXT_VARIANT.CAPTION}
+          className="whitespace-nowrap font-bold"
+        >
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
         </Text>
         <div className="h-px w-full bg-white/5" />
@@ -84,14 +88,20 @@ export const ActionTableContent = () => {
                   className="p-8 flex justify-center border-t border-white/5"
                 >
                   {isFetchingNextPage ? (
-                    <Text variant="micro" className="animate-pulse text-gold">
+                    <Text
+                      variant={TEXT_VARIANT.MICRO}
+                      className="animate-pulse text-gold"
+                    >
                       {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.LOADING}
                     </Text>
                   ) : hasNextPage ? (
                     <div className="h-1" />
                   ) : (
                     totalActions > 0 && (
-                      <Text variant="micro" className="opacity-20 italic">
+                      <Text
+                        variant={TEXT_VARIANT.MICRO}
+                        className="opacity-20 italic"
+                      >
                         {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.END}
                       </Text>
                     )
@@ -106,7 +116,7 @@ export const ActionTableContent = () => {
         {isAdmin && categories.rejected.length > 0 && (
           <section className="opacity-20 grayscale hover:opacity-60 transition-all duration-700">
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="mb-2 px-2 uppercase tracking-tight italic"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.REJECTED}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { useEmptyStateUI } from '@/hooks';
 
 const ICON_STYLE =
@@ -37,15 +37,15 @@ export const EmptyState = ({
         </div>
 
         <Text
-          variant="caption"
-          className="text-white/40 font-bold uppercase tracking-widest"
+          variant={TEXT_VARIANT.CAPTION}
+          className="text-white/50 font-bold uppercase tracking-widest"
         >
           {title}
         </Text>
 
         {message && (
           <Text
-            variant="body"
+            variant={TEXT_VARIANT.BODY}
             className="text-white/20 text-[10px] sm:text-xs italic mt-2 leading-tight"
           >
             {message}

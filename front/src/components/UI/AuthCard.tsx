@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 
 const AUTH_FORM_CARD =
   'bg-white/5 backdrop-blur-xl p-6 sm:p-8 rounded-[2.5rem] border border-gold/20 shadow-2xl w-full relative overflow-hidden';
@@ -25,7 +25,7 @@ export const AuthCard = ({ children, title, onSubmit }: AuthCardProps) => {
 
           <header className="mb-8 relative z-10">
             <Text
-              variant="h1"
+              variant={TEXT_VARIANT.H1}
               as="h1"
               id="auth-title"
               className="text-center italic"

@@ -6,7 +6,12 @@ import {
   InlineEnrollment,
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
-import { Text, LoadingScreen, NotFoundState } from '@/components/UI';
+import {
+  Text,
+  LoadingScreen,
+  NotFoundState,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { COMPETITION_UI, ERRORS } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionData } from '@/hooks';
@@ -40,7 +45,10 @@ const CompetitionDetailPage = () => {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
           <section className="xl:col-span-5 space-y-6">
             <header className="flex items-center gap-4 px-1">
-              <Text variant="caption" className="whitespace-nowrap font-bold">
+              <Text
+                variant={TEXT_VARIANT.CAPTION}
+                className="whitespace-nowrap font-bold"
+              >
                 {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
               </Text>
               <div className="h-px w-full bg-white/5" />

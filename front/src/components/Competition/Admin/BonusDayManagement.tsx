@@ -1,4 +1,11 @@
-import { Text, Input, Button, Badge, BADGE_VARIANT } from '@/components/UI';
+import {
+  Text,
+  Input,
+  Button,
+  Badge,
+  BADGE_VARIANT,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { formatLongDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
 import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
@@ -21,10 +28,10 @@ export const BonusDayManagement = () => {
   return (
     <div className="space-y-6 pt-6 border-t border-white/5">
       <header className="flex flex-col gap-1">
-        <Text variant="h3" className="text-gold">
+        <Text variant={TEXT_VARIANT.H3} className="text-gold">
           {COMPETITION_UI.ADMIN.BONUS.TITLE}
         </Text>
-        <Text variant="micro" className="opacity-30">
+        <Text variant={TEXT_VARIANT.MICRO} className="opacity-30">
           {COMPETITION_UI.ADMIN.BONUS.SUBTITLE}
         </Text>
       </header>
@@ -78,7 +85,7 @@ export const BonusDayManagement = () => {
         ))}
 
         {bonusDays.length === 0 && (
-          <Text variant="micro" className="italic opacity-20 py-2">
+          <Text variant={TEXT_VARIANT.MICRO} className="italic opacity-20 py-2">
             {FORM.ADMIN.BONUS.EMPTY}
           </Text>
         )}

@@ -6,6 +6,7 @@ import {
   BUTTON_VARIANT,
   Card,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import {
@@ -27,11 +28,14 @@ export const ReportingContent = () => {
           variant="dark"
           className="text-center p-4 border-dashed border-gold/10 max-w-md mx-auto"
         >
-          <Text variant="h2" className="text-gold/30 italic font-medium">
+          <Text
+            variant={TEXT_VARIANT.H2}
+            className="text-gold/30 italic font-medium"
+          >
             {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_TITLE}
           </Text>
           <div className="mt-2 opacity-60">
-            <Text variant="body" className="mt-2 opacity-60">
+            <Text variant={TEXT_VARIANT.BODY} className="mt-2 opacity-60">
               {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_SUBTITLE}
             </Text>
             <CompetitionCountdown
@@ -59,12 +63,12 @@ export const ReportingContent = () => {
             </Badge>
             <div>
               <Text
-                variant="caption"
+                variant={TEXT_VARIANT.CAPTION}
                 className="text-game-bonus-bright font-bold uppercase tracking-wider"
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_DAY}
               </Text>
-              <Text as="p" variant="micro" className="opacity-70">
+              <Text as="p" variant={TEXT_VARIANT.MICRO} className="opacity-70">
                 {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
               </Text>
             </div>

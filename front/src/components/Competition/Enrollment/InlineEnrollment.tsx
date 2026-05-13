@@ -6,6 +6,7 @@ import {
   Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
@@ -53,7 +54,7 @@ export const InlineEnrollment = () => {
       aria-label="Formulaire de recrutement"
     >
       <div className="flex justify-center items-center mb-4">
-        <Text variant="caption" className="text-gold">
+        <Text variant={TEXT_VARIANT.CAPTION} className="text-gold">
           {FORM.ADMIN.ENROLLMENT.TITLE}
         </Text>
       </div>
@@ -102,7 +103,7 @@ export const InlineEnrollment = () => {
             className="border-dashed border-white/10 italic normal-case transition-default hover:border-gold/30"
             aria-label={FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
           >
-            <Text variant="micro" className="opacity-100">
+            <Text variant={TEXT_VARIANT.MICRO} className="opacity-100">
               {FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
             </Text>
           </Button>

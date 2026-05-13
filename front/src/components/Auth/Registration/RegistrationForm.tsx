@@ -8,6 +8,7 @@ import {
   BUTTON_VARIANT,
   Input,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { cn, preventDefault } from '@/utils';
 
@@ -77,7 +78,7 @@ const RegistrationForm = () => {
           {displayStates.shouldShowUsernameHint && (
             <Text
               id="username-hint"
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="px-1 italic text-gold/60"
             >
               <span aria-hidden="true">{ICONS.HINT} </span>{' '}
@@ -92,14 +93,14 @@ const RegistrationForm = () => {
         <div className="py-1" aria-live="polite">
           {checkLoading ? (
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="text-gold animate-pulse text-center"
             >
               {FORM.AUTH.HINTS.USERNAME_CHECK}
             </Text>
           ) : (
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className={cn(
                 'text-center',
                 usernameStatus === 'available'
@@ -157,7 +158,7 @@ const RegistrationForm = () => {
       {message && (
         <div role="status" aria-live="polite">
           <Text
-            variant="body"
+            variant={TEXT_VARIANT.BODY}
             className="mt-4 text-center text-white font-medium animate-fade-in"
           >
             {message}

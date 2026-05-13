@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { cn } from '@/utils';
 import { useRankedScoreUI } from '@/hooks';
 
@@ -29,7 +29,7 @@ export const RankedScore = ({
     >
       <Text
         as="span"
-        variant="mono"
+        variant={TEXT_VARIANT.MONO}
         aria-hidden="true"
         className={scoreClasses}
       >
@@ -38,7 +38,7 @@ export const RankedScore = ({
 
       <Text
         as="span"
-        variant="micro"
+        variant={TEXT_VARIANT.MICRO}
         className="text-white/20"
         aria-hidden="true"
       >

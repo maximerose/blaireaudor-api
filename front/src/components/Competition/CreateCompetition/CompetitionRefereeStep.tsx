@@ -5,6 +5,7 @@ import {
   Input,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import {
   SelectedPlayersList,
@@ -61,10 +62,10 @@ export const CompetitionRefereeStep = ({
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
-        <Text variant="h2" className="italic">
+        <Text variant={TEXT_VARIANT.H2} className="italic">
           {FORM.COMPETITION.STEPS.REFEREE.TITLE}
         </Text>
-        <Text variant="caption" className="opacity-30">
+        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-30">
           {FORM.COMPETITION.STEPS.REFEREE.SUBTITLE}
         </Text>
       </div>
@@ -96,7 +97,7 @@ export const CompetitionRefereeStep = ({
       <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
         <div className="space-y-2">
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="text-gold uppercase tracking-widest pl-1"
           >
             {FORM.COMPETITION.LABELS.MAIN_REFEREE}
@@ -118,7 +119,7 @@ export const CompetitionRefereeStep = ({
                 {ICONS.CREATOR}
               </div>
               <Text
-                variant="body"
+                variant={TEXT_VARIANT.BODY}
                 className={
                   formData.isCreatorReferee
                     ? 'text-gold font-bold'
@@ -146,7 +147,7 @@ export const CompetitionRefereeStep = ({
         {externalReferees.length > 0 && (
           <div className="space-y-2">
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="text-white/50 uppercase tracking-widest pl-1"
             >
               {FORM.COMPETITION.LABELS.EXTERNAL_REFEREES}
@@ -164,7 +165,7 @@ export const CompetitionRefereeStep = ({
         {players.length > 0 && (
           <div className="space-y-2">
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="text-white/50 uppercase tracking-widest pl-1"
             >
               {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
@@ -190,7 +191,7 @@ export const CompetitionRefereeStep = ({
                       {isRef ? ICONS.REFEREE : ICONS.PLAYER}
                     </div>
                     <Text
-                      variant="body"
+                      variant={TEXT_VARIANT.BODY}
                       className={isRef ? 'text-gold font-bold' : 'text-white'}
                     >
                       {player.display_name}
@@ -218,7 +219,7 @@ export const CompetitionRefereeStep = ({
       {/* ✨ MESSAGE D'ERREUR SI AUCUN ARBITRE ✨ */}
       {hasNoReferee && (
         <Text
-          variant="caption"
+          variant={TEXT_VARIANT.CAPTION}
           className="text-danger-bright text-center block mt-2 animate-fade-in font-bold"
         >
           {FORM.COMPETITION.HINTS.REFEREE}

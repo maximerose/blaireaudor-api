@@ -1,4 +1,9 @@
-import { Card, Text, PlayerSearchResultItem } from '@/components/UI';
+import {
+  Card,
+  Text,
+  PlayerSearchResultItem,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { FORM } from '@/constants';
 import type { PlayerCompact } from '@/types';
 
@@ -28,10 +33,13 @@ export const PlayerSearchResultsDropdown = ({
           className="p-4 bg-gold/5 hover:bg-gold/10 cursor-pointer flex justify-between items-center group transition-default"
         >
           <div className="flex flex-col text-left">
-            <Text variant="micro" className="text-gold opacity-100">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-gold opacity-100"
+            >
               {FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
             </Text>
-            <Text variant="micro" className="italic opacity-30">
+            <Text variant={TEXT_VARIANT.MICRO} className="italic opacity-30">
               {FORM.ADMIN.ENROLLMENT.NEW_PLAYER_HINT}
             </Text>
           </div>

@@ -5,6 +5,7 @@ import {
   BADGE_VARIANT,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import { useAdmin } from '@/context/AdminContext';
@@ -41,7 +42,7 @@ export const FogOfWarToggle = () => {
           </div>
           <div className="flex flex-col flex-1">
             <Text
-              variant="h3"
+              variant={TEXT_VARIANT.H3}
               className="font-black uppercase text-[11px] leading-none tracking-tight"
             >
               {isFogActive
@@ -49,7 +50,7 @@ export const FogOfWarToggle = () => {
                 : COMPETITION_UI.ADMIN.FOG.ENABLE}
             </Text>
             <Text
-              variant="body"
+              variant={TEXT_VARIANT.BODY}
               className="text-[10px] opacity-60 font-normal italic mt-1 leading-tight"
             >
               {isFogActive

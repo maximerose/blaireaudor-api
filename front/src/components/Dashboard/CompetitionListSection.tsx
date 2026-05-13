@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { CompetitionCard } from '@/components/Dashboard';
 import { cn } from '@/utils';
 import type { DashboardItem } from '@/types';
@@ -23,7 +23,7 @@ export const CompetitionListSection = ({
       {/* Header de section */}
       <div className="flex items-center justify-between px-1">
         <Text
-          variant="caption"
+          variant={TEXT_VARIANT.CAPTION}
           className={cn(
             'uppercase font-bold tracking-widest',
             variant === 'gold'

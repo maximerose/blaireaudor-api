@@ -9,6 +9,7 @@ import {
   Text,
   RoleBadge,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation } from '@/types';
@@ -58,12 +59,12 @@ export const CompetitionCard = ({
         <div className="min-w-0 flex-1">
           <Text
             id={`title-${competition.join_code}`}
-            variant="h3"
+            variant={TEXT_VARIANT.H3}
             className="text-white group-hover:text-gold transition-colors truncate normal-case italic"
           >
             {competition.name}
           </Text>
-          <Text variant="micro" className="text-gold/40 mt-0.5">
+          <Text variant={TEXT_VARIANT.MICRO} className="text-gold/40 mt-0.5">
             <span className="sr-only">{DASHBOARD_UI.CARD.ARIA.DATES}</span>
             {dateText}
           </Text>
@@ -73,12 +74,12 @@ export const CompetitionCard = ({
       <div className="flex items-center justify-between gap-2 mb-6">
         <div className="flex flex-col">
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="opacity-10 text-white uppercase font-black"
           >
             {DASHBOARD_UI.CARD.ACCESS_LABEL}
           </Text>
-          <Text variant="mono" className="text-gold/60 uppercase">
+          <Text variant={TEXT_VARIANT.MONO} className="text-gold/60 uppercase">
             <span className="sr-only">{DASHBOARD_UI.CARD.ARIA.JOIN_CODE}</span>
             {competition.join_code}
           </Text>
@@ -96,13 +97,13 @@ export const CompetitionCard = ({
           )}
         >
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="opacity-10 text-white uppercase font-black"
           >
             {DASHBOARD_UI.CARD.PARTICIPANTS_LABEL}
           </Text>
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className={cn(
               'opacity-100 font-bold',
               hasNoParticipants ? 'text-danger-bright' : 'text-gold/80',
@@ -122,7 +123,7 @@ export const CompetitionCard = ({
           {isParticipant ? (
             <>
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="opacity-20 text-white uppercase font-black"
               >
                 {shouldReveal
@@ -142,7 +143,7 @@ export const CompetitionCard = ({
                   </div>
                 ) : (
                   <Text
-                    variant="micro"
+                    variant={TEXT_VARIANT.MICRO}
                     className="opacity-40 italic flex items-center gap-2 text-white"
                   >
                     {DASHBOARD_UI.CARD.MASKED_SCORES}
@@ -156,12 +157,15 @@ export const CompetitionCard = ({
           ) : (
             <div className="flex flex-col">
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="text-gold/40 uppercase font-black"
               >
                 {DASHBOARD_UI.CARD.OFFICIAL_ROLE}
               </Text>
-              <Text variant="micro" className="text-white/30 italic">
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="text-white/30 italic"
+              >
                 {DASHBOARD_UI.CARD.SPECTATOR_MODE}
               </Text>
             </div>

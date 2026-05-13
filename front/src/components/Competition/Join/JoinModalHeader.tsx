@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { FORM, ICONS } from '@/constants';
 
 const ICON_WRAPPER =
@@ -9,9 +9,9 @@ export const JoinModalHeader = () => (
     <div className={ICON_WRAPPER} aria-hidden="true">
       <span className="text-xl">{ICONS.SECRET}</span>
     </div>
-    <Text id="modal-title" variant="h2" className="italic">
+    <Text id="modal-title" variant={TEXT_VARIANT.H2} className="italic">
       {FORM.MODALS.JOIN.INPUT_LABEL}
     </Text>
-    <Text variant="caption">{FORM.MODALS.JOIN.PLACEHOLDER}</Text>
+    <Text variant={TEXT_VARIANT.CAPTION}>{FORM.MODALS.JOIN.PLACEHOLDER}</Text>
   </header>
 );

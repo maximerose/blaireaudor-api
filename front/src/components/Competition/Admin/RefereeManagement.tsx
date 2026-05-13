@@ -3,6 +3,7 @@ import {
   BADGE_VARIANT,
   PlayerSearchResultItem,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
 import { useAuth, useCompetition, usePermissions } from '@/hooks';
@@ -29,8 +30,10 @@ export const RefereeManagement = () => {
   return (
     <div className="space-y-4 pt-6 border-t border-white/10">
       <header>
-        <Text variant="h3">{COMPETITION_UI.ADMIN.REFEREE.TITLE}</Text>
-        <Text variant="caption" className="opacity-60 text-[10px]">
+        <Text variant={TEXT_VARIANT.H3}>
+          {COMPETITION_UI.ADMIN.REFEREE.TITLE}
+        </Text>
+        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-60 text-[10px]">
           {COMPETITION_UI.ADMIN.REFEREE.SUBTITLE}
         </Text>
       </header>
@@ -85,7 +88,10 @@ export const RefereeManagement = () => {
       </div>
 
       {isLastRef && (
-        <Text variant="micro" className="text-warning-bright/80 italic block">
+        <Text
+          variant={TEXT_VARIANT.MICRO}
+          className="text-warning-bright/80 italic block"
+        >
           {COMPETITION_UI.ADMIN.REFEREE.LAST_REF_WARNING}
         </Text>
       )}
@@ -115,7 +121,7 @@ export const RefereeManagement = () => {
 
           {isSearching && (
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="absolute right-10 top-3 opacity-50"
             >
               {ICONS.LOADING}
@@ -146,7 +152,7 @@ export const RefereeManagement = () => {
             !isSearching &&
             searchResults.length === 0 && (
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="text-white/40 italic mt-2 px-1 block"
               >
                 {FORM.PLAYER.HINT.NOT_FOUND}

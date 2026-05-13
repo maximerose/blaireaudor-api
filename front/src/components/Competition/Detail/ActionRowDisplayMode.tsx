@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
 import { useActionRow, useCompetition, useCompetitionAdmin } from '@/hooks';
 import { ActionStatus, type Action } from '@/types';
@@ -36,7 +36,7 @@ export const ActionRowDisplayMode = ({
     >
       {/* Date */}
       <div className="col-span-3 md:col-span-2">
-        <Text variant="mono" className="text-[10px] text-white/40">
+        <Text variant={TEXT_VARIANT.MONO} className="text-[10px] text-white/40">
           {formatShortDate(action.date_action)}
         </Text>
       </div>
@@ -45,7 +45,7 @@ export const ActionRowDisplayMode = ({
       <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 items-center overflow-hidden">
         <div className="md:col-span-3 flex items-center justify-center gap-2 overflow-hidden">
           <Text
-            variant="h3"
+            variant={TEXT_VARIANT.H3}
             className={cn(
               'truncate italic text-xs text-player-other transition-default',
               playerIsMe && 'text-player-me',
@@ -57,14 +57,14 @@ export const ActionRowDisplayMode = ({
 
         <div className="md:col-span-5 flex flex-col">
           <Text
-            variant="body"
+            variant={TEXT_VARIANT.BODY}
             className="text-[10px] md:text-xs text-info-bright"
           >
             {action.description}
           </Text>
           {action.creator_name && (
             <Text
-              variant="body"
+              variant={TEXT_VARIANT.BODY}
               className="text-[8px] md:text-[10px] text-silver"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}
@@ -108,7 +108,10 @@ export const ActionRowDisplayMode = ({
       <div className="col-span-3 md:col-span-2 text-right flex flex-col items-end">
         {multiplier > 1 && !hidePoints && (
           <div className="flex items-center gap-1">
-            <Text variant="mono" className="text-[9px] line-through opacity-40">
+            <Text
+              variant={TEXT_VARIANT.MONO}
+              className="text-[9px] line-through opacity-40"
+            >
               {action.points}
             </Text>
             <span className="text-[8px] font-black text-game-bonus-bright bg-game-bonus/20 px-1 rounded">
@@ -117,7 +120,7 @@ export const ActionRowDisplayMode = ({
           </div>
         )}
         <Text
-          variant="mono"
+          variant={TEXT_VARIANT.MONO}
           className={cn('text-sm md:text-base font-black', displayColor)}
         >
           {pointsDisplay}{' '}

@@ -51,6 +51,5 @@ export * from './ui/useNavbarUI';
 export * from './ui/usePlayerSearchResultUI';
 export * from './ui/useRankBadgeUI';
 export * from './ui/useRankedScoreUI';
-export * from './ui/useTextUI';
 
 export * from './usePermissions';

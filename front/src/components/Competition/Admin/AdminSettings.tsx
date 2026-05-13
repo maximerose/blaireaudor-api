@@ -6,6 +6,7 @@ import {
   BUTTON_VARIANT,
   Card,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { FogOfWarToggle } from './FogOfWarToggle';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
@@ -46,7 +47,7 @@ export const AdminSettings = () => {
             </div>
             <div>
               <Text
-                variant="caption"
+                variant={TEXT_VARIANT.CAPTION}
                 className="font-bold uppercase tracking-widest text-gold/80"
               >
                 {COMPETITION_UI.ADMIN.GENERAL.TITLE}

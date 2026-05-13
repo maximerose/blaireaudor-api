@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { cn } from '@/utils';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,7 +41,7 @@ export const LoadingScreen = ({
 
         <div className="flex flex-col items-center gap-2">
           <Text
-            variant="caption"
+            variant={TEXT_VARIANT.CAPTION}
             className="animate-pulse motion-reduce:animate-none italic text-gold tracking-[0.4em] text-center px-6"
           >
             {message}

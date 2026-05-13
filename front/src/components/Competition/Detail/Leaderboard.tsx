@@ -1,4 +1,4 @@
-import { Card, EmptyState, Text } from '@/components/UI';
+import { Card, EmptyState, Text, TEXT_VARIANT } from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 import { COMPETITION_UI, ICONS } from '@/constants';
@@ -25,7 +25,7 @@ export const Leaderboard = () => {
         {isFogActive && (
           <div className="bg-gold/5 px-4 py-2 border-b border-gold/10 flex items-center justify-center gap-2">
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="text-gold uppercase font-black tracking-widest animate-pulse"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.FOG_OF_WAR.ACTIVE}

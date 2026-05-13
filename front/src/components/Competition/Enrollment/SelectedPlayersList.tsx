@@ -1,4 +1,4 @@
-import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
 import { FORM, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
@@ -49,7 +49,7 @@ export const SelectedPlayersList = ({
         </Badge>
       ))
     ) : (
-      <Text variant="micro" className="m-auto opacity-20">
+      <Text variant={TEXT_VARIANT.MICRO} className="m-auto opacity-20">
         {FORM.ADMIN.ENROLLMENT.NO_PLAYER_SELECTED_HINT}
       </Text>
     )}

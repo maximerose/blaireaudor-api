@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { useNavbarUI } from '@/hooks';
-import { Button, BUTTON_SIZE, BUTTON_VARIANT, Text } from '@/components/UI';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Text,
+  TEXT_VARIANT,
+} from '@/components/UI';
 
 const NAV_CONTAINER =
   'w-full flex items-center justify-between py-6 border-b border-gold/10 animate-fade-in';
@@ -23,10 +29,15 @@ export const Navbar = () => {
         className={LOGO_LINK}
         aria-label="Retour au tableau de bord Le Blaireau d'Or"
       >
-        <Text variant="h1" as="span" className={LOGO_TEXT} aria-hidden="true">
+        <Text
+          variant={TEXT_VARIANT.H1}
+          as="span"
+          className={LOGO_TEXT}
+          aria-hidden="true"
+        >
           Le BLAIREAU D'OR
         </Text>
-        <Text variant="micro" className="mt-1" aria-hidden="true">
+        <Text variant={TEXT_VARIANT.MICRO} className="mt-1" aria-hidden="true">
           Espace joueur
         </Text>
       </Link>
@@ -37,7 +48,7 @@ export const Navbar = () => {
           role="status"
           aria-label={`Connecté en tant que ${displayName}`}
         >
-          <Text variant="h3" as="span" className={USER_NAME_TEXT}>
+          <Text variant={TEXT_VARIANT.H3} as="span" className={USER_NAME_TEXT}>
             <span className="sr-only">Session de : </span>
             {displayName}
           </Text>

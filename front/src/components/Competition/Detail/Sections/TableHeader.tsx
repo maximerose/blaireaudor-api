@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { useActionTableContext } from '@/context/ActionTableContext';
 import type { ActionSortField } from '@/types';
@@ -64,7 +64,7 @@ export const TableHeader = () => {
                   onClick={() => handleSort(col.id)}
                 >
                   <Text
-                    variant="micro"
+                    variant={TEXT_VARIANT.MICRO}
                     className="text-inherit opacity-60 uppercase font-black tracking-widest"
                   >
                     {col.label}
@@ -73,7 +73,7 @@ export const TableHeader = () => {
                 </button>
               ) : (
                 <Text
-                  variant="micro"
+                  variant={TEXT_VARIANT.MICRO}
                   className="opacity-60 uppercase font-black tracking-widest text-center"
                 >
                   {col.label}

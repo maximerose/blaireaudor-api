@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { useInputUI } from '@/hooks';
 import { cn } from '@/utils';
 
@@ -49,7 +49,7 @@ export const Input = ({
         <Text
           as="label"
           htmlFor={inputId}
-          variant="caption"
+          variant={TEXT_VARIANT.CAPTION}
           className={labelClasses}
         >
           {label}

@@ -4,6 +4,7 @@ import {
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { AUTH_UI } from '@/constants';
 
@@ -29,13 +30,13 @@ export const LinkedProfileCard = ({
           aria-hidden="true"
         />
         <Text
-          variant="caption"
+          variant={TEXT_VARIANT.CAPTION}
           className="text-success-bright font-bold uppercase tracking-wider"
         >
           {AUTH_UI.LINKED_CARD.STATUS}
         </Text>
       </div>
-      <Text variant="h2" className="text-white normal-case">
+      <Text variant={TEXT_VARIANT.H2} className="text-white normal-case">
         {name}
       </Text>
     </div>

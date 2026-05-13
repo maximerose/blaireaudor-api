@@ -5,6 +5,7 @@ import {
   BUTTON_VARIANT,
   type ButtonVariant,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { BUTTONS } from '@/constants';
 
@@ -48,10 +49,14 @@ export const ConfirmModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center space-y-2">
-          <Text variant="h2" id="confirm-modal-title" className="italic">
+          <Text
+            variant={TEXT_VARIANT.H2}
+            id="confirm-modal-title"
+            className="italic"
+          >
             {title}
           </Text>
-          <Text variant="body" className="text-white/50">
+          <Text variant={TEXT_VARIANT.BODY} className="text-white/50">
             {message}
           </Text>
         </div>

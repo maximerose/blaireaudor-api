@@ -1,4 +1,11 @@
-import { Input, Button, Text, Card, Switch } from '@/components/UI';
+import {
+  Input,
+  Button,
+  Text,
+  Card,
+  Switch,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
 import { cn } from '@/utils';
@@ -42,10 +49,10 @@ export const CompetitionConfigStep = ({
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="text-center space-y-1">
-        <Text variant="h2" className="italic">
+        <Text variant={TEXT_VARIANT.H2} className="italic">
           {FORM.COMPETITION.STEPS.CONFIG.TITLE}
         </Text>
-        <Text variant="caption" className="opacity-30">
+        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-30">
           {FORM.COMPETITION.STEPS.CONFIG.SUBTITLE}
         </Text>
       </div>
@@ -87,7 +94,7 @@ export const CompetitionConfigStep = ({
           </div>
           {!formData.joinCode && (
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className="italic opacity-30 text-center block"
             >
               {FORM.COMPETITION.HINTS.JOIN_CODE}
@@ -99,7 +106,7 @@ export const CompetitionConfigStep = ({
           {/* BLOC DÉBUT */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
             <Text
-              variant="caption"
+              variant={TEXT_VARIANT.CAPTION}
               className="text-gold tracking-widest uppercase pl-1"
             >
               {FORM.COMPETITION.LABELS.START}
@@ -122,7 +129,7 @@ export const CompetitionConfigStep = ({
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className={
                   formData.startFullDay ? 'text-white' : 'text-white/50'
                 }
@@ -146,7 +153,7 @@ export const CompetitionConfigStep = ({
           {/* BLOC FIN */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
             <Text
-              variant="caption"
+              variant={TEXT_VARIANT.CAPTION}
               className="text-gold tracking-widest uppercase pl-1"
             >
               {FORM.COMPETITION.LABELS.END}
@@ -167,7 +174,7 @@ export const CompetitionConfigStep = ({
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className={formData.endFullDay ? 'text-white' : 'text-white/50'}
               >
                 {FORM.COMPETITION.LABELS.FULL_DAY}
@@ -204,7 +211,7 @@ export const CompetitionConfigStep = ({
             >
               <div className="flex flex-col text-left">
                 <Text
-                  variant="caption"
+                  variant={TEXT_VARIANT.CAPTION}
                   className={cn(
                     'transition-default',
                     toggle.active ? 'text-gold' : 'text-gold/50',
@@ -212,7 +219,10 @@ export const CompetitionConfigStep = ({
                 >
                   {toggle.label}
                 </Text>
-                <Text variant="micro" className="italic mt-1 opacity-20">
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className="italic mt-1 opacity-20"
+                >
                   {toggle.sub}
                 </Text>
               </div>

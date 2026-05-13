@@ -8,6 +8,7 @@ import {
   BADGE_VARIANT,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { cn } from '@/utils';
 import { useCompetition, useEditCompetition } from '@/hooks';
@@ -28,11 +29,11 @@ export const CompetitionGeneralSettings = () => {
     return (
       <div className="flex flex-col sm:flex-row justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-gold/20 transition-all">
         <div className="text-center sm:text-left">
-          <Text variant="body" className="font-bold text-gold">
+          <Text variant={TEXT_VARIANT.BODY} className="font-bold text-gold">
             {competition.name}
           </Text>
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="opacity-40 uppercase tracking-widest"
           >
             <span className="text-gold">{competition.join_code}</span> •{' '}
@@ -76,7 +77,7 @@ export const CompetitionGeneralSettings = () => {
           )}
         >
           <Text
-            variant="caption"
+            variant={TEXT_VARIANT.CAPTION}
             className="text-gold tracking-widest uppercase pl-1"
           >
             {FORM.COMPETITION.LABELS.START}
@@ -106,7 +107,7 @@ export const CompetitionGeneralSettings = () => {
             )}
           >
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className={formData.startFullDay ? 'text-white' : 'text-white/50'}
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}
@@ -126,7 +127,7 @@ export const CompetitionGeneralSettings = () => {
         {/* BLOC FIN */}
         <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
           <Text
-            variant="caption"
+            variant={TEXT_VARIANT.CAPTION}
             className="text-gold tracking-widest uppercase pl-1"
           >
             {FORM.COMPETITION.LABELS.END}
@@ -143,7 +144,7 @@ export const CompetitionGeneralSettings = () => {
             className="flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none"
           >
             <Text
-              variant="micro"
+              variant={TEXT_VARIANT.MICRO}
               className={formData.endFullDay ? 'text-white' : 'text-white/50'}
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}

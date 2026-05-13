@@ -6,6 +6,7 @@ import {
   Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
 import { preventDefault } from '@/utils';
@@ -54,7 +55,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               <Text
                 id="join-error"
                 role="alert"
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="text-danger-bright text-center animate-pulse"
               >
                 {ICONS.DANGER} {error}

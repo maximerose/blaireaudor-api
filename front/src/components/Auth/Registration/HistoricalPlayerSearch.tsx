@@ -1,4 +1,10 @@
-import { Input, PlayerSearchResultItem, Card, Text } from '@/components/UI';
+import {
+  Input,
+  PlayerSearchResultItem,
+  Card,
+  Text,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { useHistoricalSearchUI, type PlayerSearchLogic } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
 import type { Player } from '@/types';
@@ -80,7 +86,10 @@ export const HistoricalPlayerSearch = ({
             className="w-full p-3 hover:bg-white/5 transition-default border-t border-white/5 flex justify-center cursor-pointer focus:bg-white/10 focus:outline-none"
             aria-label={AUTH_UI.HISTORICAL.CLOSE_SEARCH}
           >
-            <Text variant="micro" className="text-gold opacity-100">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-gold opacity-100"
+            >
               <span aria-hidden="true">{ICONS.CANCEL}</span>{' '}
               {AUTH_UI.HISTORICAL.CLOSE_SEARCH}
             </Text>

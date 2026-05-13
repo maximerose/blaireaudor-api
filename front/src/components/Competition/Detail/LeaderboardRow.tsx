@@ -8,6 +8,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   BADGE_VARIANT,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
@@ -80,7 +81,7 @@ export const LeaderboardRow = ({
         <div className="flex flex-col gap-0.5 overflow-hidden text-left min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Text
-              variant="h3"
+              variant={TEXT_VARIANT.H3}
               as="span"
               className={cn(
                 'truncate normal-case italic max-w-30 sm:max-w-none',
@@ -98,7 +99,7 @@ export const LeaderboardRow = ({
           </div>
 
           {showRealStats && participation.isExAequo && (
-            <Text variant="micro" className="text-white/20 italic">
+            <Text variant={TEXT_VARIANT.MICRO} className="text-white/20 italic">
               {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.EXAEQUO}
             </Text>
           )}
@@ -134,7 +135,7 @@ export const LeaderboardRow = ({
           />
         ) : (
           <div className="flex items-center gap-1 opacity-20">
-            <Text variant="mono" className="text-xs">
+            <Text variant={TEXT_VARIANT.MONO} className="text-xs">
               {COMPETITION_UI.DETAIL.MASKED_POINTS}
             </Text>
             <Text className="text-[8px] uppercase">

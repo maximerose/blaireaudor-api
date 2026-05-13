@@ -1,4 +1,4 @@
-import { Text } from '@/components/UI';
+import { Text, TEXT_VARIANT } from '@/components/UI';
 import { DASHBOARD_UI } from '@/constants';
 import { useDashboardHeader } from '@/hooks';
 
@@ -11,7 +11,7 @@ export const DashboardHeader = () => {
         <div className="space-y-4">
           <Text
             id="dashboard-title"
-            variant="h1"
+            variant={TEXT_VARIANT.H1}
             className="text-white normal-case"
           >
             {DASHBOARD_UI.HEADER.GREETING}
@@ -24,7 +24,7 @@ export const DashboardHeader = () => {
         </div>
 
         <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
-          <Text variant="caption" className="text-white/40">
+          <Text variant={TEXT_VARIANT.CAPTION} className="text-white/40">
             {DASHBOARD_UI.HEADER.TOTAL_PARTICIPATIONS(totalParticipations)}
           </Text>
         </div>
@@ -46,7 +46,11 @@ export const DashboardHeader = () => {
               >
                 {s.val}
               </span>
-              <Text variant="micro" className="mt-0.5" aria-hidden="true">
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="mt-0.5"
+                aria-hidden="true"
+              >
                 {s.label}
               </Text>
               <span className="sr-only">

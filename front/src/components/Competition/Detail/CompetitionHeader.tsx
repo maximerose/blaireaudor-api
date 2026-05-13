@@ -1,4 +1,4 @@
-import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
 import {
   formatLongDate,
   getCompetitionReferees,
@@ -27,11 +27,11 @@ export const CompetitionHeader = () => {
     <header className="mb-10 text-center space-y-5">
       {/* 1. Titre et Code */}
       <div className="space-y-1">
-        <Text variant="h1" className="text-3xl sm:text-5xl">
+        <Text variant={TEXT_VARIANT.H1} className="text-3xl sm:text-5xl">
           {competition.name}
         </Text>
         <Text
-          variant="mono"
+          variant={TEXT_VARIANT.MONO}
           className="text-gold/50 tracking-[0.4em] uppercase text-sm inline-block bg-gold/5 px-3 py-1 rounded border border-gold/10"
         >
           <span className="sr-only">
@@ -43,7 +43,7 @@ export const CompetitionHeader = () => {
 
       {/* 2. Infos Temporelles */}
       <div className="flex flex-col items-center gap-1">
-        <Text variant="caption" className="opacity-60">
+        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-60">
           <span className="sr-only">
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.DATES_ARIA}
           </span>
@@ -72,13 +72,13 @@ export const CompetitionHeader = () => {
           {creatorName && (
             <div className="flex items-center gap-2">
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="opacity-40 uppercase tracking-widest"
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.HEADER.CREATOR_LABEL}
               </Text>
               <Text
-                variant="caption"
+                variant={TEXT_VARIANT.CAPTION}
                 className="font-medium text-success-bright"
               >
                 {creatorName}
@@ -103,7 +103,7 @@ export const CompetitionHeader = () => {
           {referees.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2">
               <Text
-                variant="micro"
+                variant={TEXT_VARIANT.MICRO}
                 className="opacity-40 uppercase tracking-widest sm:mr-1"
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.HEADER.REFEREE_LABEL(
@@ -139,7 +139,7 @@ export const CompetitionHeader = () => {
       {bonusDays.length > 0 && (
         <div className="pt-3 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="opacity-40 uppercase tracking-widest w-full mb-1"
           >
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.MULTIPLIERS_SECTION_TITLE}

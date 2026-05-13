@@ -5,6 +5,7 @@ import {
   BUTTON_SIZE,
   BUTTON_VARIANT,
   Text,
+  TEXT_VARIANT,
 } from '@/components/UI';
 import { AUTH_UI, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
@@ -26,7 +27,7 @@ export const GuestFoundAlert = ({
       role="alert"
     >
       <Text
-        variant="micro"
+        variant={TEXT_VARIANT.MICRO}
         className="text-info-bright text-center opacity-100"
       >
         <span aria-hidden="true">{ICONS.GUEST_EYE} </span>{' '}
@@ -34,11 +35,15 @@ export const GuestFoundAlert = ({
       </Text>
 
       <Text
-        variant="body"
+        variant={TEXT_VARIANT.BODY}
         className="text-white/70 text-[11px] text-center leading-tight"
       >
         {AUTH_UI.GUEST_ALERT.USERNAME_PREFIX}{' '}
-        <Text variant="mono" as="span" className="text-white text-[11px]">
+        <Text
+          variant={TEXT_VARIANT.MONO}
+          as="span"
+          className="text-white text-[11px]"
+        >
           @{username}
         </Text>{' '}
         {AUTH_UI.GUEST_ALERT.BELONGS_TO}{' '}
@@ -48,13 +53,13 @@ export const GuestFoundAlert = ({
       {foundGuest.last_competition_name ? (
         <div className="flex items-center gap-1 mt-1 overflow-hidden">
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="italic shrink-0 opacity-20 font-bold"
           >
             {AUTH_UI.GUEST_ALERT.LAST_COMPETITION}
           </Text>
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="text-info-bright/60 italic truncate opacity-100"
           >
             {foundGuest.last_competition_name}

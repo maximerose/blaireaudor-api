@@ -1,4 +1,4 @@
-import { Button, BUTTON_VARIANT, Text } from '@/components/UI';
+import { Button, BUTTON_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { useAdmin } from '@/context/AdminContext';
 import { cn } from '@/utils';
@@ -9,7 +9,7 @@ export const CloseCompetitionAction = () => {
   return (
     <div className="flex flex-col items-center gap-3 border-t md:border-t-0 border-white/5 pt-6 md:pt-0">
       <Text
-        variant="caption"
+        variant={TEXT_VARIANT.CAPTION}
         className="opacity-40 uppercase font-black text-[10px] tracking-widest"
       >
         {COMPETITION_UI.ADMIN.CLOSE.HEADER}
@@ -29,7 +29,7 @@ export const CloseCompetitionAction = () => {
         </Button>
         {pendingCount > 0 && (
           <Text
-            variant="micro"
+            variant={TEXT_VARIANT.MICRO}
             className="text-danger-bright animate-pulse font-bold"
           >
             {COMPETITION_UI.ADMIN.CLOSE.PENDING_WARNING(pendingCount)}
