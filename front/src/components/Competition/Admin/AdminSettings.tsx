@@ -25,6 +25,7 @@ export const AdminSettings = () => {
       <Card
         variant="dark"
         className={cn(
+          'xl:mx-50',
           'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
           isExpanded ? 'p-6 overflow-visible' : 'p-3 sm:p-4 overflow-hidden',
         )}

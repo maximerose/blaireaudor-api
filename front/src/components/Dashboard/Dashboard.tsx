@@ -18,7 +18,7 @@ const Dashboard = () => {
   } = useDashboardUI();
 
   return (
-    <div className="w-full max-w-5xl mx-auto min-h-screen flex flex-col p-4 sm:p-6">
+    <div className="w-full mx-auto min-h-screen flex flex-col p-4 sm:p-6">
       <Navbar />
 
       <main className="flex-1 space-y-6 sm:space-y-10 animate-fade-in mt-4">

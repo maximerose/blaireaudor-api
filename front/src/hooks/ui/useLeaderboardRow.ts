@@ -18,6 +18,7 @@ export const useLeaderboardRow = (
     canDelete,
     medal,
     playerName,
+    hasAccount: participation.player?.has_account ?? false,
     isReferee: isReferee(competition, playerId),
     isCreator: isCreator(competition, participation.player),
   };

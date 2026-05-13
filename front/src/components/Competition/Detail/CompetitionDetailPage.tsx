@@ -7,7 +7,7 @@ import {
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
 import { Text, LoadingScreen, NotFoundState } from '@/components/UI';
-import { COMPETITION_UI } from '@/constants';
+import { COMPETITION_UI, ERRORS } from '@/constants';
 import { CompetitionProvider } from '@/context/CompetitionProvider';
 import { useCompetitionData } from '@/hooks';
 import { useParams } from 'react-router-dom';
@@ -21,14 +21,14 @@ const CompetitionDetailPage = () => {
     return (
       <NotFoundState
         title={COMPETITION_UI.DETAIL.NOT_FOUND}
-        message={`La compétition ${code} n'a pas été trouvée.`}
+        message={ERRORS.COMPETITION.NOT_FOUND(code ?? '')}
       />
     );
   }
 
   return (
     <CompetitionProvider code={code!}>
-      <main className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
+      <main className="w-full mx-auto px-4 py-6 sm:py-10 animate-fade-in">
         <DetailNavigation />
 
         <CompetitionHeader />
@@ -37,8 +37,8 @@ const CompetitionDetailPage = () => {
 
         <ReportingSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <section className="lg:col-span-4 space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
+          <section className="xl:col-span-5 space-y-6">
             <header className="flex items-center gap-4 px-1">
               <Text variant="caption" className="whitespace-nowrap font-bold">
                 {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
@@ -49,7 +49,7 @@ const CompetitionDetailPage = () => {
             {!competition.is_finished && <InlineEnrollment />}
           </section>
 
-          <section className="lg:col-span-8 space-y-6">
+          <section className="xl:col-span-7 space-y-6">
             <ActionTable />
           </section>
         </div>

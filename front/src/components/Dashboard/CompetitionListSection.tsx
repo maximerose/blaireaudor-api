@@ -45,7 +45,7 @@ export const CompetitionListSection = ({
       </div>
 
       {/* Liste ou EmptyState */}
-      <div className="grid gap-3">
+      <div className="grid lg:grid-cols-2 gap-3">
         {hasData ? (
           <>
             {/* Si on passe des compétitions (ex: Managed) */}
