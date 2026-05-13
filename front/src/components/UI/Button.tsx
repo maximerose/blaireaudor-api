@@ -2,8 +2,22 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+export const BUTTON_VARIANT = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  DANGER: 'danger',
+  GHOST: 'ghost',
+} as const;
+
+export const BUTTON_SIZE = {
+  SMALL: 'sm',
+  MEDIUM: 'md',
+  LARGE: 'lg',
+} as const;
+
+export type ButtonVariant =
+  (typeof BUTTON_VARIANT)[keyof typeof BUTTON_VARIANT];
+export type ButtonSize = (typeof BUTTON_SIZE)[keyof typeof BUTTON_SIZE];
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -17,27 +31,27 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const BASE_STYLES =
   'inline-flex items-center justify-center font-black uppercase tracking-widest transition-default rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none shrink-0';
 
-const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
+const VARIANTS_STYLES: Record<ButtonVariant, string> = {
+  [BUTTON_VARIANT.PRIMARY]:
     'bg-gold text-black hover:bg-gold-light hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] shadow-lg shadow-gold/5',
-  secondary:
+  [BUTTON_VARIANT.SECONDARY]:
     'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20',
-  danger:
+  [BUTTON_VARIANT.DANGER]:
     'bg-danger/20 border border-danger/30 text-danger-bright hover:bg-danger hover:text-white transition-slow',
-  ghost:
+  [BUTTON_VARIANT.GHOST]:
     'text-gold/50 hover:text-gold hover:bg-gold/5 border border-transparent',
 };
 
-const SIZES: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-[9px]',
-  md: 'px-6 py-2 text-[10px]',
-  lg: 'px-8 py-4 text-xs',
+const SIZES_STYLES: Record<ButtonSize, string> = {
+  [BUTTON_SIZE.SMALL]: 'px-3 py-1.5 text-[9px]',
+  [BUTTON_SIZE.MEDIUM]: 'px-6 py-2 text-[10px]',
+  [BUTTON_SIZE.LARGE]: 'px-8 py-4 text-xs',
 };
 
 export const Button = ({
   children,
-  variant = 'primary',
-  size = 'md',
+  variant = BUTTON_VARIANT.PRIMARY,
+  size = BUTTON_SIZE.MEDIUM,
   isLoading = false,
   fullWidth = false,
   icon,
@@ -48,8 +62,8 @@ export const Button = ({
 }: ButtonProps) => {
   const combinedClasses = cn(
     BASE_STYLES,
-    VARIANTS[variant],
-    SIZES[size],
+    VARIANTS_STYLES[variant],
+    SIZES_STYLES[size],
     fullWidth && 'w-full',
     className,
   );

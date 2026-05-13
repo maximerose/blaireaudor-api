@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button } from './Button';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT } from './Button';
 import { ICONS } from '@/constants';
 import { Card } from './Card';
 import { cn } from '@/utils';
@@ -44,8 +44,8 @@ export const Dropdown = ({
   return (
     <div className={cn('relative inline-block', className)} ref={containerRef}>
       <Button
-        variant="ghost"
-        size="sm"
+        variant={BUTTON_VARIANT.GHOST}
+        size={BUTTON_SIZE.SMALL}
         onClick={() => setIsOpen(!isOpen)}
         className={cn('border-white/10', value && 'text-gold border-gold/30')}
         icon={ICONS.CHEVRON_DOWN}

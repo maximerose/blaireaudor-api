@@ -1,4 +1,11 @@
-import { Input, Button, Card, Text } from '@/components/UI';
+import {
+  Input,
+  Button,
+  Card,
+  Text,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { useCompetition, useReportAction } from '@/hooks';
 import { preventDefault } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
@@ -106,7 +113,7 @@ export const ReportActionForm = () => {
 
           <div className="flex flex-col gap-3">
             <Button
-              variant="primary"
+              variant={BUTTON_VARIANT.PRIMARY}
               fullWidth
               type="submit"
               isLoading={loading}
@@ -114,10 +121,10 @@ export const ReportActionForm = () => {
               {FORM.REPORT_ACTION.BUTTONS.SUBMIT}
             </Button>
             <Button
-              variant="ghost"
+              variant={BUTTON_VARIANT.GHOST}
               fullWidth
               onClick={toggleReporting}
-              size="sm"
+              size={BUTTON_SIZE.SMALL}
             >
               {FORM.REPORT_ACTION.BUTTONS.CANCEL}
             </Button>

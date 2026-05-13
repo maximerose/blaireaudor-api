@@ -1,4 +1,11 @@
-import { Badge, Button, Card, Text } from '@/components/UI';
+import {
+  Badge,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Card,
+  Text,
+} from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import {
   CompetitionCountdown,
@@ -69,9 +76,9 @@ export const ReportingContent = () => {
 
       {!isReporting ? (
         <Button
-          variant="primary"
+          variant={BUTTON_VARIANT.PRIMARY}
           fullWidth
-          size="md"
+          size={BUTTON_SIZE.SMALL}
           className="group"
           onClick={() => toggleReporting()}
         >

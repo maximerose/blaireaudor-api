@@ -1,4 +1,4 @@
-import { Button } from '@/components/UI';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
 import { useDateNavigation, useCompetition } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
@@ -23,8 +23,12 @@ export const DateNavigation = () => {
         role="group"
       >
         <Button
-          variant={selectedDate === null ? 'primary' : 'secondary'}
-          size="sm"
+          variant={
+            selectedDate === null
+              ? BUTTON_VARIANT.PRIMARY
+              : BUTTON_VARIANT.SECONDARY
+          }
+          size={BUTTON_SIZE.SMALL}
           onClick={() => setSelectedDate(null)}
           className={cn(selectedDate !== null && 'opacity-40')}
         >
@@ -38,8 +42,10 @@ export const DateNavigation = () => {
           return (
             <div key={date} className="relative">
               <Button
-                variant={isActive ? 'primary' : 'secondary'}
-                size="sm"
+                variant={
+                  isActive ? BUTTON_VARIANT.PRIMARY : BUTTON_VARIANT.SECONDARY
+                }
+                size={BUTTON_SIZE.SMALL}
                 onClick={() => setSelectedDate(date)}
                 className={cn(
                   'whitespace-nowrap transition-default relative overflow-hidden px-4',

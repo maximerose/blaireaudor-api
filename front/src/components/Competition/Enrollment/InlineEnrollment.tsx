@@ -4,6 +4,8 @@ import {
   Card,
   PlayerSearchResultItem,
   Text,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
@@ -32,7 +34,7 @@ export const InlineEnrollment = () => {
   if (!isOpen) {
     return (
       <Button
-        variant="ghost"
+        variant={BUTTON_VARIANT.GHOST}
         fullWidth
         onClick={() => setIsOpen(true)}
         className="border-dashed border-white/5 py-4 mt-4 transition-default hover:bg-white/5"
@@ -93,8 +95,8 @@ export const InlineEnrollment = () => {
 
         {canCreatePlayer && (
           <Button
-            variant="secondary"
-            size="sm"
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZE.SMALL}
             fullWidth
             onClick={() => addNewPlayer(searchTerm)}
             className="border-dashed border-white/10 italic normal-case transition-default hover:border-gold/30"
@@ -133,7 +135,7 @@ export const InlineEnrollment = () => {
           {FORM.ADMIN.ENROLLMENT.SAVE_COUNT(newPlayers.length)}
         </Button>
         <Button
-          variant="ghost"
+          variant={BUTTON_VARIANT.GHOST}
           onClick={() => setIsOpen(false)}
           className="px-4 transition-default shrink-0"
           aria-label={BUTTONS.CANCEL}

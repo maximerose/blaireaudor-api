@@ -1,4 +1,4 @@
-import { Button, Dropdown } from '@/components/UI';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT, Dropdown } from '@/components/UI';
 import { cn, normalizeString } from '@/utils';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useAuth, useCompetition, usePermissions } from '@/hooks';
@@ -29,8 +29,10 @@ export const PlayerFilter = () => {
     <div className="flex flex-wrap items-center gap-2 mb-6 animate-fade-in">
       {/* Bouton "Tous" */}
       <Button
-        variant={!selectedPlayerId ? 'secondary' : 'ghost'}
-        size="sm"
+        variant={
+          !selectedPlayerId ? BUTTON_VARIANT.SECONDARY : BUTTON_VARIANT.GHOST
+        }
+        size={BUTTON_SIZE.SMALL}
         onClick={() => setSelectedPlayerId(null)}
         className={cn(
           !selectedPlayerId && 'bg-white/10 border-white/20 text-white',
@@ -42,8 +44,12 @@ export const PlayerFilter = () => {
       {/* Raccourci "Moi" en Gold */}
       {currentUserId && roles.isParticipant && (
         <Button
-          variant={selectedPlayerId === currentUserId ? 'secondary' : 'ghost'}
-          size="sm"
+          variant={
+            selectedPlayerId === currentUserId
+              ? BUTTON_VARIANT.SECONDARY
+              : BUTTON_VARIANT.GHOST
+          }
+          size={BUTTON_SIZE.SMALL}
           onClick={() => setSelectedPlayerId(currentUserId)}
           icon={ICONS.PLAYER}
           className={cn(

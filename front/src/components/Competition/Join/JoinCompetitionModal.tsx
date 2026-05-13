@@ -1,5 +1,12 @@
 import { useJoinCompetitionModal } from '@/hooks';
-import { Button, Input, Card, Text } from '@/components/UI';
+import {
+  Button,
+  Input,
+  Card,
+  Text,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
 import { preventDefault } from '@/utils';
 import { FORM, ICONS, BUTTONS } from '@/constants';
@@ -60,15 +67,15 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               type="submit"
               isLoading={loading}
               fullWidth
-              size="lg"
+              size={BUTTON_SIZE.LARGE}
               className="transition-default"
             >
               {FORM.MODALS.JOIN.SUBMIT}
             </Button>
 
             <Button
-              variant="ghost"
-              size="sm"
+              variant={BUTTON_VARIANT.GHOST}
+              size={BUTTON_SIZE.SMALL}
               onClick={onClose}
               className="text-white/20 hover:text-white/50 transition-default"
               aria-label="Fermer la modale"

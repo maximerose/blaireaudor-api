@@ -1,5 +1,11 @@
 import { JoinCompetitionModal } from '@/components/Competition';
-import { Navbar, Button, EmptyState } from '@/components/UI';
+import {
+  Navbar,
+  Button,
+  EmptyState,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { ROUTES } from '@/constants/routes';
 import { useDashboardUI } from '@/hooks';
 import {
@@ -30,8 +36,8 @@ const Dashboard = () => {
         <DashboardHeader />
         {hasAdminAccess && (
           <Button
-            variant="ghost"
-            size="sm"
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
             className="opacity-40 hover:opacity-100"
           >
             {DASHBOARD_UI.HEADER.ADMIN_ACCESS}
@@ -41,10 +47,13 @@ const Dashboard = () => {
           className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           aria-label={DASHBOARD_UI.CARD.ARIA.QUICK_ACTIONS}
         >
-          <Button to={ROUTES.NAV.ADMIN_CREATE_COMPETITION} variant="primary">
+          <Button
+            to={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
+            variant={BUTTON_VARIANT.PRIMARY}
+          >
             {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
           </Button>
-          <Button onClick={openJoinModal} variant="secondary">
+          <Button onClick={openJoinModal} variant={BUTTON_VARIANT.SECONDARY}>
             {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
           </Button>
         </section>

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { useNavbarUI } from '@/hooks';
-import { Button, Text } from '@/components/UI';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT, Text } from '@/components/UI';
 
 const NAV_CONTAINER =
   'w-full flex items-center justify-between py-6 border-b border-gold/10 animate-fade-in';
@@ -49,8 +49,8 @@ export const Navbar = () => {
 
         <Button
           to={ROUTES.NAV.LOGOUT}
-          variant="danger"
-          size="sm"
+          variant={BUTTON_VARIANT.DANGER}
+          size={BUTTON_SIZE.SMALL}
           className="px-4 transition-default"
           aria-label="Se déconnecter de l'application"
         >

@@ -1,5 +1,5 @@
 import { ROUTES } from '@/constants/routes';
-import { Button, Badge } from '@/components/UI';
+import { Button, Badge, BUTTON_VARIANT, BUTTON_SIZE } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI } from '@/constants';
 import { useCompetition, useCompetitionDelete, usePermissions } from '@/hooks';
 
@@ -12,14 +12,18 @@ export const DetailNavigation = () => {
 
   return (
     <nav className="mb-10 flex justify-between items-center">
-      <Button to={ROUTES.NAV.DASHBOARD} variant="ghost" size="sm">
+      <Button
+        to={ROUTES.NAV.DASHBOARD}
+        variant={BUTTON_VARIANT.GHOST}
+        size="sm"
+      >
         {BUTTONS.BACK}
       </Button>
 
       {canDelete.allowed ? (
         <Button
-          variant="danger"
-          size="sm"
+          variant={BUTTON_VARIANT.DANGER}
+          size={BUTTON_SIZE.SMALL}
           onClick={() =>
             deleteCompetition(competition.id, competition.name, hasActions)
           }

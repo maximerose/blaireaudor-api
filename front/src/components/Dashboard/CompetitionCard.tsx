@@ -8,6 +8,7 @@ import {
   Button,
   Text,
   RoleBadge,
+  BUTTON_SIZE,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation } from '@/types';
@@ -172,7 +173,7 @@ export const CompetitionCard = ({
           variant={
             competition.is_finished || isManager ? 'primary' : 'secondary'
           }
-          size="sm"
+          size={BUTTON_SIZE.SMALL}
           fullWidth
           className="sm:w-auto"
           aria-label={DASHBOARD_UI.CARD.ARIA.ENTER_COMPETITION(

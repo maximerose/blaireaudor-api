@@ -1,4 +1,11 @@
-import { Button, Text, Card } from '@/components/UI';
+import {
+  Button,
+  Text,
+  Card,
+  BUTTON_VARIANT,
+  type ButtonVariant,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { BUTTONS } from '@/constants';
 
 const MODAL_OVERLAY =
@@ -13,7 +20,7 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   onClose: () => void;
   confirmLabel?: string;
-  variant?: 'danger' | 'primary' | 'ghost' | 'secondary';
+  variant?: ButtonVariant;
 }
 
 export const ConfirmModal = ({
@@ -23,7 +30,7 @@ export const ConfirmModal = ({
   onConfirm,
   onClose,
   confirmLabel = BUTTONS.CONFIRM,
-  variant = 'danger',
+  variant = BUTTON_VARIANT.DANGER,
 }: ConfirmModalProps) => {
   if (!isOpen) return null;
 
@@ -50,12 +57,17 @@ export const ConfirmModal = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Button variant={variant} fullWidth size="lg" onClick={onConfirm}>
+          <Button
+            variant={variant}
+            fullWidth
+            size={BUTTON_SIZE.LARGE}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
           <Button
-            variant="ghost"
-            size="sm"
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
             onClick={onClose}
             className="text-white/20 hover:text-white/50 transition-default"
           >

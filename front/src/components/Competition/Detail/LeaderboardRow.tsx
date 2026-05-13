@@ -1,5 +1,13 @@
 import type React from 'react';
-import { Badge, RankedScore, Text, Button, RoleBadge } from '@/components/UI';
+import {
+  Badge,
+  RankedScore,
+  Text,
+  Button,
+  RoleBadge,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
 import type { Competition, EnrichedLeaderboardItem } from '@/types';
@@ -97,8 +105,8 @@ export const LeaderboardRow = ({
 
         {canDelete && (
           <Button
-            variant="ghost"
-            size="sm"
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
             onClick={onDelete}
             className="text-danger-bright/20 hover:text-danger-bright hover:bg-danger/10 px-2 transition-default"
             aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
