@@ -1,4 +1,12 @@
-import { Badge, Button, Card, Text } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Card,
+  Text,
+} from '@/components/UI';
 import { FogOfWarToggle } from './FogOfWarToggle';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
 import { RefereeManagement } from './RefereeManagement';
@@ -46,7 +54,9 @@ export const AdminSettings = () => {
               {!isExpanded && (
                 <div className="flex gap-2 mt-1">
                   <Badge
-                    variant={isFogActive ? 'info' : 'ghost'}
+                    variant={
+                      isFogActive ? BADGE_VARIANT.INFO : BADGE_VARIANT.GHOST
+                    }
                     className="text-[8px] py-0"
                   >
                     {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
@@ -54,7 +64,10 @@ export const AdminSettings = () => {
                       ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
                       : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
                   </Badge>
-                  <Badge variant="ghost" className="text-[8px] py-0">
+                  <Badge
+                    variant={BADGE_VARIANT.GHOST}
+                    className="text-[8px] py-0"
+                  >
                     {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
                       competition.referees?.length || 0,
                     )}
@@ -65,8 +78,8 @@ export const AdminSettings = () => {
           </div>
 
           <Button
-            variant="ghost"
-            size="sm"
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
             onClick={() => setIsExpanded(!isExpanded)}
             className="hover:bg-gold/10"
           >

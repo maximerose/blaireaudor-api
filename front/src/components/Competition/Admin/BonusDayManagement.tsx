@@ -1,4 +1,4 @@
-import { Text, Input, Button, Badge } from '@/components/UI';
+import { Text, Input, Button, Badge, BADGE_VARIANT } from '@/components/UI';
 import { formatLongDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
 import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
@@ -58,7 +58,11 @@ export const BonusDayManagement = () => {
 
       <div className="flex flex-wrap justify-center gap-2">
         {bonusDays.map((bd: BonusDay) => (
-          <Badge key={bd.id} variant="warning" className="pl-3 pr-1 gap-3">
+          <Badge
+            key={bd.id}
+            variant={BADGE_VARIANT.BONUS}
+            className="pl-3 pr-1 gap-3"
+          >
             <span className="font-mono text-[10px]">
               {formatLongDate(bd.date)} —{' '}
               <span className="text-silver-light">x{bd.multiplier}</span>

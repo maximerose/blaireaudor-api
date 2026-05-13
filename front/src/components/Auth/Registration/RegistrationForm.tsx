@@ -1,7 +1,14 @@
 import { useRegistration } from '@/hooks';
 import { ROUTES, FORM, ICONS, AUTH_UI } from '@/constants';
 import { HistoricalPlayerSearch, GuestFoundAlert } from '@/components/Auth';
-import { AuthCard, Button, Input, Text } from '@/components/UI';
+import {
+  AuthCard,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Input,
+  Text,
+} from '@/components/UI';
 import { cn, preventDefault } from '@/utils';
 
 const RegistrationForm = () => {
@@ -162,8 +169,8 @@ const RegistrationForm = () => {
       <div className="flex justify-center mt-6 pt-4 border-t border-white/5">
         <Button
           to={ROUTES.NAV.LOGIN}
-          variant="ghost"
-          size="sm"
+          variant={BUTTON_VARIANT.GHOST}
+          size={BUTTON_SIZE.SMALL}
           className="transition-default"
         >
           {AUTH_UI.REGISTER.ALREADY_ACCOUNT}

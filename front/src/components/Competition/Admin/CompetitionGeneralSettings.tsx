@@ -1,4 +1,14 @@
-import { Input, Button, Text, Card, Badge, Switch } from '@/components/UI';
+import {
+  Input,
+  Button,
+  Text,
+  Card,
+  Badge,
+  Switch,
+  BADGE_VARIANT,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { cn } from '@/utils';
 import { useCompetition, useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
@@ -30,8 +40,8 @@ export const CompetitionGeneralSettings = () => {
           </Text>
         </div>
         <Button
-          variant="ghost"
-          size="sm"
+          variant={BUTTON_VARIANT.GHOST}
+          size={BUTTON_SIZE.SMALL}
           onClick={() => setIsEditing(true)}
           className="mt-3 sm:mt-0"
         >
@@ -72,7 +82,7 @@ export const CompetitionGeneralSettings = () => {
             {FORM.COMPETITION.LABELS.START}
           </Text>
           {competition.has_started && (
-            <Badge variant="ghost" className="text-[8px] ml-2">
+            <Badge variant={BADGE_VARIANT.GHOST} className="text-[8px] ml-2">
               {FORM.COMPETITION.HINTS.ALREADY_STARTED}
             </Badge>
           )}
@@ -151,7 +161,10 @@ export const CompetitionGeneralSettings = () => {
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
-        <Button variant="ghost" onClick={() => setIsEditing(false)}>
+        <Button
+          variant={BUTTON_VARIANT.GHOST}
+          onClick={() => setIsEditing(false)}
+        >
           {BUTTONS.CANCEL}
         </Button>
         <Button onClick={() => handleSave()} isLoading={loading}>

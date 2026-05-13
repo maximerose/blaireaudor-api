@@ -1,4 +1,11 @@
-import { Text, Button, Card, Input } from '@/components/UI';
+import {
+  Text,
+  Button,
+  Card,
+  Input,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
@@ -220,11 +227,11 @@ export const CompetitionRefereeStep = ({
 
       <div className="flex gap-2 pt-2">
         <Button
-          variant="ghost"
+          variant={BUTTON_VARIANT.GHOST}
           onClick={onBack}
           disabled={loading}
           className="px-6"
-          size="md"
+          size={BUTTON_SIZE.MEDIUM}
         >
           {BUTTONS.PREVIOUS}
         </Button>

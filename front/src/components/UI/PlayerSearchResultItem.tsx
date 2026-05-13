@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Badge, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
 import { usePlayerSearchResultUI } from '@/hooks';
 import { FORM, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
@@ -53,7 +53,10 @@ export const PlayerSearchResultItem = ({
             </Text>
           </div>
         ) : (
-          <Badge variant="info" className={classes.newPlayerBadge}>
+          <Badge
+            variant={BADGE_VARIANT.INFO}
+            className={classes.newPlayerBadge}
+          >
             {FORM.ADMIN.ENROLLMENT.NEW_PLAYER_HINT}{' '}
             <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
           </Badge>

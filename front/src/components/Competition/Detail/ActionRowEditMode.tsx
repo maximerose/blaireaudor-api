@@ -1,4 +1,4 @@
-import { Input, Button } from '@/components/UI';
+import { Input, Button, BUTTON_VARIANT } from '@/components/UI';
 import { FORM, BUTTONS } from '@/constants';
 import {
   useActionRowInteraction,
@@ -61,7 +61,7 @@ export const ActionRowEditMode = ({
       <div className="flex gap-2 pt-2">
         <Button
           className="flex-1"
-          variant="ghost"
+          variant={BUTTON_VARIANT.GHOST}
           onClick={onCancel}
           type="button"
         >
@@ -69,7 +69,7 @@ export const ActionRowEditMode = ({
         </Button>
         <Button
           className="flex-1"
-          variant="primary"
+          variant={BUTTON_VARIANT.PRIMARY}
           onClick={onInternalSave}
           type="button"
         >

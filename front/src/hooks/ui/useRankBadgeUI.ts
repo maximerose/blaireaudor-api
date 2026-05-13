@@ -1,10 +1,10 @@
 import { getRankMedal } from '@/utils';
-import { type BadgeVariant } from '@/components/UI';
+import { BADGE_VARIANT, type BadgeVariant } from '@/components/UI';
 
 const RANK_VARIANTS: Record<number, BadgeVariant> = {
-  1: 'gold',
-  2: 'silver',
-  3: 'bronze',
+  1: BADGE_VARIANT.GOLD,
+  2: BADGE_VARIANT.SILVER,
+  3: BADGE_VARIANT.BRONZE,
 };
 
 const BADGE_SHADOWS: Record<number, string> = {
@@ -24,7 +24,7 @@ export const useRankBadgeUI = (rank: number) => {
   const suffix = rank === 1 ? 'er' : 'ème';
   const srText = rank === 1 ? 'premier' : `${rank}ième`;
 
-  const variant = RANK_VARIANTS[rank] || 'ghost';
+  const variant = RANK_VARIANTS[rank] || BADGE_VARIANT.GHOST;
   const badgeShadow = BADGE_SHADOWS[rank] || 'opacity-60 border-white/5';
   const medalShadow = MEDAL_SHADOWS[rank] || '';
 

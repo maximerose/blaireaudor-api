@@ -1,4 +1,11 @@
-import { Badge, Button, Text } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Text,
+} from '@/components/UI';
 import { AUTH_UI, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
 
@@ -54,15 +61,15 @@ export const GuestFoundAlert = ({
           </Text>
         </div>
       ) : (
-        <Badge variant="info" className="mt-1 opacity-60">
+        <Badge variant={BADGE_VARIANT.INFO} className="mt-1 opacity-60">
           {AUTH_UI.GUEST_ALERT.NEW_PLAYER}{' '}
           <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
         </Badge>
       )}
 
       <Button
-        variant="secondary"
-        size="sm"
+        variant={BUTTON_VARIANT.SECONDARY}
+        size={BUTTON_SIZE.SMALL}
         className="mt-2 w-full border-info-bright/30 hover:bg-info/20 text-info-bright transition-default"
         onClick={onLink}
         type="button"

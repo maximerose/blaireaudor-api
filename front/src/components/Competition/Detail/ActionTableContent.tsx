@@ -1,4 +1,11 @@
-import { Badge, Card, EmptyState, LoadingScreen, Text } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Card,
+  EmptyState,
+  LoadingScreen,
+  Text,
+} from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import { useActionTableContext } from '@/context/ActionTableContext';
 import { useCompetition } from '@/hooks';
@@ -26,7 +33,7 @@ export const ActionTableContent = () => {
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
         </Text>
         <div className="h-px w-full bg-white/5" />
-        <Badge variant="ghost" className="opacity-60 text-[8px]">
+        <Badge variant={BADGE_VARIANT.GHOST} className="opacity-60 text-[8px]">
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ENTRIES(totalActions)}
         </Badge>
       </header>

@@ -1,4 +1,9 @@
-import { Badge, PlayerSearchResultItem, Text } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  PlayerSearchResultItem,
+  Text,
+} from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
 import { useAuth, useCompetition, usePermissions } from '@/hooks';
 import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
@@ -36,7 +41,11 @@ export const RefereeManagement = () => {
           const isCreator = ref.userId === competition.created_by?.id;
           const isMe = user?.player?.id === ref.id;
 
-          const variant = isCreator ? 'success' : isMe ? 'gold' : 'info';
+          const variant = isCreator
+            ? BADGE_VARIANT.CREATOR
+            : isMe
+              ? BADGE_VARIANT.ME
+              : BADGE_VARIANT.REFEREE;
           const icon = isCreator ? ICONS.CREATOR : ICONS.REFEREE;
 
           const isRemoving = loadingAction === `remove-${ref.id}`;

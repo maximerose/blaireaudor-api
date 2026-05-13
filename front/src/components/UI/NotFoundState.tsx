@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, EmptyState } from '@/components/UI';
+import { Button, BUTTON_VARIANT, EmptyState } from '@/components/UI';
 import { ICONS, ROUTES } from '@/constants';
 
 interface NotFoundStateProps {
@@ -33,7 +33,11 @@ export const NotFoundState = ({
         message={message}
         layout="card"
         action={
-          <Button variant="primary" onClick={handleReturn} fullWidth>
+          <Button
+            variant={BUTTON_VARIANT.PRIMARY}
+            onClick={handleReturn}
+            fullWidth
+          >
             {returnLabel}
           </Button>
         }

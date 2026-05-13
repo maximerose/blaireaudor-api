@@ -1,4 +1,4 @@
-import { Badge, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
 import { FORM, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
@@ -28,7 +28,7 @@ export const SelectedPlayersList = ({
         <Badge
           key={p.id}
           role="listitem"
-          variant="gold"
+          variant={BADGE_VARIANT.GOLD}
           className="animate-fade-in py-1 px-3 flex items-center gap-2"
         >
           {p.display_name}

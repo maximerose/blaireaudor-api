@@ -1,4 +1,4 @@
-import { Badge, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
 import {
   formatLongDate,
   getCompetitionReferees,
@@ -117,7 +117,13 @@ export const CompetitionHeader = () => {
                 return (
                   <Badge
                     key={ref.id}
-                    variant={isCreator ? 'success' : isMe ? 'gold' : 'info'}
+                    variant={
+                      isCreator
+                        ? BADGE_VARIANT.CREATOR
+                        : isMe
+                          ? BADGE_VARIANT.ME
+                          : BADGE_VARIANT.REFEREE
+                    }
                     icon={isCreator ? ICONS.CREATOR : ICONS.REFEREE}
                   >
                     {ref.name}

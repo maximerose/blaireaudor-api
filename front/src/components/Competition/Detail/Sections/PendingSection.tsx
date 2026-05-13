@@ -1,4 +1,4 @@
-import { Card, Text, Badge } from '@/components/UI';
+import { Card, Text, Badge, BADGE_VARIANT } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
@@ -36,7 +36,7 @@ export const PendingSection = () => {
         >
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.PENDING}
         </Text>
-        <Badge variant="gold" isPulse>
+        <Badge variant={BADGE_VARIANT.GHOST} isPulse>
           {total}
         </Badge>
         <div className="h-px flex-1 bg-gold/10 ml-4" />

@@ -1,5 +1,5 @@
 import { ROUTES } from '@/constants/routes';
-import { Button } from '@/components/UI';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT } from '@/components/UI';
 import { cn } from '@/utils';
 import { BUTTONS, ICONS } from '@/constants';
 
@@ -29,8 +29,8 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
     <div className="flex justify-between items-center px-1">
       <Button
         to={ROUTES.NAV.DASHBOARD}
-        variant="ghost"
-        size="sm"
+        variant={BUTTON_VARIANT.GHOST}
+        size={BUTTON_SIZE.SMALL}
         className="transition-default"
       >
         {BUTTONS.CANCEL}

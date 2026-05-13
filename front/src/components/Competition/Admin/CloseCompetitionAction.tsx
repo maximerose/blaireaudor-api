@@ -1,4 +1,4 @@
-import { Button, Text } from '@/components/UI';
+import { Button, BUTTON_VARIANT, Text } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
 import { useAdmin } from '@/context/AdminContext';
 import { cn } from '@/utils';
@@ -16,7 +16,7 @@ export const CloseCompetitionAction = () => {
       </Text>
       <div className="flex flex-col items-center gap-2">
         <Button
-          variant="danger"
+          variant={BUTTON_VARIANT.DANGER}
           onClick={handleCloseCompetition}
           isLoading={isUpdating}
           disabled={pendingCount > 0}

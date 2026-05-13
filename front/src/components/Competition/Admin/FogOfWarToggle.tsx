@@ -1,4 +1,11 @@
-import { Button, Text, Badge } from '@/components/UI';
+import {
+  Button,
+  Text,
+  Badge,
+  BADGE_VARIANT,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
 import { useAdmin } from '@/context/AdminContext';
 import { cn } from '@/utils';
@@ -9,11 +16,13 @@ export const FogOfWarToggle = () => {
   return (
     <div className="flex flex-col items-center gap-3">
       <Button
-        variant={isFogActive ? 'primary' : 'secondary'}
+        variant={
+          isFogActive ? BUTTON_VARIANT.PRIMARY : BUTTON_VARIANT.SECONDARY
+        }
         onClick={handleToggleFog}
         isLoading={isUpdating}
         disabled={isUpdating}
-        size="md"
+        size={BUTTON_SIZE.MEDIUM}
         className={cn(
           'transition-all duration-500',
           isFogActive
@@ -48,7 +57,9 @@ export const FogOfWarToggle = () => {
                 : COMPETITION_UI.ADMIN.FOG.DESC_ON}
             </Text>
           </div>
-          <Badge variant={isFogActive ? 'success' : 'danger'}>
+          <Badge
+            variant={isFogActive ? BADGE_VARIANT.SUCCESS : BADGE_VARIANT.DANGER}
+          >
             {isFogActive
               ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
               : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}

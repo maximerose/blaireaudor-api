@@ -1,5 +1,11 @@
 import { ROUTES } from '@/constants/routes';
-import { Button, Badge, BUTTON_VARIANT, BUTTON_SIZE } from '@/components/UI';
+import {
+  Button,
+  Badge,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+  BADGE_VARIANT,
+} from '@/components/UI';
 import { BUTTONS, COMPETITION_UI } from '@/constants';
 import { useCompetition, useCompetitionDelete, usePermissions } from '@/hooks';
 
@@ -15,7 +21,7 @@ export const DetailNavigation = () => {
       <Button
         to={ROUTES.NAV.DASHBOARD}
         variant={BUTTON_VARIANT.GHOST}
-        size="sm"
+        size={BUTTON_SIZE.SMALL}
       >
         {BUTTONS.BACK}
       </Button>
@@ -31,7 +37,10 @@ export const DetailNavigation = () => {
           {BUTTONS.DELETE}
         </Button>
       ) : (
-        <Badge variant="ghost" className="opacity-70 italic text-[8px]">
+        <Badge
+          variant={BADGE_VARIANT.GHOST}
+          className="opacity-70 italic text-[8px]"
+        >
           {COMPETITION_UI.DETAIL.PROTECTED}
         </Badge>
       )}

@@ -1,5 +1,6 @@
 import {
   Badge,
+  BADGE_VARIANT,
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
@@ -53,7 +54,7 @@ export const ReportingContent = () => {
           className="border-game-bonus-bright/30 bg-game-bonus/20 p-4 flex items-center gap-4 animate-pulse"
         >
           <div className="flex-1 flex items-center gap-4">
-            <Badge variant="warning" className="text-xl">
+            <Badge variant={BADGE_VARIANT.BONUS} className="text-xl">
               x{todayBonus.multiplier}
             </Badge>
             <div>
@@ -68,7 +69,7 @@ export const ReportingContent = () => {
               </Text>
             </div>
           </div>
-          <Badge variant="warning" className="text-xl">
+          <Badge variant={BADGE_VARIANT.BONUS} className="text-xl">
             x{todayBonus.multiplier}
           </Badge>
         </Card>

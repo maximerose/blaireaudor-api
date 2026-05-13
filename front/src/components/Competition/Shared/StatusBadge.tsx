@@ -1,21 +1,21 @@
-import { Badge } from '@/components/UI';
+import { Badge, BADGE_VARIANT } from '@/components/UI';
 import { CompetitionStatus, type CompetitionStatusType } from '@/types';
 
 const STATUS_CONFIG = {
   [CompetitionStatus.ACTIVE]: {
-    variant: 'success' as const,
+    variant: BADGE_VARIANT.SUCCESS,
     isPulse: true,
     ariaLabel: 'Compétition actuellement en cours',
     label: 'En cours',
   },
   [CompetitionStatus.UPCOMING]: {
-    variant: 'info' as const,
+    variant: BADGE_VARIANT.INFO,
     isPulse: false,
     ariaLabel: 'Compétition à venir',
     label: 'À venir',
   },
   [CompetitionStatus.FINISHED]: {
-    variant: 'danger' as const,
+    variant: BADGE_VARIANT.DANGER,
     isPulse: false,
     ariaLabel: 'Compétition terminée',
     label: 'Terminé',

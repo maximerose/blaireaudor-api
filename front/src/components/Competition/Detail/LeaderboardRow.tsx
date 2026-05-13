@@ -7,6 +7,7 @@ import {
   RoleBadge,
   BUTTON_VARIANT,
   BUTTON_SIZE,
+  BADGE_VARIANT,
 } from '@/components/UI';
 import { getMedalStyle, cn } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
@@ -61,7 +62,7 @@ export const LeaderboardRow = ({
               {medal}
             </span>
           ) : (
-            <Badge variant="ghost">
+            <Badge variant={BADGE_VARIANT.GHOST}>
               <span className="sr-only">
                 {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.RANK}{' '}
               </span>

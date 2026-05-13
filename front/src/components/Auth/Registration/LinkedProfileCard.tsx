@@ -1,4 +1,10 @@
-import { Card, Text, Button } from '@/components/UI';
+import {
+  Card,
+  Text,
+  Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
+} from '@/components/UI';
 import { AUTH_UI } from '@/constants';
 
 interface LinkedProfileCardProps {
@@ -35,8 +41,8 @@ export const LinkedProfileCard = ({
     </div>
 
     <Button
-      variant="ghost"
-      size="sm"
+      variant={BUTTON_VARIANT.GHOST}
+      size={BUTTON_SIZE.SMALL}
       type="button"
       onClick={onClear}
       aria-label={`Changer de joueur à lier, actuellement défini sur ${name}`}
