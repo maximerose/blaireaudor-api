@@ -44,7 +44,6 @@ export const BonusDayManagement = () => {
             value={newDate}
             min={minDate}
             max={maxDate}
-            className="scheme-dark"
             onKeyDown={(e) => e.preventDefault()}
             onChange={(e) => setNewDate(e.target.value)}
           />

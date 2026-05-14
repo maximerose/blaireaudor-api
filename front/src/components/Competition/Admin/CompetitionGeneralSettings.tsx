@@ -10,6 +10,7 @@ import {
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
+  Label,
 } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition } from '@/hooks';
@@ -78,17 +79,14 @@ export const CompetitionGeneralSettings = () => {
               : 'bg-white/5 border-white/10',
           )}
         >
-          <Text
-            variant={TEXT_VARIANT.CAPTION}
-            className="text-gold tracking-widest uppercase pl-1"
-          >
+          <Label>
             {FORM.COMPETITION.LABELS.START}
-          </Text>
-          {competition.has_started && (
-            <Badge variant={BADGE_VARIANT.GHOST} className="text-[8px] ml-2">
-              {FORM.COMPETITION.HINTS.ALREADY_STARTED}
-            </Badge>
-          )}
+            {competition.has_started && (
+              <Badge variant={BADGE_VARIANT.GHOST} className="text-[8px] ml-2">
+                {FORM.COMPETITION.HINTS.ALREADY_STARTED}
+              </Badge>
+            )}
+          </Label>
           <Input
             type="date"
             value={formData.startDate}
@@ -128,12 +126,7 @@ export const CompetitionGeneralSettings = () => {
 
         {/* BLOC FIN */}
         <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-          <Text
-            variant={TEXT_VARIANT.CAPTION}
-            className="text-gold tracking-widest uppercase pl-1"
-          >
-            {FORM.COMPETITION.LABELS.END}
-          </Text>
+          <Label>{FORM.COMPETITION.LABELS.END}</Label>
           <Input
             type="date"
             min={formData.startDate}

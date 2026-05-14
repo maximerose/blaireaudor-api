@@ -108,7 +108,6 @@ export const ReportActionForm = () => {
                   setFormData((p) => ({ ...p, dateAction: e.target.value }))
                 }
                 required
-                className="scheme-dark"
               />
             </div>
           </div>

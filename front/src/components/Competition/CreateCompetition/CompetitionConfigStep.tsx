@@ -6,6 +6,7 @@ import {
   Switch,
   TEXT_VARIANT,
   CARD_VARIANT,
+  Label,
 } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
@@ -106,12 +107,7 @@ export const CompetitionConfigStep = ({
         <div className="grid grid-cols-1 gap-6">
           {/* BLOC DÉBUT */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-            <Text
-              variant={TEXT_VARIANT.CAPTION}
-              className="text-gold tracking-widest uppercase pl-1"
-            >
-              {FORM.COMPETITION.LABELS.START}
-            </Text>
+            <Label>{FORM.COMPETITION.LABELS.START}</Label>
 
             <Input
               type="date"
@@ -153,12 +149,7 @@ export const CompetitionConfigStep = ({
 
           {/* BLOC FIN */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-            <Text
-              variant={TEXT_VARIANT.CAPTION}
-              className="text-gold tracking-widest uppercase pl-1"
-            >
-              {FORM.COMPETITION.LABELS.END}
-            </Text>
+            <Label>{FORM.COMPETITION.LABELS.END}</Label>
 
             <Input
               type="date"
