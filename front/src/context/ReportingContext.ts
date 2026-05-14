@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ReportingContextType } from './contextTypes';
+import type { ReportingContextType } from '@/context';
 import { ERRORS } from '@/constants';
 
 export const ReportingContext = createContext<ReportingContextType | undefined>(

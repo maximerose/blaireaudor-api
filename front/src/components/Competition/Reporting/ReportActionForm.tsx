@@ -8,14 +8,14 @@ import {
   TEXT_VARIANT,
   CARD_VARIANT,
 } from '@/components/UI';
-import { useCompetition, useReportAction } from '@/hooks';
+import { useReportAction } from '@/hooks';
 import { preventDefault } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
 import { FORM, ICONS } from '@/constants';
-import { useReportingContext } from '@/context/ReportingContext';
+import { useCompetitionContext, useReportingContext } from '@/context';
 
 export const ReportActionForm = () => {
-  const { refresh } = useCompetition();
+  const { refresh } = useCompetitionContext();
   const { potentialTargets, toggleReporting } = useReportingContext();
 
   const {

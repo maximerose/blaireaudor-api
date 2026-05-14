@@ -1,5 +1,5 @@
 import type { BonusDay } from '@/types';
-import { apiFetch } from './configService';
+import { apiFetch } from '@/services';
 import { API } from '@/constants';
 
 export const bonusDayService = {

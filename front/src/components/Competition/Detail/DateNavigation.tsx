@@ -1,13 +1,13 @@
 import { Button, BUTTON_SIZE, BUTTON_VARIANT } from '@/components/UI';
 import { cn, formatLongDate } from '@/utils';
-import { useDateNavigation, useCompetition } from '@/hooks';
+import { useDateNavigation } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
-import { useActionTableContext } from '@/context/ActionTableContext';
+import { useActionTableContext, useCompetitionContext } from '@/context';
 
 export const DateNavigation = () => {
   const { availableDates, selectedDate, setSelectedDate } =
     useActionTableContext();
-  const { getMultiplier } = useCompetition();
+  const { getMultiplier } = useCompetitionContext();
   const { scrollRef, showMask, handleScroll } =
     useDateNavigation(availableDates);
 

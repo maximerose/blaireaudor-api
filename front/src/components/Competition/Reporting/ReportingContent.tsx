@@ -14,12 +14,11 @@ import {
   CompetitionCountdown,
   ReportActionForm,
 } from '@/components/Competition';
-import { useReportingContext } from '@/context/ReportingContext';
-import { useCompetition } from '@/hooks';
+import { useCompetitionContext, useReportingContext } from '@/context';
 
 export const ReportingContent = () => {
   const { isReporting, toggleReporting } = useReportingContext();
-  const { competition, getTodayBonus } = useCompetition();
+  const { competition, getTodayBonus } = useCompetitionContext();
   const todayBonus = getTodayBonus();
 
   if (!competition.has_started) {

@@ -9,20 +9,22 @@ import {
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
-import { FogOfWarToggle } from './FogOfWarToggle';
-import { CloseCompetitionAction } from './CloseCompetitionAction';
-import { RefereeManagement } from './RefereeManagement';
-import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
+import {
+  BonusDayManagement,
+  CloseCompetitionAction,
+  CompetitionGeneralSettings,
+  FogOfWarToggle,
+  RefereeManagement,
+} from '@/components/Competition';
 import { useState } from 'react';
 import { cn } from '@/utils';
-import { BonusDayManagement } from './BonusDayManagement';
 import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
-import { AdminProvider } from '@/context/AdminProvider';
-import { useCompetition, usePermissions } from '@/hooks';
+import { usePermissions } from '@/hooks';
+import { AdminProvider, useCompetitionContext } from '@/context';
 
 export const AdminSettings = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
   const { roles, canEditSettings, canManageGame, canManageParticipants } =
     usePermissions();
 

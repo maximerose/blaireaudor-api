@@ -6,13 +6,13 @@ import {
   TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
-import { useAuth, useCompetition, usePermissions } from '@/hooks';
-import { useRefereeManagementUI } from '@/hooks/competition/useRefereeManagementUI';
+import { useAuthContext, useCompetitionContext } from '@/context';
+import { usePermissions, useRefereeManagementUI } from '@/hooks';
 import type { Player, RefereeListItem } from '@/types';
 
 export const RefereeManagement = () => {
-  const { competition } = useCompetition();
-  const { user } = useAuth();
+  const { competition } = useCompetitionContext();
+  const { user } = useAuthContext();
   const { roles } = usePermissions();
 
   const {

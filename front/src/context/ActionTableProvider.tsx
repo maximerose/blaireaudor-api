@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { ActionTableContext } from './ActionTableContext';
+import { ActionTableContext } from '@/context';
 import { useActionTable } from '@/hooks';
 
 interface ActionTableProviderProps {

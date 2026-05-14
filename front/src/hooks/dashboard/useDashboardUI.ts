@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useAuth } from '@/hooks';
 import type { DashboardItem } from '@/types';
+import { useAuthContext } from '@/context';
 
 export const useDashboardUI = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   const hasAdminAccess = useMemo(() => {

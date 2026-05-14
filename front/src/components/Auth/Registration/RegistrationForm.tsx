@@ -12,7 +12,7 @@ import {
 } from '@/components/UI';
 import { cn, preventDefault } from '@/utils';
 
-const RegistrationForm = () => {
+export const RegistrationForm = () => {
   const {
     formData,
     message,

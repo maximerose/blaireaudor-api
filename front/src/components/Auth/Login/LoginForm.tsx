@@ -3,7 +3,7 @@ import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
 import { Input, Button, AuthCard, Text, TEXT_VARIANT } from '@/components/UI';
 import { preventDefault } from '@/utils';
 
-const LoginForm = () => {
+export const LoginForm = () => {
   const { credentials, error, isLoading, handleChange, handleSubmit } =
     useLogin();
 

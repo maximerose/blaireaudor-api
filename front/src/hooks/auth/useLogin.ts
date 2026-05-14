@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, ERRORS } from '@/constants';
-import { useAuth } from '@/hooks';
 import { slugify } from '@/utils';
+import { useAuthContext } from '@/context';
 
 export const useLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -12,7 +12,7 @@ export const useLogin = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, logout } = useAuth();
+  const { login, logout } = useAuthContext();
 
   useEffect(() => {
     logout();

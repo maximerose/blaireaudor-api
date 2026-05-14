@@ -3,8 +3,8 @@ import {
   CreateCompetitionStepper,
   CompetitionConfigStep,
   CompetitionRecruitmentStep,
+  CompetitionRefereeStep,
 } from '@/components/Competition';
-import { CompetitionRefereeStep } from './CompetitionRefereeStep';
 import type { Competition } from '@/types';
 
 interface Props {

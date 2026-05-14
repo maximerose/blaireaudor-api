@@ -1,5 +1,5 @@
 import { API, LOG_MESSAGES } from '@/constants';
-import { apiFetch } from './configService';
+import { apiFetch } from '@/services';
 import type { AuthResult, LoginCredentials, RegisterData, User } from '@/types';
 
 export const authService = {

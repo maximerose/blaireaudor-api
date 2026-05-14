@@ -10,7 +10,7 @@ import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
 import type { Action } from '@/types';
-import { useActionTableContext } from '@/context/ActionTableContext';
+import { useActionTableContext } from '@/context';
 
 export const PendingSection = () => {
   const { categories } = useActionTableContext();

@@ -1,9 +1,9 @@
-import { useAuth, useCompetition } from '@/hooks';
+import { useAuthContext, useCompetitionContext } from '@/context';
 import { ActionStatus, type Action } from '@/types';
 
 export const useActionRow = (action: Action) => {
-  const { hidePoints, getMultiplier } = useCompetition();
-  const { user } = useAuth();
+  const { hidePoints, getMultiplier } = useCompetitionContext();
+  const { user } = useAuthContext();
 
   const playerName = action.player_name || 'Anonyme';
 

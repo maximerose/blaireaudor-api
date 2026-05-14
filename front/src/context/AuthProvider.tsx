@@ -1,12 +1,7 @@
 import { useState, useEffect, type ReactNode, useRef, useMemo } from 'react';
-import { authService } from '@/services/api/authService';
-import { AuthContext } from '@/context/AuthContext';
-import type {
-  User,
-  AuthContextType,
-  LoginCredentials,
-  AuthResult,
-} from '@/types';
+import { authService } from '@/services';
+import { AuthContext, type AuthContextType } from '@/context';
+import type { User, LoginCredentials, AuthResult } from '@/types';
 import { LOG_MESSAGES } from '@/constants';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

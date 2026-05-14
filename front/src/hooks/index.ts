@@ -1,4 +1,3 @@
-export * from './auth/useAuth';
 export * from './auth/useLogin';
 export * from './auth/useLogout';
 export * from './auth/useRegistration';
@@ -11,7 +10,6 @@ export * from './competition/useAdminSettings';
 export * from './competition/useBonusDayAdmin';
 export * from './competition/useBonusDayForm';
 export * from './competition/useBonusDays';
-export * from './competition/useCompetition';
 export * from './competition/useCompetitionActions';
 export * from './competition/useCompetitionAdmin';
 export * from './competition/useCompetitionCard';
@@ -29,12 +27,14 @@ export * from './competition/useEditCompetition';
 export * from './competition/useEnrollment';
 export * from './competition/useInfiniteActions';
 export * from './competition/useInlineEnrollmentUI';
+export * from './competition/useInvalidateCompetition';
 export * from './competition/useJoinByCode';
 export * from './competition/useJoinCompetitionModal';
 export * from './competition/useLeaderboardUI';
 export * from './competition/useParticipationDelete';
 export * from './competition/usePlayerSearch';
 export * from './competition/useRefereeManagementUI';
+export * from './competition/useRefereeStepLogic';
 export * from './competition/useReportAction';
 export * from './competition/useReporting';
 

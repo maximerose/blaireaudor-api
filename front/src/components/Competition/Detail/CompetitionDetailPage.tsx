@@ -13,11 +13,11 @@ import {
   TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ERRORS } from '@/constants';
-import { CompetitionProvider } from '@/context/CompetitionProvider';
+import { CompetitionProvider } from '@/context';
 import { useCompetitionData } from '@/hooks';
 import { useParams } from 'react-router-dom';
 
-const CompetitionDetailPage = () => {
+export const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();
   const { isLoading, isError, competition } = useCompetitionData(code || '');
 

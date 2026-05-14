@@ -1,4 +1,4 @@
-import { getIdFromData } from './api';
+import { getIdFromData } from '@/utils';
 import type {
   User,
   Player,

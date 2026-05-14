@@ -1,10 +1,7 @@
 import { Input, Button, BUTTON_VARIANT } from '@/components/UI';
 import { FORM, BUTTONS } from '@/constants';
-import {
-  useActionRowInteraction,
-  useCompetition,
-  useCompetitionAdmin,
-} from '@/hooks';
+import { useCompetitionContext } from '@/context';
+import { useActionRowInteraction, useCompetitionAdmin } from '@/hooks';
 import type { Action } from '@/types';
 
 interface ActionRowEditModeProps {
@@ -16,7 +13,7 @@ export const ActionRowEditMode = ({
   action,
   onCancel,
 }: ActionRowEditModeProps) => {
-  const { isAdmin } = useCompetition();
+  const { isAdmin } = useCompetitionContext();
   const { handleUpdate } = useCompetitionAdmin();
 
   const { editData, setEditData, handleSave } = useActionRowInteraction(

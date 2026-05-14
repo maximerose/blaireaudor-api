@@ -1,5 +1,5 @@
 import React from 'react';
-import { AdminContext } from './AdminContext';
+import { AdminContext } from '@/context';
 import { useAdminSettings } from '@/hooks';
 import type { Competition } from '@/types';
 

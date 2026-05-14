@@ -14,7 +14,7 @@ import {
 } from '@/components/Dashboard';
 import { DASHBOARD_UI, ICONS } from '@/constants';
 
-const Dashboard = () => {
+export const Dashboard = () => {
   const {
     ongoing,
     upcoming,

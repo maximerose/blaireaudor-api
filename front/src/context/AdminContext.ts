@@ -1,16 +1,19 @@
 import { createContext, useContext } from 'react';
-import type { AdminContextType } from './contextTypes';
+import type { AdminContextType } from '@/context';
 import { ERRORS } from '@/constants';
 
 export const AdminContext = createContext<AdminContextType | undefined>(
   undefined,
 );
 
-export const useAdmin = () => {
+export const useAdminContext = () => {
   const context = useContext(AdminContext);
   if (!context) {
     throw new Error(
-      ERRORS.DEVELOPER.HOOK_OUTSIDE_PROVIDER('useAdmin', 'AdminProvider'),
+      ERRORS.DEVELOPER.HOOK_OUTSIDE_PROVIDER(
+        'useAdminContext',
+        'AdminProvider',
+      ),
     );
   }
   return context;

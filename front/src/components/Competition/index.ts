@@ -1,4 +1,5 @@
 export * from './Admin/AdminSettings';
+export * from './Admin/BonusDayManagement';
 export * from './Admin/CloseCompetitionAction';
 export * from './Admin/CompetitionGeneralSettings';
 export * from './Admin/FogOfWarToggle';
@@ -31,6 +32,7 @@ export * from './Reporting/ReportingSection';
 export * from './Shared/StatusBadge';
 export * from './CreateCompetition/CompetitionConfigStep';
 export * from './CreateCompetition/CompetitionRecruitmentStep';
+export * from './CreateCompetition/CompetitionRefereeStep';
 export * from './CreateCompetition/CreateCompetitionPage';
 export * from './CreateCompetition/CreateCompetitionStepper';
 export * from './CreateCompetition/CreateCompetitionView';

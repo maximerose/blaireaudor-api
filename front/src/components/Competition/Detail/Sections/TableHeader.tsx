@@ -1,6 +1,6 @@
 import { Text, TEXT_VARIANT } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
-import { useActionTableContext } from '@/context/ActionTableContext';
+import { useActionTableContext } from '@/context';
 import type { ActionSortField } from '@/types';
 import { cn } from '@/utils';
 

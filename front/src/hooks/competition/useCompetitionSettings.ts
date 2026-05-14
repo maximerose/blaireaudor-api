@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { getLocalDayString, sortByDate } from '@/utils';
 import type { Competition, BonusDay, EnrichedLeaderboardItem } from '@/types';
-import type { CompetitionContextType } from '@/context/contextTypes';
+import type { CompetitionContextType } from '@/context';
 
 interface UseCompetitionProps {
   competition: Competition;

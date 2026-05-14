@@ -1,6 +1,7 @@
 import { Text, TEXT_VARIANT } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
-import { useActionRow, useCompetition, useCompetitionAdmin } from '@/hooks';
+import { useCompetitionContext } from '@/context';
+import { useActionRow, useCompetitionAdmin } from '@/hooks';
 import { ActionStatus, type Action } from '@/types';
 import { cn, formatShortDate } from '@/utils';
 
@@ -14,7 +15,7 @@ export const ActionRowDisplayMode = ({
   onEdit,
 }: ActionRowDisplayModeProps) => {
   const { handleActionStatus } = useCompetitionAdmin();
-  const { competition, isAdmin, hidePoints } = useCompetition();
+  const { competition, isAdmin, hidePoints } = useCompetitionContext();
   const {
     displayColor,
     pointsDisplay,

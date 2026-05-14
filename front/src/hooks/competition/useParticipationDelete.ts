@@ -1,14 +1,13 @@
-import { useAuth } from '@/hooks';
 import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
 import type { Participation } from '@/types';
 import { useNavigate } from 'react-router-dom';
-import { useConfirmModal } from '@/context/ConfirmModalContext';
+import { useAuthContext, useConfirmModal } from '@/context';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const navigate = useNavigate();
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser } = useAuthContext();
   const { openModal } = useConfirmModal();
 
   const deleteParticipation = (participation: Participation) => {

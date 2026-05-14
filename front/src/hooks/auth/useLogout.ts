@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/services/api/authService';
-import { ROUTES } from '@/constants/routes';
-import { useAuth } from '@/hooks';
+import { authService } from '@/services';
+import { ROUTES, LOG_MESSAGES } from '@/constants';
 import { useCallback } from 'react';
-import { LOG_MESSAGES } from '@/constants';
+import { useAuthContext } from '@/context';
 
 export const useLogout = () => {
-  const { setUser } = useAuth();
+  const { setUser } = useAuthContext();
   const navigate = useNavigate();
 
   const handleLogout = useCallback(async () => {

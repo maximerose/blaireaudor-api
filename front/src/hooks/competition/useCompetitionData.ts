@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import { ERRORS, QUERY_KEYS } from '@/constants';
 
 export const useCompetitionData = (code: string) => {

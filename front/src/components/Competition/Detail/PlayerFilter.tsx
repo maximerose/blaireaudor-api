@@ -1,13 +1,17 @@
 import { Button, BUTTON_SIZE, BUTTON_VARIANT, Dropdown } from '@/components/UI';
 import { cn, normalizeString } from '@/utils';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
-import { useAuth, useCompetition, usePermissions } from '@/hooks';
-import { useActionTableContext } from '@/context/ActionTableContext';
+import { usePermissions } from '@/hooks';
+import {
+  useActionTableContext,
+  useAuthContext,
+  useCompetitionContext,
+} from '@/context';
 
 export const PlayerFilter = () => {
   const { selectedPlayerId, setSelectedPlayerId } = useActionTableContext();
-  const { user } = useAuth();
-  const { competition } = useCompetition();
+  const { user } = useAuthContext();
+  const { competition } = useCompetitionContext();
   const { roles } = usePermissions();
 
   const currentUserId = user?.player?.id;

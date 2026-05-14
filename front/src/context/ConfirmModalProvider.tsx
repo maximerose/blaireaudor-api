@@ -1,6 +1,6 @@
 import type { ModalConfig } from '@/types';
 import { useCallback, useState, type ReactNode } from 'react';
-import { ConfirmModalContext } from './ConfirmModalContext';
+import { ConfirmModalContext } from '@/context';
 import { ConfirmModal } from '@/components/UI';
 
 export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {

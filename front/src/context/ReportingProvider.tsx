@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useCompetition } from './CompetitionContext';
-import { ReportingContext } from './ReportingContext';
+import { ReportingContext, useCompetitionContext } from '@/context';
 
 export const ReportingProvider = ({
   children,
@@ -8,7 +7,7 @@ export const ReportingProvider = ({
   children: React.ReactNode;
 }) => {
   const [isReporting, setIsReporting] = useState(false);
-  const { leaderboard } = useCompetition();
+  const { leaderboard } = useCompetitionContext();
 
   const potentialTargets = useMemo(
     () =>

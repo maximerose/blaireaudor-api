@@ -1,4 +1,4 @@
-import { ICONS } from './icons';
+import { ICONS } from '@/constants';
 
 export const DASHBOARD_UI = {
   BUTTONS: {

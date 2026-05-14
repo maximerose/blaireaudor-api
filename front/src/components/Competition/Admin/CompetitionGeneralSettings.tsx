@@ -12,11 +12,12 @@ import {
   CARD_VARIANT,
 } from '@/components/UI';
 import { cn } from '@/utils';
-import { useCompetition, useEditCompetition } from '@/hooks';
+import { useEditCompetition } from '@/hooks';
 import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
+import { useCompetitionContext } from '@/context';
 
 export const CompetitionGeneralSettings = () => {
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
   const {
     isEditing,
     setIsEditing,

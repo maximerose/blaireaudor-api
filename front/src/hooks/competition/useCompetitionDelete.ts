@@ -1,14 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks';
-import { competitionService } from '@/services/api/competitionService';
-import { ROUTES } from '@/constants/routes';
+import { competitionService } from '@/services';
+import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
 import toast from 'react-hot-toast';
-import { CONFIRMS, ERRORS } from '@/constants';
-import { useConfirmModal } from '@/context/ConfirmModalContext';
+import { useAuthContext, useConfirmModal } from '@/context';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
-  const { refreshUser } = useAuth();
+  const { refreshUser } = useAuthContext();
   const { openModal } = useConfirmModal();
 
   const deleteCompetition = (id: string, name: string, hasActions: boolean) => {

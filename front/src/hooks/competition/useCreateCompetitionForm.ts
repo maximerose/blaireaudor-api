@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useAuth, useCompetitionForm, usePlayerSearch } from '@/hooks';
+import { useCompetitionForm, usePlayerSearch } from '@/hooks';
 import {
   formatJoinCode,
   cleanJoinCode,
   generateClientSideCode,
   formatToApiISO,
 } from '@/utils';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import type {
   FormParticipant,
   Player,
@@ -16,12 +16,13 @@ import type {
 } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { LOG_MESSAGES, QUERY_KEYS } from '@/constants';
+import { useAuthContext } from '@/context';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
 ) => {
   const [step, setStep] = useState(1);
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser } = useAuthContext();
   const { results, searching, searchTerm, setSearchTerm, clearSearch } =
     usePlayerSearch();
   const queryClient = useQueryClient();

@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/services/api/authService';
-import { useAuth, usePlayerSearch, useUsernameCheck } from '@/hooks';
-import { useRegistrationForm } from './useRegistrationForm'; // <-- Notre nouveau hook
+import { authService } from '@/services';
+import {
+  usePlayerSearch,
+  useRegistrationForm,
+  useUsernameCheck,
+} from '@/hooks';
 import type { Player } from '@/types';
 import { AUTH_UI, FORM, ERRORS, ICONS, LOG_MESSAGES } from '@/constants';
 import { useMutation } from '@tanstack/react-query';
+import { useAuthContext } from '@/context';
 
 export const useRegistration = (redirectUrl: string) => {
-  const { login } = useAuth();
+  const { login } = useAuthContext();
   const navigate = useNavigate();
 
   const formManager = useRegistrationForm();

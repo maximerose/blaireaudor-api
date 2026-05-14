@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { actionService } from '@/services/api/actionService';
-import { useCompetitionDateLimits } from './useCompetitionDateLimits';
+import { actionService } from '@/services';
 import { toast } from 'react-hot-toast';
 import {
   ActionStatus,
@@ -9,16 +8,19 @@ import {
 } from '@/types';
 import { API, ERRORS, SUCCESS } from '@/constants';
 import { formatToApiISO, getLocalDayString, normalizeString } from '@/utils';
-import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
-import { useCompetition } from './useCompetition';
-import { usePermissions } from '../usePermissions';
+import { useCompetitionContext } from '@/context';
+import {
+  useCompetitionDateLimits,
+  useInvalidateCompetition,
+  usePermissions,
+} from '@/hooks';
 
 export const useReportAction = (
   players: { id: string; display_name: string }[],
   onSuccess: () => void,
 ) => {
-  const { competition, refresh } = useCompetition();
+  const { competition, refresh } = useCompetitionContext();
   const { roles } = usePermissions();
   const { invalidateAll } = useInvalidateCompetition();
 

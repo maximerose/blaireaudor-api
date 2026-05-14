@@ -1,11 +1,13 @@
 import { useReportAction } from '@/hooks';
-import { useCompetition } from './CompetitionContext';
-import { ReportActionContext } from './ReportActionContext';
-import { useReportingContext } from './ReportingContext';
 import type { ReactNode } from 'react';
+import {
+  ReportActionContext,
+  useCompetitionContext,
+  useReportingContext,
+} from '@/context';
 
 export const ReportActionProvider = ({ children }: { children: ReactNode }) => {
-  const { refresh } = useCompetition();
+  const { refresh } = useCompetitionContext();
   const { potentialTargets, toggleReporting } = useReportingContext();
 
   const value = useReportAction(potentialTargets, () => {

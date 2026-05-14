@@ -7,10 +7,11 @@ import {
   BADGE_VARIANT,
 } from '@/components/UI';
 import { BUTTONS, COMPETITION_UI } from '@/constants';
-import { useCompetition, useCompetitionDelete, usePermissions } from '@/hooks';
+import { useCompetitionDelete, usePermissions } from '@/hooks';
+import { useCompetitionContext } from '@/context';
 
 export const DetailNavigation = () => {
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
   const { canDelete } = usePermissions();
   const { deleteCompetition } = useCompetitionDelete();
   const hasActions =

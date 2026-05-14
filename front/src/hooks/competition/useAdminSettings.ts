@@ -3,8 +3,8 @@ import { useCompetitionAdmin } from '@/hooks';
 import type { Competition } from '@/types';
 import { CONFIRMS, ERRORS, QUERY_KEYS } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
-import { competitionService } from '@/services/api/competitionService';
-import { useConfirmModal } from '@/context/ConfirmModalContext';
+import { competitionService } from '@/services';
+import { useConfirmModal } from '@/context';
 
 interface UseAdminSettingsProps {
   competition: Competition;

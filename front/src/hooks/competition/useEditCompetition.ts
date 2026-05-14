@@ -4,9 +4,9 @@ import { ROUTES, QUERY_KEYS, ERRORS } from '@/constants';
 import { formatToApiISO, parseFromApiISO } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import type { Competition, CompetitionUpdatePayload } from '@/types';
-import { useCompetitionForm } from './useCompetitionForm';
+import { useCompetitionForm } from '@/hooks';
 
 export const useEditCompetition = (
   competition: Competition,

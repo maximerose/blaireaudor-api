@@ -1,12 +1,13 @@
-import { useAuth, useCompetition, useParticipationDelete } from '@/hooks';
+import { useAuthContext, useCompetitionContext } from '@/context';
+import { useParticipationDelete } from '@/hooks';
 import type { Participation } from '@/types';
 import { useMemo } from 'react';
 
 export const useLeaderboardUI = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const { competition, leaderboard, refresh, isAdmin, hidePoints } =
-    useCompetition();
+    useCompetitionContext();
 
   const { deleteParticipation } = useParticipationDelete(refresh);
 

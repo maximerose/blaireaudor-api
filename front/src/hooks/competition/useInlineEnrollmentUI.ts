@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useCompetition, useEnrollment, usePermissions } from '@/hooks';
+import { useEnrollment, usePermissions } from '@/hooks';
 import type {
   FormParticipant,
   Participation,
   Player,
   PlayerCompact,
 } from '@/types';
+import { useCompetitionContext } from '@/context';
 
 const getNewPlayers = (
   participants: FormParticipant[],
@@ -28,7 +29,7 @@ const checkCanCreatePlayer = (searchTerm: string, searchResults: Player[]) => {
 };
 
 export const useInlineEnrollmentUI = () => {
-  const { competition, refresh } = useCompetition();
+  const { competition, refresh } = useCompetitionContext();
   const { roles } = usePermissions();
 
   const [isOpen, setIsOpen] = useState(false);

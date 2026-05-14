@@ -1,17 +1,16 @@
-import { actionService } from '@/services/api/actionService';
 import type {
   ActionStatus,
   ActionUpdatePayload,
   CompetitionUpdatePayload,
 } from '@/types';
-import { useInvalidateCompetition } from './useInvalidateCompetition';
 import { useMutation } from '@tanstack/react-query';
-import { competitionService } from '@/services/api/competitionService';
-import { useCompetition } from './useCompetition';
+import { actionService, competitionService } from '@/services';
 import { LOG_MESSAGES } from '@/constants';
+import { useCompetitionContext } from '@/context';
+import { useInvalidateCompetition } from '@/hooks';
 
 export const useCompetitionAdmin = () => {
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
   const { invalidateAll } = useInvalidateCompetition();
 
   const compMutation = useMutation({

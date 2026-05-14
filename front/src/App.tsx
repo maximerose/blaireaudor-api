@@ -5,19 +5,18 @@ import {
   Navigate,
 } from 'react-router-dom';
 import './App.css';
-import RegistrationForm from './components/Auth/Registration/RegistrationForm';
-import { ROUTES } from './constants/routes';
-import LoginForm from './components/Auth/Login/LoginForm';
-import LogoutHandler from './components/Auth/Login/LogoutHandler';
-import { useAuth } from './hooks/auth/useAuth';
-import { LoadingScreen } from './components/UI/LoadingScreen';
-import Dashboard from './components/Dashboard/Dashboard';
-import { CreateCompetitionPage } from './components/Competition/CreateCompetition/CreateCompetitionPage';
-import CompetitionDetailPage from './components/Competition/Detail/CompetitionDetailPage';
-import { ScrollToTop } from './components/UI/ScrollToTop';
+import { QueryClient } from '@tanstack/query-core';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConfirmModalProvider } from './context/ConfirmModalProvider';
+import { ConfirmModalProvider, useAuthContext } from '@/context';
+import { LoadingScreen, ScrollToTop } from '@/components/UI';
+import { ROUTES } from '@/constants';
+import { Dashboard } from '@/components/Dashboard';
+import { LoginForm, LogoutHandler, RegistrationForm } from '@/components/Auth';
+import {
+  CompetitionDetailPage,
+  CreateCompetitionPage,
+} from '@/components/Competition';
 
 const queryClient = new QueryClient();
 
@@ -30,7 +29,7 @@ declare global {
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 
 function App() {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthContext();
 
   if (loading) {
     return <LoadingScreen />;

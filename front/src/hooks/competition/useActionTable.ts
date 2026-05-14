@@ -1,14 +1,15 @@
 import { useState, useMemo } from 'react';
-import { useAuth, useCompetition, useInfiniteActions } from '@/hooks';
+import { useInfiniteActions } from '@/hooks';
 import { getIdFromData } from '@/utils';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS, UI } from '@/constants';
+import { useAuthContext, useCompetitionContext } from '@/context';
 
 export const useActionTable = (competitionId: string | undefined) => {
-  const { competition } = useCompetition();
-  const { user } = useAuth();
+  const { competition } = useCompetitionContext();
+  const { user } = useAuthContext();
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);

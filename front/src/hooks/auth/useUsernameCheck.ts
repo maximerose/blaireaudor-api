@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { authService } from '@/services/api/authService';
+import { authService } from '@/services';
 import type { PlayerCompact } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 

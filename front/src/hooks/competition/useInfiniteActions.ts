@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import { QUERY_KEYS } from '@/constants';
 
 export const useInfiniteActions = (

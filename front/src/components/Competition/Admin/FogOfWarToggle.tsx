@@ -8,11 +8,11 @@ import {
   TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
-import { useAdmin } from '@/context/AdminContext';
+import { useAdminContext } from '@/context';
 import { cn } from '@/utils';
 
 export const FogOfWarToggle = () => {
-  const { isFogActive, handleToggleFog, isUpdating } = useAdmin();
+  const { isFogActive, handleToggleFog, isUpdating } = useAdminContext();
 
   return (
     <div className="flex flex-col items-center gap-3">

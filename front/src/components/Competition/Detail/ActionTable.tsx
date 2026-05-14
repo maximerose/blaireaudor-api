@@ -1,9 +1,8 @@
-import { useCompetition } from '@/hooks';
 import { ActionTableContent } from '@/components/Competition';
-import { ActionTableProvider } from '@/context/ActionTableProvider';
+import { ActionTableProvider, useCompetitionContext } from '@/context';
 
 export const ActionTable = () => {
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
 
   return (
     <ActionTableProvider competitionId={competition?.id}>

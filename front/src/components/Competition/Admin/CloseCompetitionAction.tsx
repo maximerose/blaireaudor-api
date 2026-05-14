@@ -1,10 +1,11 @@
 import { Button, BUTTON_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
 import { COMPETITION_UI } from '@/constants';
-import { useAdmin } from '@/context/AdminContext';
+import { useAdminContext } from '@/context';
 import { cn } from '@/utils';
 
 export const CloseCompetitionAction = () => {
-  const { handleCloseCompetition, isUpdating, pendingCount } = useAdmin();
+  const { handleCloseCompetition, isUpdating, pendingCount } =
+    useAdminContext();
 
   return (
     <div className="flex flex-col items-center gap-3 border-t md:border-t-0 border-white/5 pt-6 md:pt-0">

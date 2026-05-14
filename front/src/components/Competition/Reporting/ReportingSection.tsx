@@ -1,9 +1,9 @@
-import { useCompetition, usePermissions } from '@/hooks';
-import { ReportingProvider } from '@/context/ReportingProvider';
+import { usePermissions } from '@/hooks';
 import { ReportingContent } from '@/components/Competition';
+import { ReportingProvider, useCompetitionContext } from '@/context';
 
 export const ReportingSection = () => {
-  const { competition } = useCompetition();
+  const { competition } = useCompetitionContext();
   const { canReport } = usePermissions();
 
   if (competition.is_finished || !canReport.allowed) return null;

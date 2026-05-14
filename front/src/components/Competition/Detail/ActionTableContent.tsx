@@ -9,16 +9,17 @@ import {
   TEXT_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ICONS } from '@/constants';
-import { useActionTableContext } from '@/context/ActionTableContext';
-import { useCompetition } from '@/hooks';
-import { PendingSection } from './Sections/PendingSection';
-import { PlayerFilter } from './PlayerFilter';
-import { DateNavigation } from './DateNavigation';
-import { TableHeader } from './Sections/TableHeader';
-import { ActionRow } from './ActionRow';
+import { useActionTableContext, useCompetitionContext } from '@/context';
+import {
+  ActionRow,
+  DateNavigation,
+  PendingSection,
+  PlayerFilter,
+  TableHeader,
+} from '@/components/Competition';
 
 export const ActionTableContent = () => {
-  const { isAdmin } = useCompetition();
+  const { isAdmin } = useCompetitionContext();
   const {
     categories,
     hasNextPage,

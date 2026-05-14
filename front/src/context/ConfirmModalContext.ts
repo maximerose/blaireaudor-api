@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ConfirmModalContextType } from './contextTypes';
+import type { ConfirmModalContextType } from '@/context';
 import { ERRORS } from '@/constants';
 
 export const ConfirmModalContext =

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { bonusDayService } from '@/services/api/bonusDayService';
+import { bonusDayService } from '@/services';
 import { toast } from 'react-hot-toast';
 import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
 

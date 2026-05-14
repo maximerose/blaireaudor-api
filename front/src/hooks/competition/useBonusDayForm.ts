@@ -3,15 +3,15 @@ import { toast } from 'react-hot-toast';
 import {
   useBonusDayAdmin,
   useBonusDays,
-  useCompetition,
   useCompetitionDateLimits,
 } from '@/hooks';
 import type { BonusDay } from '@/types';
 import { sortByDate } from '@/utils';
 import { ERRORS } from '@/constants';
+import { useCompetitionContext } from '@/context';
 
 export const useBonusDayForm = () => {
-  const { competition, refresh } = useCompetition();
+  const { competition, refresh } = useCompetitionContext();
   const { data: freshBonusDays } = useBonusDays(competition.id);
   const { addBonus, deleteBonus, isAdding } = useBonusDayAdmin(
     competition.id,

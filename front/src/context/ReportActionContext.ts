@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ReportActionContextType } from './contextTypes';
+import type { ReportActionContextType } from '@/context';
 import { ERRORS } from '@/constants';
 
 export const ReportActionContext = createContext<

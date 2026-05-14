@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { useAuth } from '@/hooks';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import { ERRORS } from '@/constants';
+import { useAuthContext } from '@/context';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser } = useAuthContext();
 
   const mutation = useMutation({
     mutationFn: async (joinCode: string) => {

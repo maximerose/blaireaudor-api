@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { ERRORS } from '@/constants';
-import type { ActionTableContextType } from './contextTypes';
+import type { ActionTableContextType } from '@/context';
 
 export const ActionTableContext = createContext<
   ActionTableContextType | undefined

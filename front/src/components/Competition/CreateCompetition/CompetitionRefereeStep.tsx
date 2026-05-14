@@ -12,7 +12,6 @@ import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import { useAuth } from '@/hooks';
 import { cn } from '@/utils';
 import type {
   CompetitionFormData,
@@ -21,7 +20,8 @@ import type {
   PlayerCompact,
 } from '@/types';
 import { FORM, ICONS, BUTTONS } from '@/constants';
-import { useRefereeStepLogic } from '@/hooks/competition/useRefereeStepLogic';
+import { useRefereeStepLogic } from '@/hooks';
+import { useAuthContext } from '@/context';
 
 interface SearchState {
   searchTerm: string;
@@ -55,7 +55,7 @@ export const CompetitionRefereeStep = ({
   onSubmit,
   loading,
 }: RefereeStepProps) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { searchTerm, setSearchTerm, searching, results } = searchState;
   const { players, referees, externalReferees, hasNoReferee } =
     useRefereeStepLogic(formData);

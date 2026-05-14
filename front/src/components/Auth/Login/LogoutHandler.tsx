@@ -3,7 +3,7 @@ import { useLogout } from '@/hooks';
 import { LoadingScreen } from '@/components/UI';
 import { AUTH_UI } from '@/constants';
 
-const LogoutHandler = () => {
+export const LogoutHandler = () => {
   const { handleLogout } = useLogout();
 
   useEffect(() => {

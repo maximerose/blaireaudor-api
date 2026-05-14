@@ -5,19 +5,19 @@ import {
   canRevealScores,
   getIdFromData,
 } from '@/utils';
-import { useAuth } from '@/hooks';
 import type {
   Competition,
   Participation,
   Player,
   PlayerCompact,
 } from '@/types';
+import { useAuthContext } from '@/context';
 
 export const useCompetitionCard = (
   competition: Competition,
   participation?: Participation,
 ) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const currentUserId = user?.id?.toString();
   const currentPlayerId = user?.player?.id?.toString();

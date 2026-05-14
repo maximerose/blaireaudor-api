@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/constants/routes';
-import { useAuth, usePlayerSearch } from '@/hooks';
-import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
+import { usePlayerSearch } from '@/hooks';
+import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { FormParticipant, PlayerCompact } from '@/types';
-import { competitionService } from '@/services/api/competitionService';
+import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
+import { useAuthContext } from '@/context';
 
 export const useEnrollment = (
   competitionId: string,
@@ -15,7 +15,7 @@ export const useEnrollment = (
 ) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { refreshUser } = useAuth();
+  const { refreshUser } = useAuthContext();
 
   const [participants, setParticipants] =
     useState<FormParticipant[]>(initialParticipants);

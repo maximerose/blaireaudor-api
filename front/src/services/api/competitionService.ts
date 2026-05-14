@@ -1,4 +1,4 @@
-import { apiFetch } from './configService';
+import { apiFetch } from '@/services';
 import { API, ERRORS } from '@/constants';
 import type {
   CompetitionCreatePayload,

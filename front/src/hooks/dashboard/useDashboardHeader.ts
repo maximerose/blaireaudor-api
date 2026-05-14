@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useAuth } from '@/hooks';
 import { getCompetitionStatus } from '@/utils';
 import { DASHBOARD_UI } from '@/constants';
 import { CompetitionStatus } from '@/types';
+import { useAuthContext } from '@/context';
 
 export const useDashboardHeader = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const participations = user?.player?.participations || [];
 
   const stats = useMemo(() => {

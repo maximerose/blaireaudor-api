@@ -5,15 +5,16 @@ import {
   getDisplayDateText,
   resolveCreatorName,
 } from '@/utils';
-import { CompetitionCountdown } from './CompetitionCountdown';
-import { useAuth, useCompetition, usePermissions } from '@/hooks';
+import { CompetitionCountdown } from '@/components/Competition';
+import { usePermissions } from '@/hooks';
 import type { BonusDay, RefereeListItem } from '@/types';
 import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useMemo } from 'react';
+import { useAuthContext, useCompetitionContext } from '@/context';
 
 export const CompetitionHeader = () => {
-  const { user } = useAuth();
-  const { competition, leaderboard, bonusDays } = useCompetition();
+  const { user } = useAuthContext();
+  const { competition, leaderboard, bonusDays } = useCompetitionContext();
   const { roles } = usePermissions();
 
   const referees = getCompetitionReferees(competition);
