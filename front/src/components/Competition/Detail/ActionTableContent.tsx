@@ -2,6 +2,7 @@ import {
   Badge,
   BADGE_VARIANT,
   Card,
+  CARD_VARIANT,
   EmptyState,
   LoadingScreen,
   Text,
@@ -58,7 +59,7 @@ export const ActionTableContent = () => {
           <TableHeader />
 
           <Card
-            variant="dark"
+            variant={CARD_VARIANT.DARK}
             className="rounded-t-none border-t-0 shadow-2xl overflow-hidden divide-y divide-white/5"
           >
             {isLoadingActions ? (

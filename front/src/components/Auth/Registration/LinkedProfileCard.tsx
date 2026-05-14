@@ -5,6 +5,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { AUTH_UI } from '@/constants';
 
@@ -18,7 +19,7 @@ export const LinkedProfileCard = ({
   onClear,
 }: LinkedProfileCardProps) => (
   <Card
-    variant="glass"
+    variant={CARD_VARIANT.GLASS}
     role="region"
     aria-label={AUTH_UI.LINKED_CARD.STATUS}
     className="mb-8 p-5 border-success-bright/20 flex justify-between items-center bg-success/5 animate-fade-in"

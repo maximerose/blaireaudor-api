@@ -6,6 +6,7 @@ import {
   type ButtonVariant,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { BUTTONS } from '@/constants';
 
@@ -44,7 +45,7 @@ export const ConfirmModal = ({
       onClick={onClose}
     >
       <Card
-        variant="default"
+        variant={CARD_VARIANT.DEFAULT}
         className={MODAL_CARD}
         onClick={(e) => e.stopPropagation()}
       >

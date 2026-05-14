@@ -5,6 +5,7 @@ import {
   BUTTON_SIZE,
   BUTTON_VARIANT,
   Card,
+  CARD_VARIANT,
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
@@ -32,7 +33,7 @@ export const AdminSettings = () => {
   return (
     <AdminProvider competition={competition}>
       <Card
-        variant="dark"
+        variant={CARD_VARIANT.DARK}
         className={cn(
           'xl:mx-50',
           'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',

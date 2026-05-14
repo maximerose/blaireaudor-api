@@ -6,6 +6,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import {
   SelectedPlayersList,
@@ -103,7 +104,7 @@ export const CompetitionRefereeStep = ({
             {FORM.COMPETITION.LABELS.MAIN_REFEREE}
           </Text>
           <Card
-            variant="dark"
+            variant={CARD_VARIANT.DARK}
             onClick={() =>
               updateField('isCreatorReferee', !formData.isCreatorReferee)
             }
@@ -177,7 +178,7 @@ export const CompetitionRefereeStep = ({
               return (
                 <Card
                   key={player.id}
-                  variant="dark"
+                  variant={CARD_VARIANT.DARK}
                   onClick={() => onToggleReferee(player)}
                   className={cn(
                     'flex items-center justify-between p-3 cursor-pointer transition-default border',

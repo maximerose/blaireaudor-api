@@ -1,7 +1,13 @@
 import React from 'react';
 import { cn } from '@/utils';
 
-type CardVariant = 'default' | 'dark' | 'glass';
+export const CARD_VARIANT = {
+  DEFAULT: 'default',
+  DARK: 'dark',
+  GLASS: 'glass',
+} as const;
+
+export type CardVariant = (typeof CARD_VARIANT)[keyof typeof CARD_VARIANT];
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -11,20 +17,20 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType;
 }
 
-const CARD_VARIANTS: Record<CardVariant, string> = {
-  default: 'bg-dark-lighter/40 border-gold/10',
-  dark: 'bg-black/40 border-white/5',
-  glass: 'bg-white/5 border-white/10 backdrop-blur-md',
+const CARD_STYLES: Record<CardVariant, string> = {
+  [CARD_VARIANT.DEFAULT]: 'bg-dark-lighter/40 border-gold/10',
+  [CARD_VARIANT.DARK]: 'bg-black/40 border-white/5',
+  [CARD_VARIANT.GLASS]: 'bg-white/5 border-white/10 backdrop-blur-md',
 };
 
 const BASE_STYLES = 'border rounded-2xl shadow-xl transition-default';
 
 export const Card = ({
-  as: Component = 'div',
+  as: Tag = 'div',
   children,
   className = '',
   isHoverable = false,
-  variant = 'default',
+  variant = CARD_VARIANT.DEFAULT,
   onClick,
   ...props
 }: CardProps) => {
@@ -43,20 +49,15 @@ export const Card = ({
   };
 
   return (
-    <Component
+    <Tag
       onClick={onClick}
       onKeyDown={isClickable ? handleKeyDown : undefined}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
-      className={cn(
-        BASE_STYLES,
-        CARD_VARIANTS[variant],
-        hoverStyles,
-        className,
-      )}
+      className={cn(BASE_STYLES, CARD_STYLES[variant], hoverStyles, className)}
       {...props}
     >
       {children}
-    </Component>
+    </Tag>
   );
 };

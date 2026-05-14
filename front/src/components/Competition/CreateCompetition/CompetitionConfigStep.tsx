@@ -5,6 +5,7 @@ import {
   Card,
   Switch,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
@@ -120,7 +121,7 @@ export const CompetitionConfigStep = ({
             />
 
             <Card
-              variant="dark"
+              variant={CARD_VARIANT.DARK}
               role="switch"
               aria-checked={formData.startFullDay}
               onClick={() =>
@@ -167,7 +168,7 @@ export const CompetitionConfigStep = ({
             />
 
             <Card
-              variant="dark"
+              variant={CARD_VARIANT.DARK}
               role="switch"
               aria-checked={formData.endFullDay}
               onClick={() => updateField('endFullDay', !formData.endFullDay)}
@@ -198,7 +199,7 @@ export const CompetitionConfigStep = ({
           {toggles.map((toggle) => (
             <Card
               key={toggle.id}
-              variant="dark"
+              variant={CARD_VARIANT.DARK}
               role="switch"
               aria-checked={toggle.active}
               aria-label={toggle.label}

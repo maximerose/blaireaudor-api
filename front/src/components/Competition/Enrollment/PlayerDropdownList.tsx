@@ -1,4 +1,4 @@
-import { Card, Text, TEXT_VARIANT } from '@/components/UI';
+import { Card, CARD_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
 import { FORM } from '@/constants';
 import type { PlayerCompact } from '@/types';
 import { cn } from '@/utils';
@@ -15,7 +15,7 @@ export const PlayerDropdownList = ({
   <Card
     id="report-search-results"
     role="listbox"
-    variant="dark"
+    variant={CARD_VARIANT.DARK}
     className={cn(
       'absolute top-full left-0 right-0 mt-1 z-50 border-gold/30',
       'max-h-55 overflow-y-auto shadow-2xl bg-black/95 backdrop-blur-xl',

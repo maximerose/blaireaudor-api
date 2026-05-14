@@ -9,6 +9,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { cn } from '@/utils';
 import { useCompetition, useEditCompetition } from '@/hooks';
@@ -94,7 +95,7 @@ export const CompetitionGeneralSettings = () => {
             disabled={competition.has_started}
           />
           <Card
-            variant="dark"
+            variant={CARD_VARIANT.DARK}
             onClick={() =>
               !competition.has_started &&
               updateField('startFullDay', !formData.startFullDay)
@@ -139,7 +140,7 @@ export const CompetitionGeneralSettings = () => {
             onChange={(e) => updateField('endDate', e.target.value)}
           />
           <Card
-            variant="dark"
+            variant={CARD_VARIANT.DARK}
             onClick={() => updateField('endFullDay', !formData.endFullDay)}
             className="flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none"
           >

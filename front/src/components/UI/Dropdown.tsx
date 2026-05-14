@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, BUTTON_SIZE, BUTTON_VARIANT } from './Button';
 import { ICONS } from '@/constants';
-import { Card } from './Card';
+import { Card, CARD_VARIANT } from './Card';
 import { cn } from '@/utils';
 
 interface DropdownOption {
@@ -55,7 +55,7 @@ export const Dropdown = ({
 
       {isOpen && (
         <Card
-          variant="dark"
+          variant={CARD_VARIANT.DARK}
           className="bg-dark absolute top-full left-0 mt-2 z-50 min-w-40 shadow-2xl border-white/10 animate-fade-in overflow-hidden"
         >
           <div className="flex flex-col">

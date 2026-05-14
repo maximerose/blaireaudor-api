@@ -1,5 +1,5 @@
 import { CreateCompetitionView } from '@/components/Competition';
-import { Card } from '@/components/UI';
+import { Card, CARD_VARIANT } from '@/components/UI';
 import { useCreateCompetitionPageUI } from '@/hooks';
 
 const PAGE_CONTAINER =
@@ -12,7 +12,7 @@ export const CreateCompetitionPage = () => {
 
   return (
     <main className={PAGE_CONTAINER} aria-label="Création d'une nouvelle arène">
-      <Card variant="glass" className={FORM_WRAPPER}>
+      <Card variant={CARD_VARIANT.GLASS} className={FORM_WRAPPER}>
         <CreateCompetitionView onSuccess={handleSuccess} />
       </Card>
     </main>

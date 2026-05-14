@@ -1,4 +1,10 @@
-import { Card, EmptyState, Text, TEXT_VARIANT } from '@/components/UI';
+import {
+  Card,
+  CARD_VARIANT,
+  EmptyState,
+  Text,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
 import { COMPETITION_UI, ICONS } from '@/constants';
@@ -15,7 +21,7 @@ export const Leaderboard = () => {
   return (
     <>
       <Card
-        variant="dark"
+        variant={CARD_VARIANT.DARK}
         className="overflow-hidden shadow-2xl border-white/5"
         role="region"
         aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_TITLE(

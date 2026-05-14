@@ -6,6 +6,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { useCompetition, useReportAction } from '@/hooks';
 import { preventDefault } from '@/utils';
@@ -37,7 +38,7 @@ export const ReportActionForm = () => {
 
   return (
     <div className="animate-slide-up" role="dialog">
-      <Card variant="glass" className="shadow-2xl p-5 sm:p-8">
+      <Card variant={CARD_VARIANT.GLASS} className="shadow-2xl p-5 sm:p-8">
         <form onSubmit={preventDefault(submitReport)} className="space-y-6">
           <header className="text-center">
             <div className="animate-bounce-subtle mb-3">

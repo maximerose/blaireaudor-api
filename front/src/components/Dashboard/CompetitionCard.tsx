@@ -10,6 +10,7 @@ import {
   RoleBadge,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation } from '@/types';
@@ -40,7 +41,7 @@ export const CompetitionCard = ({
 
   return (
     <Card
-      variant="dark"
+      variant={CARD_VARIANT.DARK}
       isHoverable
       as="article"
       aria-labelledby={`title-${competition.join_code}`}

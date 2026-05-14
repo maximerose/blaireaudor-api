@@ -4,6 +4,7 @@ import {
   Card,
   Text,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { useHistoricalSearchUI, type PlayerSearchLogic } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
@@ -65,7 +66,7 @@ export const HistoricalPlayerSearch = ({
         <Card
           id="historical-search-results"
           role="listbox"
-          variant="dark"
+          variant={CARD_VARIANT.DARK}
           className="absolute z-50 w-full mt-2 border-gold/30 shadow-2xl overflow-hidden animate-slide-up bg-black/95 backdrop-blur-xl"
         >
           <div className="max-h-72 overflow-y-auto no-scrollbar divide-y divide-white/5">

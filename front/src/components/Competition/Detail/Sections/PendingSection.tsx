@@ -4,6 +4,7 @@ import {
   Badge,
   BADGE_VARIANT,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { ActionRow } from '@/components/Competition';
 import { cn } from '@/utils';
@@ -60,7 +61,7 @@ export const PendingSection = () => {
                   {section.label}
                 </Text>
                 <Card
-                  variant="dark"
+                  variant={CARD_VARIANT.DARK}
                   className={cn(
                     'overflow-hidden divide-y divide-white/5',
                     section.border,

@@ -5,6 +5,7 @@ import {
   BUTTON_SIZE,
   BUTTON_VARIANT,
   Card,
+  CARD_VARIANT,
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
@@ -25,7 +26,7 @@ export const ReportingContent = () => {
     return (
       <section className="mb-10 max-w-2xl mx-auto animate-slide-up">
         <Card
-          variant="dark"
+          variant={CARD_VARIANT.DARK}
           className="text-center p-4 border-dashed border-gold/10 max-w-md mx-auto"
         >
           <Text
@@ -54,7 +55,7 @@ export const ReportingContent = () => {
     <section className="mb-10 max-w-2xl mx-auto animate-slide-up space-y-4">
       {todayBonus && (
         <Card
-          variant="dark"
+          variant={CARD_VARIANT.DARK}
           className="border-game-bonus-bright/30 bg-game-bonus/20 p-4 flex items-center gap-4 animate-pulse"
         >
           <div className="flex-1 flex items-center gap-4">

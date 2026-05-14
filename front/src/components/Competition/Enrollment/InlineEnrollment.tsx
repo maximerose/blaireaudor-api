@@ -7,6 +7,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
@@ -48,7 +49,7 @@ export const InlineEnrollment = () => {
 
   return (
     <Card
-      variant="dark"
+      variant={CARD_VARIANT.DARK}
       className="mt-4 p-4 border-gold/20 animate-slide-up relative"
       role="section"
       aria-label="Formulaire de recrutement"
@@ -79,7 +80,7 @@ export const InlineEnrollment = () => {
           <Card
             id="search-results-list"
             role="listbox"
-            variant="dark"
+            variant={CARD_VARIANT.DARK}
             className="absolute top-full left-0 right-0 mt-1 z-50 overflow-hidden border-gold/30 shadow-2xl backdrop-blur-xl bg-black/95 max-h-56 overflow-y-auto no-scrollbar"
           >
             {searchResults.map((p) => (

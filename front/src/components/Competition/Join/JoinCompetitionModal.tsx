@@ -7,6 +7,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  CARD_VARIANT,
 } from '@/components/UI';
 import { JoinModalHeader } from '@/components/Competition';
 import { preventDefault } from '@/utils';
@@ -33,7 +34,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <Card variant="default" className={MODAL_CARD}>
+      <Card variant={CARD_VARIANT.DEFAULT} className={MODAL_CARD}>
         <JoinModalHeader />
 
         <form onSubmit={preventDefault(handleSubmit)} className="space-y-8">
