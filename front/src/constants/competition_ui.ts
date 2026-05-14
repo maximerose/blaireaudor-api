@@ -1,3 +1,4 @@
+import { pluralize } from '@/utils';
 import { ICONS } from './icons';
 
 export const COMPETITION_UI = {
@@ -8,7 +9,8 @@ export const COMPETITION_UI = {
       CONFIG_TITLE: 'Configuration',
       BUTTON_EXPAND: "Gérer l'arène",
       BUTTON_EDIT: 'Modifier les paramètres',
-      REFEREES_COUNT: (count: number) => `${count} Arbitre(s)`,
+      REFEREES_COUNT: (count: number) =>
+        `${count} ${pluralize(count, 'Arbitre')}`,
     },
     BONUS: {
       TITLE: `Multiplicateurs`,
@@ -40,7 +42,7 @@ export const COMPETITION_UI = {
       HEADER: 'Fin de partie',
       SUBMIT: `${ICONS.FLAG} Clôturer la compétition`,
       PENDING_WARNING: (count: number) =>
-        `${ICONS.DANGER} ${count} actions en attente`,
+        `${ICONS.DANGER} ${count} ${pluralize(count, 'action')} en attente`,
       COMPETITION_NOT_STARTED:
         'La compétition doit avoir débuté pour être clôturée.',
     },
@@ -58,7 +60,7 @@ export const COMPETITION_UI = {
         DATES_ARIA: 'Dates : ',
         COUNTDOWN_PREFIX: 'Clôture',
         CREATOR_LABEL: 'Créateur',
-        REFEREE_LABEL: (count: number) => `Arbitre${count > 1 ? 's' : ''}`,
+        REFEREE_LABEL: (count: number) => pluralize(count, 'Arbitre'),
         MULTIPLIERS_SECTION_TITLE: `Calendrier des Bonus ${ICONS.FIRE}`,
       },
       REPORTING: {
@@ -67,7 +69,7 @@ export const COMPETITION_UI = {
         NOT_STARTED_SUBTITLE: 'Ouverture ',
         NOT_STARTED_ELAPSED: 'lancée !',
         BONUS_WARNING: (multiplier: number) =>
-          `Attention : Multiplicateur x${multiplier} activé !`,
+          `Attention: Multiplicateur x${multiplier} activé!`,
         BONUS_HINT:
           "Indiquez le score de base de l'action, le bonus sera calculé automatiquement dans le journal.",
         REPORT_BUTTON: 'Dénoncer un adversaire',
@@ -75,7 +77,7 @@ export const COMPETITION_UI = {
       LEADERBOARD: {
         TITLE: 'Classement',
         ARIA_TITLE: (competitionName?: string) =>
-          `Classement pour la compétition ${competitionName ? competitionName : 'en cours'}`,
+          `Classement pour la compétition ${competitionName ? competitionName : 'en cours'} `,
         FOG_OF_WAR: {
           ACTIVE: `${ICONS.FOG_ACTIVE} Brouillard de guerre actif`,
         },
@@ -89,11 +91,11 @@ export const COMPETITION_UI = {
         DELETE_PARTICIPATION: 'Supprimer la participation',
         ARIA_DELETE_PARTICIPATION: (playerName: string) =>
           `Supprimer la participation de ${playerName} ?`,
-        ARIA_SCORE: (points: number) => `Score : ${points} points`,
+        ARIA_SCORE: (points: number) =>
+          `Score: ${points} ${pluralize(points, 'point')}`,
       },
       ACTIONS: {
         TITLE: 'Journal des actions',
-        ENTRIES: (count: number) => `${count} entrées`,
         LOADING: 'Chargement des actions...',
         END: 'Fin des actions',
         TABLE: {
@@ -109,7 +111,7 @@ export const COMPETITION_UI = {
           PENDING: `${ICONS.REFEREE} Actions en attente`,
           MY_SUBMISSIONS: 'Mes envois',
           OTHER_SUBMISSIONS: 'Signalements des autres',
-          REJECTED: `${ICONS.TRASH} Actions rejetées (Archive)`,
+          REJECTED: `${ICONS.TRASH} Actions rejetées(Archive)`,
         },
         OTHER_PLAYERS: 'Autres joueurs...',
         REPORTED_BY: 'Dénoncé par : ',

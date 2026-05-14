@@ -1,26 +1,35 @@
-import { Text, TEXT_VARIANT } from '@/components/UI';
+import {
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Text,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import { DASHBOARD_UI } from '@/constants';
 import { useDashboardHeader } from '@/hooks';
 
 export const DashboardHeader = () => {
   const { displayName, totalParticipations, statItems } = useDashboardHeader();
-
+  const greetingTitle = (
+    <>
+      {DASHBOARD_UI.HEADER.GREETING}
+      {displayName && (
+        <>
+          <span className="text-player-me">{displayName}</span>
+        </>
+      )}
+    </>
+  );
   return (
-    <section className="space-y-4" aria-labelledby="dashboard-title">
-      <div className="flex flex-col md:flex-row sm:items-center justify-between gap-4 px-1">
-        <div className="space-y-4">
-          <Text
+    <section aria-labelledby="dashboard-title">
+      <div className="flex flex-col sm:items-center justify-between gap-4 px-1">
+        <div>
+          <SectionHeader
             id="dashboard-title"
-            variant={TEXT_VARIANT.H1}
-            className="text-white normal-case"
-          >
-            {DASHBOARD_UI.HEADER.GREETING}
-            {displayName && (
-              <>
-                , <span className="text-player-me">{displayName}</span>
-              </>
-            )}
-          </Text>
+            variant={SECTION_HEADER_VARIANT.TITLE}
+            title={DASHBOARD_UI.HEADER.TITLE}
+            subtitle={greetingTitle}
+            centered
+          />
         </div>
 
         <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
@@ -30,7 +39,7 @@ export const DashboardHeader = () => {
         </div>
 
         <div
-          className="flex justify-center gap-3"
+          className="flex justify-center flex-wrap gap-3"
           role="list"
           aria-label={DASHBOARD_UI.HEADER.ARIA.SUMMARY}
         >

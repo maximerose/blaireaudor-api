@@ -7,10 +7,11 @@ import {
 } from '@/components/Competition';
 import { DetailNavigation, ReportingSection } from '@/components/Competition';
 import {
-  Text,
   LoadingScreen,
   NotFoundState,
-  TEXT_VARIANT,
+  Navbar,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import { COMPETITION_UI, ERRORS } from '@/constants';
 import { CompetitionProvider } from '@/context';
@@ -33,6 +34,7 @@ export const CompetitionDetailPage = () => {
 
   return (
     <CompetitionProvider code={code!}>
+      <Navbar />
       <main className="w-full mx-auto px-4 py-6 sm:py-10 animate-fade-in">
         <DetailNavigation />
 
@@ -44,15 +46,10 @@ export const CompetitionDetailPage = () => {
 
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
           <section className="xl:col-span-5 space-y-6">
-            <header className="flex items-center gap-4 px-1">
-              <Text
-                variant={TEXT_VARIANT.CAPTION}
-                className="whitespace-nowrap font-bold"
-              >
-                {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
-              </Text>
-              <div className="h-px w-full bg-white/5" />
-            </header>
+            <SectionHeader
+              title={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
+              variant={SECTION_HEADER_VARIANT.DIVIDER}
+            />
             <Leaderboard />
             {!competition.is_finished && <InlineEnrollment />}
           </section>

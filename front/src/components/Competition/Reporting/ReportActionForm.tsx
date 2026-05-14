@@ -2,11 +2,11 @@ import {
   Input,
   Button,
   Card,
-  Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-  TEXT_VARIANT,
   CARD_VARIANT,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import { useReportAction } from '@/hooks';
 import { preventDefault } from '@/utils';
@@ -40,20 +40,13 @@ export const ReportActionForm = () => {
     <div className="animate-slide-up" role="dialog">
       <Card variant={CARD_VARIANT.GLASS} className="shadow-2xl p-5 sm:p-8">
         <form onSubmit={preventDefault(submitReport)} className="space-y-6">
-          <header className="text-center">
-            <div className="animate-bounce-subtle mb-3">
-              <span className="text-3xl">{ICONS.BADGER}</span>
-            </div>
-            <Text
-              variant={TEXT_VARIANT.H2}
-              className="text-gold italic flex items-center justify-center gap-2"
-            >
-              {FORM.REPORT_ACTION.TITLE}
-            </Text>
-            <Text variant={TEXT_VARIANT.CAPTION} className="text-white/60">
-              {FORM.REPORT_ACTION.SUBTITLE}
-            </Text>
-          </header>
+          <SectionHeader
+            icon={ICONS.BADGER}
+            title={FORM.REPORT_ACTION.TITLE}
+            subtitle={FORM.REPORT_ACTION.SUBTITLE}
+            variant={SECTION_HEADER_VARIANT.BLOCK}
+            centered
+          />
 
           <div className="space-y-4">
             <div className="relative" ref={searchContainerRef}>

@@ -3,6 +3,7 @@ import {
   BADGE_VARIANT,
   Input,
   PlayerSearchResultItem,
+  SectionHeader,
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
@@ -30,14 +31,11 @@ export const RefereeManagement = () => {
 
   return (
     <div className="space-y-4 pt-6 border-t border-white/10">
-      <header>
-        <Text variant={TEXT_VARIANT.H3}>
-          {COMPETITION_UI.ADMIN.REFEREE.TITLE}
-        </Text>
-        <Text variant={TEXT_VARIANT.MICRO} className="opacity-60 text-[8px]">
-          {COMPETITION_UI.ADMIN.REFEREE.SUBTITLE}
-        </Text>
-      </header>
+      <SectionHeader
+        title={COMPETITION_UI.ADMIN.REFEREE.TITLE}
+        subtitle={COMPETITION_UI.ADMIN.REFEREE.SUBTITLE}
+        centered
+      />
 
       {/* Liste des arbitres actuels */}
       <div className="flex flex-wrap items-center justify-center gap-2">

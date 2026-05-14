@@ -5,6 +5,7 @@ import {
   Badge,
   BADGE_VARIANT,
   TEXT_VARIANT,
+  SectionHeader,
 } from '@/components/UI';
 import { formatLongDate } from '@/utils';
 import { useBonusDayForm } from '@/hooks';
@@ -26,15 +27,12 @@ export const BonusDayManagement = () => {
   } = useBonusDayForm();
 
   return (
-    <div className="space-y-6 pt-6 border-t border-white/5">
-      <header className="flex flex-col gap-1">
-        <Text variant={TEXT_VARIANT.H3} className="text-gold">
-          {COMPETITION_UI.ADMIN.BONUS.TITLE}
-        </Text>
-        <Text variant={TEXT_VARIANT.MICRO} className="opacity-30">
-          {COMPETITION_UI.ADMIN.BONUS.SUBTITLE}
-        </Text>
-      </header>
+    <div className="space-y-4 pt-6 border-t border-white/10">
+      <SectionHeader
+        title={COMPETITION_UI.ADMIN.BONUS.TITLE}
+        subtitle={COMPETITION_UI.ADMIN.BONUS.SUBTITLE}
+        centered
+      />
 
       <div className="flex flex-wrap justify-center gap-2">
         {bonusDays.map((bd: BonusDay) => (

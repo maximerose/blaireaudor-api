@@ -1,4 +1,11 @@
-import { Badge, BADGE_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Text,
+  TEXT_VARIANT,
+} from '@/components/UI';
 import {
   formatLongDate,
   getCompetitionReferees,
@@ -26,21 +33,23 @@ export const CompetitionHeader = () => {
 
   return (
     <header className="mb-10 text-center space-y-5">
-      {/* 1. Titre et Code */}
-      <div className="space-y-1">
-        <Text variant={TEXT_VARIANT.H1} className="text-3xl sm:text-5xl">
-          {competition.name}
-        </Text>
-        <Text
-          variant={TEXT_VARIANT.MONO}
-          className="text-gold/50 tracking-[0.4em] uppercase text-sm inline-block bg-gold/5 px-3 py-1 rounded border border-gold/10"
-        >
-          <span className="sr-only">
-            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
-          </span>
-          {competition.join_code}
-        </Text>
-      </div>
+      <SectionHeader
+        as="h1"
+        variant={SECTION_HEADER_VARIANT.TITLE}
+        title={competition.name}
+        centered
+        subtitle={
+          <Text
+            variant={TEXT_VARIANT.MONO}
+            className="text-gold/50 tracking-[0.4em] uppercase text-sm inline-block bg-gold/5 px-3 py-1 rounded border border-gold/10"
+          >
+            <span className="sr-only">
+              {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
+            </span>
+            {competition.join_code}
+          </Text>
+        }
+      />
 
       {/* 2. Infos Temporelles */}
       <div className="flex flex-col items-center gap-1">

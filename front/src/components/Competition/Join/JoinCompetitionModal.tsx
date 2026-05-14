@@ -69,7 +69,7 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
               type="submit"
               isLoading={loading}
               fullWidth
-              size={BUTTON_SIZE.LARGE}
+              size={BUTTON_SIZE.MEDIUM}
               className="transition-default"
             >
               {FORM.MODALS.JOIN.SUBMIT}

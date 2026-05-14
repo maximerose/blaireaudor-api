@@ -11,6 +11,8 @@ import {
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation } from '@/types';
@@ -58,17 +60,12 @@ export const CompetitionCard = ({
       </div>
       <div className="flex justify-between items-start gap-3 mb-4">
         <div className="min-w-0 flex-1">
-          <Text
-            id={`title-${competition.join_code}`}
-            variant={TEXT_VARIANT.H3}
-            className="text-white group-hover:text-gold transition-colors truncate normal-case italic"
-          >
-            {competition.name}
-          </Text>
-          <Text variant={TEXT_VARIANT.MICRO} className="text-gold/40 mt-0.5">
-            <span className="sr-only">{DASHBOARD_UI.CARD.ARIA.DATES}</span>
-            {dateText}
-          </Text>
+          <SectionHeader
+            title={competition.name}
+            subtitle={dateText}
+            variant={SECTION_HEADER_VARIANT.SUB}
+            centered
+          />
         </div>
       </div>
 

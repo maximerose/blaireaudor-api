@@ -13,9 +13,9 @@ export const TEXT_VARIANT = {
 
 export type TextVariant = (typeof TEXT_VARIANT)[keyof typeof TEXT_VARIANT];
 
-const TEXT_STYLES: Record<TextVariant, string> = {
+export const TEXT_STYLES: Record<TextVariant, string> = {
   [TEXT_VARIANT.H1]:
-    'text-2xl sm:text-3xl font-black uppercase tracking-tight italic text-gold',
+    'text-xl sm:text-2xl font-black uppercase tracking-tight italic text-gold',
   [TEXT_VARIANT.H2]:
     'text-lg sm:text-xl font-bold uppercase tracking-tight text-white',
   [TEXT_VARIANT.H3]:
@@ -26,7 +26,7 @@ const TEXT_STYLES: Record<TextVariant, string> = {
   [TEXT_VARIANT.MICRO]:
     'text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.3em] opacity-60',
   [TEXT_VARIANT.MONO]: 'font-mono uppercase tracking-widest text-sm',
-};
+} as const;
 
 const DEFAULT_TAGS: Record<TextVariant, React.ElementType> = {
   [TEXT_VARIANT.H1]: 'h1',

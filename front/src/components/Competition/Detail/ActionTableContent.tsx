@@ -5,10 +5,12 @@ import {
   CARD_VARIANT,
   EmptyState,
   LoadingScreen,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useActionTableContext, useCompetitionContext } from '@/context';
 import {
   ActionRow,
@@ -31,18 +33,18 @@ export const ActionTableContent = () => {
 
   return (
     <section className="space-y-6">
-      <header className="flex items-center px-1 animate-fade-in">
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          className="whitespace-nowrap font-bold"
-        >
-          {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
-        </Text>
-        <div className="h-px w-full bg-white/5" />
-        <Badge variant={BADGE_VARIANT.GHOST} className="opacity-60 text-[8px]">
-          {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ENTRIES(totalActions)}
-        </Badge>
-      </header>
+      <SectionHeader
+        title={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TITLE}
+        variant={SECTION_HEADER_VARIANT.DIVIDER}
+        rightElement={
+          <Badge
+            variant={BADGE_VARIANT.GHOST}
+            className="opacity-60 text-[8px]"
+          >
+            {UI.ENTRIES(totalActions)}
+          </Badge>
+        }
+      />
       <div
         className="space-y-12 animate-fade-in"
         role="table"

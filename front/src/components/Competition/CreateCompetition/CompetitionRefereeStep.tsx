@@ -7,6 +7,8 @@ import {
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import {
   SelectedPlayersList,
@@ -62,14 +64,13 @@ export const CompetitionRefereeStep = ({
 
   return (
     <div className="space-y-6 animate-slide-up">
-      <div className="text-center space-y-1">
-        <Text variant={TEXT_VARIANT.H2} className="italic">
-          {FORM.COMPETITION.STEPS.REFEREE.TITLE}
-        </Text>
-        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-30">
-          {FORM.COMPETITION.STEPS.REFEREE.SUBTITLE}
-        </Text>
-      </div>
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.TITLE}
+        as="h1"
+        title={FORM.COMPETITION.STEPS.REFEREE.TITLE}
+        subtitle={FORM.COMPETITION.STEPS.REFEREE.SUBTITLE}
+        centered
+      />
 
       <div className="relative z-10">
         <Input

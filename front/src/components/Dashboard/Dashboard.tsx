@@ -19,7 +19,6 @@ export const Dashboard = () => {
     ongoing,
     upcoming,
     finished,
-    hasAdminAccess,
     isJoinModalOpen,
     openJoinModal,
     closeJoinModal,
@@ -32,17 +31,8 @@ export const Dashboard = () => {
     <div className="w-full mx-auto min-h-screen flex flex-col p-4 sm:p-6">
       <Navbar />
 
-      <main className="flex-1 space-y-6 sm:space-y-10 animate-fade-in mt-4">
+      <main className="flex-1 space-y-6 animate-fade-in mt-4">
         <DashboardHeader />
-        {hasAdminAccess && (
-          <Button
-            variant={BUTTON_VARIANT.GHOST}
-            size={BUTTON_SIZE.SMALL}
-            className="opacity-40 hover:opacity-100"
-          >
-            {DASHBOARD_UI.HEADER.ADMIN_ACCESS}
-          </Button>
-        )}
         <section
           className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           aria-label={DASHBOARD_UI.CARD.ARIA.QUICK_ACTIONS}

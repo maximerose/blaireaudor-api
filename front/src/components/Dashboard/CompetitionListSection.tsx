@@ -1,7 +1,13 @@
-import { Text, TEXT_VARIANT } from '@/components/UI';
+import {
+  Badge,
+  BADGE_VARIANT,
+  SECTION_HEADER_THEME,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+} from '@/components/UI';
 import { CompetitionCard } from '@/components/Dashboard';
-import { cn } from '@/utils';
 import type { DashboardItem } from '@/types';
+import { UI } from '@/constants';
 
 interface CompetitionListSectionProps {
   title: string;
@@ -18,36 +24,29 @@ export const CompetitionListSection = ({
 }: CompetitionListSectionProps) => {
   if (items?.length === 0 && !emptyState) return null;
 
+  const themeMap =
+    variant === 'gold'
+      ? SECTION_HEADER_THEME.GOLD
+      : variant === 'dimmed'
+        ? SECTION_HEADER_THEME.DIMMED
+        : SECTION_HEADER_THEME.DEFAULT;
+
   return (
     <section className="space-y-4">
-      {/* Header de section */}
-      <div className="flex items-center justify-between px-1">
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          className={cn(
-            'uppercase font-bold tracking-widest',
-            variant === 'gold'
-              ? 'text-gold opacity-60'
-              : variant === 'dimmed'
-                ? 'opacity-20'
-                : 'opacity-40',
-          )}
-        >
-          {title}
-        </Text>
-        <div
-          className={cn(
-            'h-px flex-1 ml-4',
-            variant === 'gold'
-              ? 'bg-gold/10'
-              : variant === 'dimmed'
-                ? 'bg-white/2'
-                : 'bg-white/5',
-          )}
-        />
-      </div>
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.DIVIDER}
+        colorTheme={themeMap}
+        title={title}
+        rightElement={
+          <Badge
+            variant={BADGE_VARIANT.GHOST}
+            className="opacity-60 text-[8px]"
+          >
+            {UI.ENTRIES(items.length)}
+          </Badge>
+        }
+      />
 
-      {/* Liste ou EmptyState */}
       <div className="grid lg:grid-cols-2 gap-3">
         {items?.length > 0
           ? items?.map((item) => (

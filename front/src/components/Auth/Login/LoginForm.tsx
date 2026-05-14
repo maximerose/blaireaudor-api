@@ -10,15 +10,9 @@ export const LoginForm = () => {
   return (
     <AuthCard
       title={AUTH_UI.LOGIN.TITLE}
+      subtitle={AUTH_UI.LOGIN.SUBTITLE}
       onSubmit={preventDefault(handleSubmit)}
     >
-      <Text
-        variant={TEXT_VARIANT.CAPTION}
-        className="text-gold/50 mb-6 block text-center"
-      >
-        {AUTH_UI.LOGIN.SUBTITLE}
-      </Text>
-
       {error && (
         <div
           className="bg-danger/10 border border-danger-bright/20 p-3 rounded-xl animate-pulse motion-reduce:animate-none"

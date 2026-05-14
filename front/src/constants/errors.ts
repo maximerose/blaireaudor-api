@@ -1,3 +1,5 @@
+import { pluralize } from '@/utils';
+
 export const ERRORS = {
   // 1. Erreurs techniques / Réseau
   NETWORK: {
@@ -35,7 +37,7 @@ export const ERRORS = {
     DELETE_HAS_ACTIONS: (name: string) =>
       `Impossible de supprimer "${name}" car elle contient des actions.`,
     CLOSE_PENDING_ACTIONS: (count: number) =>
-      `Impossible de clôturer ! Il reste ${count} signalement(s) à trancher.`,
+      `Impossible de clôturer ! Il reste ${count} ${pluralize(count, 'signalement')} à trancher.`,
 
     // Participants et Arbitres
     PARTICIPATION_ADD_FAILED:

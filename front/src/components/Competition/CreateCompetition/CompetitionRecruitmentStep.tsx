@@ -1,10 +1,10 @@
 import {
-  Text,
   Button,
   Input,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-  TEXT_VARIANT,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import {
   SelectedPlayersList,
@@ -41,14 +41,13 @@ export const CompetitionRecruitmentStep = ({
 
   return (
     <div className="space-y-6 animate-slide-up">
-      <div className="text-center">
-        <Text variant={TEXT_VARIANT.H2} className="italic">
-          {FORM.COMPETITION.STEPS.RECRUITMENT.TITLE}
-        </Text>
-        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-30">
-          {FORM.COMPETITION.STEPS.RECRUITMENT.SUBTITLE}
-        </Text>
-      </div>
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.TITLE}
+        as="h1"
+        title={FORM.COMPETITION.STEPS.RECRUITMENT.TITLE}
+        subtitle={FORM.COMPETITION.STEPS.RECRUITMENT.SUBTITLE}
+        centered
+      />
 
       <div className="relative">
         <Input

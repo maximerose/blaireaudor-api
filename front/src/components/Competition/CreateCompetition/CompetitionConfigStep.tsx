@@ -7,6 +7,8 @@ import {
   TEXT_VARIANT,
   CARD_VARIANT,
   Label,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { CompetitionFormData } from '@/types';
@@ -50,14 +52,13 @@ export const CompetitionConfigStep = ({
 
   return (
     <div className="space-y-6 animate-slide-up">
-      <div className="text-center space-y-1">
-        <Text variant={TEXT_VARIANT.H2} className="italic">
-          {FORM.COMPETITION.STEPS.CONFIG.TITLE}
-        </Text>
-        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-30">
-          {FORM.COMPETITION.STEPS.CONFIG.SUBTITLE}
-        </Text>
-      </div>
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.TITLE}
+        as="h1"
+        title={FORM.COMPETITION.STEPS.CONFIG.TITLE}
+        subtitle={FORM.COMPETITION.STEPS.CONFIG.SUBTITLE}
+        centered
+      />
 
       <div className="space-y-4">
         <Input
