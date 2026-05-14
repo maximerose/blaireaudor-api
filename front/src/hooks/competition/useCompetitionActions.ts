@@ -6,7 +6,11 @@ export const useCompetitionActions = (competitionId: string | undefined) => {
   return useInfiniteQuery({
     queryKey: QUERY_KEYS.competition.byId(competitionId!).actions,
     queryFn: ({ pageParam = 1, signal }) =>
-      competitionService.getActions(competitionId!, pageParam, signal),
+      competitionService.getActions({
+        id: competitionId!,
+        page: pageParam,
+        signal,
+      }),
     initialPageParam: 1,
     enabled: !!competitionId,
     getNextPageParam: (lastPage) => {

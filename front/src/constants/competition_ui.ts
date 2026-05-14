@@ -1,4 +1,4 @@
-import { ICONS } from '@/constants/icons';
+import { ICONS } from './icons';
 
 export const COMPETITION_UI = {
   ADMIN: {

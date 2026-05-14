@@ -5,6 +5,16 @@ import type {
   CompetitionUpdatePayload,
 } from '@/types';
 
+export interface GetActionsParams {
+  id: string;
+  page?: number;
+  selectedDate?: string | null;
+  selectedPlayerId?: string | null;
+  sortField?: string | null;
+  sortOrder?: 'asc' | 'desc';
+  signal?: AbortSignal;
+}
+
 export const competitionService = {
   create: async (payload: CompetitionCreatePayload) => {
     const response = await apiFetch(API.ENDPOINTS.ADMIN.COMPETITION_CREATE, {
@@ -76,15 +86,15 @@ export const competitionService = {
     return response.json();
   },
 
-  getActions: async (
-    id: string,
-    page: number = 1,
-    selectedDate?: string | null,
-    selectedPlayerId?: string | null,
-    sortField?: string | null,
-    sortOrder?: 'asc' | 'desc',
-    signal?: AbortSignal,
-  ) => {
+  getActions: async ({
+    id,
+    page = 1,
+    selectedDate,
+    selectedPlayerId,
+    sortField,
+    sortOrder,
+    signal,
+  }: GetActionsParams) => {
     const params = new URLSearchParams({ page: page.toString() });
 
     if (selectedDate) {

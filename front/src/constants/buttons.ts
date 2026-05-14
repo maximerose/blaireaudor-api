@@ -1,4 +1,4 @@
-import { ICONS } from '@/constants';
+import { ICONS } from './icons';
 
 export const BUTTONS = {
   // ACtions CRUD & Formulaires

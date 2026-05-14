@@ -24,15 +24,15 @@ export const useInfiniteActions = (
       },
     ],
     queryFn: ({ pageParam = 1, signal }) =>
-      competitionService.getActions(
-        competitionId!,
-        pageParam,
+      competitionService.getActions({
+        id: competitionId!,
+        page: pageParam,
         selectedDate,
         selectedPlayerId,
         sortField,
         sortOrder,
         signal,
-      ),
+      }),
     initialPageParam: 1,
     enabled: !!competitionId,
     getNextPageParam: (lastPage) => {
