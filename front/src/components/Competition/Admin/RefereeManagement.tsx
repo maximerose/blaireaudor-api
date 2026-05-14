@@ -1,6 +1,7 @@
 import {
   Badge,
   BADGE_VARIANT,
+  Input,
   PlayerSearchResultItem,
   Text,
   TEXT_VARIANT,
@@ -33,7 +34,7 @@ export const RefereeManagement = () => {
         <Text variant={TEXT_VARIANT.H3}>
           {COMPETITION_UI.ADMIN.REFEREE.TITLE}
         </Text>
-        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-60 text-[10px]">
+        <Text variant={TEXT_VARIANT.MICRO} className="opacity-60 text-[8px]">
           {COMPETITION_UI.ADMIN.REFEREE.SUBTITLE}
         </Text>
       </header>
@@ -100,12 +101,12 @@ export const RefereeManagement = () => {
       <div className="flex justify-center w-full pt-2">
         <div className="relative w-full sm:max-w-md">
           <div className="relative">
-            <input
+            <Input
               type="text"
               value={searchQuery}
+              align="center"
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER}
-              className="bg-black/40 border border-white/10 rounded-lg px-3 py-3 pr-10 text-sm text-white w-full focus:border-gold/50 outline-none transition-colors"
             />
 
             {searchQuery && (

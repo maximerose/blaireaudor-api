@@ -29,11 +29,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE_STYLES =
-  'inline-flex items-center justify-center font-black uppercase tracking-widest transition-default rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none shrink-0';
+  'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-default rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none shrink-0';
 
 const VARIANTS_STYLES: Record<ButtonVariant, string> = {
   [BUTTON_VARIANT.PRIMARY]:
-    'bg-gold text-black hover:bg-gold-light hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] shadow-lg shadow-gold/5',
+    'bg-gold border border-transparent text-black hover:bg-gold-light hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] shadow-lg shadow-gold/5',
   [BUTTON_VARIANT.SECONDARY]:
     'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20',
   [BUTTON_VARIANT.DANGER]:

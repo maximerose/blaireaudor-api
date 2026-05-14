@@ -81,9 +81,9 @@ export const ReportingContent = () => {
 
       {!isReporting ? (
         <Button
-          variant={BUTTON_VARIANT.PRIMARY}
+          variant={BUTTON_VARIANT.DANGER}
           fullWidth
-          size={BUTTON_SIZE.SMALL}
+          size={BUTTON_SIZE.LARGE}
           className="group"
           onClick={() => toggleReporting()}
         >

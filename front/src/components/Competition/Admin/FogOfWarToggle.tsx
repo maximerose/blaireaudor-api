@@ -25,13 +25,13 @@ export const FogOfWarToggle = () => {
         disabled={isUpdating}
         size={BUTTON_SIZE.MEDIUM}
         className={cn(
-          'transition-all duration-500',
+          'transition-all duration-500 w-full h-auto py-3 px-3 sm:px-4',
           isFogActive
             ? 'border-gold/50 bg-gold/10 hover:bg-gold-light/10'
             : 'border-white/10',
         )}
       >
-        <div className="flex items-center gap-4 text-left w-full">
+        <div className="flex flex-col sm:flex-row items-center gap-4 text-center w-full">
           <div
             className={cn(
               'rounded-full p-1 flex items-center justify-center text-2xl shadow-inner',
@@ -40,10 +40,10 @@ export const FogOfWarToggle = () => {
           >
             {ICONS.FOG_STATUS(isFogActive)}
           </div>
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 min-w-0">
             <Text
               variant={TEXT_VARIANT.H3}
-              className="font-black uppercase text-[11px] leading-none tracking-tight"
+              className="font-black uppercase text-[10px] sm:text-[11px] leading-none tracking-tight"
             >
               {isFogActive
                 ? COMPETITION_UI.ADMIN.FOG.DISABLE
@@ -51,20 +51,24 @@ export const FogOfWarToggle = () => {
             </Text>
             <Text
               variant={TEXT_VARIANT.BODY}
-              className="text-[10px] opacity-60 font-normal italic mt-1 leading-tight"
+              className="text-[9px] sm:text-[10px] opacity-60 font-normal italic mt-1 leading-tight line-clamp-2"
             >
               {isFogActive
                 ? COMPETITION_UI.ADMIN.FOG.DESC_OFF
                 : COMPETITION_UI.ADMIN.FOG.DESC_ON}
             </Text>
           </div>
-          <Badge
-            variant={isFogActive ? BADGE_VARIANT.SUCCESS : BADGE_VARIANT.DANGER}
-          >
-            {isFogActive
-              ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
-              : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
-          </Badge>
+          <div className="shrink-0">
+            <Badge
+              variant={
+                isFogActive ? BADGE_VARIANT.SUCCESS : BADGE_VARIANT.DANGER
+              }
+            >
+              {isFogActive
+                ? COMPETITION_UI.ADMIN.FOG.STATUS_ACTIVE
+                : COMPETITION_UI.ADMIN.FOG.STATUS_OFF}
+            </Badge>
+          </div>
         </div>
       </Button>
     </div>

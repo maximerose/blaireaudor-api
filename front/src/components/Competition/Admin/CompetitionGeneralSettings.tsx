@@ -56,7 +56,7 @@ export const CompetitionGeneralSettings = () => {
   }
 
   return (
-    <div className="space-y-6 p-6 bg-black/20 rounded-3xl border border-gold/20 animate-slide-up">
+    <div className="space-y-6 p-4 sm:p-6 bg-black/20 rounded-3xl border border-gold/20 animate-slide-up">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label={FORM.COMPETITION.LABELS.NAME}
@@ -156,14 +156,15 @@ export const CompetitionGeneralSettings = () => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-white/5">
         <Button
           variant={BUTTON_VARIANT.GHOST}
           onClick={() => setIsEditing(false)}
+          fullWidth
         >
           {BUTTONS.CANCEL}
         </Button>
-        <Button onClick={() => handleSave()} isLoading={loading}>
+        <Button onClick={() => handleSave()} fullWidth isLoading={loading}>
           {BUTTONS.SAVE}
         </Button>
       </div>

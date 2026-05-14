@@ -50,10 +50,15 @@ export const Dashboard = () => {
           <Button
             to={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
             variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZE.MEDIUM}
           >
             {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
           </Button>
-          <Button onClick={openJoinModal} variant={BUTTON_VARIANT.SECONDARY}>
+          <Button
+            onClick={openJoinModal}
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZE.MEDIUM}
+          >
             {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
           </Button>
         </section>

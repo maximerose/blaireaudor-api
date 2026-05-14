@@ -36,32 +36,6 @@ export const BonusDayManagement = () => {
         </Text>
       </header>
 
-      <div className="flex items-center gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
-        <div className="flex-1">
-          <Input
-            type="date"
-            label={FORM.SHARED.LABELS.DATE}
-            value={newDate}
-            min={minDate}
-            max={maxDate}
-            onKeyDown={(e) => e.preventDefault()}
-            onChange={(e) => setNewDate(e.target.value)}
-          />
-        </div>
-        <div className="w-24">
-          <Input
-            type="number"
-            label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
-            min={2}
-            value={multiplier}
-            onChange={(e) => setMultiplier(parseInt(e.target.value))}
-          />
-        </div>
-        <Button onClick={handleAdd} isLoading={isAdding} disabled={!newDate}>
-          {BUTTONS.ADD}
-        </Button>
-      </div>
-
       <div className="flex flex-wrap justify-center gap-2">
         {bonusDays.map((bd: BonusDay) => (
           <Badge
@@ -88,6 +62,38 @@ export const BonusDayManagement = () => {
             {FORM.ADMIN.BONUS.EMPTY}
           </Text>
         )}
+      </div>
+      <div className="flex flex-col gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="w-full sm:w-2/3">
+            <Input
+              type="date"
+              label={FORM.SHARED.LABELS.DATE}
+              value={newDate}
+              min={minDate}
+              max={maxDate}
+              onKeyDown={(e) => e.preventDefault()}
+              onChange={(e) => setNewDate(e.target.value)}
+            />
+          </div>
+          <div className="w-full sm:w-1/3">
+            <Input
+              type="number"
+              label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
+              min={2}
+              value={multiplier}
+              onChange={(e) => setMultiplier(parseInt(e.target.value))}
+            />
+          </div>
+        </div>
+        <Button
+          onClick={handleAdd}
+          isLoading={isAdding}
+          disabled={!newDate}
+          fullWidth
+        >
+          {BUTTONS.ADD}
+        </Button>
       </div>
     </div>
   );

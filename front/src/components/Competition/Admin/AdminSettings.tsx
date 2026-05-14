@@ -39,16 +39,18 @@ export const AdminSettings = () => {
         className={cn(
           'xl:mx-50',
           'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
-          isExpanded ? 'p-6 overflow-visible' : 'p-3 sm:p-4 overflow-hidden',
+          isExpanded
+            ? 'p-4 sm:p-6 overflow-visible'
+            : 'p-3 sm:p-4 overflow-hidden',
         )}
       >
         {/* --- HEADER COMPACT (Toujours visible) --- */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gold/10 rounded-lg text-gold hidden sm:block">
+            <div className="p-2 bg-gold/10 rounded-lg text-gold hidden sm:block shrink-0">
               <span className="text-xl">{ICONS.SETTINGS}</span>
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <Text
                 variant={TEXT_VARIANT.CAPTION}
                 className="font-bold uppercase tracking-widest text-gold/80"
@@ -56,12 +58,12 @@ export const AdminSettings = () => {
                 {COMPETITION_UI.ADMIN.GENERAL.TITLE}
               </Text>
               {!isExpanded && (
-                <div className="flex gap-2 mt-1">
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
                   <Badge
                     variant={
                       isFogActive ? BADGE_VARIANT.INFO : BADGE_VARIANT.GHOST
                     }
-                    className="text-[8px] py-0"
+                    className="text-[8px] py-0 whitespace-nowrap"
                   >
                     {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
                     {isFogActive
@@ -70,7 +72,7 @@ export const AdminSettings = () => {
                   </Badge>
                   <Badge
                     variant={BADGE_VARIANT.GHOST}
-                    className="text-[8px] py-0"
+                    className="text-[8px] py-0 whitespace-nowrap"
                   >
                     {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
                       competition.referees?.length || 0,
@@ -85,7 +87,7 @@ export const AdminSettings = () => {
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
             onClick={() => setIsExpanded(!isExpanded)}
-            className="hover:bg-gold/10"
+            className="hover:bg-gold/10 shrink-0"
           >
             {isExpanded
               ? BUTTONS.COLLAPSE
