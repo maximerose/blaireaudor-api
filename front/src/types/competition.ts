@@ -38,6 +38,7 @@ export interface CompetitionCreatePayload {
   referees?: string[]; // Tableau d'IRIs (ex: ["/api/players/1"])
   players?: string[]; // Tableau d'IRIs
   participate?: boolean; // Si le créateur veut s'auto-inscrire
+  is_creator_referee?: boolean;
 }
 
 export type CompetitionUpdatePayload = Partial<

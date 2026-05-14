@@ -149,6 +149,7 @@ export const useCreateCompetitionForm = (
         join_code: cleanJoinCode(formData.joinCode || ''),
         participate: formData.participate ?? true,
         fog_of_war: formData.fogOfWar,
+        is_creator_referee: formData.isCreatorReferee,
       };
 
       const competition = await competitionService.create(payload);
