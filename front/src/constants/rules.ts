@@ -4,4 +4,8 @@ export const RULES = {
     MIN_USERNAME: 3,
     MIN_PASSWORD: 6,
   },
+
+  ACTION: {
+    MIN_DESCRIPTION: 3,
+  },
 } as const;

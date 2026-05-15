@@ -9,7 +9,6 @@ import {
   SECTION_HEADER_VARIANT,
 } from '@/components/UI';
 import { useReportAction } from '@/hooks';
-import { preventDefault } from '@/utils';
 import { PlayerDropdownList } from '@/components/Competition';
 import { FORM, ICONS } from '@/constants';
 import { useCompetitionContext, useReportingContext } from '@/context';
@@ -19,10 +18,10 @@ export const ReportActionForm = () => {
   const { potentialTargets, toggleReporting } = useReportingContext();
 
   const {
-    formData,
+    register,
+    handleSubmit,
+    errors,
     loading,
-    setFormData,
-    submitReport,
     search,
     setSearch,
     showDropdown,
@@ -39,7 +38,7 @@ export const ReportActionForm = () => {
   return (
     <div className="animate-slide-up" role="dialog">
       <Card variant={CARD_VARIANT.GLASS} className="shadow-2xl p-5 sm:p-8">
-        <form onSubmit={preventDefault(submitReport)} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <SectionHeader
             icon={ICONS.BADGER}
             title={FORM.REPORT_ACTION.TITLE}
@@ -59,6 +58,7 @@ export const ReportActionForm = () => {
                 onFocus={() => setShowDropdown(true)}
                 onChange={(e) => setSearch(e.target.value)}
                 icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
+                error={errors?.targetPlayerId?.message}
               />
               {showDropdown && (
                 <PlayerDropdownList
@@ -71,12 +71,10 @@ export const ReportActionForm = () => {
             <Input
               label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
               placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
-              value={formData.description}
               autoComplete="off"
-              onChange={(e) =>
-                setFormData((p) => ({ ...p, description: e.target.value }))
-              }
               required
+              error={errors?.description?.message}
+              {...register('description')}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -84,23 +82,18 @@ export const ReportActionForm = () => {
                 label={FORM.REPORT_ACTION.LABELS.POINTS}
                 type="number"
                 icon={ICONS.POINTS}
-                value={formData.points}
                 step="10"
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, points: Number(e.target.value) }))
-                }
                 required
+                error={errors?.points?.message}
+                {...register('points', { valueAsNumber: true })}
               />
               <Input
                 label={FORM.SHARED.LABELS.DATE}
                 type="date"
                 min={dateLimits.minDate}
                 max={dateLimits.maxDate}
-                value={formData.dateAction}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, dateAction: e.target.value }))
-                }
                 required
+                {...register('dateAction')}
               />
             </div>
           </div>

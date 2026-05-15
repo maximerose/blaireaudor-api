@@ -70,6 +70,10 @@ export const ERRORS = {
     REPORT_FAILED: "Erreur lors du signalement de l'action.",
     STATUS_UPDATE_FAILED: "Erreur lors du changement de statut de l'action.",
     UPDATE_FAILED: "Erreur lors de la mise à jour de l'action.",
+    INVALID_PLAYER: 'Veuillez sélectionner un coupable dans la liste.',
+    INVALID_DESCRIPTION: `La description doit contenir au mois ${RULES.ACTION.MIN_DESCRIPTION} caractères.`,
+    INVALID_POINTS: 'Les points doivent être un nombre entier.',
+    INVALID_DATE: 'La date est obligatoire.',
   },
 
   // 6. Jours Bonus

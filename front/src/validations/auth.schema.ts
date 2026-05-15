@@ -10,20 +10,16 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    display_name: z
-      .string()
-      .min(RULES.AUTH.MIN_DISPLAY_NAME, {
-        message: ERRORS.AUTH.INVALID_DISPLAY_NAME,
-      }),
+    display_name: z.string().min(RULES.AUTH.MIN_DISPLAY_NAME, {
+      message: ERRORS.AUTH.INVALID_DISPLAY_NAME,
+    }),
     username: z
       .string()
       .min(RULES.AUTH.MIN_USERNAME, { message: ERRORS.AUTH.INVALID_USERNAME }),
     email: z.email({ message: ERRORS.AUTH.INVALID_EMAIL }),
-    plain_password: z
-      .string()
-      .min(RULES.AUTH.MIN_PASSWORD, {
-        message: ERRORS.AUTH.INVALID_PLAIN_PASSWORD,
-      }),
+    plain_password: z.string().min(RULES.AUTH.MIN_PASSWORD, {
+      message: ERRORS.AUTH.INVALID_PLAIN_PASSWORD,
+    }),
     confirm_password: z.string(),
     player_id: z.string().nullable().optional(),
   })

@@ -57,8 +57,8 @@ export const generateClientSideCode = () => {
  * Gère le pluriel en français (ajoute un 's' si count > 1)
  */
 export const pluralize = (count: number, word: string, plural?: string) => {
-  if (count <= 1) return `${count} ${word}`;
-  return `${count} ${plural || word + 's'}`;
+  if (count <= 1) return word;
+  return `${plural || word + 's'}`;
 };
 
 /**
