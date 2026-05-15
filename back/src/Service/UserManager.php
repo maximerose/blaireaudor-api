@@ -42,9 +42,11 @@ class UserManager
         string $displayName,
         ?Competition $competition = null,
         ?string $playerId = null,
+        string $email = '',
     ): User {
         $user = new User();
         $user->setUsername($username);
+        $user->setEmail($email);
         $user->setPlainPassword($plainPassword);
 
         $player = null;

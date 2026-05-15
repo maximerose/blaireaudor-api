@@ -10,3 +10,12 @@ export interface HydraCollection<T> {
 }
 
 export type ApiId = string;
+
+export interface ApiError {
+  message?: string;
+  errors?: {
+    username?: string;
+    email?: string;
+    [key: string]: string | undefined;
+  };
+}

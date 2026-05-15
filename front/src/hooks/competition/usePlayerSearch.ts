@@ -28,7 +28,7 @@ export const usePlayerSearch = (debounceDelay = 400): PlayerSearchLogic => {
     queryKey: QUERY_KEYS.player.search(debouncedTerm),
     queryFn: ({ signal }) => playerService.search(debouncedTerm, signal),
     enabled: debouncedTerm.trim().length >= 2,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 2,
   });
 
   return {

@@ -100,4 +100,14 @@ export const authService = {
     );
     return await response.json();
   },
+
+  /**
+   * Vérifie si un email est déjà pris
+   */
+  checkEmail: async (email: string, signal?: AbortSignal) => {
+    const response = await apiFetch(API.ENDPOINTS.USER.CHECK_EMAIL(email), {
+      signal,
+    });
+    return await response.json();
+  },
 };

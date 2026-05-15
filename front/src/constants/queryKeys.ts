@@ -3,6 +3,7 @@ export const QUERY_KEYS = {
     me: ['auth', 'me'] as const,
     usernameCheck: (username: string) =>
       ['auth', 'username-check', username] as const,
+    emailCheck: (email: string) => ['auth', 'email-check', email] as const,
   },
   competition: {
     all: ['competitions'] as const,

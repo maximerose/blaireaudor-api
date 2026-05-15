@@ -1,0 +1,7 @@
+export const RULES = {
+  AUTH: {
+    MIN_DISPLAY_NAME: 2,
+    MIN_USERNAME: 3,
+    MIN_PASSWORD: 6,
+  },
+} as const;

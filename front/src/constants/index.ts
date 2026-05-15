@@ -10,5 +10,6 @@ export * from './icons';
 export * from './logs';
 export * from './queryKeys';
 export * from './routes';
+export * from './rules';
 export * from './success';
 export * from './ui';

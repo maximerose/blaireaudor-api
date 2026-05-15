@@ -15,10 +15,6 @@ export const FORM = {
       DATE: 'JJ/MM/AAAA',
       POINTS: '0',
     },
-    VALIDATION: {
-      REQUIRED: 'Ce champ est obligatoire.',
-      EMAIL_INVALID: "Format d'email incorrect.",
-    },
   },
 
   /**
@@ -44,6 +40,9 @@ export const FORM = {
       USERNAME_CHECK: 'Vérification en cours...',
       USERNAME_AVAILABLE: 'Pseudo disponible !',
       USERNAME_TAKEN: 'Ce pseudo est déjà pris.',
+      EMAIL_CHECK: 'Vérification en cours...',
+      EMAIL_AVAILABLE: 'Adresse email disponible !',
+      EMAIL_TAKEN: 'Cette adresse email est déjà utilisée.',
     },
   },
 

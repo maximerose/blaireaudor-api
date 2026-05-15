@@ -12,14 +12,18 @@ export const API = {
     // USER (Gestion du compte et sécurité)
     USER: {
       DETAIL: (id: string) => `/users/${id}`,
-      CHECK_USERNAME: (username: string) => `/check-username/${username}`,
+      CHECK_USERNAME: (username: string) =>
+        `/check-username?username=${encodeURIComponent(username)}`,
+      CHECK_EMAIL: (email: string) =>
+        `/check-email?email=${encodeURIComponent(email)}`,
     },
 
     // PLAYER (Le profil métier, les scores, la recherche)
     PLAYER: {
       LIST: '/players',
       SEARCH: (query: string) => `/search/players?displayName=${query}`,
-      CHECK_BY_USERNAME: (username: string) => `/check-player/${username}`,
+      CHECK_BY_USERNAME: (username: string) =>
+        `/check-player?username=${username}`,
     },
 
     // COMPETITIONS (Les Arènes)

@@ -41,7 +41,6 @@ export const LoginForm = () => {
           autoComplete="username"
           disabled={isSubmitting}
           align="center"
-          required
           error={errors.username?.message}
           {...register('username', { onChange: handleUsernameChange })}
         />
@@ -53,7 +52,6 @@ export const LoginForm = () => {
           autoComplete="current-password"
           disabled={isSubmitting}
           align="center"
-          required
           error={errors.password?.message}
           {...register('password')}
         />

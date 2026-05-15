@@ -1,22 +1,56 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services';
-import {
-  usePlayerSearch,
-  useRegistrationForm,
-  useUsernameCheck,
-} from '@/hooks';
-import type { Player } from '@/types';
+import { useEmailCheck, usePlayerSearch, useUsernameCheck } from '@/hooks';
+import type {
+  Player,
+  AuthResponseData,
+  ApiError,
+  PlayerCompact,
+} from '@/types';
 import { AUTH_UI, FORM, ERRORS, ICONS, LOG_MESSAGES } from '@/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthContext } from '@/context';
+import { useForm } from 'react-hook-form';
+import {
+  type RegisterFormData,
+  registerSchema,
+} from '@/validations/auth.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { slugify, finalizeSlug } from '@/utils';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();
   const navigate = useNavigate();
+  const [globalMessage, setGlobalMessage] = useState('');
 
-  const formManager = useRegistrationForm();
-  const { formData, linkPlayer, unlinkPlayer } = formManager;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onChange',
+    defaultValues: {
+      display_name: '',
+      username: '',
+      email: '',
+      plain_password: '',
+      confirm_password: '',
+      player_id: null,
+    },
+  });
+
+  const currentUsername = watch('username');
+  const currentEmail = watch('email');
+  const currentPlayerId = watch('player_id');
+  const currentDisplayName = watch('display_name');
+
+  const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
+  const [showUsernameHint, setShowUsernameHint] = useState(false);
 
   const {
     searchTerm,
@@ -25,117 +59,188 @@ export const useRegistration = (redirectUrl: string) => {
     searching,
     clearSearch,
   } = usePlayerSearch();
+
   const {
     status: usernameStatus,
-    isLoading: checkLoading,
+    isLoading: usernameCheckLoading,
     foundGuest,
-  } = useUsernameCheck(formData.username, formData.player_id);
+  } = useUsernameCheck(currentUsername, currentPlayerId ?? null);
 
-  const [message, setMessage] = useState('');
+  const { status: emailStatus, isLoading: emailCheckLoading } =
+    useEmailCheck(currentEmail);
 
-  // --- ACTIONS INTERMÉDIAIRES ---
   const filteredResults = rawSearchResults.filter(
     (p: Player) => p.has_account === false,
   );
 
-  const handlePlayerSelect = (player: Player) => {
-    linkPlayer(player);
+  const linkPlayer = (player: PlayerCompact) => {
+    setIsUsernameCustomized(true);
+    setShowUsernameHint(false);
+    setValue('display_name', player.display_name || currentDisplayName, {
+      shouldValidate: true,
+    });
+    setValue('username', player.username || currentUsername, {
+      shouldValidate: true,
+    });
+    setValue('player_id', player.id || null);
     setSearchTerm('');
   };
 
-  const handleClearPlayer = () => {
-    unlinkPlayer();
+  const unlinkPlayer = () => {
+    setIsUsernameCustomized(false);
+    setValue('display_name', '');
+    setValue('player_id', null);
     setSearchTerm('');
   };
 
-  const handleLinkFoundGuest = () => {
-    if (foundGuest) linkPlayer(foundGuest);
+  const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setValue('display_name', val, { shouldValidate: true });
+
+    if (!isUsernameCustomized) {
+      setValue('username', slugify(val), { shouldValidate: true });
+    }
   };
 
-  // --- LOGIQUE UI ---
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUsernameCustomized(true);
+    setValue('username', slugify(e.target.value), { shouldValidate: true });
+  };
+
+  const handleUsernameBlur = () => {
+    setShowUsernameHint(false);
+    setValue('username', finalizeSlug(currentUsername), {
+      shouldValidate: true,
+    });
+  };
+
+  const handleDisplayNameBlur = () => {
+    if (!isUsernameCustomized) {
+      setValue('username', finalizeSlug(currentUsername), {
+        shouldValidate: true,
+      });
+    }
+  };
+
+  const registerMutation = useMutation<
+    AuthResponseData,
+    ApiError,
+    RegisterFormData
+  >({
+    mutationFn: async (data: RegisterFormData) => {
+      const response = await authService.register(data);
+
+      if (!response.ok) {
+        throw response.data;
+      }
+
+      return response.data;
+    },
+    onSuccess: async (_data, variables) => {
+      await login({
+        username: variables.username,
+        password: variables.plain_password,
+      });
+
+      navigate(redirectUrl);
+    },
+    onError: (errorData) => {
+      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, errorData);
+
+      if (errorData.errors) {
+        if (errorData.errors.username) {
+          setError('username', {
+            type: 'server',
+            message: ERRORS.AUTH.USERNAME_TAKEN,
+          });
+        }
+        if (errorData.errors.email) {
+          setError('email', {
+            type: 'server',
+            message: ERRORS.AUTH.EMAIL_TAKEN,
+          });
+        }
+      } else {
+        setGlobalMessage(
+          errorData.message ||
+            `${ICONS.FAILURE} ${ERRORS.AUTH.REGISTRATION_FAILED}`,
+        );
+      }
+    },
+  });
+
+  const onSubmit = (data: RegisterFormData) => {
+    if (
+      usernameCheckLoading ||
+      emailCheckLoading ||
+      usernameStatus === 'taken' ||
+      emailStatus === 'taken'
+    )
+      return;
+    setGlobalMessage('');
+    registerMutation.mutate(data);
+  };
+
   const getSubmitButtonText = () => {
     if (registerMutation.isPending) return AUTH_UI.REGISTER.LOADING_SUBMIT;
-    if (checkLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
+    if (usernameCheckLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
+    if (emailCheckLoading) return FORM.AUTH.HINTS.EMAIL_CHECK;
     if (usernameStatus === 'taken') return FORM.AUTH.HINTS.USERNAME_TAKEN;
     if (usernameStatus === 'guest_exists') return AUTH_UI.GUEST_ALERT.TITLE;
     return AUTH_UI.REGISTER.SUBMIT;
   };
 
-  const displayStates = {
-    shouldShowUsernameCheck:
-      formData.username.length >= 3 &&
-      usernameStatus !== 'guest_exists' &&
-      (checkLoading || usernameStatus !== null),
-    shouldShowGuestAlert:
-      !checkLoading && usernameStatus === 'guest_exists' && !!foundGuest,
-    shouldShowUsernameHint: formManager.showUsernameHint,
-  };
-
-  // --- SOUMISSION API ---
-  const registerMutation = useMutation({
-    mutationFn: async () => {
-      const { ok, data } = await authService.register(formData);
-
-      if (!ok || !data.token) {
-        throw new Error(
-          data.message || `${ICONS.FAILURE} ${ERRORS.AUTH.REGISTRATION_FAILED}`,
-        );
-      }
-
-      return data;
-    },
-    onSuccess: async () => {
-      await login({
-        username: formData.username,
-        password: formData.plain_password,
-      });
-
-      navigate(redirectUrl);
-    },
-    onError: (error) => {
-      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, error);
-    },
-  });
-
-  const handleSubmit = () => {
-    if (
-      registerMutation.isPending ||
-      checkLoading ||
-      usernameStatus === 'taken'
-    )
-      return;
-
-    setMessage('');
-    registerMutation.mutate();
-  };
-
   return {
-    ...formManager,
-    message,
+    register,
+    handleSubmit: handleSubmit(onSubmit),
+    errors,
+    watch,
+    handleDisplayNameChange,
+    handleUsernameChange,
+    handleUsernameFocus: () => setShowUsernameHint(true),
+    handleUsernameBlur,
+    handleDisplayNameBlur,
+
+    globalMessage,
     isLoading: registerMutation.isPending,
+    isSubmitting,
     usernameStatus,
-    checkLoading,
-    displayStates,
+    usernameCheckLoading,
+    displayStates: {
+      shouldShowUsernameCheck:
+        currentUsername.length >= 3 &&
+        usernameStatus !== 'guest_exists' &&
+        (usernameCheckLoading || usernameStatus !== null),
+      shouldShowEmailCheck: currentEmail.includes('@') && emailStatus !== null,
+      shouldShowGuestAlert:
+        !usernameCheckLoading &&
+        usernameStatus === 'guest_exists' &&
+        !!foundGuest,
+      shouldShowUsernameHint: showUsernameHint,
+    },
+    emailStatus,
+    emailCheckLoading,
     submitButtonText: getSubmitButtonText(),
     isSubmitDisabled:
       registerMutation.isPending ||
-      checkLoading ||
+      usernameCheckLoading ||
       usernameStatus === 'taken' ||
-      formData.username.length < 3,
+      emailCheckLoading ||
+      emailStatus === 'taken',
+
     playerSearch: {
       searchTerm,
       setSearchTerm,
       results: filteredResults,
       searching,
       clearSearch,
-      onSelect: handlePlayerSelect,
+      onSelect: linkPlayer,
       onCloseSearch: () => setSearchTerm(''),
-      onClear: handleClearPlayer,
-      isLinked: !!formData.player_id,
+      onClear: unlinkPlayer,
+      isLinked: !!currentPlayerId,
       hasResults: filteredResults.length > 0,
     },
-    handleSubmit,
     foundGuest,
-    linkFoundGuest: handleLinkFoundGuest,
+    linkFoundGuest: () => foundGuest && linkPlayer(foundGuest),
   };
 };

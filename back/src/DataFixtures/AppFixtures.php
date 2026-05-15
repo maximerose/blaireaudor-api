@@ -868,8 +868,6 @@ class AppFixtures extends Fixture
 
         foreach ($participationsMap as $competitionId => $playersMap) {
             foreach ($playersMap as $playerName => $participation) {
-                $participation->updateScore();
-
                 $io->text(sprintf(
                     '-> %s : Calcul du score de %s...',
                     $participation->getCompetition()->getName(),

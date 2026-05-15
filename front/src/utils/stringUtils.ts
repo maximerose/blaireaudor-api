@@ -60,3 +60,16 @@ export const pluralize = (count: number, word: string, plural?: string) => {
   if (count <= 1) return `${count} ${word}`;
   return `${count} ${plural || word + 's'}`;
 };
+
+/**
+ * Évalue la force d'un mot de passe de 0 à 4
+ */
+export const getPasswordStrength = (password: string | undefined): number => {
+  let score = 0;
+  if (!password) return 0;
+  if (password.length >= 6) score += 1;
+  if (password.length >= 10) score += 1;
+  if (/[A-Z]/.test(password) && /[0-9]/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+  return Math.min(score, 4);
+};

@@ -11,7 +11,7 @@ export interface Player {
   has_account: boolean;
   refereed_competitions: Competition[];
   associated_user: User | null;
-  last_competition_name?: string;
+  last_competition_name?: string | null;
 }
 
 /**

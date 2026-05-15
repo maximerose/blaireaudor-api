@@ -10,72 +10,126 @@ import {
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
-import { cn, preventDefault } from '@/utils';
+import { cn, getPasswordStrength, preventDefault } from '@/utils';
 
 export const RegistrationForm = () => {
   const {
-    formData,
-    message,
-    usernameStatus,
-    isLoading,
-    checkLoading,
-    displayStates,
-    submitButtonText,
-    isSubmitDisabled,
-    playerSearch,
-    foundGuest,
+    register,
+    handleSubmit,
+    errors,
+    watch,
     handleDisplayNameChange,
     handleUsernameChange,
     handleUsernameFocus,
     handleUsernameBlur,
     handleDisplayNameBlur,
-    handlePasswordChange,
-    handleSubmit,
+    globalMessage,
+    isLoading,
+    isSubmitting,
+    usernameStatus,
+    emailStatus,
+    usernameCheckLoading,
+    emailCheckLoading,
+    displayStates,
+    submitButtonText,
+    isSubmitDisabled,
+    playerSearch,
+    foundGuest,
     linkFoundGuest,
   } = useRegistration(ROUTES.NAV.DASHBOARD);
 
+  const passwordValue = watch('plain_password') || '';
+  const strength = getPasswordStrength(passwordValue);
+
   return (
     <AuthCard title="S'inscrire" onSubmit={preventDefault(handleSubmit)}>
-      {/* 1. Recherche historique (liaison de compte existant) */}
       <HistoricalPlayerSearch
         searchProps={playerSearch}
-        selectedName={formData.display_name}
+        selectedName={watch('display_name')}
       />
 
       <div className="space-y-4">
-        {/* 2. Nom d'affichage */}
         <Input
           label={FORM.AUTH.LABELS.DISPLAY_NAME}
           type="text"
           autoComplete="name"
-          value={formData.display_name || ''}
-          onChange={handleDisplayNameChange}
-          onBlur={handleDisplayNameBlur}
-          disabled={isLoading}
           placeholder={FORM.AUTH.PLACEHOLDERS.DISPLAY_NAME}
+          disabled={isLoading || isSubmitting}
           required
+          error={errors?.display_name?.message}
+          {...register('display_name', {
+            onChange: handleDisplayNameChange,
+            onBlur: handleDisplayNameBlur,
+          })}
         />
 
-        {/* 3. Nom d'utilisateur & Aide au formatage */}
+        <div className="space-y-1">
+          <Input
+            label={FORM.AUTH.LABELS.EMAIL}
+            type="email"
+            icon="@"
+            autoComplete="email"
+            placeholder={FORM.AUTH.PLACEHOLDERS.EMAIL}
+            disabled={isLoading || isSubmitting}
+            required
+            error={errors?.email?.message}
+            {...register('email')}
+          />
+
+          {displayStates.shouldShowEmailCheck && !errors?.email && (
+            <div aria-live="polite">
+              {emailCheckLoading ? (
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className="text-gold animate-pulse text-center"
+                >
+                  {FORM.AUTH.HINTS.EMAIL_CHECK}
+                </Text>
+              ) : (
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className={cn(
+                    'text-center',
+                    emailStatus === 'available'
+                      ? 'text-success-bright'
+                      : 'text-danger-bright',
+                  )}
+                >
+                  <span className="mr-2" aria-hidden="true">
+                    {emailStatus === 'available'
+                      ? ICONS.SUCCESS
+                      : ICONS.FAILURE}
+                  </span>
+                  {emailStatus === 'available'
+                    ? FORM.AUTH.HINTS.EMAIL_AVAILABLE
+                    : FORM.AUTH.HINTS.EMAIL_TAKEN}
+                </Text>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="space-y-1">
           <Input
             label={FORM.AUTH.LABELS.USERNAME}
-            icon="@"
+            icon={ICONS.PLAYER}
             type="text"
             autoComplete="username"
-            value={formData.username || ''}
-            onChange={handleUsernameChange}
-            onFocus={handleUsernameFocus}
-            onBlur={handleUsernameBlur}
             placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
-            disabled={isLoading}
+            disabled={isLoading || isSubmitting}
             required
             aria-describedby={
               displayStates.shouldShowUsernameHint ? 'username-hint' : undefined
             }
+            error={errors?.username?.message}
+            {...register('username', {
+              onChange: handleUsernameChange,
+              onBlur: handleUsernameBlur,
+            })}
+            onFocus={handleUsernameFocus}
           />
 
-          {displayStates.shouldShowUsernameHint && (
+          {displayStates.shouldShowUsernameHint && !errors.username && (
             <Text
               id="username-hint"
               variant={TEXT_VARIANT.MICRO}
@@ -85,88 +139,114 @@ export const RegistrationForm = () => {
               {FORM.AUTH.HINTS.USERNAME_HINT}
             </Text>
           )}
+
+          {displayStates.shouldShowUsernameHint && !errors.username && (
+            <div aria-live="polite">
+              {usernameCheckLoading ? (
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className="text-gold animate-pulse text-center"
+                >
+                  {FORM.AUTH.HINTS.USERNAME_CHECK}
+                </Text>
+              ) : (
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className={cn(
+                    'text-center',
+                    usernameStatus === 'available'
+                      ? 'text-success-bright'
+                      : 'text-danger-bright',
+                  )}
+                >
+                  <span className="mr-2" aria-hidden="true">
+                    {usernameStatus === 'available'
+                      ? ICONS.SUCCESS
+                      : ICONS.FAILURE}
+                  </span>
+                  {usernameStatus === 'available'
+                    ? FORM.AUTH.HINTS.USERNAME_AVAILABLE
+                    : FORM.AUTH.HINTS.USERNAME_TAKEN}
+                </Text>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* 4. Feedback de disponibilité du pseudo */}
-      {displayStates.shouldShowUsernameCheck && (
-        <div className="py-1" aria-live="polite">
-          {checkLoading ? (
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className="text-gold animate-pulse text-center"
-            >
-              {FORM.AUTH.HINTS.USERNAME_CHECK}
-            </Text>
-          ) : (
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className={cn(
-                'text-center',
-                usernameStatus === 'available'
-                  ? 'text-success-bright'
-                  : 'text-danger-bright',
-              )}
-            >
-              <span className="mr-2" aria-hidden="true">
-                {usernameStatus === 'available'
-                  ? `${ICONS.SUCCESS} `
-                  : `${ICONS.FAILURE} `}
-              </span>
-              {usernameStatus === 'available'
-                ? FORM.AUTH.HINTS.USERNAME_AVAILABLE
-                : FORM.AUTH.HINTS.USERNAME_TAKEN}
-            </Text>
-          )}
-        </div>
-      )}
-
-      {/* 5. Alerte si un profil invité correspondant est trouvé */}
       {displayStates.shouldShowGuestAlert && foundGuest && (
         <GuestFoundAlert
           foundGuest={foundGuest}
-          username={formData.username}
+          username={watch('username')}
           onLink={linkFoundGuest}
         />
       )}
 
-      {/* 6. Mot de passe */}
-      <Input
-        label={FORM.AUTH.LABELS.PASSWORD}
-        type="password"
-        autoComplete="new-password"
-        value={formData.plain_password || ''}
-        onChange={handlePasswordChange}
-        disabled={isLoading}
-        placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
-        required
-      />
+      <div className="space-y-4">
+        <Input
+          label={FORM.AUTH.LABELS.PASSWORD}
+          type="password"
+          icon={ICONS.SECRET}
+          autoComplete="new-password"
+          placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
+          disabled={isLoading || isSubmitting}
+          required
+          error={errors?.plain_password?.message}
+          {...register('plain_password')}
+        />
 
-      {/* 7. Bouton d'action principal */}
+        {passwordValue.length > 0 && !errors.plain_password && (
+          <div className="flex gap-1 mt-1 px-1 h-1">
+            {[1, 2, 3, 4].map((level) => (
+              <div
+                key={level}
+                className={cn(
+                  'flex-1 rounded-full transition-all duration-300',
+                  strength >= level
+                    ? strength < 2
+                      ? 'bg-danger'
+                      : strength < 4
+                        ? 'bg-warning'
+                        : 'bg-success-bright'
+                    : 'bg-white/10',
+                )}
+              />
+            ))}
+          </div>
+        )}
+        <Input
+          label={FORM.AUTH.LABELS.CONFIRM_PASSWORD}
+          type="password"
+          icon={ICONS.CHECK}
+          autoComplete="new-password"
+          placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
+          disabled={isLoading || isSubmitting}
+          required
+          error={errors?.confirm_password?.message}
+          {...register('confirm_password')}
+        />
+      </div>
+
       <Button
         type="submit"
-        isLoading={isLoading}
+        isLoading={isLoading || isSubmitting}
         disabled={isSubmitDisabled}
         fullWidth
-        className="mt-4 transition-default"
+        className="mt-4"
         aria-disabled={isSubmitDisabled}
       >
         {submitButtonText}
       </Button>
 
-      {/* 8. Messages d'erreur du serveur */}
-      {message && (
-        <div role="status" aria-live="polite">
-          <Text
-            variant={TEXT_VARIANT.BODY}
-            className="mt-4 text-center text-white font-medium animate-fade-in"
-          >
-            {message}
-          </Text>
-        </div>
+      {globalMessage && (
+        <Text
+          variant={TEXT_VARIANT.BODY}
+          className="mt-4 text-center text-danger-bright animate-fade-in"
+        >
+          {globalMessage}
+        </Text>
       )}
 
-      {/* 9. Lien vers la connexion */}
       <div className="flex justify-center mt-6 pt-4 border-t border-white/5">
         <Button
           to={ROUTES.NAV.LOGIN}

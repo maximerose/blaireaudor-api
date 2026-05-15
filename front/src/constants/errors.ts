@@ -1,4 +1,5 @@
 import { pluralize } from '@/utils';
+import { RULES } from './rules';
 
 export const ERRORS = {
   // 1. Erreurs techniques / Réseau
@@ -13,6 +14,13 @@ export const ERRORS = {
 
   // 2. Erreurs d'Authentification / Inscription
   AUTH: {
+    INVALID_DISPLAY_NAME: `Le nom doit contenir au moins ${RULES.AUTH.MIN_DISPLAY_NAME} caractères.`,
+    INVALID_USERNAME: `Le pseudo doit contenir au moins ${RULES.AUTH.MIN_USERNAME} caractères.`,
+    INVALID_EMAIL: "Format d'email incorrect.",
+    INVALID_PLAIN_PASSWORD: `Le mot de passe doit faire au moins ${RULES.AUTH.MIN_PASSWORD} caractères.`,
+    INVALID_CONFIRM_PASSWORD: 'Les mots de passe ne correspondent pas.',
+    USERNAME_TAKEN: "Ce nom d'utilisateur est déjà utilisé.",
+    EMAIL_TAKEN: 'Cette adresse email est déjà utilisée.',
     INVALID_CREDENTIALS: 'Identifiants invalides.',
     SESSION_EXPIRED: 'Votre session a expiré, merci de vous reconnecter.',
     UNAUTHORIZED: "Vous n'avez pas les droits pour accéder à cette arène.",

@@ -51,6 +51,7 @@ final class RegistrationController extends AbstractController
         $data = $request->toArray();
 
         $username = $data['username'] ?? '';
+        $email = $data['email'] ?? '';
         $joinCode = $data['join_code'] ?? null;
         $playerId = $data['player_id'] ?? null;
         $competition = null;
@@ -58,7 +59,15 @@ final class RegistrationController extends AbstractController
         if ($userRepository->count(['username' => $username]) > 0) {
             return $this->json([
                 'errors' => [
-                    'username' => 'Ce pseudo est déjà utilisé',
+                    'username' => 'Ce nom d\'utilisateur est déjà utilisé',
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($userRepository->count(['email' => $email]) > 0) {
+            return $this->json([
+                'errors' => [
+                    'email' => 'Cette adresse email est déjà utilisée',
                 ],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -78,7 +87,8 @@ final class RegistrationController extends AbstractController
             $data['plain_password'] ?? '',
             $data['display_name'] ?? '',
             $competition,
-            $playerId
+            $playerId,
+            $email
         );
 
         $errors = $this->validator->validate($user);
@@ -100,9 +110,15 @@ final class RegistrationController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('/check-username/{username}', name: 'check-username', methods: ['GET'])]
-    public function checkUsername(string $username, UserRepository $userRepository, PlayerRepository $playerRepository): JsonResponse
+    #[Route('/check-username', name: 'check-username', methods: ['GET'])]
+    public function checkUsername(Request $request, UserRepository $userRepository, PlayerRepository $playerRepository): JsonResponse
     {
+        $username = $request->query->get('username');
+
+        if (empty($username)) {
+            return $this->json(['available' => true]);
+        }
+
         $userExists = $userRepository->count(['username' => $username]) > 0;
         $player = $playerRepository->findOneBy(['username' => $username]);
         $playerIsClaimed = (null !== $player && null !== $player->getAssociatedUser());
@@ -122,9 +138,15 @@ final class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/check-player/{username}', name: 'check-player', methods: ['GET'])]
-    public function checkPlayer(string $username, PlayerRepository $playerRepository): JsonResponse
+    #[Route('/check-player', name: 'check-player', methods: ['GET'])]
+    public function checkPlayer(Request $request, PlayerRepository $playerRepository): JsonResponse
     {
+        $username = $request->query->get('username');
+
+        if (empty($username)) {
+            return $this->json(['exists' => false]);
+        }
+
         $player = $playerRepository->findOneBy([
             'username' => $username,
             'associatedUser' => null,
@@ -137,6 +159,22 @@ final class RegistrationController extends AbstractController
                 'display_name' => $player->getDisplayName(),
                 'username' => $player->getUsername(),
             ] : null,
+        ]);
+    }
+
+    #[Route('/check-email', name: 'check-email', methods: ['GET'])]
+    public function checkEmail(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $email = $request->query->get('email', '');
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->json(['available' => true]);
+        }
+
+        $userExists = $userRepository->count(['email' => $email]) > 0;
+
+        return $this->json([
+            'available' => !$userExists,
         ]);
     }
 }
