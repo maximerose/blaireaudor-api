@@ -1,19 +1,24 @@
 import { useLogin } from '@/hooks';
 import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
 import { Input, Button, AuthCard, Text, TEXT_VARIANT } from '@/components/UI';
-import { preventDefault } from '@/utils';
 
 export const LoginForm = () => {
-  const { credentials, error, isLoading, handleChange, handleSubmit } =
-    useLogin();
+  const {
+    register,
+    handleSubmit,
+    handleUsernameChange,
+    globalError,
+    isSubmitting,
+    errors,
+  } = useLogin();
 
   return (
     <AuthCard
       title={AUTH_UI.LOGIN.TITLE}
       subtitle={AUTH_UI.LOGIN.SUBTITLE}
-      onSubmit={preventDefault(handleSubmit)}
+      onSubmit={handleSubmit}
     >
-      {error && (
+      {globalError && (
         <div
           className="bg-danger/10 border border-danger-bright/20 p-3 rounded-xl animate-pulse motion-reduce:animate-none"
           role="alert"
@@ -23,41 +28,38 @@ export const LoginForm = () => {
             className="text-danger-bright text-center opacity-100"
           >
             <span aria-hidden="true">{ICONS.DANGER} </span>
-            {error}
+            {globalError}
           </Text>
         </div>
       )}
 
       <div className="space-y-4">
         <Input
-          name="username"
           label={FORM.AUTH.LABELS.USERNAME}
           icon="@"
           placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
           autoComplete="username"
-          value={credentials.username}
-          onChange={handleChange}
-          disabled={isLoading}
-          required
+          disabled={isSubmitting}
           align="center"
+          required
+          error={errors.username?.message}
+          {...register('username', { onChange: handleUsernameChange })}
         />
-
         <Input
-          name="password"
           label={FORM.AUTH.LABELS.PASSWORD}
           type="password"
           icon={ICONS.SECRET}
           placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
           autoComplete="current-password"
-          value={credentials.password}
-          onChange={handleChange}
-          disabled={isLoading}
-          required
+          disabled={isSubmitting}
           align="center"
+          required
+          error={errors.password?.message}
+          {...register('password')}
         />
       </div>
 
-      <Button type="submit" isLoading={isLoading} fullWidth className="mt-4">
+      <Button type="submit" isLoading={isSubmitting} fullWidth className="mt-4">
         {AUTH_UI.LOGIN.SUBMIT}
       </Button>
 

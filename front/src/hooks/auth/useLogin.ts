@@ -1,46 +1,61 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, ERRORS } from '@/constants';
 import { slugify } from '@/utils';
 import { useAuthContext } from '@/context';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginFormData } from '@/validations';
 
 export const useLogin = () => {
-  const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [globalError, setGlobalError] = useState('');
   const navigate = useNavigate();
   const { login, logout } = useAuthContext();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
 
   useEffect(() => {
     logout();
   }, [logout]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const processedValue = name === 'username' ? slugify(value) : value;
-    setCredentials((prev) => ({ ...prev, [name]: processedValue }));
-  };
-
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    setError('');
+  const onSubmit = async (data: LoginFormData) => {
+    setGlobalError('');
 
     try {
-      const response = await login(credentials);
+      const response = await login(data);
+
       if (response.ok) {
         navigate(ROUTES.NAV.DASHBOARD);
       } else {
-        setError(ERRORS.AUTH.INVALID_CREDENTIALS);
+        setGlobalError(ERRORS.AUTH.INVALID_CREDENTIALS);
       }
     } catch {
-      setError(ERRORS.NETWORK.SERVER);
-    } finally {
-      setIsLoading(false);
+      setGlobalError(ERRORS.NETWORK.SERVER);
     }
   };
 
-  return { credentials, error, isLoading, handleChange, handleSubmit };
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('username', slugify(e.target.value), { shouldValidate: true });
+  };
+
+  return {
+    register,
+    handleSubmit: handleSubmit(onSubmit),
+    handleUsernameChange,
+    setValue,
+    errors,
+    globalError,
+    isSubmitting,
+  };
 };

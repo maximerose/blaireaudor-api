@@ -2,6 +2,7 @@ import React, { forwardRef, useId } from 'react';
 import { Text, TEXT_VARIANT } from '@/components/UI';
 import { useInputUI } from '@/hooks';
 import { cn } from '@/utils';
+import { ICONS } from '@/constants';
 
 // ==========================================
 // 1. COMPOSANT LABEL GÉNÉRIQUE (Pour unifier ton text-gold)
@@ -39,6 +40,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   icon?: string | React.ReactNode;
   renderRight?: React.ReactNode;
   align?: 'left' | 'center';
+  error?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -50,6 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       align = 'center',
       className = '',
       id,
+      error,
       ...props
     },
     ref,
@@ -80,7 +83,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="w-full space-y-1">
-        {/* Rétrocompatibilité : si on passe un label en prop, on utilise notre nouveau composant Label */}
         {label && (
           <Label
             htmlFor={inputId}
@@ -94,7 +96,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative flex items-center group">
           {icon && (
             <span
-              className="absolute left-4 text-gold/30 group-focus-within:text-gold transition-default text-xs pointer-events-none"
+              className={cn(
+                'absolute left-4 text-xs pointer-events-none transition-default',
+                error
+                  ? 'text-danger-bright'
+                  : 'text-gold/30 group-focus-with:text-gold',
+              )}
               aria-hidden="true"
             >
               {icon}
@@ -104,8 +111,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            aria-invalid={!!error}
             {...props}
-            className={cn(inputClasses, shadowDomClasses)}
+            className={cn(
+              inputClasses,
+              shadowDomClasses,
+              error &&
+                'border-danger-bright focus:border-danger-bright focus:ring-danger/10',
+            )}
           />
 
           {renderRight && (
@@ -114,6 +127,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
+
+        {error && (
+          <Text
+            variant={TEXT_VARIANT.MICRO}
+            className="text-danger-bright text-center animate-fade-in block mt-1"
+          >
+            <span aria-hidden="true">{ICONS.DANGER} </span>
+            {error}
+          </Text>
+        )}
       </div>
     );
   },

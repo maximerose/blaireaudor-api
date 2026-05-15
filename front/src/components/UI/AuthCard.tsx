@@ -26,6 +26,7 @@ export const AuthCard = ({
           onSubmit={onSubmit}
           aria-labelledby="auth-title"
           className={AUTH_FORM_CARD}
+          noValidate
         >
           <div className={BACKGROUND_GLOW} aria-hidden="true" />
 
