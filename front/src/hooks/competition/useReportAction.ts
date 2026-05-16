@@ -34,12 +34,6 @@ export const useReportAction = (
   const [showDropdown, setShowDropdown] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setValue('targetPlayerId', '', { shouldValidate: true });
-    setShowDropdown(true);
-  };
-
   const filteredPlayers = useMemo(() => {
     const searchTerms = normalizeString(search);
     return players
@@ -69,6 +63,12 @@ export const useReportAction = (
       dateAction: getLocalDayString(new Date()),
     },
   });
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setValue('targetPlayerId', '', { shouldValidate: true });
+    setShowDropdown(true);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
