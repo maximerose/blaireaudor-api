@@ -81,8 +81,9 @@ export const ERRORS = {
     CREATE_FAILED: 'Erreur lors de la création du bonus.',
     DELETE_FAILED: 'Erreur lors de la suppression du bonus.',
     FETCH_FAILED: 'Erreur lors de la récupération des jours bonus.',
+    INVALID_MULTIPLIER: `Le multiplicateur doit être d'au moins ${RULES.BONUS.MIN_MULTIPLIER}`,
     DUPLICATE_DATE: 'Un bonus existe déjà pour cette date.',
-    INVALID_DATES: "Erreur (Vérifiez les dates de l'arène).",
+    INVALID_DATES: 'Date incorrecte, vérifiez les dates de la compétition',
   },
 
   // 7. Formulaires & Validation

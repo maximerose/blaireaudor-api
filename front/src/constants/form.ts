@@ -47,6 +47,9 @@ export const FORM = {
   },
 
   BONUS_DAY: {
+    BUTTONS: {
+      DELETE: 'Supprimer ce bonus',
+    },
     LABELS: {
       MULTIPLIER: 'Multiplicateur',
     },

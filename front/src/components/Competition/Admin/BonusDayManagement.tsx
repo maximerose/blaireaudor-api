@@ -14,11 +14,10 @@ import type { BonusDay } from '@/types';
 
 export const BonusDayManagement = () => {
   const {
-    newDate,
-    setNewDate,
-    multiplier,
-    setMultiplier,
-    handleAdd,
+    register,
+    handleSubmit,
+    errors,
+    isValid,
     deleteBonus,
     isAdding,
     bonusDays,
@@ -49,6 +48,7 @@ export const BonusDayManagement = () => {
               type="button"
               onClick={() => deleteBonus(bd.id)}
               className="w-5 h-5 flex items-center justify-center rounded-md text-game-bonus-bright hover:text-game-bonus transition-default"
+              aria-label={FORM.BONUS_DAY.BUTTONS.DELETE}
             >
               {ICONS.CANCEL}
             </button>
@@ -61,38 +61,40 @@ export const BonusDayManagement = () => {
           </Text>
         )}
       </div>
-      <div className="flex flex-col gap-3 bg-white/2 p-4 rounded-2xl border border-white/5">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 bg-white/2 p-4 rounded-2xl border border-white/5"
+        noValidate
+      >
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="w-full sm:w-2/3">
             <Input
               type="date"
               label={FORM.SHARED.LABELS.DATE}
-              value={newDate}
               min={minDate}
               max={maxDate}
-              onKeyDown={(e) => e.preventDefault()}
-              onChange={(e) => setNewDate(e.target.value)}
+              error={errors?.newDate?.message}
+              {...register('newDate')}
             />
           </div>
           <div className="w-full sm:w-1/3">
             <Input
               type="number"
               label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
-              min={2}
-              value={multiplier}
-              onChange={(e) => setMultiplier(parseInt(e.target.value))}
+              error={errors?.multiplier?.message}
+              {...register('multiplier', { valueAsNumber: true })}
             />
           </div>
         </div>
         <Button
-          onClick={handleAdd}
+          type="submit"
           isLoading={isAdding}
-          disabled={!newDate}
+          disabled={!isValid || isAdding}
           fullWidth
         >
           {BUTTONS.ADD}
         </Button>
-      </div>
+      </form>
     </div>
   );
 };

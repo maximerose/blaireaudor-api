@@ -8,4 +8,8 @@ export const RULES = {
   ACTION: {
     MIN_DESCRIPTION: 3,
   },
+
+  BONUS: {
+    MIN_MULTIPLIER: 2,
+  },
 } as const;

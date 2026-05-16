@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import {
   useBonusDayAdmin,
@@ -6,9 +6,12 @@ import {
   useCompetitionDateLimits,
 } from '@/hooks';
 import type { BonusDay } from '@/types';
-import { sortByDate } from '@/utils';
-import { ERRORS } from '@/constants';
+import { getLocalDayString, sortByDate } from '@/utils';
+import { ERRORS, RULES } from '@/constants';
 import { useCompetitionContext } from '@/context';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getBonusDaySchema, type BonusDayFormData } from '@/validations';
 
 export const useBonusDayForm = () => {
   const { competition, refresh } = useCompetitionContext();
@@ -19,35 +22,45 @@ export const useBonusDayForm = () => {
   );
   const { minDate, maxDate } = useCompetitionDateLimits(competition, false);
 
-  const [newDate, setNewDate] = useState('');
-  const [multiplier, setMultiplier] = useState(2);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<BonusDayFormData>({
+    resolver: zodResolver(getBonusDaySchema(minDate, maxDate)),
+    mode: 'onChange',
+    defaultValues: {
+      newDate: '',
+      multiplier: RULES.BONUS.MIN_MULTIPLIER,
+    },
+  });
 
   const sortedBonusDays = useMemo(
     () => sortByDate(freshBonusDays || [], 'date'),
     [freshBonusDays],
   );
 
-  const handleAdd = () => {
-    if (!newDate) return;
-
+  const onSubmit = (data: BonusDayFormData) => {
     const isDuplicate = (freshBonusDays || []).some(
-      (bd: BonusDay) => bd.date.split('T')[0] === newDate,
+      (bd: BonusDay) =>
+        getLocalDayString(bd.date) === getLocalDayString(data.newDate),
     );
 
     if (isDuplicate) {
-      return toast.error(ERRORS.BONUS.DUPLICATE_DATE);
+      toast.error(ERRORS.BONUS.DUPLICATE_DATE);
+      return;
     }
 
-    addBonus({ date: newDate, multiplier });
-    setNewDate('');
+    addBonus({ date: data.newDate, multiplier: data.multiplier });
+    reset();
   };
 
   return {
-    newDate,
-    setNewDate,
-    multiplier,
-    setMultiplier,
-    handleAdd,
+    register,
+    handleSubmit: handleSubmit(onSubmit),
+    errors,
+    isValid,
     deleteBonus,
     isAdding,
     bonusDays: sortedBonusDays,
