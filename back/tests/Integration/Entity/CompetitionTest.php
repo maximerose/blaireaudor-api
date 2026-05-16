@@ -25,7 +25,7 @@ class CompetitionTest extends KernelTestCase
     use ResetDatabase;
     use Factories;
 
-    public function testCompetitionGensSlugAndCodeOnPersist(): void
+    public function testCompetitionGensCodeOnPersist(): void
     {
         self::bootKernel();
 
@@ -33,21 +33,8 @@ class CompetitionTest extends KernelTestCase
             'name' => 'Ski 2026',
         ]);
 
-        $this->assertSame('ski-2026', $competition->getSlug());
-
         $this->assertNotEmpty($competition->getJoinCode());
-        $this->assertSame(6, strlen($competition->getJoinCode()));
-    }
-
-    public function testSlugIncrementsIfDuplicate(): void
-    {
-        self::bootKernel();
-
-        $comp1 = CompetitionFactory::createOne(['name' => 'Doublon']);
-        $comp2 = CompetitionFactory::createOne(['name' => 'Doublon']);
-
-        $this->assertSame('doublon', $comp1->getSlug());
-        $this->assertSame('doublon-1', $comp2->getSlug());
+        $this->assertSame(6, \strlen($competition->getJoinCode()));
     }
 
     public function testManagerSetsReferee(): void

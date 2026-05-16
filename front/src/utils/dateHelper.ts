@@ -129,3 +129,17 @@ export const getDisplayDateText = (
       : `Débutera le ${start}`
     : 'Date inconnue';
 };
+
+export const getDatePart = (iso?: string | null) =>
+  iso ? iso.split('T')[0] : '';
+export const getTimePart = (iso?: string | null) =>
+  iso ? iso.split('T')[1].substring(0, 5) : '00:00';
+
+export const combineDateTime = (
+  date: string,
+  time: string | null | undefined,
+  isFullDay: boolean,
+) => {
+  const finalTime = isFullDay || !time ? '00:00' : time;
+  return new Date(`${date}T${finalTime}:00`).toISOString();
+};

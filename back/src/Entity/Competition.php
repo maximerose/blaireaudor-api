@@ -18,7 +18,6 @@ use App\Repository\CompetitionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -29,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * les participations des joueurs ainsi que les actions de jeu.
  */
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
-#[UniqueEntity(fields: ['slug'])]
+#[UniqueEntity(fields: ['joinCode'], message: "Ce code d'accès est déjà utilisé pour une autre compétition.")]
 #[Assert\Expression(
     'this.getEndDate() === null || this.getEndDate() >= this.getStartDate()',
     message: 'La date de fin doit être postérieure à la date de début'
@@ -64,11 +63,6 @@ class Competition
     #[Assert\NotBlank]
     #[Groups(['competition:read', 'competition:write', 'user:read', 'action:read'])]
     private ?string $name = null;
-
-    #[ORM\Column(length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name'], unique: true)]
-    #[Groups(['competition:read'])]
-    private ?string $slug = null;
 
     #[ORM\Column(length: 25, unique: true)]
     #[Assert\Length(max: 25)]
@@ -131,18 +125,6 @@ class Competition
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
 
         return $this;
     }

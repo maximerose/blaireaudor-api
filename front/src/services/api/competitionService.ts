@@ -38,7 +38,14 @@ export const competitionService = {
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.UPDATE_FAILED);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.violations?.[0]?.message ||
+          errorData.detail ||
+          ERRORS.COMPETITION.UPDATE_FAILED,
+      );
+    }
     return response.json();
   },
 

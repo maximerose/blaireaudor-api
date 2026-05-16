@@ -56,6 +56,10 @@ export const ERRORS = {
       `Impossible de retirer ${name} : Il a déjà des actions enregistrées dans cette compétition.`,
     REFEREE_ADD_FAILED: 'Impossible de nommer ce joueur arbitre.',
     REFEREE_REMOVE_FAILED: "Erreur lors de la destitution de l'arbitre.",
+
+    INVALID_NAME: `Le nom doit contenir au moins ${RULES.COMPETITION.MIN_NAME} caractères.`,
+    INVALID_JOIN_CODE: `Le code d'accès doit contenir au moins ${RULES.COMPETITION.MIN_JOIN_CODE} caractères.`,
+    INVALID_DATE_ORDER: 'La date de fin ne peut pas précéder la date de début.',
   },
 
   // 4. Joueurs

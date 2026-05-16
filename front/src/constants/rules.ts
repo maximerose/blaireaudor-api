@@ -12,4 +12,9 @@ export const RULES = {
   BONUS: {
     MIN_MULTIPLIER: 2,
   },
+
+  COMPETITION: {
+    MIN_NAME: 3,
+    MIN_JOIN_CODE: 3,
+  },
 } as const;

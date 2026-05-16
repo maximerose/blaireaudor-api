@@ -18,15 +18,23 @@ import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
 import { useCompetitionContext } from '@/context';
 
 export const CompetitionGeneralSettings = () => {
-  const { competition } = useCompetitionContext();
+  const { competition, refresh } = useCompetitionContext();
   const {
     isEditing,
     setIsEditing,
-    formData,
-    updateField,
-    handleSave,
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    errors,
+    isValid,
+    isDirty,
     loading,
-  } = useEditCompetition(competition);
+  } = useEditCompetition(competition, refresh);
+
+  const startFullDay = watch('startFullDay');
+  const endFullDay = watch('endFullDay');
+  const watchStartDate = watch('startDate');
 
   if (!isEditing) {
     return (
@@ -56,19 +64,27 @@ export const CompetitionGeneralSettings = () => {
   }
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 bg-black/20 rounded-3xl border border-gold/20 animate-slide-up">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 p-4 sm:p-6 bg-black/20 rounded-3xl border border-gold/20 animate-slide-up"
+      noValidate
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label={FORM.COMPETITION.LABELS.NAME}
-          value={formData.name}
-          onChange={(e) => updateField('name', e.target.value)}
+          required
+          error={errors?.name?.message}
+          {...register('name')}
         />
         <Input
           label={FORM.COMPETITION.LABELS.JOIN_CODE}
-          value={formData.joinCode ?? ''}
-          onChange={(e) =>
-            updateField('joinCode', e.target.value.toUpperCase())
-          }
+          required
+          error={errors?.joinCode?.message}
+          {...register('joinCode', {
+            onChange: (e) => {
+              e.target.value = e.target.value.toUpperCase();
+            },
+          })}
         />
 
         <div
@@ -89,15 +105,16 @@ export const CompetitionGeneralSettings = () => {
           </Label>
           <Input
             type="date"
-            value={formData.startDate}
-            onChange={(e) => updateField('startDate', e.target.value)}
             disabled={competition.has_started}
+            required
+            error={errors?.startDate?.message}
+            {...register('startDate')}
           />
           <Card
             variant={CARD_VARIANT.DARK}
             onClick={() =>
               !competition.has_started &&
-              updateField('startFullDay', !formData.startFullDay)
+              setValue('startFullDay', !startFullDay, { shouldDirty: true })
             }
             className={cn(
               'flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none',
@@ -108,18 +125,18 @@ export const CompetitionGeneralSettings = () => {
           >
             <Text
               variant={TEXT_VARIANT.MICRO}
-              className={formData.startFullDay ? 'text-white' : 'text-white/50'}
+              className={startFullDay ? 'text-white' : 'text-white/50'}
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
-            <Switch checked={formData.startFullDay} onChange={() => {}} />
+            <Switch checked={startFullDay} onChange={() => {}} />
           </Card>
-          {!formData.startFullDay && (
+          {!startFullDay && (
             <Input
               type="time"
-              value={formData.startTime}
-              onChange={(e) => updateField('startTime', e.target.value)}
               disabled={competition.has_started}
+              error={errors?.startTime?.message}
+              {...register('startTime')}
             />
           )}
         </div>
@@ -129,28 +146,30 @@ export const CompetitionGeneralSettings = () => {
           <Label>{FORM.COMPETITION.LABELS.END}</Label>
           <Input
             type="date"
-            min={formData.startDate}
-            value={formData.endDate}
-            onChange={(e) => updateField('endDate', e.target.value)}
+            min={watchStartDate}
+            error={errors?.endDate?.message}
+            {...register('endDate')}
           />
           <Card
             variant={CARD_VARIANT.DARK}
-            onClick={() => updateField('endFullDay', !formData.endFullDay)}
+            onClick={() =>
+              setValue('endFullDay', !endFullDay, { shouldDirty: true })
+            }
             className="flex items-center justify-between py-2 px-3 cursor-pointer bg-transparent border-transparent shadow-none"
           >
             <Text
               variant={TEXT_VARIANT.MICRO}
-              className={formData.endFullDay ? 'text-white' : 'text-white/50'}
+              className={endFullDay ? 'text-white' : 'text-white/50'}
             >
               {FORM.COMPETITION.LABELS.FULL_DAY}
             </Text>
-            <Switch checked={formData.endFullDay} onChange={() => {}} />
+            <Switch checked={endFullDay} onChange={() => {}} />
           </Card>
-          {!formData.endFullDay && (
+          {!endFullDay && (
             <Input
               type="time"
-              value={formData.endTime}
-              onChange={(e) => updateField('endTime', e.target.value)}
+              error={errors?.endTime?.message}
+              {...register('endTime')}
             />
           )}
         </div>
@@ -158,16 +177,22 @@ export const CompetitionGeneralSettings = () => {
 
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-white/5">
         <Button
+          type="button"
           variant={BUTTON_VARIANT.GHOST}
           onClick={() => setIsEditing(false)}
           fullWidth
         >
           {BUTTONS.CANCEL}
         </Button>
-        <Button onClick={() => handleSave()} fullWidth isLoading={loading}>
+        <Button
+          type="submit"
+          fullWidth
+          isLoading={loading}
+          disabled={!isValid || loading || !isDirty}
+        >
           {BUTTONS.SAVE}
         </Button>
       </div>
-    </div>
+    </form>
   );
 };

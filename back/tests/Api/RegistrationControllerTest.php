@@ -129,12 +129,12 @@ final class RegistrationControllerTest extends WebTestCase
             'username' => 'pseudo-qui-existe-deja',
         ]);
 
-        $client->request('GET', '/api/check-username/un-pseudo-qui-n-existe-pas');
+        $client->request('GET', '/api/check-username?username=un-pseudo-qui-n-existe-pas');
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertTrue($data['available']);
 
-        $client->request('GET', '/api/check-username/pseudo-qui-existe-deja');
+        $client->request('GET', '/api/check-username?username=pseudo-qui-existe-deja');
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertFalse($data['available']);
@@ -181,7 +181,7 @@ final class RegistrationControllerTest extends WebTestCase
         $client = static::createClient();
         PlayerFactory::createOne(['username' => 'test-player', 'displayName' => 'Test']);
 
-        $client->request('GET', '/api/check-player/test-player');
+        $client->request('GET', '/api/check-player?username=test-player');
         $data = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertTrue($data['exists']);

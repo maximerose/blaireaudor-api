@@ -47,10 +47,10 @@ final class AdminCompetitionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $data = $this->getJsonResponse();
-        $this->assertEquals('blaireau-d-or-2026', $data['slug']);
+
         $this->assertMatchesRegularExpression('/^[A-Z0-9]{6}$/', $data['join_code']);
 
-        CompetitionFactory::assert()->exists(['slug' => 'blaireau-d-or-2026']);
+        CompetitionFactory::assert()->exists(['name' => "Blaireau d'or 2026"]);
     }
 
     /**
