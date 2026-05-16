@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -13,7 +13,10 @@ import {
   useInvalidateCompetition,
   usePermissions,
 } from '@/hooks';
-import { reportActionSchema, type ReportActionFormData } from '@/validations';
+import {
+  getReportActionSchema,
+  type ReportActionFormData,
+} from '@/validations';
 
 export const useReportAction = (
   players: { id: string; display_name: string }[],
@@ -25,29 +28,17 @@ export const useReportAction = (
 
   const isAdmin = roles.isReferee;
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ReportActionFormData>({
-    resolver: zodResolver(reportActionSchema),
-    mode: 'onBlur',
-    defaultValues: {
-      targetPlayerId: '',
-      description: '',
-      points: 10,
-      dateAction: getLocalDayString(new Date()),
-    },
-  });
+  const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
 
-  // 2. États pour le Custom Dropdown de recherche de joueur
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const { minDate, maxDate } = useCompetitionDateLimits(competition, true);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setValue('targetPlayerId', '', { shouldValidate: true });
+    setShowDropdown(true);
+  };
 
   const filteredPlayers = useMemo(() => {
     const searchTerms = normalizeString(search);
@@ -56,14 +47,29 @@ export const useReportAction = (
       .sort((a, b) => a.display_name.localeCompare(b.display_name, 'fr'));
   }, [players, search]);
 
-  // Quand on sélectionne un joueur dans la liste
   const selectPlayer = (id: string, name: string) => {
-    setValue('targetPlayerId', id, { shouldValidate: true }); // Zod valide que ce n'est plus vide
-    setSearch(name); // On affiche le nom dans l'input
+    setValue('targetPlayerId', id, { shouldValidate: true });
+    setSearch(name);
     setShowDropdown(false);
   };
 
-  // Gestion du clic en dehors du dropdown
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ReportActionFormData>({
+    resolver: zodResolver(getReportActionSchema(minDate, maxDate)),
+    mode: 'onChange',
+    defaultValues: {
+      targetPlayerId: '',
+      description: '',
+      points: 10,
+      dateAction: getLocalDayString(new Date()),
+    },
+  });
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
@@ -83,7 +89,6 @@ export const useReportAction = (
     };
   }, []);
 
-  // 3. Soumission API
   const createMutation = useMutation({
     mutationFn: (
       payload: ActionCreatePayload & {
@@ -97,7 +102,6 @@ export const useReportAction = (
         isAdmin ? SUCCESS.ACTION.REPORTED_ADMIN : SUCCESS.ACTION.REPORTED_USER,
       );
 
-      // On réinitialise le formulaire (sauf la date qui reste à aujourd'hui)
       reset({
         targetPlayerId: '',
         description: '',
@@ -133,11 +137,11 @@ export const useReportAction = (
     dateLimits: { minDate, maxDate },
 
     search,
-    setSearch,
     showDropdown,
     setShowDropdown,
     searchContainerRef,
     filteredPlayers,
     selectPlayer,
+    handleSearchChange,
   };
 };

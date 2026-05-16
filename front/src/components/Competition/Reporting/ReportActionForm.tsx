@@ -23,13 +23,13 @@ export const ReportActionForm = () => {
     errors,
     loading,
     search,
-    setSearch,
     showDropdown,
     setShowDropdown,
     searchContainerRef,
     filteredPlayers,
     selectPlayer,
     dateLimits,
+    handleSearchChange,
   } = useReportAction(potentialTargets, () => {
     toggleReporting();
     refresh();
@@ -48,6 +48,7 @@ export const ReportActionForm = () => {
           />
 
           <div className="space-y-4">
+            <input type="hidden" {...register('targetPlayerId')} />
             <div className="relative" ref={searchContainerRef}>
               <Input
                 label={FORM.REPORT_ACTION.LABELS.PLAYER}
@@ -56,7 +57,8 @@ export const ReportActionForm = () => {
                 required
                 autoComplete="off"
                 onFocus={() => setShowDropdown(true)}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearchChange}
+                onBlur={() => setShowDropdown(false)}
                 icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
                 error={errors?.targetPlayerId?.message}
               />
@@ -92,6 +94,7 @@ export const ReportActionForm = () => {
                 type="date"
                 min={dateLimits.minDate}
                 max={dateLimits.maxDate}
+                error={errors?.dateAction?.message}
                 required
                 {...register('dateAction')}
               />

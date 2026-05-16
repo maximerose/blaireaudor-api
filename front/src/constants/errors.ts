@@ -74,6 +74,7 @@ export const ERRORS = {
     INVALID_DESCRIPTION: `La description doit contenir au mois ${RULES.ACTION.MIN_DESCRIPTION} caractères.`,
     INVALID_POINTS: 'Les points doivent être un nombre entier.',
     INVALID_DATE: 'La date est obligatoire.',
+    OUT_OF_BOUNDS: "L'action doit se passer pendant la compétition.",
   },
 
   // 6. Jours Bonus
