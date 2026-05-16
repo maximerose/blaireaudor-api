@@ -30,6 +30,8 @@ export const API = {
     COMPETITIONS: {
       BASE: '/competitions',
       BY_CODE: (code: string) => `/competitions/by-code/${code}`,
+      CHECK_JOIN_CODE: (code: string) =>
+        `/competitions/check/join-code?code=${code}`,
       DETAIL: (id: string) => `/competitions/${id}`,
       LEADERBOARD: (id: string) => `/competitions/${id}/leaderboard`,
       ACTIONS: (id: string) => `/competitions/${id}/actions`,

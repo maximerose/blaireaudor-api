@@ -96,6 +96,9 @@ export const FORM = {
     },
     HINTS: {
       JOIN_CODE: `Vide = génération automatique ${ICONS.STARS}`,
+      JOIN_CODE_CHECK: 'Vérification du code...',
+      JOIN_CODE_AVAILABLE: "Code d'accès disponible !",
+      JOIN_CODE_TAKEN: "Code d'accès déjà utilisé.",
       FOG_OF_WAR: 'Scores cachés pendant le tournoi',
       PARTICIPATE: 'Participer au tournoi en tant que joueur',
       ALREADY_STARTED: 'Déjà lancée',

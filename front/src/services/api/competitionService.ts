@@ -65,6 +65,16 @@ export const competitionService = {
     return response.json();
   },
 
+  checkJoinCode: async (code: string, signal?: AbortSignal) => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.CHECK_JOIN_CODE(code),
+      { signal },
+    );
+
+    if (!response.ok) throw new Error(ERRORS.COMPETITION.CHECK_CODE);
+    return await response.json();
+  },
+
   join: async (playerId: string, competitionId: string) => {
     const response = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
       method: 'POST',

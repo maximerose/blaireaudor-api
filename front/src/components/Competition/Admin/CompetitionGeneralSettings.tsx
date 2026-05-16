@@ -13,8 +13,8 @@ import {
   Label,
 } from '@/components/UI';
 import { cn } from '@/utils';
-import { useEditCompetition } from '@/hooks';
-import { FORM, BUTTONS, COMPETITION_UI } from '@/constants';
+import { useEditCompetition, useJoinCodeCheck } from '@/hooks';
+import { FORM, BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
 import { useCompetitionContext } from '@/context';
 
 export const CompetitionGeneralSettings = () => {
@@ -35,6 +35,12 @@ export const CompetitionGeneralSettings = () => {
   const startFullDay = watch('startFullDay');
   const endFullDay = watch('endFullDay');
   const watchStartDate = watch('startDate');
+  const currentJoinCode = watch('joinCode');
+
+  const { status: codeStatus, isLoading: isCodeChecking } = useJoinCodeCheck(
+    currentJoinCode,
+    competition.join_code,
+  );
 
   if (!isEditing) {
     return (
@@ -86,6 +92,36 @@ export const CompetitionGeneralSettings = () => {
             },
           })}
         />
+        <div className="h-4 flex justify-center" aria-live="polite">
+          {isCodeChecking ? (
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-gold animate-pulse text-center"
+            >
+              {FORM.COMPETITION.HINTS.JOIN_CODE_CHECK}
+            </Text>
+          ) : codeStatus === 'available' ? (
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-success-bright text-center"
+            >
+              <span className="mr-1" aria-hidden="true">
+                {ICONS.SUCCESS}
+              </span>
+              {FORM.COMPETITION.HINTS.JOIN_CODE_AVAILABLE}
+            </Text>
+          ) : codeStatus === 'taken' ? (
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-danger-bright text-center"
+            >
+              <span className="mr-1" aria-hidden="true">
+                {ICONS.FAILURE}
+              </span>
+              {FORM.COMPETITION.HINTS.JOIN_CODE_TAKEN}
+            </Text>
+          ) : null}
+        </div>
 
         <div
           className={cn(
@@ -188,7 +224,13 @@ export const CompetitionGeneralSettings = () => {
           type="submit"
           fullWidth
           isLoading={loading}
-          disabled={!isValid || loading || !isDirty}
+          disabled={
+            !isValid ||
+            loading ||
+            !isDirty ||
+            codeStatus === 'taken' ||
+            isCodeChecking
+          }
         >
           {BUTTONS.SAVE}
         </Button>

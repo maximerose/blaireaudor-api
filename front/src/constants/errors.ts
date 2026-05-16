@@ -30,6 +30,7 @@ export const ERRORS = {
 
   // 3. Compétitions / Arènes
   COMPETITION: {
+    CHECK_CODE: 'Erreur lors de la vérification du code',
     NOT_FOUND: (code: string) =>
       `La compétition "${code}" n'a pas été trouvée.`,
     FETCH_LEADERBOARD: 'Impossible de charger le classement pour le moment.',

@@ -39,8 +39,10 @@ export const CompetitionRecruitmentStep = ({
   onNext,
 }: RecruitmentStepProps) => {
   const searchTerm = players.searchTerm || '';
-  const results = players.results || [];
   const currentPlayers = formMethods.watch('players');
+  const results = (players.results || []).filter(
+    (result) => !currentPlayers.some((p) => String(p.id) === String(result.id)),
+  );
 
   return (
     <div className="space-y-6 animate-slide-up">

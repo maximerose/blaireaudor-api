@@ -17,6 +17,7 @@ import { cn, formatJoinCode, generateClientSideCode } from '@/utils';
 import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/validations';
+import { useJoinCodeCheck } from '@/hooks';
 
 interface ConfigStepProps {
   formMethods: UseFormReturn<CreateCompetitionFormData>;
@@ -42,7 +43,14 @@ export const CompetitionConfigStep = ({
   const currentJoinCode = watch('joinCode');
 
   const watchName = watch('name');
-  const canNext = !!watchName && !!watchStartDate;
+
+  const { status: codeStatus, isLoading: isCodeChecking } =
+    useJoinCodeCheck(currentJoinCode);
+  const canNext =
+    !!watchName &&
+    !!watchStartDate &&
+    codeStatus !== 'taken' &&
+    !isCodeChecking;
 
   const toggles = [
     {
@@ -115,14 +123,43 @@ export const CompetitionConfigStep = ({
               }
             />
           </div>
-          {!currentJoinCode && (
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className="italic opacity-30 text-center block"
-            >
-              {FORM.COMPETITION.HINTS.JOIN_CODE}
-            </Text>
-          )}
+          <div className="h-4 flex justify-center" aria-live="polite">
+            {!currentJoinCode ? (
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="italic opacity-30 text-center block"
+              >
+                {FORM.COMPETITION.HINTS.JOIN_CODE}
+              </Text>
+            ) : isCodeChecking ? (
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="text-gold animate-pulse text-center"
+              >
+                {FORM.COMPETITION.HINTS.JOIN_CODE_CHECK}
+              </Text>
+            ) : codeStatus === 'available' ? (
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="text-success-bright text-center"
+              >
+                <span className="mr-1" aria-hidden="true">
+                  {ICONS.SUCCESS}
+                </span>
+                {FORM.COMPETITION.HINTS.JOIN_CODE_AVAILABLE}
+              </Text>
+            ) : codeStatus === 'taken' ? (
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                className="text-danger-bright text-center"
+              >
+                <span className="mr-1" aria-hidden="true">
+                  {ICONS.FAILURE}
+                </span>
+                {FORM.COMPETITION.HINTS.JOIN_CODE_TAKEN}
+              </Text>
+            ) : null}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
@@ -248,7 +285,7 @@ export const CompetitionConfigStep = ({
         type="button"
         disabled={!canNext}
         onClick={onNext}
-        size="lg"
+        size={BUTTON_SIZE.MEDIUM}
       >
         {BUTTONS.CONTINUE}
       </Button>

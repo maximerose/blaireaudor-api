@@ -4,11 +4,9 @@ import { z } from 'zod';
 
 export const createCompetitionSchema = z
   .object({
-    name: z
-      .string()
-      .min(RULES.COMPETITION.MIN_NAME, {
-        error: ERRORS.COMPETITION.INVALID_NAME,
-      }),
+    name: z.string().min(RULES.COMPETITION.MIN_NAME, {
+      error: ERRORS.COMPETITION.INVALID_NAME,
+    }),
     joinCode: z
       .string()
       .nullable()

@@ -59,6 +59,10 @@ export const CompetitionRefereeStep = ({
   const { players, referees, externalReferees, hasNoReferee } =
     useRefereeStepLogic(watch());
 
+  const filteredResults = results.filter(
+    (result) => !referees.some((r) => String(r.id) === String(result.id)),
+  );
+
   return (
     <div className="space-y-6 animate-slide-up">
       <SectionHeader
@@ -80,7 +84,7 @@ export const CompetitionRefereeStep = ({
 
         {searchTerm.length >= 1 && (
           <PlayerSearchResultsDropdown
-            results={results}
+            results={filteredResults}
             searchTerm={searchTerm}
             onSelect={(p) => onToggleReferee(p)}
             onCreateNew={(name) => {

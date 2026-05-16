@@ -27,8 +27,6 @@ final class CompetitionController extends AbstractController
      * * Cette méthode utilise une jointure optimisée pour récupérer la liste
      * des joueurs inscrits afin d'éviter les requêtes N+1 lors de la sérialisation.
      *
-     * @param string $code le code d'invitation (join_code) saisi par le joueur
-     *
      * @return JsonResponse la compétition avec ses joueurs ou une erreur 404
      */
     #[Route('/by-code/{code}', name: 'by_code', methods: 'GET')]
@@ -70,13 +68,13 @@ final class CompetitionController extends AbstractController
     {
         $date = $request->query->get('date');
 
-        if (in_array($date, ['undefined', 'null', ''], true)) {
+        if (\in_array($date, ['undefined', 'null', ''], true)) {
             $date = null;
         }
 
         $playerId = $request->query->get('playerId');
 
-        if (in_array($playerId, ['undefined', 'null', ''], true)) {
+        if (\in_array($playerId, ['undefined', 'null', ''], true)) {
             $playerId = null;
         }
 
@@ -109,5 +107,19 @@ final class CompetitionController extends AbstractController
     public function getPendingCount(Competition $competition, ActionRepository $actionRepository): JsonResponse
     {
         return $this->json(['count' => $actionRepository->countPendingByCompetition($competition)]);
+    }
+
+    #[Route('/check/join-code', name: 'check_join_code', methods: ['GET'])]
+    public function checkJoinCode(Request $request, CompetitionRepository $repository): JsonResponse
+    {
+        $code = $request->query->get('code');
+
+        if (empty($code)) {
+            return $this->json(['available' => true]);
+        }
+
+        $exists = $repository->count(['joinCode' => $code]) > 0;
+
+        return $this->json(['available' => !$exists]);
     }
 }

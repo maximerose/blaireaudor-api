@@ -30,6 +30,7 @@ export * from './competition/useInfiniteActions';
 export * from './competition/useInlineEnrollmentUI';
 export * from './competition/useInvalidateCompetition';
 export * from './competition/useJoinByCode';
+export * from './competition/useJoinCodeCheck';
 export * from './competition/useJoinCompetitionModal';
 export * from './competition/useLeaderboardUI';
 export * from './competition/useParticipationDelete';
