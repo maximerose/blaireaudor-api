@@ -11,7 +11,9 @@ import {
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
 import { FORM, ICONS, BUTTONS } from '@/constants';
-import type { CompetitionFormData, Player, PlayerCompact } from '@/types';
+import type { Player, PlayerCompact } from '@/types';
+import type { UseFormReturn } from 'react-hook-form';
+import type { CreateCompetitionFormData } from '@/validations';
 
 interface PlayerManagement {
   searchTerm: string;
@@ -24,20 +26,21 @@ interface PlayerManagement {
 }
 
 interface RecruitmentStepProps {
+  formMethods: UseFormReturn<CreateCompetitionFormData>;
   players: PlayerManagement;
-  formData: CompetitionFormData;
   onBack: () => void;
   onNext: () => void;
 }
 
 export const CompetitionRecruitmentStep = ({
+  formMethods,
   players,
-  formData,
   onBack,
   onNext,
 }: RecruitmentStepProps) => {
   const searchTerm = players.searchTerm || '';
   const results = players.results || [];
+  const currentPlayers = formMethods.watch('players');
 
   return (
     <div className="space-y-6 animate-slide-up">
@@ -55,9 +58,7 @@ export const CompetitionRecruitmentStep = ({
           align="center"
           placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
           value={searchTerm}
-          onChange={(e) => {
-            players.setSearchTerm(e.target.value);
-          }}
+          onChange={(e) => players.setSearchTerm(e.target.value)}
           icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
         />
 
@@ -78,7 +79,7 @@ export const CompetitionRecruitmentStep = ({
       </div>
 
       <SelectedPlayersList
-        participants={formData.players || []}
+        participants={currentPlayers}
         onRemove={(id) => players.remove(id)}
       />
 

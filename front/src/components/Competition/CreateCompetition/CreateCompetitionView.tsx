@@ -1,10 +1,10 @@
-import { useCreateCompetitionForm } from '@/hooks';
 import {
   CreateCompetitionStepper,
   CompetitionConfigStep,
   CompetitionRecruitmentStep,
   CompetitionRefereeStep,
 } from '@/components/Competition';
+import { useCreateCompetitionForm } from '@/hooks';
 import type { Competition } from '@/types';
 
 interface Props {
@@ -15,11 +15,8 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
   const {
     step,
     setStep,
-    formData,
-    updateField,
-    handleJoinCodeChange,
-    generateCode,
-    canGoNext,
+    handleNextStep1,
+    formMethods,
     searchState,
     playersActions,
     refereesActions,
@@ -28,38 +25,36 @@ export const CreateCompetitionView = ({ onSuccess }: Props) => {
   } = useCreateCompetitionForm(onSuccess);
 
   return (
-    <div className="w-full animate-fade-in space-y-8">
+    <form
+      onSubmit={submit}
+      className="w-full animate-fade-in space-y-8"
+      noValidate
+    >
       <CreateCompetitionStepper step={step} />
 
       {step === 1 && (
         <CompetitionConfigStep
-          formData={formData}
-          updateField={updateField}
-          handleJoinCodeChange={handleJoinCodeChange}
-          onGenerateCode={generateCode}
-          canNext={canGoNext}
-          onNext={() => setStep(2)}
+          formMethods={formMethods}
+          onNext={handleNextStep1}
         />
       )}
       {step === 2 && (
         <CompetitionRecruitmentStep
+          formMethods={formMethods}
           players={{ ...searchState, ...playersActions }}
-          formData={formData}
           onBack={() => setStep(1)}
           onNext={() => setStep(3)}
         />
       )}
       {step === 3 && (
         <CompetitionRefereeStep
+          formMethods={formMethods}
           searchState={searchState}
-          formData={formData}
           onToggleReferee={refereesActions.toggle}
           onBack={() => setStep(2)}
-          onSubmit={submit}
           loading={loading}
-          updateField={updateField}
         />
       )}
-    </div>
+    </form>
   );
 };

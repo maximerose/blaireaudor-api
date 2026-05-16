@@ -11,6 +11,7 @@ export * from './competition/useAdminSettings';
 export * from './competition/useBonusDayAdmin';
 export * from './competition/useBonusDayForm';
 export * from './competition/useBonusDays';
+export * from './competition/useCreateCompetitionForm';
 export * from './competition/useCompetitionActions';
 export * from './competition/useCompetitionAdmin';
 export * from './competition/useCompetitionCard';

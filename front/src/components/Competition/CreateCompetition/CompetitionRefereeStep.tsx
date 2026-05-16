@@ -15,15 +15,12 @@ import {
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
 import { cn } from '@/utils';
-import type {
-  CompetitionFormData,
-  FormParticipant,
-  Player,
-  PlayerCompact,
-} from '@/types';
+import type { FormParticipant, Player, PlayerCompact } from '@/types';
 import { FORM, ICONS, BUTTONS } from '@/constants';
 import { useRefereeStepLogic } from '@/hooks';
 import { useAuthContext } from '@/context';
+import type { UseFormReturn } from 'react-hook-form';
+import type { CreateCompetitionFormData } from '@/validations';
 
 interface SearchState {
   searchTerm: string;
@@ -33,34 +30,34 @@ interface SearchState {
 }
 
 interface RefereeStepProps {
-  formData: CompetitionFormData;
+  formMethods: UseFormReturn<CreateCompetitionFormData>;
   searchState: SearchState;
-  updateField: <K extends keyof CompetitionFormData>(
-    field: K,
-    value: CompetitionFormData[K],
-  ) => void;
   onToggleReferee: (
     person: Player | PlayerCompact | FormParticipant,
     isNew?: boolean,
   ) => void;
   onBack: () => void;
-  onSubmit: () => void;
   loading: boolean;
 }
 
 export const CompetitionRefereeStep = ({
-  formData,
+  formMethods,
   searchState,
-  updateField,
   onToggleReferee,
   onBack,
-  onSubmit,
   loading,
 }: RefereeStepProps) => {
   const { user } = useAuthContext();
   const { searchTerm, setSearchTerm, searching, results } = searchState;
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = formMethods;
+
+  const isCreatorReferee = watch('isCreatorReferee');
   const { players, referees, externalReferees, hasNoReferee } =
-    useRefereeStepLogic(formData);
+    useRefereeStepLogic(watch());
 
   return (
     <div className="space-y-6 animate-slide-up">
@@ -77,9 +74,7 @@ export const CompetitionRefereeStep = ({
           align="center"
           placeholder={FORM.COMPETITION.PLACEHOLDERS.EXTERNAL_REFEREE}
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-          }}
+          onChange={(e) => setSearchTerm(e.target.value)}
           icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         />
 
@@ -107,11 +102,13 @@ export const CompetitionRefereeStep = ({
           <Card
             variant={CARD_VARIANT.DARK}
             onClick={() =>
-              updateField('isCreatorReferee', !formData.isCreatorReferee)
+              setValue('isCreatorReferee', !isCreatorReferee, {
+                shouldValidate: true,
+              })
             }
             className={cn(
               'flex items-center justify-between p-3 cursor-pointer transition-default border',
-              formData.isCreatorReferee
+              isCreatorReferee
                 ? 'border-gold bg-gold/10'
                 : 'border-white/5 hover:border-white/20',
             )}
@@ -123,9 +120,7 @@ export const CompetitionRefereeStep = ({
               <Text
                 variant={TEXT_VARIANT.BODY}
                 className={
-                  formData.isCreatorReferee
-                    ? 'text-gold font-bold'
-                    : 'text-white'
+                  isCreatorReferee ? 'text-gold font-bold' : 'text-white'
                 }
               >
                 Moi ({user?.player?.display_name})
@@ -134,12 +129,12 @@ export const CompetitionRefereeStep = ({
             <div
               className={cn(
                 'w-5 h-5 rounded border flex items-center justify-center transition-default',
-                formData.isCreatorReferee
+                isCreatorReferee
                   ? 'bg-gold border-gold text-dark'
                   : 'border-white/20',
               )}
             >
-              {formData.isCreatorReferee && (
+              {isCreatorReferee && (
                 <span className="text-xs font-black">{ICONS.CHECK}</span>
               )}
             </div>
@@ -218,18 +213,18 @@ export const CompetitionRefereeStep = ({
         )}
       </div>
 
-      {/* ✨ MESSAGE D'ERREUR SI AUCUN ARBITRE ✨ */}
-      {hasNoReferee && (
+      {(hasNoReferee || errors.referees) && (
         <Text
           variant={TEXT_VARIANT.CAPTION}
           className="text-danger-bright text-center block mt-2 animate-fade-in font-bold"
         >
-          {FORM.COMPETITION.HINTS.REFEREE}
+          {errors?.referees?.message || FORM.COMPETITION.HINTS.REFEREE}
         </Text>
       )}
 
       <div className="flex gap-2 pt-2">
         <Button
+          type="button"
           variant={BUTTON_VARIANT.GHOST}
           onClick={onBack}
           disabled={loading}
@@ -238,9 +233,8 @@ export const CompetitionRefereeStep = ({
         >
           {BUTTONS.PREVIOUS}
         </Button>
-        {/* ✨ BOUTON DÉSACTIVÉ SI hasNoReferee EST TRUE */}
         <Button
-          onClick={onSubmit}
+          type="submit"
           isLoading={loading}
           disabled={loading || hasNoReferee}
           size="md"

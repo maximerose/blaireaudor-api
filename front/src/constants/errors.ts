@@ -38,8 +38,7 @@ export const ERRORS = {
     FETCH_ACTIONS_DATES: 'Impossible de récupérer les dates des actions.',
     FETCH_PENDING_COUNT:
       "Impossible de récupérer le compteur d'actions en attente.",
-    CREATE_FAILED:
-      'Impossible de créer la compétition. Vérifiez les dates et le code.',
+    CREATE_FAILED: 'Impossible de créer la compétition.',
     UPDATE_FAILED: 'Échec de la mise à jour des paramètres de la compétition.',
     DELETE_FAILED: 'La suppression de la compétition a échoué.',
     DELETE_HAS_ACTIONS: (name: string) =>
@@ -57,6 +56,7 @@ export const ERRORS = {
     REFEREE_ADD_FAILED: 'Impossible de nommer ce joueur arbitre.',
     REFEREE_REMOVE_FAILED: "Erreur lors de la destitution de l'arbitre.",
 
+    NO_REFEREE: 'Vous devez désigner au moins un arbitre',
     INVALID_NAME: `Le nom doit contenir au moins ${RULES.COMPETITION.MIN_NAME} caractères.`,
     INVALID_JOIN_CODE: `Le code d'accès doit contenir au moins ${RULES.COMPETITION.MIN_JOIN_CODE} caractères.`,
     INVALID_DATE_ORDER: 'La date de fin ne peut pas précéder la date de début.',

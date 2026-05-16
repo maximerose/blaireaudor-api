@@ -9,46 +9,69 @@ import {
   Label,
   SectionHeader,
   SECTION_HEADER_VARIANT,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
 } from '@/components/UI';
 import { FORM, ICONS, BUTTONS } from '@/constants';
-import type { CompetitionFormData } from '@/types';
-import { cn } from '@/utils';
+import { cn, formatJoinCode, generateClientSideCode } from '@/utils';
 import type React from 'react';
+import type { UseFormReturn } from 'react-hook-form';
+import type { CreateCompetitionFormData } from '@/validations';
 
 interface ConfigStepProps {
-  formData: CompetitionFormData;
-  updateField: <K extends keyof CompetitionFormData>(
-    field: K,
-    value: CompetitionFormData[K],
-  ) => void;
-  handleJoinCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formMethods: UseFormReturn<CreateCompetitionFormData>;
   onNext: () => void;
-  onGenerateCode: () => void;
-  canNext: boolean;
 }
 
 export const CompetitionConfigStep = ({
-  formData,
-  updateField,
-  handleJoinCodeChange,
-  onGenerateCode,
+  formMethods,
   onNext,
-  canNext,
 }: ConfigStepProps) => {
+  const {
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = formMethods;
+
+  const startFullDay = watch('startFullDay');
+  const endFullDay = watch('endFullDay');
+  const fogOfWar = watch('fogOfWar');
+  const participate = watch('participate');
+  const watchStartDate = watch('startDate');
+  const currentJoinCode = watch('joinCode');
+
+  const watchName = watch('name');
+  const canNext = !!watchName && !!watchStartDate;
+
   const toggles = [
     {
-      id: 'fogOfWar',
+      id: 'fogOfWar' as const,
       label: FORM.COMPETITION.LABELS.FOG_OF_WAR,
       sub: FORM.COMPETITION.HINTS.FOG_OF_WAR,
-      active: formData.fogOfWar,
+      active: fogOfWar,
     },
     {
-      id: 'participate',
+      id: 'participate' as const,
       label: FORM.COMPETITION.LABELS.PARTICIPATE,
       sub: FORM.COMPETITION.HINTS.PARTICIPATE,
-      active: formData.participate,
+      active: participate,
     },
-  ] as const;
+  ];
+
+  const handleJoinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('joinCode', formatJoinCode(e.target.value), {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
+  const handleGenerateCode = () => {
+    setValue('joinCode', generateClientSideCode(), {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
   return (
     <div className="space-y-6 animate-slide-up">
@@ -64,38 +87,35 @@ export const CompetitionConfigStep = ({
         <Input
           label={FORM.COMPETITION.LABELS.NAME}
           placeholder={FORM.COMPETITION.PLACEHOLDERS.NAME}
-          value={formData.name}
-          onChange={(e) => updateField('name', e.target.value)}
           required
           align="center"
+          error={errors.name?.message}
+          {...register('name')}
         />
+
         <div className="space-y-1">
           <div className="relative flex items-center group">
             <Input
               label={FORM.COMPETITION.LABELS.JOIN_CODE}
-              value={formData.joinCode ?? ''}
-              onChange={handleJoinCodeChange}
               align="center"
               placeholder={FORM.COMPETITION.PLACEHOLDERS.JOIN_CODE}
+              error={errors.joinCode?.message}
+              {...register('joinCode', { onChange: handleJoinCodeChange })}
               renderRight={
-                <button
+                <Button
                   type="button"
-                  onClick={onGenerateCode}
-                  className={cn(
-                    'flex items-center gap-2 py-1 px-2 rounded-lg',
-                    'bg-gold/5 border border-gold/10',
-                    'text-gold/60 hover:text-gold transition-all active:scale-95',
-                  )}
+                  variant={BUTTON_VARIANT.GHOST}
+                  size={BUTTON_SIZE.SMALL}
+                  onClick={handleGenerateCode}
+                  icon={ICONS.STARS}
+                  className="bg-gold/5 border border-gold/10 hover:bg-gold/10 text-gold/60 hover:text-gold"
                 >
-                  <span className="text-xs font-bold uppercase tracking-tight">
-                    {BUTTONS.AUTO}
-                  </span>
-                  <span className="text-sm">{ICONS.STARS}</span>
-                </button>
+                  {BUTTONS.AUTO}
+                </Button>
               }
             />
           </div>
-          {!formData.joinCode && (
+          {!currentJoinCode && (
             <Text
               variant={TEXT_VARIANT.MICRO}
               className="italic opacity-30 text-center block"
@@ -106,81 +126,69 @@ export const CompetitionConfigStep = ({
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          {/* BLOC DÉBUT */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-            <Label>{FORM.COMPETITION.LABELS.START}</Label>
-
+            <Label required>{FORM.COMPETITION.LABELS.START}</Label>
             <Input
               type="date"
-              value={formData.startDate}
-              onChange={(e) => updateField('startDate', e.target.value)}
               required
+              error={errors.startDate?.message}
+              {...register('startDate')}
             />
-
             <Card
               variant={CARD_VARIANT.DARK}
-              role="switch"
-              aria-checked={formData.startFullDay}
               onClick={() =>
-                updateField('startFullDay', !formData.startFullDay)
+                setValue('startFullDay', !startFullDay, { shouldDirty: true })
               }
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                className={
-                  formData.startFullDay ? 'text-white' : 'text-white/50'
-                }
+                className={startFullDay ? 'text-white' : 'text-white/50'}
               >
                 {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
-              <Switch checked={formData.startFullDay} onChange={() => {}} />
+              <Switch checked={startFullDay} onChange={() => {}} />
             </Card>
-
-            {!formData.startFullDay && (
+            {!startFullDay && (
               <div className="animate-slide-down">
                 <Input
                   type="time"
-                  value={formData.startTime}
-                  onChange={(e) => updateField('startTime', e.target.value)}
+                  error={errors.startTime?.message}
+                  {...register('startTime')}
                 />
               </div>
             )}
           </div>
 
-          {/* BLOC FIN */}
           <div className="space-y-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
             <Label>{FORM.COMPETITION.LABELS.END}</Label>
-
             <Input
               type="date"
-              min={formData.startDate}
-              value={formData.endDate}
-              onChange={(e) => updateField('endDate', e.target.value)}
+              min={watchStartDate}
+              error={errors.endDate?.message}
+              {...register('endDate')}
             />
-
             <Card
               variant={CARD_VARIANT.DARK}
-              role="switch"
-              aria-checked={formData.endFullDay}
-              onClick={() => updateField('endFullDay', !formData.endFullDay)}
+              onClick={() =>
+                setValue('endFullDay', !endFullDay, { shouldDirty: true })
+              }
               className="flex items-center justify-between py-2 px-3 group cursor-pointer transition-default border-transparent bg-transparent shadow-none"
             >
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                className={formData.endFullDay ? 'text-white' : 'text-white/50'}
+                className={endFullDay ? 'text-white' : 'text-white/50'}
               >
                 {FORM.COMPETITION.LABELS.FULL_DAY}
               </Text>
-              <Switch checked={formData.endFullDay} onChange={() => {}} />
+              <Switch checked={endFullDay} onChange={() => {}} />
             </Card>
-
-            {!formData.endFullDay && (
+            {!endFullDay && (
               <div className="animate-slide-down">
                 <Input
                   type="time"
-                  value={formData.endTime}
-                  onChange={(e) => updateField('endTime', e.target.value)}
+                  error={errors.endTime?.message}
+                  {...register('endTime')}
                 />
               </div>
             )}
@@ -192,13 +200,11 @@ export const CompetitionConfigStep = ({
             <Card
               key={toggle.id}
               variant={CARD_VARIANT.DARK}
-              role="switch"
-              aria-checked={toggle.active}
-              aria-label={toggle.label}
-              onClick={() => updateField(toggle.id, !toggle.active)}
+              onClick={() =>
+                setValue(toggle.id, !toggle.active, { shouldDirty: true })
+              }
               className={cn(
-                'flex items-center justify-between py-3 px-4 group cursor-pointer transition-default',
-                'hover:border-gold/30 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none',
+                'flex items-center justify-between py-3 px-4 group cursor-pointer transition-default hover:border-gold/30',
                 toggle.active ? 'border-gold/30' : 'border-white/5',
               )}
             >
@@ -220,7 +226,6 @@ export const CompetitionConfigStep = ({
                 </Text>
               </div>
               <div
-                aria-hidden="true"
                 className={cn(
                   'w-8 h-4 rounded-full relative transition-default',
                   toggle.active ? 'bg-gold' : 'bg-white/10',
@@ -238,7 +243,13 @@ export const CompetitionConfigStep = ({
         </div>
       </div>
 
-      <Button fullWidth onClick={onNext} disabled={!canNext} size="lg">
+      <Button
+        fullWidth
+        type="button"
+        disabled={!canNext}
+        onClick={onNext}
+        size="lg"
+      >
         {BUTTONS.CONTINUE}
       </Button>
     </div>

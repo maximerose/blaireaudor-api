@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import type { CompetitionFormData, FormParticipant } from '@/types';
+import type { FormParticipant } from '@/types';
+import type { CreateCompetitionFormData } from '@/validations';
 
-export const useRefereeStepLogic = (formData: CompetitionFormData) => {
+export const useRefereeStepLogic = (formData: CreateCompetitionFormData) => {
   const players = formData.players ?? [];
   const referees = formData.referees ?? [];
 

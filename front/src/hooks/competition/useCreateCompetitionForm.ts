@@ -1,11 +1,8 @@
-import { useMemo, useState } from 'react';
-import { useCompetitionForm, usePlayerSearch } from '@/hooks';
-import {
-  formatJoinCode,
-  cleanJoinCode,
-  generateClientSideCode,
-  formatToApiISO,
-} from '@/utils';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { usePlayerSearch } from '@/hooks';
+import { cleanJoinCode, formatToApiISO, getLocalDayString } from '@/utils';
 import { competitionService } from '@/services';
 import type {
   FormParticipant,
@@ -17,47 +14,52 @@ import type {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { LOG_MESSAGES, QUERY_KEYS } from '@/constants';
 import { useAuthContext } from '@/context';
+import {
+  createCompetitionSchema,
+  type CreateCompetitionFormData,
+} from '@/validations';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
 ) => {
   const [step, setStep] = useState(1);
   const { user, refreshUser } = useAuthContext();
+  const queryClient = useQueryClient();
   const { results, searching, searchTerm, setSearchTerm, clearSearch } =
     usePlayerSearch();
-  const queryClient = useQueryClient();
 
-  const { formData, setFormData, updateField } = useCompetitionForm({
-    name: '',
-    startDate: '',
-    startTime: '00:00',
-    startFullDay: true,
-    endDate: '',
-    endTime: '23:59',
-    endFullDay: true,
-    joinCode: null,
-    participate: true,
-    fogOfWar: true,
-    isCreatorReferee: true,
-    players: [] as FormParticipant[],
-    referees: [] as FormParticipant[],
+  const formMethods = useForm<CreateCompetitionFormData>({
+    resolver: zodResolver(createCompetitionSchema),
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      joinCode: '',
+      startDate: getLocalDayString(new Date()),
+      startTime: '00:00',
+      startFullDay: true,
+      endDate: '',
+      endTime: '23:59',
+      endFullDay: true,
+      fogOfWar: true,
+      participate: true,
+      isCreatorReferee: true,
+      players: [],
+      referees: [],
+    },
   });
 
+  const { watch, setValue, trigger, handleSubmit } = formMethods;
+
+  const currentPlayers = watch('players');
+  const currentReferees = watch('referees');
   const filteredResults = results.filter((p) => p.username !== user?.username);
 
-  const handleJoinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateField('joinCode', formatJoinCode(e.target.value));
-  };
-
   const handleAddPlayer = (player: Player | PlayerCompact) => {
-    if (!(formData.players || []).find((p) => p.id === player.id)) {
-      setFormData((prev) => ({
-        ...prev,
-        players: [
-          ...(prev.players || []),
-          { ...player, isNew: false } as FormParticipant,
-        ],
-      }));
+    if (!currentPlayers.find((p) => p.id === player.id)) {
+      setValue('players', [
+        ...currentPlayers,
+        { ...player, isNew: false } as FormParticipant,
+      ]);
     }
     clearSearch();
   };
@@ -65,105 +67,95 @@ export const useCreateCompetitionForm = (
   const handleAddNewPlayer = (name: string) => {
     const trimmedName = name.trim();
     if (trimmedName) {
-      const tempId = `new-${Date.now()}`;
-      setFormData((prev) => ({
-        ...prev,
-        players: [
-          ...(prev.players || []),
-          {
-            id: tempId,
-            display_name: trimmedName,
-            isNew: true,
-          } as FormParticipant,
-        ],
-      }));
+      setValue('players', [
+        ...currentPlayers,
+        {
+          id: `new-${Date.now()}`,
+          display_name: trimmedName,
+          isNew: true,
+        } as FormParticipant,
+      ]);
     }
     clearSearch();
   };
 
   const handleRemovePlayer = (id: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      players: (prev.players || []).filter((p) => p.id !== id),
-    }));
+    setValue(
+      'players',
+      currentPlayers.filter((p) => p.id !== id),
+    );
   };
 
   const handleToggleReferee = (
     person: Player | PlayerCompact | FormParticipant,
     isNewInput: boolean = false,
   ) => {
-    setFormData((prev) => {
-      const currentReferees = prev.referees || [];
-      const isAlreadyRef = currentReferees.some((r) => r.id === person.id);
+    const isAlreadyRef = currentReferees.some((r) => r.id === person.id);
 
-      if (isAlreadyRef) {
-        return {
-          ...prev,
-          referees: currentReferees.filter((r) => r.id !== person.id),
-        };
-      }
-
-      let refereeToAdd: FormParticipant;
-
-      if ('isNew' in person) {
-        refereeToAdd = person;
-      } else {
-        refereeToAdd = { ...person, isNew: isNewInput } as FormParticipant;
-      }
-
-      return {
-        ...prev,
-        referees: [...currentReferees, refereeToAdd],
-      };
-    });
+    if (isAlreadyRef) {
+      setValue(
+        'referees',
+        currentReferees.filter((r) => r.id !== person.id),
+        { shouldValidate: true },
+      );
+    } else {
+      const refereeToAdd =
+        'isNew' in person
+          ? person
+          : ({ ...person, isNew: isNewInput } as FormParticipant);
+      setValue('referees', [...currentReferees, refereeToAdd], {
+        shouldValidate: true,
+      });
+    }
     clearSearch();
   };
 
-  const generateCode = () => {
-    const newCode = generateClientSideCode();
-    updateField('joinCode', newCode);
+  const handleNextStep1 = async () => {
+    const isValid = await trigger([
+      'name',
+      'joinCode',
+      'startDate',
+      'endDate',
+      'startTime',
+      'endTime',
+    ]);
+    if (isValid) setStep(2);
   };
 
-  const canGoNext = useMemo(() => {
-    return !!(formData.name && formData.startDate);
-  }, [formData.name, formData.startDate]);
-
   const creationMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: CreateCompetitionFormData) => {
       const payload: CompetitionCreatePayload = {
-        name: formData.name,
+        name: data.name,
         start_date: formatToApiISO(
-          formData.startDate,
-          formData.startTime,
-          formData.startFullDay,
+          data.startDate,
+          data.startTime ?? undefined,
+          data.startFullDay,
           false,
         ),
-        end_date: formData.endDate
+        end_date: data.endDate
           ? formatToApiISO(
-              formData.endDate,
-              formData.endTime,
-              formData.endFullDay,
+              data.endDate,
+              data.endTime ?? undefined,
+              data.endFullDay,
               true,
             )
           : null,
-        join_code: cleanJoinCode(formData.joinCode || ''),
-        participate: formData.participate ?? true,
-        fog_of_war: formData.fogOfWar,
-        is_creator_referee: formData.isCreatorReferee,
+        join_code: cleanJoinCode(data.joinCode || ''),
+        participate: data.participate,
+        fog_of_war: data.fogOfWar,
+        is_creator_referee: data.isCreatorReferee,
       };
 
       const competition = await competitionService.create(payload);
 
-      const existingIds = (formData.players || [])
-        .filter((p) => !p.isNew)
-        .map((p) => p.id);
-      const newNames = (formData.players || [])
+      const existingIds = data.players.filter((p) => !p.isNew).map((p) => p.id);
+      const newNames = data.players
         .filter((p) => p.isNew)
         .map((p) => p.display_name);
-      const existingReferees = (formData.referees || [])
+      const existingReferees = data.referees
         .filter((r) => !r.isNew)
         .map((r) => r.id);
-      const newReferees = (formData.referees || [])
+      const newReferees = data.referees
         .filter((r) => r.isNew)
         .map((r) => r.display_name);
 
@@ -185,9 +177,7 @@ export const useCreateCompetitionForm = (
     },
     onSuccess: async (competition) => {
       await refreshUser();
-
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
-
       onSuccess(competition);
     },
     onError: (error) => {
@@ -198,11 +188,8 @@ export const useCreateCompetitionForm = (
   return {
     step,
     setStep,
-    formData,
-    updateField,
-    handleJoinCodeChange,
-    generateCode,
-    canGoNext: canGoNext,
+    handleNextStep1,
+    formMethods,
     searchState: {
       searchTerm,
       setSearchTerm,
@@ -214,11 +201,8 @@ export const useCreateCompetitionForm = (
       addNew: handleAddNewPlayer,
       remove: handleRemovePlayer,
     },
-    refereesActions: {
-      toggle: handleToggleReferee,
-    },
-
-    submit: () => creationMutation.mutate(),
+    refereesActions: { toggle: handleToggleReferee },
+    submit: handleSubmit((data) => creationMutation.mutate(data)),
     loading: creationMutation.isPending,
   };
 };
