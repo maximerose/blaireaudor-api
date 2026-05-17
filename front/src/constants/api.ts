@@ -43,6 +43,7 @@ export const API = {
     ACTIONS: {
       BASE: '/actions',
       DETAIL: (id: string) => `/actions/${id}`,
+      PENDING_GLOBAL: '/actions/pending-referee',
     },
     PARTICIPATIONS: {
       BASE: '/participations',

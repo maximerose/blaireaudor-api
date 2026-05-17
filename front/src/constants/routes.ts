@@ -15,6 +15,8 @@ export const ROUTES = {
     COMPETITIONS_LIST: '/competitions',
     ADMIN_DASHBOARD: '/admin',
     ADMIN_CREATE_COMPETITION: '/admin/competition',
+    PROFILE: '/profile',
+    ARBITRAGE: '/arbitrage',
 
     // Routes dynamiques
     COMPETITION_DETAIL: (code: string) => `/competitions/${code}`,

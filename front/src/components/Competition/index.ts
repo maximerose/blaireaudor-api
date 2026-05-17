@@ -1,5 +1,6 @@
 export * from './Admin/AdminSettings';
 export * from './Admin/BonusDayManagement';
+export * from './Admin/DeleteCompetitionAction';
 export * from './Admin/CloseCompetitionAction';
 export * from './Admin/CompetitionGeneralSettings';
 export * from './Admin/FogOfWarToggle';
@@ -13,7 +14,6 @@ export * from './Detail/CompetitionCountdown';
 export * from './Detail/CompetitionDetailPage';
 export * from './Detail/CompetitionHeader';
 export * from './Detail/DateNavigation';
-export * from './Detail/DetailNavigation';
 export * from './Detail/Leaderboard';
 export * from './Detail/LeaderboardRow';
 export * from './Detail/PlayerFilter';

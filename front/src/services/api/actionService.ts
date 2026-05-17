@@ -22,4 +22,13 @@ export const actionService = {
     });
     return { ok: response.ok, data: await response.json() };
   },
+
+  getGlobalPendingCount: async (signal?: AbortSignal) => {
+    const response = await apiFetch(API.ENDPOINTS.ACTIONS.PENDING_GLOBAL, {
+      signal,
+    });
+    if (!response.ok) return 0;
+    const data = await response.json();
+    return data.count;
+  },
 };

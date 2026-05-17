@@ -5,7 +5,7 @@ import {
   AdminSettings,
   InlineEnrollment,
 } from '@/components/Competition';
-import { DetailNavigation, ReportingSection } from '@/components/Competition';
+import { ReportingSection } from '@/components/Competition';
 import {
   LoadingScreen,
   NotFoundState,
@@ -34,10 +34,8 @@ export const CompetitionDetailPage = () => {
 
   return (
     <CompetitionProvider code={code!}>
-      <Navbar />
+      <Navbar subtitle={competition.name} />
       <main className="w-full mx-auto px-4 py-6 sm:py-10 animate-fade-in">
-        <DetailNavigation />
-
         <CompetitionHeader />
 
         <AdminSettings />

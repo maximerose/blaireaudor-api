@@ -8,11 +8,15 @@ use App\Entity\Competition;
 use App\Repository\ActionRepository;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
+use App\Security\Voter\CompetitionVoter;
+use App\Service\ActionManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Accès public aux informations des compétitions.
@@ -61,6 +65,36 @@ final class CompetitionController extends AbstractController
         $leaderboard = $participationRepository->findLeaderboard($competition);
 
         return $this->json($leaderboard, Response::HTTP_OK, [], ['groups' => ['competition:read']]);
+    }
+
+    /**
+     * Enregistre une nouvelle action pour une compétition donnée.
+     *
+     * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
+     *
+     * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
+     */
+    #[Route('/{id}/actions', name: 'create', methods: 'POST')]
+    #[IsGranted(CompetitionVoter::PLAYER, subject: 'competition')]
+    public function createAction(
+        Competition $competition,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ActionManager $actionManager,
+    ): JsonResponse {
+        $data = $request->toArray();
+        $user = $this->getUser();
+
+        $action = $entityManager->wrapInTransaction(function () use ($competition, $user, $data, $actionManager, $entityManager) {
+            $action = $actionManager->createActionFromPayload($competition, $user, $data);
+
+            $entityManager->persist($action);
+            $entityManager->flush();
+
+            return $action;
+        });
+
+        return $this->json($action, Response::HTTP_CREATED, [], ['groups' => ['action:read']]);
     }
 
     #[Route('/{id}/actions', name: 'actions', methods: ['GET'])]

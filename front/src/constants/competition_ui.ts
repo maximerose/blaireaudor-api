@@ -7,10 +7,12 @@ export const COMPETITION_UI = {
       SETTINGS_LABEL: 'Paramètres de la compétition',
       TITLE: "Console d'administration",
       CONFIG_TITLE: 'Configuration',
-      BUTTON_EXPAND: "Gérer l'arène",
+      BUTTON_EXPAND: 'Gérer la compétition',
       BUTTON_EDIT: 'Modifier les paramètres',
       REFEREES_COUNT: (count: number) =>
         `${count} ${pluralize(count, 'Arbitre')}`,
+      DELETE_ZONE: 'Zone dangereuse',
+      DELETE_HINT: 'La suppression de la compétition est définitive',
     },
     BONUS: {
       TITLE: `Multiplicateurs`,

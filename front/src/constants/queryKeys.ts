@@ -1,4 +1,7 @@
 export const QUERY_KEYS = {
+  arbitrage: {
+    pendingGlobal: ['actions', 'pending-global'] as const,
+  },
   auth: {
     me: ['auth', 'me'] as const,
     usernameCheck: (username: string) =>

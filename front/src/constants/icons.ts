@@ -37,4 +37,5 @@ export const ICONS = {
   SETTINGS: '⚙️',
   EMPTY: '🏜️',
   CHEVRON_DOWN: '▽',
+  HOME: '🏠',
 } as const;

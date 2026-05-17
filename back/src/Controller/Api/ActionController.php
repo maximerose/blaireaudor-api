@@ -4,51 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Entity\Competition;
-use App\Security\Voter\CompetitionVoter;
-use App\Service\ActionManager;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Repository\ActionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Gestion des actions de jeu au sein d'une compétition.
  * * Permet aux joueurs d'enregistrer des actions qui donnent ou enlèvent des points à d'autres joueurs.
  */
-#[Route('/api/competitions', name: 'api.actions.')]
+#[Route('/api/actions', name: 'api.actions.')]
 final class ActionController extends AbstractController
 {
-    /**
-     * Enregistre une nouvelle action pour une compétition donnée.
-     *
-     * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
-     *
-     * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
-     */
-    #[Route('/{id}/actions', name: 'create', methods: 'POST')]
-    #[IsGranted(CompetitionVoter::PLAYER, subject: 'competition')]
-    public function create(
-        Competition $competition,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ActionManager $actionManager,
-    ): JsonResponse {
-        $data = $request->toArray();
+    #[Route('/pending-referee', name: 'pending_referee', methods: ['GET'])]
+    public function getGlobalPendingCount(ActionRepository $actionRepository): JsonResponse
+    {
         $user = $this->getUser();
 
-        $action = $entityManager->wrapInTransaction(function () use ($competition, $user, $data, $actionManager, $entityManager) {
-            $action = $actionManager->createActionFromPayload($competition, $user, $data);
+        if (!$user instanceof User || !$user->getPlayer()) {
+            return $this->json(['count' => 0]);
+        }
 
-            $entityManager->persist($action);
-            $entityManager->flush();
+        $count = $actionRepository->countPendingForReferee($user->getPlayer());
 
-            return $action;
-        });
-
-        return $this->json($action, Response::HTTP_CREATED, [], ['groups' => ['action:read']]);
+        return $this->json(['count' => $count]);
     }
 }

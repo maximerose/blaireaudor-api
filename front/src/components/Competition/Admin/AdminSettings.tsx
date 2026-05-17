@@ -13,6 +13,7 @@ import {
   BonusDayManagement,
   CloseCompetitionAction,
   CompetitionGeneralSettings,
+  DeleteCompetitionAction,
   FogOfWarToggle,
   RefereeManagement,
 } from '@/components/Competition';
@@ -141,6 +142,8 @@ export const AdminSettings = () => {
               {canManageParticipants.allowed && <RefereeManagement />}
               {canManageGame.allowed && <BonusDayManagement />}
             </section>
+
+            <DeleteCompetitionAction />
           </div>
         </div>
       </Card>

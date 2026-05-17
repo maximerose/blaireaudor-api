@@ -13,6 +13,7 @@ export const SECTION_HEADER_THEME = {
   DEFAULT: 'default',
   GOLD: 'gold',
   DIMMED: 'dimmed',
+  DANGER: 'danger',
 } as const;
 
 export type SectionHeaderVariant =
@@ -53,11 +54,13 @@ export const SectionHeader = ({
           variant={TEXT_VARIANT.CAPTION}
           className={cn(
             'whitespace-nowrap font-bold uppercase tracking-widest',
-            colorTheme === SECTION_HEADER_THEME.GOLD
-              ? 'text-gold opacity-60'
-              : colorTheme === SECTION_HEADER_THEME.DIMMED
-                ? 'text-white opacity-20'
-                : 'text-white opacity-40',
+            colorTheme === SECTION_HEADER_THEME.DANGER
+              ? 'text-danger-bright'
+              : colorTheme === SECTION_HEADER_THEME.GOLD
+                ? 'text-gold opacity-60'
+                : colorTheme === SECTION_HEADER_THEME.DIMMED
+                  ? 'text-white opacity-20'
+                  : 'text-white opacity-40',
           )}
         >
           {title}
@@ -82,11 +85,9 @@ export const SectionHeader = ({
   const isBlock = variant === SECTION_HEADER_VARIANT.BLOCK;
   const isSub = variant === SECTION_HEADER_VARIANT.SUB;
 
-  // Sémantique HTML par défaut
   const defaultTag = isTitle ? 'h1' : isBlock ? 'h2' : 'h3';
   const TitleTag = as || defaultTag;
 
-  // Style visuel (TextVariant)
   const titleVariant = isTitle
     ? TEXT_VARIANT.H1
     : isBlock
@@ -114,9 +115,9 @@ export const SectionHeader = ({
         id={id}
         as={TitleTag}
         variant={titleVariant}
-        // Pour les blocs (modales), on force le style or/italique même si le H2 de base est blanc
         className={cn(
           isBlock && 'text-gold italic flex items-center justify-center gap-2',
+          colorTheme === SECTION_HEADER_THEME.DANGER && 'text-danger',
         )}
       >
         {title}

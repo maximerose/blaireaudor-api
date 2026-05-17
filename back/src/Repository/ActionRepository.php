@@ -8,6 +8,7 @@ use App\Constants\AppConstants;
 use App\Entity\Action;
 use App\Entity\Competition;
 use App\Entity\Participation;
+use App\Entity\Player;
 use App\Enum\ActionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -67,10 +68,6 @@ class ActionRepository extends ServiceEntityRepository
         }
 
         $sql .= " ORDER BY {$sortField} {$order}";
-
-        // if ('a.date_action' !== $sortField) {
-        //     $sql .= ', a.date_action DESC';
-        // }
 
         if ($limit) {
             $sql .= ' LIMIT :limit OFFSET :offset';
@@ -190,5 +187,19 @@ class ActionRepository extends ServiceEntityRepository
         ]);
 
         return array_column($results, 'date_day');
+    }
+
+    public function countPendingForReferee(Player $referee): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->join('a.participation', 'p')
+            ->join('p.competition', 'c')
+            ->where(':referee MEMBER OF c.referees')
+            ->andWhere('a.status = :status')
+            ->setParameter('referee', $referee)
+            ->setParameter('status', ActionStatus::PENDING)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
