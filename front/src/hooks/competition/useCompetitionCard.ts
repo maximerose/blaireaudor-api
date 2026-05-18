@@ -12,6 +12,9 @@ import type {
   PlayerCompact,
 } from '@/types';
 import { useAuthContext } from '@/context';
+import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants';
+import { competitionService } from '@/services';
 
 export const useCompetitionCard = (
   competition: Competition,
@@ -50,6 +53,13 @@ export const useCompetitionCard = (
   const hasVisibleResults =
     shouldReveal && score !== undefined && rank !== undefined;
 
+  const { data: pendingCount = 0 } = useQuery({
+    queryKey: QUERY_KEYS.competition.byId(competition.id).pendingCount,
+    queryFn: ({ signal }) =>
+      competitionService.getPendingCount(competition.id, signal),
+    enabled: isReferee && !competition.is_finished,
+  });
+
   return {
     isCreator,
     isReferee,
@@ -62,5 +72,6 @@ export const useCompetitionCard = (
     rank,
     hasNoParticipants: (competition.participants_count ?? 0) === 0,
     hasVisibleResults,
+    pendingCount,
   };
 };

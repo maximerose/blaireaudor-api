@@ -17,7 +17,7 @@ export interface GetActionsParams {
 
 export const competitionService = {
   create: async (payload: CompetitionCreatePayload) => {
-    const response = await apiFetch(API.ENDPOINTS.ADMIN.COMPETITION_CREATE, {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BASE, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -170,7 +170,7 @@ export const competitionService = {
     },
   ) => {
     const response = await apiFetch(
-      API.ENDPOINTS.ADMIN.ADD_PARTICIPANTS(competitionId),
+      API.ENDPOINTS.COMPETITIONS.ADD_PARTICIPANTS(competitionId),
       {
         method: 'POST',
         body: JSON.stringify({
@@ -223,7 +223,7 @@ export const competitionService = {
 
   addReferee: async (competitionId: string, playerId: string) => {
     const response = await apiFetch(
-      API.ENDPOINTS.ADMIN.ADD_REFEREE(competitionId),
+      API.ENDPOINTS.COMPETITIONS.ADD_REFEREE(competitionId),
       {
         method: 'POST',
         body: JSON.stringify({ player_id: playerId }),
@@ -239,7 +239,7 @@ export const competitionService = {
 
   removeReferee: async (competitionId: string, playerId: string) => {
     const response = await apiFetch(
-      API.ENDPOINTS.ADMIN.REMOVE_REFEREE(competitionId),
+      API.ENDPOINTS.COMPETITIONS.REMOVE_REFEREE(competitionId),
       {
         method: 'POST',
         body: JSON.stringify({ player_id: playerId }),

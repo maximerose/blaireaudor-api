@@ -37,6 +37,8 @@ export const DASHBOARD_UI = {
     EMPTY_COMPETITION: 'Tournoi vide',
     PARTICIPANT_COUNT: (count: number) =>
       `${count} ${pluralize(count, 'Blaireau', 'Blaireaux')}`,
+    PENDING_ACTIONS_COUNT: (count: number) =>
+      `${count} ${pluralize(count, 'action')} en attente`,
     RESULTS: 'Résultats',
     FOG_OF_WAR: 'Brouillard de guerre',
     MASKED_SCORES: 'Scores masqués',

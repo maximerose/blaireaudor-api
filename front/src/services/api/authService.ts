@@ -92,7 +92,11 @@ export const authService = {
       throw result;
     }
 
-    return result;
+    if (result.token) {
+      localStorage.setItem('token', result.token);
+    }
+
+    return result.user;
   },
 
   /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Manager;
 
 use App\Entity\Action;
 use App\Entity\Competition;

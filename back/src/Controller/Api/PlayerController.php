@@ -11,10 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/search', name: 'api.search.')]
-final class SearchController extends AbstractController
+#[Route('/api/players', name: 'api.players.')]
+final class PlayerController extends AbstractController
 {
-    #[Route('/players', name: 'players', methods: ['GET'])]
+    public function __construct(
+        private PlayerRepository $playerRepository,
+    ) {
+    }
+
+    #[Route('', name: 'index', methods: ['GET'])]
     public function searchPlayers(Request $request, PlayerRepository $playerRepository): JsonResponse
     {
         $query = $request->query->get('displayName', '');

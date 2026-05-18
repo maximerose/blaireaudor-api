@@ -8,7 +8,7 @@ use App\Entity\Competition;
 use App\Factory\CompetitionFactory;
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
-use App\Service\CompetitionManager;
+use App\Service\Manager\CompetitionManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;

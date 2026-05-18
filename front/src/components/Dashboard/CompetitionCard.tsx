@@ -39,6 +39,7 @@ export const CompetitionCard = ({
     rank,
     hasNoParticipants,
     hasVisibleResults,
+    pendingCount,
   } = useCompetitionCard(competition, participation);
 
   return (
@@ -116,57 +117,66 @@ export const CompetitionCard = ({
         </div>
       </div>
 
+      {pendingCount > 0 && (
+        <div className="mb-4 flex items-center justify-center gap-2 bg-danger/10 border border-danger-bright/20 py-2 rounded-xl animate-pulse">
+          <span className="text-danger-bright text-xs" aria-hidden="true">
+            {ICONS.REFEREE}
+          </span>
+          <Text
+            variant={TEXT_VARIANT.MICRO}
+            className="text-danger-bright font-bold uppercase tracking-widest"
+          >
+            {DASHBOARD_UI.CARD.PENDING_ACTIONS_COUNT(pendingCount)}
+          </Text>
+        </div>
+      )}
+
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-col gap-1 min-h-10 justify-center">
-          {isParticipant ? (
-            <>
-              <Text
-                variant={TEXT_VARIANT.MICRO}
-                className="opacity-20 text-white uppercase font-black"
-              >
-                {shouldReveal
+        <div className="flex flex-col items-center sm:items-start gap-1 min-h-10 justify-center w-full sm:w-auto">
+          <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="opacity-20 text-white uppercase font-black text-center sm:text-left"
+            >
+              {isParticipant
+                ? shouldReveal
                   ? DASHBOARD_UI.CARD.RESULTS
-                  : DASHBOARD_UI.CARD.FOG_OF_WAR}
-              </Text>
-              <div className="flex items-center gap-4">
-                {(hasVisibleResults || isManager) &&
-                score !== undefined &&
-                rank !== undefined ? (
-                  <div
-                    className="flex items-center gap-4"
-                    aria-label={DASHBOARD_UI.CARD.ARIA.RANK_SCORE(rank, score)}
-                  >
-                    <RankedScore score={score} rank={rank} />
-                    <RankBadge rank={rank} />
-                  </div>
-                ) : (
-                  <Text
-                    variant={TEXT_VARIANT.MICRO}
-                    className="opacity-40 italic flex items-center gap-2 text-white"
-                  >
-                    {DASHBOARD_UI.CARD.MASKED_SCORES}
-                    <span aria-hidden="true" className="text-xs">
-                      {ICONS.FOG_ACTIVE}
-                    </span>
-                  </Text>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col">
-              <Text
-                variant={TEXT_VARIANT.MICRO}
-                className="text-gold/40 uppercase font-black"
-              >
-                {DASHBOARD_UI.CARD.OFFICIAL_ROLE}
-              </Text>
-              <Text
-                variant={TEXT_VARIANT.MICRO}
-                className="text-white/30 italic"
-              >
-                {DASHBOARD_UI.CARD.SPECTATOR_MODE}
-              </Text>
+                  : DASHBOARD_UI.CARD.FOG_OF_WAR
+                : DASHBOARD_UI.CARD.OFFICIAL_ROLE}
+            </Text>
+          </div>
+
+          {isParticipant ? (
+            <div className="flex items-center justify-center sm:justify-start gap-4 mt-1">
+              {(hasVisibleResults || isManager) &&
+              score !== undefined &&
+              rank !== undefined ? (
+                <div
+                  className="flex items-center justify-center sm:justify-start gap-4"
+                  aria-label={DASHBOARD_UI.CARD.ARIA.RANK_SCORE(rank, score)}
+                >
+                  <RankedScore score={score} rank={rank} />
+                  <RankBadge rank={rank} />
+                </div>
+              ) : (
+                <Text
+                  variant={TEXT_VARIANT.MICRO}
+                  className="opacity-40 italic flex items-center justify-center sm:justify-start gap-2 text-white"
+                >
+                  {DASHBOARD_UI.CARD.MASKED_SCORES}
+                  <span aria-hidden="true" className="text-xs">
+                    {ICONS.FOG_ACTIVE}
+                  </span>
+                </Text>
+              )}
             </div>
+          ) : (
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="text-white/30 italic mt-1 text-center sm:text-left"
+            >
+              {DASHBOARD_UI.CARD.SPECTATOR_MODE}
+            </Text>
           )}
         </div>
 
@@ -177,7 +187,7 @@ export const CompetitionCard = ({
           }
           size={BUTTON_SIZE.SMALL}
           fullWidth
-          className="sm:w-auto"
+          className="sm:w-auto shrink-0 mt-2 sm:mt-0"
           aria-label={DASHBOARD_UI.CARD.ARIA.ENTER_COMPETITION(
             competition.name,
           )}

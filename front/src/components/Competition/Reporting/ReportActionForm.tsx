@@ -58,7 +58,6 @@ export const ReportActionForm = () => {
                 autoComplete="off"
                 onFocus={() => setShowDropdown(true)}
                 onChange={handleSearchChange}
-                onBlur={() => setShowDropdown(false)}
                 icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
                 error={errors?.targetPlayerId?.message}
               />

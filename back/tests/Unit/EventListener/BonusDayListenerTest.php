@@ -7,7 +7,7 @@ namespace App\Tests\Unit\EventListener;
 use App\Entity\BonusDay;
 use App\Entity\Competition;
 use App\EventListener\BonusDayListener;
-use App\Service\ActionManager;
+use App\Service\Manager\ActionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;

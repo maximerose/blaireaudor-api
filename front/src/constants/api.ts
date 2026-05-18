@@ -34,14 +34,17 @@ export const API = {
     // PLAYER (Le profil métier, les scores, la recherche)
     PLAYER: {
       LIST: BASES.PLAYERS,
-      SEARCH: (query: string) => `/search/players?displayName=${query}`,
-      CHECK_BY_USERNAME: (username: string) =>
-        `/check-player?username=${username}`,
+      SEARCH: (query: string) => `${BASES.PLAYERS}?displayName=${query}`,
     },
 
     // COMPETITIONS (Les Arènes)
     COMPETITIONS: {
       BASE: BASES.COMPETITIONS,
+      ADD_PARTICIPANTS: (id: string) =>
+        `${BASES.COMPETITIONS}/${id}/add-players`,
+      ADD_REFEREE: (id: string) => `${BASES.COMPETITIONS}/${id}/referees/add`,
+      REMOVE_REFEREE: (id: string) =>
+        `${BASES.COMPETITIONS}/${id}/referees/remove`,
       BY_CODE: (code: string) => `${BASES.COMPETITIONS}/by-code/${code}`,
       CHECK_JOIN_CODE: (code: string) =>
         `${BASES.COMPETITIONS}/check/join-code?code=${code}`,
@@ -74,15 +77,6 @@ export const API = {
       DETAIL: (id: string) => `${BASES.BONUS}/${id}`,
       BY_COMPETITION: (competitionId: string) =>
         `${BASES.BONUS}?competition=${competitionId}`,
-    },
-
-    // ADMINISTRATION (Actions sur l'Arène)
-    ADMIN: {
-      COMPETITION_CREATE: BASES.ADMIN_COMP,
-      ADD_PARTICIPANTS: (id: string) => `${BASES.ADMIN_COMP}/${id}/add-players`,
-      ADD_REFEREE: (id: string) => `${BASES.ADMIN_COMP}/${id}/referees/add`,
-      REMOVE_REFEREE: (id: string) =>
-        `${BASES.ADMIN_COMP}/${id}/referees/remove`,
     },
   },
 

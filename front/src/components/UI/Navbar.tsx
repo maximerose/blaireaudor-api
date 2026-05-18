@@ -1,9 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
-import { useGlobalPendingCount, useNavbarUI } from '@/hooks';
+import { useNavbarUI } from '@/hooks';
 import {
-  Badge,
-  BADGE_VARIANT,
   Button,
   BUTTON_VARIANT,
   SECTION_HEADER_VARIANT,
@@ -24,21 +22,10 @@ const LOGO_LINK =
 export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
   const { displayName, isScrolled, isMenuOpen, setIsMenuOpen } = useNavbarUI();
   const location = useLocation();
-  const { count: pendingCount, isReferee } = useGlobalPendingCount();
 
   const navLinks = [
     { label: NAV.LINK.DASHBOARD, to: ROUTES.NAV.DASHBOARD, icon: ICONS.HOME },
     { label: NAV.LINK.PROFILE, to: ROUTES.NAV.PROFILE, icon: ICONS.PLAYER },
-    ...(isReferee
-      ? [
-          {
-            label: NAV.LINK.ARBITRAGE,
-            to: ROUTES.NAV.ARBITRAGE,
-            icon: ICONS.REFEREE,
-            badge: pendingCount > 0 ? pendingCount : undefined,
-          },
-        ]
-      : []),
   ];
 
   return (
@@ -103,10 +90,6 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-
-            {pendingCount > 0 && (
-              <span className="absolute top-1 right-1 w-3 h-3 bg-danger-bright rounded-full animate-pulse border-2 border-dark"></span>
-            )}
           </Button>
         </div>
       </nav>
@@ -173,12 +156,6 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
                       {link.label}
                     </span>
                   </div>
-
-                  {link.badge !== undefined && (
-                    <Badge variant={BADGE_VARIANT.DANGER} isPulse>
-                      {link.badge}
-                    </Badge>
-                  )}
                 </Link>
               );
             })}

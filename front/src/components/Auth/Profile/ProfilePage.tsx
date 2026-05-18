@@ -33,7 +33,6 @@ export const ProfilePage = () => {
         <SectionHeader
           variant={SECTION_HEADER_VARIANT.TITLE}
           title={PROFILE_UI.TITLE}
-          icon={ICONS.PLAYER}
           centered
         />
 

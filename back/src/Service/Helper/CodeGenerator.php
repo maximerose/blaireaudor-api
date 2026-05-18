@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Helper;
 
 /**
  * Service utilitaire de génération de codes aléatoires.

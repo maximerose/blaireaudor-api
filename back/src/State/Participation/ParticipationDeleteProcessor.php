@@ -7,7 +7,7 @@ namespace App\State\Participation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Participation;
-use App\Service\ParticipationManager;
+use App\Service\Manager\ParticipationManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class ParticipationDeleteProcessor implements ProcessorInterface

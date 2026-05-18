@@ -17,7 +17,6 @@ import { finalizeSlug, slugify } from '@/utils';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
-  console.log(user);
 
   const infoForm = useForm<UpdateProfileInfoData>({
     resolver: zodResolver(updateProfileInfoSchema),

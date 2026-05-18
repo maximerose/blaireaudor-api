@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\Competition;
-use App\Repository\ActionRepository;
+use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
-use App\Security\Voter\CompetitionVoter;
-use App\Service\ActionManager;
+use App\Service\Manager\CompetitionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Accès public aux informations des compétitions.
@@ -26,19 +25,50 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/api/competitions', name: 'api.competition.')]
 final class CompetitionController extends AbstractController
 {
-    /**
-     * Vérifie la validité d'un code de participation et retourne les détails de la compétition.
-     * * Cette méthode utilise une jointure optimisée pour récupérer la liste
-     * des joueurs inscrits afin d'éviter les requêtes N+1 lors de la sérialisation.
-     *
-     * @return JsonResponse la compétition avec ses joueurs ou une erreur 404
-     */
-    #[Route('/by-code/{code}', name: 'by_code', methods: 'GET')]
-    public function getByCode(
-        string $code,
-        CompetitionRepository $repository,
-        ParticipationRepository $partRepo,
-    ): JsonResponse {
+    public function __construct(
+        private CompetitionManager $competitionManager,
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    #[Route('', name: 'create', methods: ['POST'], priority: 10)]
+    public function create(Request $request, #[CurrentUser] ?User $user): JsonResponse
+    {
+        if (!$user) {
+            return $this->json(['error' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $result = $this->competitionManager->handleCreation($request->toArray(), $user);
+
+        if (isset($result['violations'])) {
+            return $this->json(['violations' => $result['violations']], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->json($result['competition'], Response::HTTP_CREATED, [], ['groups' => ['competition:read']]);
+    }
+
+    #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
+    public function addPlayers(Competition $competition, Request $request): JsonResponse
+    {
+        $user = $this->getUser();
+        /** @var User $user */
+        $report = $this->competitionManager->handlePlayersAndRefereesBatch($competition, $request->toArray(), $user);
+
+        $this->entityManager->flush();
+
+        return $this->json(
+            $report,
+            \count($report['errors']) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED,
+            [],
+            ['groups' => ['competition:read']]
+        );
+    }
+
+    #[Route('/by-code/{code}', name: 'by_code', methods: ['GET'])]
+    public function getByCode(string $code, CompetitionRepository $repository, ParticipationRepository $partRepo): JsonResponse
+    {
         $competition = $repository->findOneBy(['joinCode' => $code]);
 
         if (!$competition) {
@@ -67,87 +97,10 @@ final class CompetitionController extends AbstractController
         return $this->json($leaderboard, Response::HTTP_OK, [], ['groups' => ['competition:read']]);
     }
 
-    /**
-     * Enregistre une nouvelle action pour une compétition donnée.
-     *
-     * @param Competition $competition La compétition concernée (injectée via le ParamConverter)
-     *
-     * @return JsonResponse L'action créée, sérialisée avec le groupe 'action:read'
-     */
-    #[Route('/{id}/actions', name: 'create', methods: 'POST')]
-    #[IsGranted(CompetitionVoter::PLAYER, subject: 'competition')]
-    public function createAction(
-        Competition $competition,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ActionManager $actionManager,
-    ): JsonResponse {
-        $data = $request->toArray();
-        $user = $this->getUser();
-
-        $action = $entityManager->wrapInTransaction(function () use ($competition, $user, $data, $actionManager, $entityManager) {
-            $action = $actionManager->createActionFromPayload($competition, $user, $data);
-
-            $entityManager->persist($action);
-            $entityManager->flush();
-
-            return $action;
-        });
-
-        return $this->json($action, Response::HTTP_CREATED, [], ['groups' => ['action:read']]);
-    }
-
-    #[Route('/{id}/actions', name: 'actions', methods: ['GET'])]
-    public function getActions(Competition $competition, Request $request, CompetitionRepository $competitionRepository, ActionRepository $actionRepository): JsonResponse
-    {
-        $date = $request->query->get('date');
-
-        if (\in_array($date, ['undefined', 'null', ''], true)) {
-            $date = null;
-        }
-
-        $playerId = $request->query->get('playerId');
-
-        if (\in_array($playerId, ['undefined', 'null', ''], true)) {
-            $playerId = null;
-        }
-
-        $page = $request->query->getInt('page', 1);
-        $limit = 50;
-        $offset = ($page - 1) * $limit;
-
-        $sortBy = $request->query->get('sort', 'dateAction');
-        $order = $request->query->get('order', 'DESC');
-        $actions = $actionRepository->findByCompetition($competition, $sortBy, $order, $limit, $offset, $date, $playerId);
-        $total = $actionRepository->countByCompetition($competition, $date, $playerId);
-
-        return $this->json([
-            'data' => $actions,
-            'meta' => [
-                'total' => $total,
-                'page' => $page,
-                'last_page' => ceil($total / $limit),
-            ],
-        ], Response::HTTP_OK, [], ['groups' => ['action:read', 'player:read']]);
-    }
-
-    #[Route('/{id}/action-dates', name: 'action_dates', methods: ['GET'])]
-    public function getActionDates(Competition $competition, ActionRepository $actionRepository): JsonResponse
-    {
-        return $this->json($actionRepository->findAllDatesByCompetition($competition));
-    }
-
-    #[Route('/{id}/pending-count', name: 'pending_count', methods: ['GET'])]
-    public function getPendingCount(Competition $competition, ActionRepository $actionRepository): JsonResponse
-    {
-        return $this->json(['count' => $actionRepository->countPendingByCompetition($competition)]);
-    }
-
     #[Route('/check/join-code', name: 'check_join_code', methods: ['GET'])]
     public function checkJoinCode(Request $request, CompetitionRepository $repository): JsonResponse
     {
         $code = $request->query->get('code');
-
         if (empty($code)) {
             return $this->json(['available' => true]);
         }

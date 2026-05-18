@@ -6,7 +6,7 @@ namespace App\Tests\Integration\Service;
 
 use App\Factory\CompetitionFactory;
 use App\Factory\UserFactory;
-use App\Service\ActionManager;
+use App\Service\Manager\ActionManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Helper;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -22,12 +22,15 @@ class ValidationHelper
      */
     public function formatErrors(ConstraintViolationListInterface $violations): array
     {
-        $errors = [];
+        $formattedErrors = [];
 
         foreach ($violations as $violation) {
-            $errors[$violation->getPropertyPath()] = $violation->getMessage();
+            $formattedErrors[] = [
+                'propertyPath' => $violation->getPropertyPath(),
+                'message' => $violation->getMessage(),
+            ];
         }
 
-        return $errors;
+        return $formattedErrors;
     }
 }
