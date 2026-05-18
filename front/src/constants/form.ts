@@ -26,6 +26,7 @@ export const FORM = {
       PASSWORD: 'Mot de passe',
       DISPLAY_NAME: "Nom d'affichage",
       EMAIL: 'Adresse email',
+      CURRENT_PASSWORD: 'Mot de passe actuel',
       NEW_PASSWORD: 'Nouveau mot de passe',
       CONFIRM_PASSWORD: 'Confirmer le mot de passe',
     },
@@ -43,6 +44,9 @@ export const FORM = {
       EMAIL_CHECK: 'Vérification en cours...',
       EMAIL_AVAILABLE: 'Adresse email disponible !',
       EMAIL_TAKEN: 'Cette adresse email est déjà utilisée.',
+    },
+    BUTTONS: {
+      CHANGE_PASSWORD: 'Changer le mot de passe',
     },
   },
 

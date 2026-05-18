@@ -18,4 +18,15 @@ export interface ApiError {
     email?: string;
     [key: string]: string | undefined;
   };
+  violations?: { propertyPath: string; message: string }[];
+}
+
+export interface ApiViolation {
+  propertyPath: string;
+  message: string;
+}
+
+export interface ApiErrorResponse {
+  message?: string;
+  violations?: ApiViolation[];
 }

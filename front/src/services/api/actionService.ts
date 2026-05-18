@@ -24,7 +24,7 @@ export const actionService = {
   },
 
   getGlobalPendingCount: async (signal?: AbortSignal) => {
-    const response = await apiFetch(API.ENDPOINTS.ACTIONS.PENDING_GLOBAL, {
+    const response = await apiFetch(API.ENDPOINTS.REFEREE.PENDING_GLOBAL, {
       signal,
     });
     if (!response.ok) return 0;

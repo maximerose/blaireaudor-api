@@ -14,10 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
  * Gestion des actions de jeu au sein d'une compétition.
  * * Permet aux joueurs d'enregistrer des actions qui donnent ou enlèvent des points à d'autres joueurs.
  */
-#[Route('/api/actions', name: 'api.actions.')]
-final class ActionController extends AbstractController
+#[Route('/api/referee', name: 'api.actions.')]
+final class RefereeController extends AbstractController
 {
-    #[Route('/pending-referee', name: 'pending_referee', methods: ['GET'])]
+    #[Route('/pending-actions', name: 'pending_referee', methods: ['GET'])]
     public function getGlobalPendingCount(ActionRepository $actionRepository): JsonResponse
     {
         $user = $this->getUser();

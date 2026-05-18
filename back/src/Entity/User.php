@@ -62,6 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?string $email = null;
 
     #[ORM\OneToOne(mappedBy: 'associatedUser', cascade: ['persist', 'remove'])]

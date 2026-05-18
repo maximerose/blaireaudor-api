@@ -3,6 +3,7 @@ export * from './arbitrage/useGlobalPendingCount';
 export * from './auth/useEmailCheck';
 export * from './auth/useLogin';
 export * from './auth/useLogout';
+export * from './auth/useProfile';
 export * from './auth/useRegistration';
 export * from './auth/useRegistrationForm';
 export * from './auth/useUsernameCheck';

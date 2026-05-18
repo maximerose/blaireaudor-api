@@ -2,6 +2,8 @@ export const SUCCESS = {
   AUTH: {
     LOGIN: 'Connexion réussie !',
     REGISTER: 'Inscription validée, bienvenue !',
+    INFO_UPDATED: 'Informations mises à jour avec succès !',
+    PASSWORD_UPDATED: 'Mot de passe modifié avec succès !',
   },
 
   COMPETITION: {

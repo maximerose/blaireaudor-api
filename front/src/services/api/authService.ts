@@ -80,6 +80,21 @@ export const authService = {
     }
   },
 
+  updateProfile: async (data: Record<string, string>) => {
+    const response = await apiFetch(API.ENDPOINTS.AUTH.UPDATE_PROFILE, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result;
+  },
+
   /**
    * Vérification rapide de la connexion
    */

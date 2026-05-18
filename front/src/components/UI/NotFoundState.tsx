@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, BUTTON_VARIANT, EmptyState } from '@/components/UI';
-import { ICONS, ROUTES } from '@/constants';
+import { BUTTONS, ICONS, ROUTES, UI } from '@/constants';
+import { useDocumentTitle } from '@/hooks';
 
 interface NotFoundStateProps {
   title?: string;
@@ -10,11 +11,12 @@ interface NotFoundStateProps {
 }
 
 export const NotFoundState = ({
-  title = 'Erreur 404',
-  message = "La ressource que tu cherches n'existe pas ou a été supprimée.",
+  title = UI.NOT_FOUND_TITLE,
+  message = UI.NOT_FOUND_SUBTITLE,
   returnPath,
-  returnLabel = 'Retour',
+  returnLabel = BUTTONS.BACK,
 }: NotFoundStateProps) => {
+  useDocumentTitle(title);
   const navigate = useNavigate();
 
   const handleReturn = () => {

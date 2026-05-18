@@ -26,6 +26,8 @@ export const ERRORS = {
     UNAUTHORIZED: "Vous n'avez pas les droits pour accéder à cette arène.",
     REGISTRATION_FAILED: "L'inscription a échoué. Vérifiez vos informations.",
     FORBIDDEN: "Action interdite : vous n'êtes pas administrateur.",
+    UPDATE_INFO_FAILED: 'Erreur lors de la mise à jour des informations.',
+    UPDATE_PASSWORD_FAILED: 'Erreur lors de la mise à jour du mot de passe.',
   },
 
   // 3. Compétitions / Arènes

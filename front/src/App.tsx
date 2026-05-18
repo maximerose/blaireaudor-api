@@ -12,7 +12,12 @@ import { ConfirmModalProvider, useAuthContext } from '@/context';
 import { LoadingScreen, ScrollToTop } from '@/components/UI';
 import { ROUTES } from '@/constants';
 import { Dashboard } from '@/components/Dashboard';
-import { LoginForm, LogoutHandler, RegistrationForm } from '@/components/Auth';
+import {
+  LoginForm,
+  LogoutHandler,
+  ProfilePage,
+  RegistrationForm,
+} from '@/components/Auth';
 import {
   CompetitionDetailPage,
   CreateCompetitionPage,
@@ -48,6 +53,16 @@ function App() {
                 element={
                   user ? (
                     <Dashboard />
+                  ) : (
+                    <Navigate to={ROUTES.NAV.LOGIN} replace />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.PROFILE}
+                element={
+                  user ? (
+                    <ProfilePage />
                   ) : (
                     <Navigate to={ROUTES.NAV.LOGIN} replace />
                   )

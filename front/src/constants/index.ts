@@ -9,6 +9,7 @@ export * from './form';
 export * from './icons';
 export * from './logs';
 export * from './navbar';
+export * from './profile_ui';
 export * from './queryKeys';
 export * from './routes';
 export * from './rules';
