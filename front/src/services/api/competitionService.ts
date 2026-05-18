@@ -86,6 +86,12 @@ export const competitionService = {
 
     if (!response.ok) {
       const errorData = await response.json();
+      const errorMessage = errorData.violations?.[0]?.message;
+
+      if (errorMessage === 'COMPETITION_FINISHED') {
+        throw new Error(ERRORS.COMPETITION.COMPETITION_FINISHED);
+      }
+
       throw new Error(
         errorData.violations?.[0]?.message ||
           ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED,

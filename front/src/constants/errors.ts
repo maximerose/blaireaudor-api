@@ -33,6 +33,8 @@ export const ERRORS = {
     CHECK_CODE: 'Erreur lors de la vérification du code',
     NOT_FOUND: (code: string) =>
       `La compétition "${code}" n'a pas été trouvée.`,
+    COMPETITION_FINISHED:
+      'La compétition est terminée, tu ne peux plus la rejoindre.',
     FETCH_LEADERBOARD: 'Impossible de charger le classement pour le moment.',
     FETCH_ACTIONS:
       "Erreur lors de la récupération de l'historique des actions.",

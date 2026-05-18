@@ -14,7 +14,7 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
         throw new Error(ERRORS.AUTH.SESSION_EXPIRED);
       }
 
-      const competition = await competitionService.getByCode(joinCode);
+      const { competition } = await competitionService.getByCode(joinCode);
 
       await competitionService.join(playerId, competition.id);
 
@@ -23,6 +23,9 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
     onSuccess: async (code) => {
       await refreshUser();
       onSuccess(code);
+    },
+    onError: (error) => {
+      throw new Error(error.message);
     },
   });
 
