@@ -2,6 +2,9 @@ import { pluralize } from '@/utils';
 import { ICONS } from './icons';
 
 export const COMPETITION_UI = {
+  CREATE: {
+    TITLE: "Création d'une nouvelle compétition",
+  },
   ADMIN: {
     GENERAL: {
       SETTINGS_LABEL: 'Paramètres de la compétition',

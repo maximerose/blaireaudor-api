@@ -54,8 +54,9 @@ export const DASHBOARD_UI = {
         `Rang : ${rank}, Score : ${score}`,
     },
     SECTIONS: {
-      MANAGEMENT: `${ICONS.REFEREE} Gestion des compétitions`,
-      PARTICIPATIONS: 'Tes Participations',
+      ONGOING: `${ICONS.ONGOING} En cours`,
+      UPCOMING: `${ICONS.UPCOMING} À venir`,
+      FINISHED: `${ICONS.FINISHED} Terminées`,
     },
     EMPTY: {
       TITLE: 'Aucune compétition',

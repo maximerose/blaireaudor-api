@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, TEXT_VARIANT } from '@/components/UI';
 import { useEmptyStateUI } from '@/hooks';
+import { ICONS } from '@/constants';
 
 const ICON_STYLE =
   'text-3xl sm:text-4xl opacity-30 mb-4 animate-bounce-subtle select-none';
@@ -14,7 +15,7 @@ interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const EmptyState = ({
-  icon = '💨',
+  icon = ICONS.EMPTY,
   title,
   message,
   action,

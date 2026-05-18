@@ -1,6 +1,6 @@
 export const AUTH_UI = {
   LOGIN: {
-    TITLE: "Le Blaireau d'Or",
+    TITLE: 'Se connecter',
     SUBTITLE: "Identifiez-vous pour entrer dans l'arène",
     SUBMIT: 'Se connecter',
     NO_ACCOUNT: 'Pas encore de compte ?',

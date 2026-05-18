@@ -6,10 +6,10 @@ import {
   InlineEnrollment,
 } from '@/components/Competition';
 import { ReportingSection } from '@/components/Competition';
+import { MainLayout } from '@/components/Layout';
 import {
   LoadingScreen,
   NotFoundState,
-  Navbar,
   SectionHeader,
   SECTION_HEADER_VARIANT,
 } from '@/components/UI';
@@ -34,8 +34,7 @@ export const CompetitionDetailPage = () => {
 
   return (
     <CompetitionProvider code={code!}>
-      <Navbar subtitle={competition.name} />
-      <main className="w-full mx-auto px-4 py-6 sm:py-10 animate-fade-in">
+      <MainLayout title={competition.name} subtitle={competition.name}>
         <CompetitionHeader />
 
         <AdminSettings />
@@ -56,7 +55,7 @@ export const CompetitionDetailPage = () => {
             <ActionTable />
           </section>
         </div>
-      </main>
+      </MainLayout>
     </CompetitionProvider>
   );
 };

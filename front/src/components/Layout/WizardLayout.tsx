@@ -10,8 +10,8 @@ export const WizardLayout = ({ children, title }: WizardLayoutProps) => {
   useDocumentTitle(title);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-dark animate-fade-in">
-      {children}
+    <main className="w-full min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-dark animate-fade-in">
+      <div className="w-full max-w-md sm:max-w-lg">{children}</div>
     </main>
   );
 };

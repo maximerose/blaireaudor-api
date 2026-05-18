@@ -32,7 +32,7 @@ export const DashboardHeader = () => {
           />
         </div>
 
-        <div className="pt-4 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
+        <div className="pt-2 sm:pt-0 border-t border-white/5 sm:border-0 text-center align-middle">
           <Text variant={TEXT_VARIANT.CAPTION} className="text-white/40">
             {DASHBOARD_UI.HEADER.TOTAL_PARTICIPATIONS(totalParticipations)}
           </Text>
