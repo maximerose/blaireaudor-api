@@ -47,6 +47,7 @@ export * from './dashboard/useDashboardUI';
 
 export * from './ui/useActionRow';
 export * from './ui/useDateNavigation';
+export * from './ui/useDocumentTitle';
 export * from './ui/useEmptyStateUI';
 export * from './ui/useHistoricalSearchUI';
 export * from './ui/useInputUI';
