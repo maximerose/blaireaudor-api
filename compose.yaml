@@ -8,6 +8,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      mailer: 
+        condition: service_healthy
     ports:
       - "8080:8000"
     volumes:
@@ -62,6 +64,10 @@ services:
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8025/"]
+      timeout: 3s
+      retries: 3
 
 volumes:
   database_data:
