@@ -37,4 +37,20 @@ export const AUTH_UI = {
   LOGOUT: {
     MESSAGE: 'Déconnexion en cours...',
   },
+
+  FORGOT_PASSWORD: {
+    TITLE: 'Mot de passe oublié',
+    SUBTITLE: 'Saisis ton email pour recevoir un lien de réinitialisation.',
+    SUBMIT: 'Envoyer le lien',
+    SUCCESS: 'Si un compte correspond, un email a été envoyé !',
+    BACK_TO_LOGIN: 'Retour à la connexion',
+  },
+
+  RESET_PASSWORD: {
+    TITLE: 'Nouveau mot de passe',
+    SUBTITLE: "Choisis un mot de passe robuste pour ton retour dans l'arène.",
+    SUBMIT: 'Sauvegarder',
+    SUCCESS: 'Mot de passe mis à jour ! Tu peux te connecter.',
+    INVALID_TOKEN: 'Ce lien est invalide ou a expiré.',
+  },
 } as const;

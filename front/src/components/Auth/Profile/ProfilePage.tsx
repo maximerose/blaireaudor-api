@@ -4,6 +4,7 @@ import {
   Card,
   CARD_VARIANT,
   Input,
+  PasswordStrength,
   SECTION_HEADER_VARIANT,
   SectionHeader,
   Text,
@@ -11,7 +12,6 @@ import {
 } from '@/components/UI';
 import { BUTTONS, FORM, ICONS, PROFILE_UI } from '@/constants';
 import { useProfile } from '@/hooks';
-import { cn, getPasswordStrength } from '@/utils';
 
 export const ProfilePage = () => {
   const {
@@ -25,7 +25,6 @@ export const ProfilePage = () => {
   } = useProfile();
 
   const passwordValue = passwordForm.watch('new_password') || '';
-  const strength = getPasswordStrength(passwordValue);
 
   return (
     <MainLayout title={PROFILE_UI.TITLE} subtitle={PROFILE_UI.TITLE}>
@@ -199,23 +198,7 @@ export const ProfilePage = () => {
                 />
                 {passwordValue.length > 0 &&
                   !passwordForm.formState.errors.new_password && (
-                    <div className="flex gap-1 mt-1 px-1 h-1">
-                      {[1, 2, 3, 4].map((level) => (
-                        <div
-                          key={level}
-                          className={cn(
-                            'flex-1 rounded-full transition-all duration-300',
-                            strength >= level
-                              ? strength < 2
-                                ? 'bg-danger'
-                                : strength < 4
-                                  ? 'bg-warning'
-                                  : 'bg-success-bright'
-                              : 'bg-white/10',
-                          )}
-                        />
-                      ))}
-                    </div>
+                    <PasswordStrength password={passwordValue} />
                   )}
               </div>
 

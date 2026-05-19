@@ -7,6 +7,8 @@ import {
   Text,
   TEXT_VARIANT,
   Alert,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
 } from '@/components/UI';
 import { WizardLayout } from '@/components/Layout';
 
@@ -36,17 +38,29 @@ export const LoginForm = () => {
             error={errors.username?.message}
             {...register('username', { onChange: handleUsernameChange })}
           />
-          <Input
-            label={FORM.AUTH.LABELS.PASSWORD}
-            type="password"
-            icon={ICONS.SECRET}
-            placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
-            autoComplete="current-password"
-            disabled={isSubmitting}
-            align="center"
-            error={errors.password?.message}
-            {...register('password')}
-          />
+          <div className="space-y-1">
+            <Input
+              label={FORM.AUTH.LABELS.PASSWORD}
+              type="password"
+              icon={ICONS.SECRET}
+              placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
+              autoComplete="current-password"
+              disabled={isSubmitting}
+              align="center"
+              error={errors.password?.message}
+              {...register('password')}
+            />
+            <div className="flex justify-end px-1">
+              <Button
+                to={ROUTES.NAV.FORGOT_PASSWORD}
+                variant={BUTTON_VARIANT.GHOST}
+                size={BUTTON_SIZE.SMALL}
+                className="text-gold/40 hover:text-gold text-[9px] tracking-normal p-0 h-auto border-none bg-transparent"
+              >
+                {AUTH_UI.FORGOT_PASSWORD.TITLE}
+              </Button>
+            </div>
+          </div>
         </div>
 
         <Button

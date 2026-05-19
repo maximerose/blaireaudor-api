@@ -13,10 +13,12 @@ import { LoadingScreen, ScrollToTop } from '@/components/UI';
 import { ROUTES } from '@/constants';
 import { Dashboard } from '@/components/Dashboard';
 import {
+  ForgotPasswordForm,
   LoginForm,
   LogoutHandler,
   ProfilePage,
   RegistrationForm,
+  ResetPasswordForm,
 } from '@/components/Auth';
 import {
   CompetitionDetailPage,
@@ -48,6 +50,27 @@ function App() {
           <ScrollToTop />
           <div className="min-h-screen w-full bg-dark">
             <Routes>
+              <Route
+                path={ROUTES.NAV.FORGOT_PASSWORD}
+                element={
+                  user ? (
+                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
+                  ) : (
+                    <ForgotPasswordForm />
+                  )
+                }
+              />
+
+              <Route
+                path={ROUTES.NAV.RESET_PASSWORD_PATH}
+                element={
+                  user ? (
+                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
+                  ) : (
+                    <ResetPasswordForm />
+                  )
+                }
+              />
               <Route
                 path={ROUTES.NAV.DASHBOARD}
                 element={

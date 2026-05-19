@@ -28,6 +28,9 @@ export const ERRORS = {
     FORBIDDEN: "Action interdite : vous n'êtes pas administrateur.",
     UPDATE_INFO_FAILED: 'Erreur lors de la mise à jour des informations.',
     UPDATE_PASSWORD_FAILED: 'Erreur lors de la mise à jour du mot de passe.',
+    INVALID_TOKEN: 'Token invalide.',
+    RESET_PASSWORD_FAILED:
+      'Erreur lors de la réinitialisation du mot de passe.',
   },
 
   // 3. Compétitions / Arènes

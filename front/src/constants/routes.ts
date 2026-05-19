@@ -11,6 +11,7 @@ export const ROUTES = {
     LOGIN: '/login',
     LOGOUT: '/logout',
     REGISTER: '/register',
+    FORGOT_PASSWORD: '/forgot-password',
     DASHBOARD: '/dashboard',
     COMPETITIONS_LIST: '/competitions',
     ADMIN_DASHBOARD: '/admin',
@@ -19,6 +20,8 @@ export const ROUTES = {
     ARBITRAGE: '/arbitrage',
 
     // Routes dynamiques
+    RESET_PASSWORD: (token: string) => `/reset-password/${token}`,
+    RESET_PASSWORD_PATH: '/reset-password/:token',
     COMPETITION_DETAIL: (code: string) => `/competitions/${code}`,
     COMPETITION_DETAIL_PATH: '/competitions/:code',
   },

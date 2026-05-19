@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialisation de ton mot de passe</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #121212; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #121212; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" max-width="500px" style="max-width: 500px; bg-color: #1a1a1a; background-color: #1a1a1a; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                    
+                    <tr>
+                        <td align="center" style="padding: 32px 32px 10px 32px;">
+                            <h2 style="margin: 0; color: #d4af37; font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-style: italic;">
+                                🦡 Le Blaireau d'Or
+                            </h2>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 20px 32px 32px 32px; text-align: center;">
+                            <h1 style="margin: 0 0 16px 0; color: #ffffff; font-size: 24px; font-weight: 800; tracking-tight: -0.025em;">
+                                Mot de passe oublié ?
+                            </h1>
+                            <p style="margin: 0 0 24px 0; color: #a8a8a8; font-size: 14px; line-height: 1.6;">
+                                Il paraît que tu as perdu tes accès pour entrer dans l'arène. Pas de panique, clique sur le bouton ci-dessous pour configurer un nouveau mot de passe secret.
+                            </p>
+
+                            <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 24px auto;">
+                                <tr>
+                                    <td align="center" style="background-color: #d4af37; border-radius: 12px;">
+                                        <a href="{{ frontend_url }}/reset-password/{{ resetToken.token }}" target="_blank" style="display: inline-block; padding: 12px 32px; color: #121212; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; border-radius: 12px;">
+                                            Changer de mot de passe
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 0 0 8px 0; color: #d4af37; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;">
+                                ⏳ Ce lien expirera dans 1 heure.
+                            </p>
+                            <p style="margin: 0; color: rgba(255,255,255,0.2); font-size: 11px; font-style: italic;">
+                                Si tu n'as rien demandé, tu peux ignorer cet email en toute sécurité. Ton mot de passe actuel restera inchangé.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 16px; background-color: rgba(0,0,0,0.2); text-align: center; border-t: 1px solid rgba(255,255,255,0.05);">
+                            <p style="margin: 0; color: rgba(255,255,255,0.15); font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                                Généré automatiquement par la console d'arbitrage
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

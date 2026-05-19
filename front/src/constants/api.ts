@@ -8,6 +8,7 @@ const BASES = {
   USERS: '/users',
   PLAYERS: '/players',
   API_PREFIX: '/api',
+  RESET_PASSWORD: '/reset-password',
 } as const;
 
 export const API = {
@@ -20,6 +21,11 @@ export const API = {
       REGISTER: '/register',
       ME: '/me',
       UPDATE_PROFILE: '/me',
+      RESET_PASSWORD_REQUEST: BASES.RESET_PASSWORD,
+      RESET_PASSWORD_VALIDATE: (token: string) =>
+        `${BASES.RESET_PASSWORD}/${token}`,
+      RESET_PASSWORD_RESET: (token: string) =>
+        `${BASES.RESET_PASSWORD}/${token}`,
     },
 
     // USER (Gestion du compte et sécurité)

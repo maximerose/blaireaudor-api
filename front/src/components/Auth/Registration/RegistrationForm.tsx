@@ -7,10 +7,11 @@ import {
   BUTTON_SIZE,
   BUTTON_VARIANT,
   Input,
+  PasswordStrength,
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
-import { cn, getPasswordStrength, preventDefault } from '@/utils';
+import { cn, preventDefault } from '@/utils';
 import { WizardLayout } from '@/components/Layout';
 
 export const RegistrationForm = () => {
@@ -40,7 +41,6 @@ export const RegistrationForm = () => {
   } = useRegistration(ROUTES.NAV.DASHBOARD);
 
   const passwordValue = watch('plain_password') || '';
-  const strength = getPasswordStrength(passwordValue);
 
   return (
     <WizardLayout title={AUTH_UI.REGISTER.TITLE}>
@@ -203,24 +203,9 @@ export const RegistrationForm = () => {
           />
 
           {passwordValue.length > 0 && !errors.plain_password && (
-            <div className="flex gap-1 mt-1 px-1 h-1">
-              {[1, 2, 3, 4].map((level) => (
-                <div
-                  key={level}
-                  className={cn(
-                    'flex-1 rounded-full transition-all duration-300',
-                    strength >= level
-                      ? strength < 2
-                        ? 'bg-danger'
-                        : strength < 4
-                          ? 'bg-warning'
-                          : 'bg-success-bright'
-                      : 'bg-white/10',
-                  )}
-                />
-              ))}
-            </div>
+            <PasswordStrength password={passwordValue} />
           )}
+
           <Input
             label={FORM.AUTH.LABELS.CONFIRM_PASSWORD}
             type="password"

@@ -1,5 +1,7 @@
+export * from './Login/ForgotPasswordForm';
 export * from './Login/LoginForm';
 export * from './Login/LogoutHandler';
+export * from './Login/ResetPasswordForm';
 export * from './Profile/ProfilePage';
 export * from './Registration/GuestFoundAlert';
 export * from './Registration/HistoricalPlayerSearch';

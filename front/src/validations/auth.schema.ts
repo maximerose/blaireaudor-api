@@ -29,3 +29,22 @@ export const registerSchema = z
   });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.email({ error: ERRORS.AUTH.INVALID_EMAIL }),
+});
+
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    plain_password: z.string().min(RULES.AUTH.MIN_PASSWORD, {
+      message: ERRORS.AUTH.INVALID_PLAIN_PASSWORD,
+    }),
+    confirm_password: z.string(),
+  })
+  .refine((data) => data.plain_password === data.confirm_password, {
+    message: ERRORS.AUTH.INVALID_CONFIRM_PASSWORD,
+    path: ['confirm_password'],
+  });
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
