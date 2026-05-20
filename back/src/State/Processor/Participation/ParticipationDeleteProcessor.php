@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\State\Participation;
+namespace App\State\Processor\Participation;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;

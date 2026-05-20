@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\DTO\RegistrationInput;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\DTO\User\ProfileUpdateInput;
+use App\DTO\User\RegistrationInput;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\UserRepository;
-use App\State\User\UserRegistrationProcessor;
+use App\State\Processor\User\ProfileUpdateProcessor;
+use App\State\Processor\User\UserRegistrationProcessor;
+use App\State\Provider\User\MeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,6 +45,20 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/register',
             input: RegistrationInput::class,
             processor: UserRegistrationProcessor::class,
+        ),
+        new Get(
+            uriTemplate: '/me',
+            provider: MeProvider::class,
+            normalizationContext: ['groups' => ['user:read']],
+            openapi: new OpenApiOperation(summary: "Récupère les informations de l'utilisateur connecté")
+        ),
+        new Patch(
+            uriTemplate: '/me',
+            input: ProfileUpdateInput::class,
+            processor: ProfileUpdateProcessor::class,
+            read: false,
+            denormalizationContext: [],
+            openapi: new OpenApiOperation(summary: "Met à jour le profil de l'utilisateur connecté")
         ),
     ]
 )]

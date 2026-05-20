@@ -7,11 +7,16 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\DTO\Action\ActionCreateInput;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
+use App\State\Processor\Action\ActionCreateProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,8 +30,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['participation.competition' => 'exact'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['action:read']],
-    denormalizationContext: ['groups' => ['action:write']],
     forceEager: true,
+    operations: [
+        new Post(
+            uriTemplate: '/competitions/{competitionId}/actions',
+            uriVariables: [
+                'competitionId' => new Link(fromClass: Competition::class),
+            ],
+            input: ActionCreateInput::class,
+            processor: ActionCreateProcessor::class,
+            read: false,
+            openapi: new OpenApiOperation(
+                summary: 'Déclare une nouvelle action de jeu dans la compétition',
+            )
+        ),
+        new \ApiPlatform\Metadata\GetCollection(),
+        new \ApiPlatform\Metadata\Get(),
+        new \ApiPlatform\Metadata\Patch(),
+        new \ApiPlatform\Metadata\Delete(),
+    ]
 )]
 class Action
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Player;
 
 use App\Repository\PlayerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,12 +20,12 @@ final class PlayerController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function searchPlayers(Request $request, PlayerRepository $playerRepository): JsonResponse
+    public function searchPlayers(Request $request): JsonResponse
     {
         $query = $request->query->get('displayName', '');
         $unlinkedOnly = $request->query->getBoolean('unlinked', false);
 
-        $players = $playerRepository->searchByName($query, $unlinkedOnly);
+        $players = $this->playerRepository->searchByName($query, $unlinkedOnly);
 
         return $this->json($players, Response::HTTP_OK, [], [
             'groups' => ['player:read'],

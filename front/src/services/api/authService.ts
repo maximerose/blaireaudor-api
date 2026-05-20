@@ -82,6 +82,7 @@ export const authService = {
   updateProfile: async (data: Record<string, string>) => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.UPDATE_PROFILE, {
       method: 'PATCH',
+      headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
 

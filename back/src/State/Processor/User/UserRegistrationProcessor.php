@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\State\User;
+namespace App\State\Processor\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\Validator\Exception\ValidationException;
-use App\Dto\RegistrationInput;
+use App\DTO\User\RegistrationInput;
 use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use App\Repository\UserRepository;

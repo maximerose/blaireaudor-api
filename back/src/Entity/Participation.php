@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\ParticipationRepository;
-use App\State\Participation\ParticipationDeleteProcessor;
+use App\State\Processor\Participation\ParticipationDeleteProcessor;
 use App\Validator\IsNotFinished;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

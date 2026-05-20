@@ -11,10 +11,18 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\DTO\Competition\CompetitionAddPlayersInput;
+use App\DTO\Competition\CompetitionCreateInput;
+use App\DTO\Competition\CompetitionRefereeInput;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\CompetitionRepository;
+use App\State\Processor\Competition\CompetitionAddPlayersProcessor;
+use App\State\Processor\Competition\CompetitionAddRefereeProcessor;
+use App\State\Processor\Competition\CompetitionCreateProcessor;
+use App\State\Processor\Competition\CompetitionRemoveRefereeProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -36,7 +44,41 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Post(
-            denormalizationContext: ['groups' => ['competition:write']]
+            input: CompetitionCreateInput::class,
+            processor: CompetitionCreateProcessor::class,
+        ),
+        new Post(
+            name: 'add_players',
+            uriTemplate: '/competitions/{id}/add-players',
+            input: CompetitionAddPlayersInput::class,
+            processor: CompetitionAddPlayersProcessor::class,
+            read: false,
+            normalizationContext: ['groups' => ['competition:read']],
+            openapi: new OpenApiOperation(
+                summary: 'Ajoute des joueurs et des arbitres à la compétition'
+            )
+        ),
+        new Post(
+            name: 'add_referee',
+            uriTemplate: '/competitions/{id}/referees/add',
+            input: CompetitionRefereeInput::class,
+            processor: CompetitionAddRefereeProcessor::class,
+            read: false,
+            normalizationContext: ['groups' => ['competition:read']],
+            openapi: new OpenApiOperation(
+                summary: 'Ajoute un arbitre à la compétition'
+            )
+        ),
+        new Post(
+            name: 'remove_referee',
+            uriTemplate: '/competitions/{id}/referees/remove',
+            input: CompetitionRefereeInput::class,
+            processor: CompetitionRemoveRefereeProcessor::class,
+            read: false,
+            normalizationContext: ['groups' => ['competition:read']],
+            openapi: new OpenApiOperation(
+                summary: 'Retire un arbitre de la compétition'
+            )
         ),
         new Get(normalizationContext: ['groups' => 'competition:read']),
         new Patch(
@@ -50,7 +92,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::CREATOR'), object)",
             securityMessage: 'Seul le créateur peut supprimer cette compétition.'
         ),
-    ],
+    ]
 )]
 #[ORM\HasLifecycleCallbacks]
 class Competition
@@ -61,25 +103,25 @@ class Competition
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'competition:write', 'user:read', 'action:read'])]
+    #[Groups(['competition:read', 'user:read', 'action:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 25, unique: true)]
     #[Assert\Length(max: 25)]
-    #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    #[Groups(['competition:read', 'user:read'])]
     private ?string $joinCode = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    #[Groups(['competition:read',  'user:read'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    #[Groups(['competition:read',  'user:read'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
-    #[Groups(['competition:read', 'competition:write', 'user:read'])]
+    #[Groups(['competition:read',  'user:read'])]
     #[ApiProperty(
         securityPostDenormalize: "
         object.getId() === null or 
@@ -98,7 +140,7 @@ class Competition
     private Collection $participations;
 
     #[ORM\ManyToMany(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
-    #[Groups(['competition:read', 'competition:admin', 'competition:write', 'user:read'])]
+    #[Groups(['competition:read', 'competition:admin',  'user:read'])]
     private Collection $referees;
 
     /**

@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Competition;
 
-use App\Entity\Competition;
-use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
 use App\Service\Manager\CompetitionManager;
@@ -15,7 +13,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Accès public aux informations des compétitions.
@@ -29,41 +26,6 @@ final class CompetitionController extends AbstractController
         private CompetitionManager $competitionManager,
         private EntityManagerInterface $entityManager,
     ) {
-    }
-
-    #[Route('', name: 'create', methods: ['POST'], priority: 10)]
-    public function create(Request $request, #[CurrentUser] ?User $user): JsonResponse
-    {
-        if (!$user) {
-            return $this->json(['error' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $result = $this->competitionManager->handleCreation($request->toArray(), $user);
-
-        if (isset($result['violations'])) {
-            return $this->json(['violations' => $result['violations']], Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->entityManager->flush();
-
-        return $this->json($result['competition'], Response::HTTP_CREATED, [], ['groups' => ['competition:read']]);
-    }
-
-    #[Route('/{id}/add-players', name: 'add_players', methods: ['POST'])]
-    public function addPlayers(Competition $competition, Request $request): JsonResponse
-    {
-        $user = $this->getUser();
-        /** @var User $user */
-        $report = $this->competitionManager->handlePlayersAndRefereesBatch($competition, $request->toArray(), $user);
-
-        $this->entityManager->flush();
-
-        return $this->json(
-            $report,
-            \count($report['errors']) > 0 ? Response::HTTP_MULTI_STATUS : Response::HTTP_CREATED,
-            [],
-            ['groups' => ['competition:read']]
-        );
     }
 
     #[Route('/by-code/{code}', name: 'by_code', methods: ['GET'])]

@@ -47,7 +47,6 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     endpoint !== API.ENDPOINTS.AUTH.REFRESH
   ) {
     if (isRefreshing) {
-      // Une autre requête est déjà en train de rafraîchir le token, on met celle-ci en pause
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
       })
@@ -64,7 +63,6 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     isRefreshing = true;
 
     try {
-      // Demande d'un nouveau JWT (le cookie HttpOnly est envoyé automatiquement)
       const refreshResponse = await fetch(
         `${API.BASE_URL}${API.ENDPOINTS.AUTH.REFRESH}`,
         {
@@ -80,20 +78,16 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
 
       const data = await refreshResponse.json();
 
-      // On sauvegarde le nouveau JWT
       localStorage.setItem('token', data.token);
 
-      // On débloque toutes les requêtes qui étaient en attente
       processQueue(null, data.token);
 
-      // On rejoue la requête initiale qui avait échoué avec le nouveau token
       headers.set('Authorization', `Bearer ${data.token}`);
       response = await fetch(`${API.BASE_URL}${endpoint}`, {
         ...fetchOptions,
         headers,
       });
     } catch (error) {
-      // Si le refresh échoue (cookie expiré après 30 jours), on vide tout et on déconnecte
       processQueue(error, null);
       localStorage.removeItem('token');
       window.location.href = '/login';

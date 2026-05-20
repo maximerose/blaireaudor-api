@@ -1,4 +1,11 @@
-import { useState, useEffect, type ReactNode, useRef, useMemo } from 'react';
+import {
+  useState,
+  useEffect,
+  type ReactNode,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { authService } from '@/services';
 import { AuthContext, type AuthContextType } from '@/context';
 import type { User, LoginCredentials, AuthResult } from '@/types';
@@ -30,28 +37,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
-    const result = await authService.login(credentials);
-    if (result.ok && result.data.token) {
-      const userData = await authService.me();
-      setUser(userData);
-    }
-    return result;
-  };
+  const login = useCallback(
+    async (credentials: LoginCredentials): Promise<AuthResult> => {
+      const result = await authService.login(credentials);
+      if (result.ok && result.data.token) {
+        const userData = await authService.me();
+        setUser(userData);
+      }
+      return result;
+    },
+    [],
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await authService.logout();
     setUser(null);
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const userData = await authService.me();
       if (userData) setUser(userData);
     } catch (error) {
       console.error(LOG_MESSAGES.AUTH.REFRESH_FAILED, error);
     }
-  };
+  }, []);
 
   const value: AuthContextType = useMemo(
     () => ({
@@ -62,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout,
       refreshUser,
     }),
-    [user, loading],
+    [user, loading, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
