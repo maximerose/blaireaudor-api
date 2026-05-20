@@ -14,7 +14,13 @@ import {
 } from '@/components/UI';
 import { cn } from '@/utils';
 import { useEditCompetition, useJoinCodeCheck } from '@/hooks';
-import { FORM, BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
+import {
+  FORM,
+  BUTTONS,
+  COMPETITION_UI,
+  ICONS,
+  AVAILABILITY,
+} from '@/constants';
 import { useCompetitionContext } from '@/context';
 
 export const CompetitionGeneralSettings = () => {
@@ -100,7 +106,7 @@ export const CompetitionGeneralSettings = () => {
             >
               {FORM.COMPETITION.HINTS.JOIN_CODE_CHECK}
             </Text>
-          ) : codeStatus === 'available' ? (
+          ) : codeStatus === AVAILABILITY.AVAILABLE ? (
             <Text
               variant={TEXT_VARIANT.MICRO}
               className="text-success-bright text-center"
@@ -110,7 +116,7 @@ export const CompetitionGeneralSettings = () => {
               </span>
               {FORM.COMPETITION.HINTS.JOIN_CODE_AVAILABLE}
             </Text>
-          ) : codeStatus === 'taken' ? (
+          ) : codeStatus === AVAILABILITY.TAKEN ? (
             <Text
               variant={TEXT_VARIANT.MICRO}
               className="text-danger-bright text-center"
@@ -228,7 +234,7 @@ export const CompetitionGeneralSettings = () => {
             !isValid ||
             loading ||
             !isDirty ||
-            codeStatus === 'taken' ||
+            codeStatus === AVAILABILITY.TAKEN ||
             isCodeChecking
           }
         >

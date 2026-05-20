@@ -2,16 +2,17 @@ import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services';
 import { ERRORS } from '@/constants';
 import { useAuthContext } from '@/context';
+import type { ApiError } from '@/types';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {
   const { user, refreshUser } = useAuthContext();
 
-  const mutation = useMutation({
+  const mutation = useMutation<string, ApiError, string>({
     mutationFn: async (joinCode: string) => {
       const playerId = user?.player?.id;
 
       if (!playerId) {
-        throw new Error(ERRORS.AUTH.SESSION_EXPIRED);
+        throw { message: ERRORS.AUTH.SESSION_EXPIRED };
       }
 
       const { competition } = await competitionService.getByCode(joinCode);
@@ -23,9 +24,6 @@ export const useJoinByCode = (onSuccess: (code: string) => void) => {
     onSuccess: async (code) => {
       await refreshUser();
       onSuccess(code);
-    },
-    onError: (error) => {
-      throw new Error(error.message);
     },
   });
 

@@ -8,7 +8,14 @@ import type {
   ApiError,
   PlayerCompact,
 } from '@/types';
-import { AUTH_UI, FORM, ERRORS, ICONS, LOG_MESSAGES } from '@/constants';
+import {
+  AUTH_UI,
+  FORM,
+  ERRORS,
+  ICONS,
+  LOG_MESSAGES,
+  AVAILABILITY,
+} from '@/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthContext } from '@/context';
 import { useForm } from 'react-hook-form';
@@ -128,13 +135,8 @@ export const useRegistration = (redirectUrl: string) => {
     RegisterFormData
   >({
     mutationFn: async (data: RegisterFormData) => {
-      const response = await authService.register(data);
-
-      if (!response.ok) {
-        throw response.data;
-      }
-
-      return response.data;
+      const result = await authService.register(data);
+      return result.data;
     },
     onSuccess: async (_data, variables) => {
       await login({
@@ -144,25 +146,19 @@ export const useRegistration = (redirectUrl: string) => {
 
       navigate(redirectUrl);
     },
-    onError: (errorData) => {
-      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, errorData);
+    onError: (apiError: ApiError) => {
+      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, apiError);
 
-      if (errorData.errors) {
-        if (errorData.errors.username) {
-          setError('username', {
+      if (apiError.violations && apiError.violations.length > 0) {
+        apiError.violations.forEach((violation) => {
+          setError(violation.propertyPath as keyof RegisterFormData, {
             type: 'server',
-            message: ERRORS.AUTH.USERNAME_TAKEN,
+            message: violation.message,
           });
-        }
-        if (errorData.errors.email) {
-          setError('email', {
-            type: 'server',
-            message: ERRORS.AUTH.EMAIL_TAKEN,
-          });
-        }
+        });
       } else {
         setGlobalMessage(
-          errorData.message ||
+          apiError.message ||
             `${ICONS.FAILURE} ${ERRORS.AUTH.REGISTRATION_FAILED}`,
         );
       }
@@ -173,8 +169,8 @@ export const useRegistration = (redirectUrl: string) => {
     if (
       usernameCheckLoading ||
       emailCheckLoading ||
-      usernameStatus === 'taken' ||
-      emailStatus === 'taken'
+      usernameStatus === AVAILABILITY.TAKEN ||
+      emailStatus === AVAILABILITY.TAKEN
     )
       return;
     setGlobalMessage('');
@@ -185,8 +181,10 @@ export const useRegistration = (redirectUrl: string) => {
     if (registerMutation.isPending) return AUTH_UI.REGISTER.LOADING_SUBMIT;
     if (usernameCheckLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
     if (emailCheckLoading) return FORM.AUTH.HINTS.EMAIL_CHECK;
-    if (usernameStatus === 'taken') return FORM.AUTH.HINTS.USERNAME_TAKEN;
-    if (usernameStatus === 'guest_exists') return AUTH_UI.GUEST_ALERT.TITLE;
+    if (usernameStatus === AVAILABILITY.TAKEN)
+      return FORM.AUTH.HINTS.USERNAME_TAKEN;
+    if (usernameStatus === AVAILABILITY.GUEST_EXISTS)
+      return AUTH_UI.GUEST_ALERT.TITLE;
     return AUTH_UI.REGISTER.SUBMIT;
   };
 
@@ -209,12 +207,12 @@ export const useRegistration = (redirectUrl: string) => {
     displayStates: {
       shouldShowUsernameCheck:
         currentUsername.length >= 3 &&
-        usernameStatus !== 'guest_exists' &&
+        usernameStatus !== AVAILABILITY.GUEST_EXISTS &&
         (usernameCheckLoading || usernameStatus !== null),
       shouldShowEmailCheck: currentEmail.includes('@') && emailStatus !== null,
       shouldShowGuestAlert:
         !usernameCheckLoading &&
-        usernameStatus === 'guest_exists' &&
+        usernameStatus === AVAILABILITY.GUEST_EXISTS &&
         !!foundGuest,
       shouldShowUsernameHint: showUsernameHint,
     },
@@ -224,9 +222,9 @@ export const useRegistration = (redirectUrl: string) => {
     isSubmitDisabled:
       registerMutation.isPending ||
       usernameCheckLoading ||
-      usernameStatus === 'taken' ||
+      usernameStatus === AVAILABILITY.TAKEN ||
       emailCheckLoading ||
-      emailStatus === 'taken',
+      emailStatus === AVAILABILITY.TAKEN,
 
     playerSearch: {
       searchTerm,

@@ -1,4 +1,3 @@
-import { LOG_MESSAGES } from '@/constants';
 import {
   ActionStatus,
   type Action,
@@ -24,10 +23,9 @@ export const useActionRowInteraction = (
     };
 
     try {
-      onUpdate(action.id, payload);
+      await onUpdate(action.id, payload);
       return true;
-    } catch (error) {
-      console.error(LOG_MESSAGES.ACTION.UPDATE_FAILED, error);
+    } catch {
       return false;
     }
   };

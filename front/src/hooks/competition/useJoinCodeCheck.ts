@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services';
+import { AVAILABILITY } from '@/constants';
 
 export const useJoinCodeCheck = (
   code: string | null,
@@ -27,12 +28,12 @@ export const useJoinCodeCheck = (
     !debouncedCode || debouncedCode.length < 3
       ? null
       : isOriginal
-        ? 'available'
+        ? AVAILABILITY.AVAILABLE
         : !data
           ? null
           : !data.available
-            ? 'taken'
-            : 'available';
+            ? AVAILABILITY.TAKEN
+            : AVAILABILITY.AVAILABLE;
 
   return { status, isLoading };
 };

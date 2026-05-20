@@ -1,9 +1,12 @@
-import type { ActionCreatePayload, ActionUpdatePayload } from '@/types';
+import type { Action, ActionCreatePayload, ActionUpdatePayload } from '@/types';
 import { apiFetch } from '@/services';
 import { API } from '@/constants';
 
 export const actionService = {
-  create: async (competitionId: string, payload: ActionCreatePayload) => {
+  create: async (
+    competitionId: string,
+    payload: ActionCreatePayload,
+  ): Promise<{ ok: boolean; data: Action }> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.ACTIONS(competitionId),
       {
@@ -14,7 +17,10 @@ export const actionService = {
     return { ok: response.ok, data: await response.json() };
   },
 
-  update: async (id: string, data: ActionUpdatePayload) => {
+  update: async (
+    id: string,
+    data: ActionUpdatePayload,
+  ): Promise<{ ok: boolean; data: Action }> => {
     const response = await apiFetch(API.ENDPOINTS.ACTIONS.DETAIL(id), {
       method: 'PATCH',
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },

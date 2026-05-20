@@ -1,5 +1,5 @@
 import { useRegistration } from '@/hooks';
-import { ROUTES, FORM, ICONS, AUTH_UI } from '@/constants';
+import { ROUTES, FORM, ICONS, AUTH_UI, AVAILABILITY } from '@/constants';
 import { HistoricalPlayerSearch, GuestFoundAlert } from '@/components/Auth';
 import {
   AuthCard,
@@ -95,17 +95,17 @@ export const RegistrationForm = () => {
                     variant={TEXT_VARIANT.MICRO}
                     className={cn(
                       'text-center',
-                      emailStatus === 'available'
+                      emailStatus === AVAILABILITY.AVAILABLE
                         ? 'text-success-bright'
                         : 'text-danger-bright',
                     )}
                   >
                     <span className="mr-2" aria-hidden="true">
-                      {emailStatus === 'available'
+                      {emailStatus === AVAILABILITY.AVAILABLE
                         ? ICONS.SUCCESS
                         : ICONS.FAILURE}
                     </span>
-                    {emailStatus === 'available'
+                    {emailStatus === AVAILABILITY.AVAILABLE
                       ? FORM.AUTH.HINTS.EMAIL_AVAILABLE
                       : FORM.AUTH.HINTS.EMAIL_TAKEN}
                   </Text>
@@ -161,17 +161,17 @@ export const RegistrationForm = () => {
                     variant={TEXT_VARIANT.MICRO}
                     className={cn(
                       'text-center',
-                      usernameStatus === 'available'
+                      usernameStatus === AVAILABILITY.AVAILABLE
                         ? 'text-success-bright'
                         : 'text-danger-bright',
                     )}
                   >
                     <span className="mr-2" aria-hidden="true">
-                      {usernameStatus === 'available'
+                      {usernameStatus === AVAILABILITY.AVAILABLE
                         ? ICONS.SUCCESS
                         : ICONS.FAILURE}
                     </span>
-                    {usernameStatus === 'available'
+                    {usernameStatus === AVAILABILITY.AVAILABLE
                       ? FORM.AUTH.HINTS.USERNAME_AVAILABLE
                       : FORM.AUTH.HINTS.USERNAME_TAKEN}
                   </Text>

@@ -73,3 +73,19 @@ export const getPasswordStrength = (password: string | undefined): number => {
   if (/[^A-Za-z0-9]/.test(password)) score += 1;
   return Math.min(score, 4);
 };
+
+/**
+ * Convertit une chaîne de camelCase (DTO Back) vers snake_case (Formulaire Front)
+ * Exemple : "displayName" -> "display_name"
+ */
+export const camelToSnake = (str: string): string => {
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase();
+};
+
+/**
+ * Convertit une chaîne de snake_case (Formulaire Front) vers camelCase (DTO Back)
+ * Exemple : "join_code" -> "joinCode"
+ */
+export const snakeToCamel = (str: string): string => {
+  return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+};

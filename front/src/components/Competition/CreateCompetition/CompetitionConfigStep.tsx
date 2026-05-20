@@ -12,7 +12,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
 } from '@/components/UI';
-import { FORM, ICONS, BUTTONS } from '@/constants';
+import { FORM, ICONS, BUTTONS, AVAILABILITY } from '@/constants';
 import { cn, formatJoinCode, generateClientSideCode } from '@/utils';
 import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
@@ -49,7 +49,7 @@ export const CompetitionConfigStep = ({
   const canNext =
     !!watchName &&
     !!watchStartDate &&
-    codeStatus !== 'taken' &&
+    codeStatus !== AVAILABILITY.TAKEN &&
     !isCodeChecking;
 
   const toggles = [
@@ -138,7 +138,7 @@ export const CompetitionConfigStep = ({
               >
                 {FORM.COMPETITION.HINTS.JOIN_CODE_CHECK}
               </Text>
-            ) : codeStatus === 'available' ? (
+            ) : codeStatus === AVAILABILITY.AVAILABLE ? (
               <Text
                 variant={TEXT_VARIANT.MICRO}
                 className="text-success-bright text-center"
@@ -148,7 +148,7 @@ export const CompetitionConfigStep = ({
                 </span>
                 {FORM.COMPETITION.HINTS.JOIN_CODE_AVAILABLE}
               </Text>
-            ) : codeStatus === 'taken' ? (
+            ) : codeStatus === AVAILABILITY.TAKEN ? (
               <Text
                 variant={TEXT_VARIANT.MICRO}
                 className="text-danger-bright text-center"

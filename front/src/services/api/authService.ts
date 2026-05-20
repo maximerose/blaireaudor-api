@@ -1,91 +1,50 @@
-import { API, LOG_MESSAGES } from '@/constants';
+import { API } from '@/constants';
 import { apiFetch } from '@/services';
 import type { AuthResult, LoginCredentials, RegisterData, User } from '@/types';
 
 export const authService = {
-  /**
-   * Envoie les données d'inscription au backend
-   */
   register: async (formData: RegisterData): Promise<AuthResult> => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
       body: JSON.stringify(formData),
     });
-
     const data = await response.json();
-
-    if (response.ok && data.token) {
-      localStorage.setItem('token', data.token);
-    }
-
-    return { ok: response.ok, data };
+    if (data.token) localStorage.setItem('token', data.token);
+    return { ok: true, data };
   },
 
-  /**
-   * Identifie l'utilisateur et stocke le Token JWT
-   */
   login: async (credentials: LoginCredentials): Promise<AuthResult> => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.LOGIN, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
-
     const data = await response.json();
-
-    if (response.ok && data.token) {
-      localStorage.setItem('token', data.token);
-    }
-
-    return { ok: response.ok, data };
+    if (data.token) localStorage.setItem('token', data.token);
+    return { ok: true, data };
   },
 
-  /**
-   * Déconnexion : Nettoie le stockage local
-   */
-  logout: async () => {
+  logout: async (): Promise<void> => {
     const token = localStorage.getItem('token');
     if (!token) return;
-
     try {
-      await apiFetch(API.ENDPOINTS.AUTH.LOGOUT, {
-        method: 'GET',
-      });
-    } catch (error) {
-      console.error(LOG_MESSAGES.AUTH.LOGOUT_FAILED, error);
+      await apiFetch(API.ENDPOINTS.AUTH.LOGOUT, { method: 'GET' });
     } finally {
       localStorage.removeItem('token');
     }
   },
 
-  /**
-   * Récupère les informations de l'utilisateur connecté via le Token
-   */
   me: async (): Promise<User | null> => {
     const token = localStorage.getItem('token');
     if (!token) return null;
-
     try {
       const response = await apiFetch(API.ENDPOINTS.AUTH.ME, { method: 'GET' });
-
-      if (!response.ok) {
-        localStorage.removeItem('token');
-        return null;
-      }
       return await response.json();
-    } catch (error) {
-      console.error(LOG_MESSAGES.AUTH.FETCH_USER_FAILED, error);
+    } catch {
       localStorage.removeItem('token');
       return null;
     }
   },
 
-  /**
-   * Vérification rapide de la connexion
-   */
   isLoggedIn: () => !!localStorage.getItem('token'),
-
-  /**
-   * Récupère le token stocké
-   */
   getToken: () => localStorage.getItem('token'),
 };

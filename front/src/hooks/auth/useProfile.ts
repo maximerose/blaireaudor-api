@@ -11,9 +11,9 @@ import { useUsernameCheck } from './useUsernameCheck';
 import { useEmailCheck } from './useEmailCheck';
 import { userService } from '@/services';
 import toast from 'react-hot-toast';
-import { ERRORS, SUCCESS } from '@/constants';
-import type { ApiErrorResponse } from '@/types';
-import { finalizeSlug, slugify } from '@/utils';
+import { AVAILABILITY, ERRORS, SUCCESS } from '@/constants';
+import { camelToSnake, finalizeSlug, slugify } from '@/utils';
+import type { ApiError } from '@/types';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
@@ -49,8 +49,12 @@ export const useProfile = () => {
   const isUsernameUnchanged = currentUsername === user?.username;
   const isEmailUnchanged = currentEmail === user?.email;
 
-  const usernameStatus = isUsernameUnchanged ? 'available' : rawUsernameStatus;
-  const emailStatus = isEmailUnchanged ? 'available' : rawEmailStatus;
+  const usernameStatus = isUsernameUnchanged
+    ? AVAILABILITY.AVAILABLE
+    : rawUsernameStatus;
+  const emailStatus = isEmailUnchanged
+    ? AVAILABILITY.AVAILABLE
+    : rawEmailStatus;
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     infoForm.setValue('username', slugify(e.target.value), {
@@ -68,8 +72,8 @@ export const useProfile = () => {
 
   const onInfoSubmit = async (data: UpdateProfileInfoData) => {
     if (
-      (usernameStatus === 'taken' && !isUsernameUnchanged) ||
-      (emailStatus === 'taken' && !isEmailUnchanged)
+      (usernameStatus === AVAILABILITY.TAKEN && !isUsernameUnchanged) ||
+      (emailStatus === AVAILABILITY.TAKEN && !isEmailUnchanged)
     )
       return;
 
@@ -79,14 +83,15 @@ export const useProfile = () => {
       toast.success(SUCCESS.AUTH.INFO_UPDATED);
       infoForm.reset(data);
     } catch (err) {
-      const error = err as ApiErrorResponse;
-      if (error.violations) {
-        error.violations.forEach((v) =>
-          infoForm.setError(v.propertyPath as keyof UpdateProfileInfoData, {
+      const apiError = err as ApiError;
+      if (apiError.violations) {
+        apiError.violations.forEach((v) => {
+          const formKey = camelToSnake(v.propertyPath);
+          infoForm.setError(formKey as keyof UpdateProfileInfoData, {
             type: 'server',
             message: v.message,
-          }),
-        );
+          });
+        });
       } else {
         toast.error(ERRORS.AUTH.UPDATE_INFO_FAILED);
       }
@@ -99,14 +104,16 @@ export const useProfile = () => {
       toast.success(SUCCESS.AUTH.PASSWORD_UPDATED);
       passwordForm.reset();
     } catch (err) {
-      const error = err as ApiErrorResponse;
-      if (error.violations) {
-        error.violations.forEach((v) =>
-          passwordForm.setError(v.propertyPath as keyof UpdatePasswordData, {
+      const apiError = err as ApiError;
+      if (apiError.violations) {
+        apiError.violations.forEach((v) => {
+          const formKey = camelToSnake(v.propertyPath);
+
+          passwordForm.setError(formKey as keyof UpdatePasswordData, {
             type: 'server',
             message: v.message,
-          }),
-        );
+          });
+        });
       } else {
         toast.error(ERRORS.AUTH.UPDATE_PASSWORD_FAILED);
       }

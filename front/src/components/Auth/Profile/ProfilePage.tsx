@@ -10,7 +10,7 @@ import {
   Text,
   TEXT_VARIANT,
 } from '@/components/UI';
-import { BUTTONS, FORM, ICONS, PROFILE_UI } from '@/constants';
+import { AVAILABILITY, BUTTONS, FORM, ICONS, PROFILE_UI } from '@/constants';
 import { useProfile } from '@/hooks';
 
 export const ProfilePage = () => {
@@ -78,7 +78,7 @@ export const ProfilePage = () => {
                         >
                           {FORM.AUTH.HINTS.USERNAME_CHECK}
                         </Text>
-                      ) : status.username === 'available' ? (
+                      ) : status.username === AVAILABILITY.AVAILABLE ? (
                         <Text
                           variant={TEXT_VARIANT.MICRO}
                           className="text-success-bright text-center"
@@ -86,7 +86,7 @@ export const ProfilePage = () => {
                           <span className="mr-1">{ICONS.SUCCESS}</span>{' '}
                           {FORM.AUTH.HINTS.USERNAME_AVAILABLE}
                         </Text>
-                      ) : status.username === 'taken' ? (
+                      ) : status.username === AVAILABILITY.TAKEN ? (
                         <Text
                           variant={TEXT_VARIANT.MICRO}
                           className="text-danger-bright text-center"
@@ -119,7 +119,7 @@ export const ProfilePage = () => {
                         >
                           {FORM.AUTH.HINTS.EMAIL_CHECK}
                         </Text>
-                      ) : status.email === 'available' ? (
+                      ) : status.email === AVAILABILITY.AVAILABLE ? (
                         <Text
                           variant={TEXT_VARIANT.MICRO}
                           className="text-success-bright text-center"
@@ -127,7 +127,7 @@ export const ProfilePage = () => {
                           <span className="mr-1">{ICONS.SUCCESS}</span>{' '}
                           {FORM.AUTH.HINTS.EMAIL_AVAILABLE}
                         </Text>
-                      ) : status.email === 'taken' ? (
+                      ) : status.email === AVAILABILITY.TAKEN ? (
                         <Text
                           variant={TEXT_VARIANT.MICRO}
                           className="text-danger-bright text-center"
@@ -148,8 +148,8 @@ export const ProfilePage = () => {
               disabled={
                 !infoForm.formState.isDirty ||
                 !infoForm.formState.isValid ||
-                status.username === 'taken' ||
-                status.email === 'taken'
+                status.username === AVAILABILITY.TAKEN ||
+                status.email === AVAILABILITY.TAKEN
               }
               fullWidth
             >

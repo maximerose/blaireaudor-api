@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bonusDayService } from '@/services';
 import { toast } from 'react-hot-toast';
 import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
+import type { ApiError, BonusDay } from '@/types';
 
 export const useBonusDayAdmin = (
   competitionId: string,
@@ -21,22 +22,29 @@ export const useBonusDayAdmin = (
     onRefresh?.();
   };
 
-  const addMutation = useMutation({
-    mutationFn: ({ date, multiplier }: { date: string; multiplier: number }) =>
+  const addMutation = useMutation<
+    BonusDay,
+    ApiError,
+    { date: string; multiplier: number }
+  >({
+    mutationFn: ({ date, multiplier }) =>
       bonusDayService.create(competitionId, date, multiplier),
     onSuccess: () => {
       invalidateCompetition();
       toast.success(SUCCESS.BONUS.ADDED);
     },
-    onError: () => toast.error(ERRORS.BONUS.CREATE_FAILED),
+    onError: (apiError: ApiError) =>
+      toast.error(apiError.message || ERRORS.BONUS.CREATE_FAILED),
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useMutation<void, ApiError, string>({
     mutationFn: (bonusDayId: string) => bonusDayService.delete(bonusDayId),
     onSuccess: () => {
       invalidateCompetition();
       toast.success(SUCCESS.BONUS.DELETED);
     },
+    onError: (apiError: ApiError) =>
+      toast.error(apiError.message || ERRORS.BONUS.DELETE_FAILED),
   });
 
   return {

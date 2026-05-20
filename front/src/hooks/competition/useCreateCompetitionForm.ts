@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePlayerSearch } from '@/hooks';
-import { cleanJoinCode, formatToApiISO, getLocalDayString } from '@/utils';
+import {
+  cleanJoinCode,
+  formatToApiISO,
+  getLocalDayString,
+  snakeToCamel,
+} from '@/utils';
 import { competitionService } from '@/services';
 import type {
   FormParticipant,
@@ -10,14 +15,16 @@ import type {
   Competition,
   PlayerCompact,
   CompetitionCreatePayload,
+  ApiError,
 } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LOG_MESSAGES, QUERY_KEYS } from '@/constants';
+import { ERRORS, LOG_MESSAGES, QUERY_KEYS } from '@/constants';
 import { useAuthContext } from '@/context';
 import {
   createCompetitionSchema,
   type CreateCompetitionFormData,
 } from '@/validations';
+import toast from 'react-hot-toast';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
@@ -122,7 +129,11 @@ export const useCreateCompetitionForm = (
     if (isValid) setStep(2);
   };
 
-  const creationMutation = useMutation({
+  const creationMutation = useMutation<
+    Competition,
+    ApiError,
+    CreateCompetitionFormData
+  >({
     mutationFn: async (data: CreateCompetitionFormData) => {
       const payload: CompetitionCreatePayload = {
         name: data.name,
@@ -180,8 +191,21 @@ export const useCreateCompetitionForm = (
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
       onSuccess(competition);
     },
-    onError: (error) => {
-      console.error(LOG_MESSAGES.COMPETITION.CREATE_FAILED, error);
+    onError: (apiError: ApiError) => {
+      console.error(LOG_MESSAGES.COMPETITION.CREATE_FAILED, apiError);
+
+      if (apiError.violations?.length) {
+        apiError.violations.forEach((v) => {
+          const formKey = snakeToCamel(v.propertyPath);
+          formMethods.setError(formKey as keyof CreateCompetitionFormData, {
+            type: 'server',
+            message: v.message,
+          });
+        });
+        setStep(1);
+      } else {
+        toast.error(apiError.message || ERRORS.COMPETITION.CREATE_FAILED);
+      }
     },
   });
 

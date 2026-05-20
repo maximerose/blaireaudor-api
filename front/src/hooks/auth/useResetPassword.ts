@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import { resetPasswordService } from '@/services';
 import { ROUTES, AUTH_UI, ERRORS } from '@/constants';
 import { resetPasswordSchema, type ResetPasswordFormData } from '@/validations';
+import type { ApiError } from '@/types';
+import { camelToSnake } from '@/utils';
 
 export const useResetPassword = (token: string | undefined) => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ export const useResetPassword = (token: string | undefined) => {
     handleSubmit,
     watch,
     formState: { errors },
+    setError,
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
   });
@@ -29,15 +32,25 @@ export const useResetPassword = (token: string | undefined) => {
     refetchOnWindowFocus: false,
   });
 
-  const mutation = useMutation({
+  const mutation = useMutation<{ message: string }, ApiError, string>({
     mutationFn: (password: string) =>
       resetPasswordService.reset(token!, password),
     onSuccess: () => {
       toast.success(AUTH_UI.RESET_PASSWORD.SUCCESS);
       navigate(ROUTES.NAV.LOGIN);
     },
-    onError: () => {
-      toast.error(ERRORS.AUTH.RESET_PASSWORD_FAILED);
+    onError: (apiError: ApiError) => {
+      if (apiError.violations?.length) {
+        apiError.violations.forEach((v) => {
+          const formKey = camelToSnake(v.propertyPath);
+          setError(formKey as keyof ResetPasswordFormData, {
+            type: 'server',
+            message: v.message,
+          });
+        });
+      } else {
+        toast.error(apiError.message || ERRORS.AUTH.RESET_PASSWORD_FAILED);
+      }
     },
   });
 

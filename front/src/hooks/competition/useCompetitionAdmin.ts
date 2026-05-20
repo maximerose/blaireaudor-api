@@ -1,53 +1,64 @@
 import type {
+  Action,
   ActionStatus,
   ActionUpdatePayload,
+  ActionUpdateStatusPayload,
+  ApiError,
+  Competition,
   CompetitionUpdatePayload,
 } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { actionService, competitionService } from '@/services';
-import { LOG_MESSAGES } from '@/constants';
+import { ERRORS, LOG_MESSAGES } from '@/constants';
 import { useCompetitionContext } from '@/context';
 import { useInvalidateCompetition } from '@/hooks';
+import toast from 'react-hot-toast';
 
 export const useCompetitionAdmin = () => {
   const { competition } = useCompetitionContext();
   const { invalidateAll } = useInvalidateCompetition();
 
-  const compMutation = useMutation({
+  const compMutation = useMutation<
+    Competition,
+    ApiError,
+    CompetitionUpdatePayload
+  >({
     mutationFn: (data: CompetitionUpdatePayload) =>
       competitionService.update(competition.id!, data),
     onSuccess: async () => {
       await invalidateAll(competition.id, competition.join_code);
     },
+    onError: (apiError) =>
+      toast.error(apiError.message || ERRORS.COMPETITION.UPDATE_FAILED),
   });
 
-  const statusMutation = useMutation({
-    mutationFn: ({
-      actionId,
-      status,
-    }: {
-      actionId: string;
-      status: ActionStatus;
-    }) => actionService.update(actionId, { status }),
+  const statusMutation = useMutation<
+    { ok: boolean; data: Action },
+    ApiError,
+    ActionUpdateStatusPayload
+  >({
+    mutationFn: ({ actionId, status }) =>
+      actionService.update(actionId, { status }),
     onSuccess: async () => {
       await invalidateAll(competition.id, competition.join_code);
     },
-    onError: (error) => {
-      console.error(LOG_MESSAGES.ACTION.STATUS_UPDATE_FAILED, error);
+    onError: (apiError) => {
+      console.error(LOG_MESSAGES.ACTION.STATUS_UPDATE_FAILED, apiError);
+      toast.error(apiError.message || ERRORS.ACTION.STATUS_UPDATE_FAILED);
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({
-      actionId,
-      data,
-    }: {
-      actionId: string;
-      data: ActionUpdatePayload;
-    }) => actionService.update(actionId, data),
+  const updateMutation = useMutation<
+    { ok: boolean; data: Action },
+    ApiError,
+    { actionId: string; data: ActionUpdatePayload }
+  >({
+    mutationFn: ({ actionId, data }) => actionService.update(actionId, data),
     onSuccess: async () => {
       await invalidateAll(competition.id, competition.join_code);
     },
+    onError: (apiError) =>
+      toast.error(apiError.message || ERRORS.ACTION.UPDATE_FAILED),
   });
 
   return {

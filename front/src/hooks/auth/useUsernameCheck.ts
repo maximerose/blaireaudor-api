@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '@/services';
 import type { PlayerCompact } from '@/types';
-import { QUERY_KEYS } from '@/constants';
+import { AVAILABILITY, QUERY_KEYS } from '@/constants';
 
 export const useUsernameCheck = (
   username: string,
@@ -25,10 +25,10 @@ export const useUsernameCheck = (
   const status = !data
     ? null
     : !data.available
-      ? 'taken'
+      ? AVAILABILITY.TAKEN
       : data.is_guest_profile && currentPlayerId !== data.player?.id
-        ? 'guest_exists'
-        : 'available';
+        ? AVAILABILITY.GUEST_EXISTS
+        : AVAILABILITY.AVAILABLE;
 
   return {
     status,

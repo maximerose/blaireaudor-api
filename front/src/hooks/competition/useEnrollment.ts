@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePlayerSearch } from '@/hooks';
 import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { FormParticipant, PlayerCompact } from '@/types';
+import type { ApiError, FormParticipant, PlayerCompact } from '@/types';
 import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
 import { useAuthContext } from '@/context';
@@ -60,7 +60,7 @@ export const useEnrollment = (
     setParticipants((prev) => prev.filter((p) => p.id !== playerId));
   };
 
-  const enrollmentMutation = useMutation({
+  const enrollmentMutation = useMutation<unknown, ApiError, void>({
     mutationFn: async () => {
       const payload = {
         existing_players_ids: participants
@@ -86,8 +86,10 @@ export const useEnrollment = (
 
       toast.success(SUCCESS.COMPETITION.PARTICIPANTS_UPDATED);
     },
-    onError: () => {
-      toast.error(ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
+    onError: (apiError) => {
+      toast.error(
+        apiError.message || ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED,
+      );
     },
   });
 

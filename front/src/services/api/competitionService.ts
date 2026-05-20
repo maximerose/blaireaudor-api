@@ -1,81 +1,65 @@
 import { apiFetch } from '@/services';
-import { API, ERRORS } from '@/constants';
+import { API } from '@/constants';
 import type {
+  Action,
+  Competition,
   CompetitionCreatePayload,
   CompetitionUpdatePayload,
+  GetActionsParams,
+  Participation,
 } from '@/types';
 
-export interface GetActionsParams {
-  id: string;
-  page?: number;
-  selectedDate?: string | null;
-  selectedPlayerId?: string | null;
-  sortField?: string | null;
-  sortOrder?: 'asc' | 'desc';
-  signal?: AbortSignal;
-}
-
 export const competitionService = {
-  create: async (payload: CompetitionCreatePayload) => {
+  create: async (payload: CompetitionCreatePayload): Promise<Competition> => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BASE, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error(ERRORS.SYMFONY_DETAILS, result);
-      throw new Error(ERRORS.COMPETITION.CREATE_FAILED);
-    }
-
-    return result;
+    return response.json();
   },
 
-  update: async (id: string, data: CompetitionUpdatePayload) => {
+  update: async (
+    id: string,
+    data: CompetitionUpdatePayload,
+  ): Promise<Competition> => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
       method: 'PATCH',
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.violations?.[0]?.message ||
-          errorData.detail ||
-          ERRORS.COMPETITION.UPDATE_FAILED,
-      );
-    }
     return response.json();
   },
 
-  delete: async (id: string) => {
-    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.DELETE_FAILED);
+  delete: async (id: string): Promise<true> => {
+    await apiFetch(API.ENDPOINTS.COMPETITIONS.DETAIL(id), { method: 'DELETE' });
     return true;
   },
 
-  getByCode: async (code: string, signal?: AbortSignal) => {
+  getByCode: async (
+    code: string,
+    signal?: AbortSignal,
+  ): Promise<{ competition: Competition; leaderboard: Participation[] }> => {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code), {
       signal,
     });
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.NOT_FOUND(code));
     return response.json();
   },
 
-  checkJoinCode: async (code: string, signal?: AbortSignal) => {
+  checkJoinCode: async (
+    code: string,
+    signal?: AbortSignal,
+  ): Promise<{ available: boolean }> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.CHECK_JOIN_CODE(code),
       { signal },
     );
-
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.CHECK_CODE);
-    return await response.json();
+    return response.json();
   },
 
-  join: async (playerId: string, competitionId: string) => {
+  join: async (
+    playerId: string,
+    competitionId: string,
+  ): Promise<Participation> => {
     const response = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
       method: 'POST',
       body: JSON.stringify({
@@ -83,29 +67,17 @@ export const competitionService = {
         competition: API.IRI.COMPETITION(competitionId),
       }),
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      const errorMessage = errorData.violations?.[0]?.message;
-
-      if (errorMessage === 'COMPETITION_FINISHED') {
-        throw new Error(ERRORS.COMPETITION.COMPETITION_FINISHED);
-      }
-
-      throw new Error(
-        errorData.violations?.[0]?.message ||
-          ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED,
-      );
-    }
     return response.json();
   },
 
-  getLeaderboard: async (id: string, signal?: AbortSignal) => {
+  getLeaderboard: async (
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<Participation[]> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.LEADERBOARD(id),
       { signal },
     );
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_LEADERBOARD);
     return response.json();
   },
 
@@ -117,46 +89,31 @@ export const competitionService = {
     sortField,
     sortOrder,
     signal,
-  }: GetActionsParams) => {
+  }: GetActionsParams): Promise<{
+    data: Action[];
+    meta: { total: number; page: number; last_page: number };
+  }> => {
     const params = new URLSearchParams({ page: page.toString() });
-
-    if (selectedDate) {
-      params.append('date', selectedDate);
-    }
-
-    if (selectedPlayerId) {
-      params.append('playerId', selectedPlayerId);
-    }
-
-    if (sortField) {
-      params.append('sort', sortField);
-    }
-
-    if (sortOrder) {
-      params.append('order', sortOrder);
-    }
+    if (selectedDate) params.append('date', selectedDate);
+    if (selectedPlayerId) params.append('playerId', selectedPlayerId);
+    if (sortField) params.append('sort', sortField);
+    if (sortOrder) params.append('order', sortOrder);
 
     const response = await apiFetch(
       `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?${params.toString()}`,
-      {
-        signal,
-      },
+      { signal },
     );
-    if (!response.ok) throw new Error(ERRORS.COMPETITION.FETCH_ACTIONS);
     return response.json();
   },
 
-  getActionsDates: async (id: string, signal?: AbortSignal) => {
+  getActionsDates: async (
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<string[]> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.ACTIONS_DATES(id),
-      {
-        signal,
-      },
+      { signal },
     );
-
-    if (!response.ok)
-      throw new Error('Impossible de récupérer les dates des actions');
-
     return response.json();
   },
 
@@ -168,7 +125,7 @@ export const competitionService = {
       existing_referees_ids?: string[];
       new_referees?: string[];
     },
-  ) => {
+  ): Promise<unknown> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.ADD_PARTICIPANTS(competitionId),
       {
@@ -182,46 +139,32 @@ export const competitionService = {
         }),
       },
     );
-
-    if (!response.ok)
-      throw new Error(ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED);
     return response.json();
   },
 
-  getPendingCount: async (competitionId: string, signal?: AbortSignal) => {
+  getPendingCount: async (
+    competitionId: string,
+    signal?: AbortSignal,
+  ): Promise<number> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.PENDING_COUNT(competitionId),
       { signal },
     );
-
-    if (!response.ok)
-      throw new Error(
-        "Impossible de récupérer le compteur d'actions en attente",
-      );
-
     const data = await response.json();
     return data.count;
   },
 
-  /**
-   * Supprime une participation spécifique (retire un joueur de la compétition)
-   */
-  removeParticipation: async (participationId: string) => {
-    const response = await apiFetch(
-      API.ENDPOINTS.PARTICIPATIONS.DETAIL(participationId),
-      {
-        method: 'DELETE',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
-    }
-
+  removeParticipation: async (participationId: string): Promise<true> => {
+    await apiFetch(API.ENDPOINTS.PARTICIPATIONS.DETAIL(participationId), {
+      method: 'DELETE',
+    });
     return true;
   },
 
-  addReferee: async (competitionId: string, playerId: string) => {
+  addReferee: async (
+    competitionId: string,
+    playerId: string,
+  ): Promise<Competition> => {
     const response = await apiFetch(
       API.ENDPOINTS.COMPETITIONS.ADD_REFEREE(competitionId),
       {
@@ -229,27 +172,17 @@ export const competitionService = {
         body: JSON.stringify({ player_id: playerId }),
       },
     );
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || ERRORS.COMPETITION.REFEREE_ADD_FAILED);
-    }
     return response.json();
   },
 
-  removeReferee: async (competitionId: string, playerId: string) => {
-    const response = await apiFetch(
-      API.ENDPOINTS.COMPETITIONS.REMOVE_REFEREE(competitionId),
-      {
-        method: 'POST',
-        body: JSON.stringify({ player_id: playerId }),
-      },
-    );
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
-    }
+  removeReferee: async (
+    competitionId: string,
+    playerId: string,
+  ): Promise<true> => {
+    await apiFetch(API.ENDPOINTS.COMPETITIONS.REMOVE_REFEREE(competitionId), {
+      method: 'POST',
+      body: JSON.stringify({ player_id: playerId }),
+    });
     return true;
   },
 };

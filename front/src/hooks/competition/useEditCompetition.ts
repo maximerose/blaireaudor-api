@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { ROUTES, ERRORS, SUCCESS } from '@/constants';
-import { combineDateTime, getDatePart, getTimePart } from '@/utils';
+import {
+  combineDateTime,
+  getDatePart,
+  getTimePart,
+  snakeToCamel,
+} from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services';
-import type { Competition, CompetitionUpdatePayload } from '@/types';
+import type { ApiError, Competition, CompetitionUpdatePayload } from '@/types';
 import { useInvalidateCompetition } from '@/hooks';
 import { useForm } from 'react-hook-form';
 import {
@@ -35,6 +40,7 @@ export const useEditCompetition = (
     watch,
     setValue,
     formState: { errors, isSubmitting, isValid, isDirty },
+    setError,
   } = useForm<EditCompetitionFormData>({
     resolver: zodResolver(editCompetitionSchema),
     mode: 'onChange',
@@ -50,7 +56,11 @@ export const useEditCompetition = (
     },
   });
 
-  const updateMutation = useMutation({
+  const updateMutation = useMutation<
+    Competition,
+    ApiError,
+    CompetitionUpdatePayload
+  >({
     mutationFn: (payload: CompetitionUpdatePayload) =>
       competitionService.update(competition.id, payload),
     onSuccess: async (_, variables) => {
@@ -70,8 +80,18 @@ export const useEditCompetition = (
         });
       }
     },
-    onError: (error: Error) => {
-      toast.error(error.message || ERRORS.COMPETITION.UPDATE_FAILED);
+    onError: (apiError: ApiError) => {
+      if (apiError.violations?.length) {
+        apiError.violations.forEach((v) => {
+          const formKey = snakeToCamel(v.propertyPath);
+          setError(formKey as keyof EditCompetitionFormData, {
+            type: 'server',
+            message: v.message,
+          });
+        });
+      } else {
+        toast.error(apiError.message || ERRORS.COMPETITION.UPDATE_FAILED);
+      }
     },
   });
 

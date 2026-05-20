@@ -43,6 +43,11 @@ export type ActionUpdatePayload = Partial<
   }
 >;
 
+export interface ActionUpdateStatusPayload {
+  actionId: string;
+  status: ActionStatus;
+}
+
 export interface ActionFormData {
   targetPlayerId: string;
   description: string;
@@ -50,7 +55,10 @@ export interface ActionFormData {
   dateAction: string;
 }
 
-export type OnActionUpdate = (id: string, data: ActionUpdatePayload) => void;
+export type OnActionUpdate = (
+  id: string,
+  data: ActionUpdatePayload,
+) => Promise<{ ok: boolean; data: Action }>;
 export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
 
 export interface ActionRowProps {
@@ -68,4 +76,14 @@ export interface DateNavigationProps {
   dates: string[];
   selectedDate: string | null;
   onSelect: (date: string | null) => void;
+}
+
+export interface GetActionsParams {
+  id: string;
+  page?: number;
+  selectedDate?: string | null;
+  selectedPlayerId?: string | null;
+  sortField?: string | null;
+  sortOrder?: 'asc' | 'desc';
+  signal?: AbortSignal;
 }

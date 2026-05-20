@@ -12,13 +12,8 @@ export interface HydraCollection<T> {
 export type ApiId = string;
 
 export interface ApiError {
-  message?: string;
-  errors?: {
-    username?: string;
-    email?: string;
-    [key: string]: string | undefined;
-  };
-  violations?: { propertyPath: string; message: string }[];
+  message: string;
+  violations?: ApiViolation[];
 }
 
 export interface ApiViolation {
@@ -26,7 +21,35 @@ export interface ApiViolation {
   message: string;
 }
 
-export interface ApiErrorResponse {
-  message?: string;
-  violations?: ApiViolation[];
-}
+/**
+ * Harmonise tous les retours du backend vers l'interface unique ApiError
+ */
+export const getApiError = async (response: Response): Promise<ApiError> => {
+  const fallbackMessage = `Erreur ${response.status}: ${response.statusText}`;
+
+  try {
+    const data = await response.json();
+
+    // 1. Format API Platform 4 / Hydra (Validation de formulaires, DTOs, etc.)
+    if (data.violations && Array.isArray(data.violations)) {
+      return {
+        message:
+          data['hydra:description'] || data.detail || 'Erreur de validation.',
+        violations: data.violations.map(
+          (v: { propertyPath: string; message: string }) => ({
+            propertyPath: v.propertyPath,
+            message: v.message,
+          }),
+        ),
+      };
+    }
+
+    // 2. Format Custom, Exception standard Symfony ou JWT (ex: { message: "..." } ou { error: "..." })
+    return {
+      message: data.message || data.error || fallbackMessage,
+      violations: [],
+    };
+  } catch {
+    return { message: fallbackMessage };
+  }
+};

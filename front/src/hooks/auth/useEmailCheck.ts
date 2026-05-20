@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '@/services';
-import { QUERY_KEYS } from '@/constants';
+import { AVAILABILITY, QUERY_KEYS } from '@/constants';
 
 export const useEmailCheck = (email: string) => {
   const [debouncedEmail, setDebouncedEmail] = useState('');
@@ -20,7 +20,11 @@ export const useEmailCheck = (email: string) => {
     staleTime: 1000 * 60 * 2,
   });
 
-  const status = !data ? null : !data.available ? 'taken' : 'available';
+  const status = !data
+    ? null
+    : !data.available
+      ? AVAILABILITY.TAKEN
+      : AVAILABILITY.AVAILABLE;
 
   return { status, isLoading: isFetching };
 };
