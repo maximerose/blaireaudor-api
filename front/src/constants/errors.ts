@@ -10,6 +10,10 @@ export const ERRORS = {
     UNEXPECTED: "Une erreur inattendue s'est produite.",
   },
 
+  MODAL: {
+    CONFIRM_ERROR: 'Erreur durant la confirmation globale:',
+  },
+
   SYMFONY_DETAILS: "Détails de l'erreur Symfony : ",
 
   // 2. Erreurs d'Authentification / Inscription

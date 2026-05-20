@@ -8,6 +8,7 @@ export const SUCCESS = {
 
   COMPETITION: {
     CREATED: 'La compétition a été créée avec succès.',
+    DELETED: 'La compétition a été supprimée avec succès.',
     UPDATED: 'La compétition a été modifiée avec succès.',
     PARTICIPANTS_UPDATED: 'Liste des participants mise à jour !',
   },

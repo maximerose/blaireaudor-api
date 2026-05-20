@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { authService } from '@/services';
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
 } from '@/validations';
+import { resetPasswordService } from '@/services';
 
 export const useForgotPassword = () => {
   const {
@@ -17,7 +17,7 @@ export const useForgotPassword = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (email: string) => authService.requestPasswordReset(email),
+    mutationFn: (email: string) => resetPasswordService.requestReset(email),
   });
 
   const onSubmit = (data: ForgotPasswordFormData) => {

@@ -9,6 +9,7 @@ import {
   CARD_VARIANT,
 } from '@/components/UI';
 import { BUTTONS } from '@/constants';
+import { cn } from '@/utils';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
@@ -17,6 +18,7 @@ const MODAL_CARD =
 
 interface ConfirmModalProps {
   isOpen: boolean;
+  isLoading: boolean;
   title: string;
   message: string;
   onConfirm: () => void;
@@ -27,6 +29,7 @@ interface ConfirmModalProps {
 
 export const ConfirmModal = ({
   isOpen,
+  isLoading,
   title,
   message,
   onConfirm,
@@ -68,6 +71,8 @@ export const ConfirmModal = ({
             fullWidth
             size={BUTTON_SIZE.LARGE}
             onClick={onConfirm}
+            isLoading={isLoading}
+            disabled={isLoading}
           >
             {confirmLabel}
           </Button>
@@ -75,7 +80,13 @@ export const ConfirmModal = ({
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
             onClick={onClose}
-            className="text-white/20 hover:text-white/50 transition-default"
+            disabled={isLoading}
+            className={cn(
+              'text-white/20 transition-default',
+              isLoading
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:text-white/50',
+            )}
           >
             {BUTTONS.CANCEL}
           </Button>

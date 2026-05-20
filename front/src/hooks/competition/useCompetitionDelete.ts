@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { competitionService } from '@/services';
-import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
+import { CONFIRMS, ERRORS, ROUTES, SUCCESS } from '@/constants';
 import toast from 'react-hot-toast';
 import { useAuthContext, useConfirmModal } from '@/context';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
   const { refreshUser } = useAuthContext();
-  const { openModal } = useConfirmModal();
+  const { openModal, closeModal } = useConfirmModal();
 
   const deleteCompetition = (id: string, name: string, hasActions: boolean) => {
     if (hasActions) {
@@ -22,10 +22,13 @@ export const useCompetitionDelete = () => {
         try {
           const success = await competitionService.delete(id);
           if (success) {
-            await refreshUser();
+            toast.success(SUCCESS.COMPETITION.DELETED);
             navigate(ROUTES.NAV.DASHBOARD);
+            await refreshUser();
+            closeModal();
           }
         } catch {
+          closeModal();
           toast.error(ERRORS.COMPETITION.DELETE_FAILED);
         }
       },

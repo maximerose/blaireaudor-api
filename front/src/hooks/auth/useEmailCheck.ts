@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { authService } from '@/services';
+import { userService } from '@/services';
 import { QUERY_KEYS } from '@/constants';
 
 export const useEmailCheck = (email: string) => {
@@ -15,7 +15,7 @@ export const useEmailCheck = (email: string) => {
 
   const { data, isFetching } = useQuery({
     queryKey: QUERY_KEYS.auth.emailCheck(debouncedEmail),
-    queryFn: ({ signal }) => authService.checkEmail(debouncedEmail, signal),
+    queryFn: ({ signal }) => userService.checkEmail(debouncedEmail, signal),
     enabled: isValidFormat,
     staleTime: 1000 * 60 * 2,
   });

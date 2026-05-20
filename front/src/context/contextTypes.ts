@@ -6,7 +6,7 @@ import type {
   ActionSortField,
   PlayerCompact,
   ActionFormData,
-  ModalConfig,
+  ModalOptions,
   User,
   LoginCredentials,
   AuthResult,
@@ -90,6 +90,10 @@ export interface ReportActionContextType {
 }
 
 export interface ConfirmModalContextType {
-  openModal: (config: ModalConfig) => void;
+  isOpen: boolean;
+  isLoading: boolean;
+  options: ModalOptions | null;
+  openModal: (options: ModalOptions) => void;
   closeModal: () => void;
+  handleConfirm: () => Promise<void>;
 }

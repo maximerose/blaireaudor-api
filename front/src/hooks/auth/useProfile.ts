@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useUsernameCheck } from './useUsernameCheck';
 import { useEmailCheck } from './useEmailCheck';
-import { authService } from '@/services';
+import { userService } from '@/services';
 import toast from 'react-hot-toast';
 import { ERRORS, SUCCESS } from '@/constants';
 import type { ApiErrorResponse } from '@/types';
@@ -74,7 +74,7 @@ export const useProfile = () => {
       return;
 
     try {
-      await authService.updateProfile(data);
+      await userService.updateProfile(data);
       await refreshUser();
       toast.success(SUCCESS.AUTH.INFO_UPDATED);
       infoForm.reset(data);
@@ -95,7 +95,7 @@ export const useProfile = () => {
 
   const onPasswordSubmit = async (data: UpdatePasswordData) => {
     try {
-      await authService.updateProfile(data);
+      await userService.updateProfile(data);
       toast.success(SUCCESS.AUTH.PASSWORD_UPDATED);
       passwordForm.reset();
     } catch (err) {

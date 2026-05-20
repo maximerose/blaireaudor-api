@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { authService } from '@/services';
+import { resetPasswordService } from '@/services';
 import { ROUTES, AUTH_UI, ERRORS } from '@/constants';
 import { resetPasswordSchema, type ResetPasswordFormData } from '@/validations';
 
@@ -23,7 +23,7 @@ export const useResetPassword = (token: string | undefined) => {
     queryKey: ['reset-token', token],
     queryFn: () => {
       if (!token) throw new Error('Token manquant');
-      return authService.validateResetToken(token);
+      return resetPasswordService.validateToken(token);
     },
     retry: false,
     refetchOnWindowFocus: false,
@@ -31,7 +31,7 @@ export const useResetPassword = (token: string | undefined) => {
 
   const mutation = useMutation({
     mutationFn: (password: string) =>
-      authService.resetPassword(token!, password),
+      resetPasswordService.reset(token!, password),
     onSuccess: () => {
       toast.success(AUTH_UI.RESET_PASSWORD.SUCCESS);
       navigate(ROUTES.NAV.LOGIN);

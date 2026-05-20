@@ -1,6 +1,6 @@
 import type { ButtonVariant } from '@/components/UI';
 
-export interface ModalConfig {
+export interface ModalOptions {
   title: string;
   message: string;
   confirmLabel?: string;
