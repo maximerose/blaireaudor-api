@@ -1,13 +1,17 @@
-import { type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { CompetitionContext, useAuthContext } from '@/context';
 import { useCompetitionSettings } from '@/hooks';
 import { isReferee } from '@/utils';
-import type { Competition, EnrichedLeaderboardItem } from '@/types';
+import type {
+  Competition,
+  EnrichedLeaderboardItem,
+  Participation,
+} from '@/types';
 
 interface ProviderProps {
   children: ReactNode;
   competition: Competition;
-  leaderboard: EnrichedLeaderboardItem[];
+  leaderboard: Participation[];
   refresh: () => void;
 }
 
@@ -21,9 +25,18 @@ export const CompetitionProvider = ({
 
   const isRefereeUser = competition ? isReferee(competition, user) : false;
 
+  const enrichedLeaderboard = useMemo<EnrichedLeaderboardItem[]>(() => {
+    return leaderboard.map((p) => ({
+      ...p,
+      isMe: p.player?.id === user?.player?.id,
+      isExAequo:
+        leaderboard.filter((other) => other.score === p.score).length > 1,
+    }));
+  }, [leaderboard, user]);
+
   const value = useCompetitionSettings({
     competition,
-    leaderboard,
+    leaderboard: enrichedLeaderboard,
     isAdmin: isRefereeUser,
     hidePoints: competition?.fog_of_war && !isRefereeUser,
     refresh,

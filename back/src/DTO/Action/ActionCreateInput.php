@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\DTO\Action;
 
+use App\Constants\AppConstants;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class ActionCreateInput
 {
     #[Assert\NotBlank(message: 'La description est obligatoire.')]
+    #[Assert\Length(
+        min: AppConstants::ACTION_MIN_DESCRIPTION,
+        minMessage: 'La description du méfait doit faire au moins {{ limit }} caractères.'
+    )]
     public string $description = '';
 
     #[Assert\NotNull(message: 'Les points sont obligatoires.')]

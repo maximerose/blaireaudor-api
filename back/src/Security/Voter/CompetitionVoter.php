@@ -19,7 +19,7 @@ final class CompetitionVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::MANAGE, self::CREATOR, self::REFEREE, self::PLAYER])
+        return \in_array($attribute, [self::MANAGE, self::CREATOR, self::REFEREE, self::PLAYER])
                && $subject instanceof Competition;
     }
 

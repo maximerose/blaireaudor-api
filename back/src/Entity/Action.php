@@ -17,6 +17,7 @@ use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
 use App\State\Processor\Action\ActionCreateProcessor;
+use App\Validator\ValidActionDate;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * à une compétition spécifique. Elle possède un cycle de vie via son statut.
  */
 #[ORM\Entity(repositoryClass: ActionRepository::class)]
+#[ValidActionDate]
 #[ApiFilter(SearchFilter::class, properties: ['participation.competition' => 'exact'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['action:read']],

@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
             'Sylvain', 'Tatie', 'Typhaine', 'Valérie', 'Victorien',
         ];
 
-        $allUniqueNames = array_unique(array_merge($list2025, $list2026));
+        $allUniqueNames = array_unique([...$list2025, ...$list2026]);
         sort($allUniqueNames);
 
         $io->text('Création des profils pour :');
