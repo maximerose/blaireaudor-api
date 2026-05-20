@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Entity\User;
-use App\Repository\CompetitionRepository;
 use App\Repository\UserRepository;
-use App\Service\Manager\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,35 +34,6 @@ final class AuthController extends AbstractController
     public function logout(): JsonResponse
     {
         return $this->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-    #[Route('/register', name: 'register', methods: ['POST'])]
-    public function register(
-        Request $request,
-        UserManager $userManager,
-        UserRepository $userRepository,
-        CompetitionRepository $competitionRepository,
-    ): JsonResponse {
-        $data = $request->toArray();
-
-        $result = $userManager->handleRegistration($data, $userRepository, $competitionRepository);
-
-        if (isset($result['violations'])) {
-            return $this->json(['violations' => $result['violations']], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        /** @var User $user */
-        $user = $result['user'];
-
-        $this->entityManager->flush();
-
-        $token = $this->jwtManager->create($user);
-
-        return $this->json([
-            'message' => 'Inscription réussie',
-            'token' => $token,
-            'user' => $user->getUserIdentifier(),
-        ], Response::HTTP_CREATED);
     }
 
     #[Route('/check-username', name: 'check-username', methods: ['GET'])]

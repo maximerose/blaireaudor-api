@@ -40,7 +40,6 @@ class UserManager
         $playerId = $data['player_id'] ?? null;
         $competition = null;
 
-        // 1. Validations manuelles (formatées à l'identique)
         if ($userRepository->count(['username' => $username]) > 0) {
             return ['violations' => [['propertyPath' => 'username', 'message' => "Ce nom d'utilisateur est déjà utilisé"]]];
         }
@@ -56,10 +55,18 @@ class UserManager
             }
         }
 
-        // 2. Création des entités en mémoire
+        if ($playerId) {
+            $playerToClaim = $this->playerRepository->find($playerId);
+            if (!$playerToClaim) {
+                return ['violations' => [['propertyPath' => 'player_id', 'message' => "Le profil joueur demandé n'existe pas."]]];
+            }
+            if (null !== $playerToClaim->getAssociatedUser()) {
+                return ['violations' => [['propertyPath' => 'player_id', 'message' => 'Ce profil joueur est déjà associé à un autre compte.']]];
+            }
+        }
+
         $user = $this->registerUser($username, $data['plain_password'] ?? '', $data['display_name'] ?? '', $competition, $playerId, $email);
 
-        // 3. Validation des contraintes d'entités Symfony
         $errors = $this->validator->validate($user);
         if (\count($errors) > 0) {
             return ['violations' => $this->validationHelper->formatErrors($errors)];
@@ -79,16 +86,11 @@ class UserManager
         $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
 
         $player = null;
+
         if ($playerId) {
             $player = $this->playerRepository->find($playerId);
-            if ($player && null === $player->getAssociatedUser()) {
-                $player->setDisplayName($displayName);
-            } else {
-                $player = null;
-            }
-        }
-
-        if (!$player) {
+            $player->setDisplayName($displayName);
+        } else {
             $player = $this->playerManager->createPlayer($displayName);
         }
 

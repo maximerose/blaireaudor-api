@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\DTO\RegistrationInput;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\UserRepository;
+use App\State\User\UserRegistrationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,6 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -29,7 +33,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['username'], message: 'Ce nom d\'utiliateur est déjà utilisé.')]
 #[UniqueEntity(fields: ['email'], message: 'Cette adresse email est déjà utilisée.')]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/register',
+            input: RegistrationInput::class,
+            processor: UserRegistrationProcessor::class,
+        ),
+    ]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use UuidTrait;
@@ -129,6 +141,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword;
     }
 
+    #[SerializedName('password')]
     public function setPlainPassword(?string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
@@ -149,6 +162,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        $this->plainPassword = null;
     }
 
     public function getEmail(): ?string

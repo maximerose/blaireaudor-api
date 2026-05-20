@@ -9,7 +9,6 @@ export const authService = {
   register: async (formData: RegisterData): Promise<AuthResult> => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.REGISTER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
     });
 

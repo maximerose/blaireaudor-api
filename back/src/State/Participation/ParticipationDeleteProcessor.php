@@ -10,7 +10,7 @@ use App\Entity\Participation;
 use App\Service\Manager\ParticipationManager;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class ParticipationDeleteProcessor implements ProcessorInterface
+final readonly class ParticipationDeleteProcessor implements ProcessorInterface
 {
     public function __construct(
         private ParticipationManager $participationManager,
