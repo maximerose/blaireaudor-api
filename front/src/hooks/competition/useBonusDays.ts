@@ -1,15 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
 import { bonusDayService } from '@/services';
 import { QUERY_KEYS } from '@/constants';
 
 export const useBonusDays = (competitionId: string) => {
-  const { code } = useParams<{ code: string }>();
-  const idToUse = competitionId || code;
-
   return useQuery({
-    queryKey: QUERY_KEYS.competition.byId(idToUse).bonus,
-    queryFn: ({ signal }) => bonusDayService.getByCompetition(idToUse!, signal),
-    enabled: !!idToUse,
+    queryKey: QUERY_KEYS.competition.byId(competitionId).bonus,
+    queryFn: ({ signal }) =>
+      bonusDayService.getByCompetition(competitionId, signal),
+    enabled: !!competitionId,
   });
 };

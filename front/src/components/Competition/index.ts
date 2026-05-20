@@ -11,6 +11,7 @@ export * from './Detail/ActionRowEditMode';
 export * from './Detail/ActionTable';
 export * from './Detail/ActionTableContent';
 export * from './Detail/CompetitionCountdown';
+export * from './Detail/CompetitionDetailContent';
 export * from './Detail/CompetitionDetailPage';
 export * from './Detail/CompetitionHeader';
 export * from './Detail/DateNavigation';

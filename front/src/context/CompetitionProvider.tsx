@@ -1,16 +1,22 @@
 import { type ReactNode } from 'react';
 import { CompetitionContext, useAuthContext } from '@/context';
-import { useCompetitionData, useCompetitionSettings } from '@/hooks';
+import { useCompetitionSettings } from '@/hooks';
 import { isReferee } from '@/utils';
+import type { Competition, EnrichedLeaderboardItem } from '@/types';
 
 interface ProviderProps {
   children: ReactNode;
-  code: string;
+  competition: Competition;
+  leaderboard: EnrichedLeaderboardItem[];
+  refresh: () => void;
 }
 
-export const CompetitionProvider = ({ children, code }: ProviderProps) => {
-  const { competition, leaderboard, refresh, isReady } =
-    useCompetitionData(code);
+export const CompetitionProvider = ({
+  children,
+  competition,
+  leaderboard,
+  refresh,
+}: ProviderProps) => {
   const { user } = useAuthContext();
 
   const isRefereeUser = competition ? isReferee(competition, user) : false;
@@ -22,8 +28,6 @@ export const CompetitionProvider = ({ children, code }: ProviderProps) => {
     hidePoints: competition?.fog_of_war && !isRefereeUser,
     refresh,
   });
-
-  if (!isReady || !competition) return null;
 
   return (
     <CompetitionContext.Provider value={value}>
