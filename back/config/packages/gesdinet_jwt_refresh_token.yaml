@@ -1,0 +1,9 @@
+gesdinet_jwt_refresh_token:
+    refresh_token_class: Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken
+    ttl: 2592000 # 30 jours (en secondes)
+    cookie:
+        enabled: true
+        same_site: lax
+        secure: '%env(bool:JWT_REFRESH_COOKIE_SECURE)%'
+        http_only: true
+        path: /

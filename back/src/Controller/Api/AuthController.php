@@ -111,4 +111,12 @@ final class AuthController extends AbstractController
             'available' => !$userExists,
         ]);
     }
+
+    #[Route('/token/refresh', name: 'refresh', methods: ['POST'])]
+    public function refresh(): JsonResponse
+    {
+        // Ce code ne sera exécuté QUE si l'intercepteur échoue (ex: cookie manquant ou expiré).
+        // Si le cookie est valide, le bundle interceptera la requête avant d'arriver ici.
+        return $this->json(['message' => 'Token de rafraîchissement invalide ou manquant.'], Response::HTTP_UNAUTHORIZED);
+    }
 }

@@ -26,6 +26,7 @@ export const API = {
         `${BASES.RESET_PASSWORD}/${token}`,
       RESET_PASSWORD_RESET: (token: string) =>
         `${BASES.RESET_PASSWORD}/${token}`,
+      REFRESH: '/token/refresh',
     },
 
     // USER (Gestion du compte et sécurité)
