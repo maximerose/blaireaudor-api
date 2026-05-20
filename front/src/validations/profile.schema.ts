@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ERRORS, RULES } from '@/constants';
+import { ERRORS, RULES } from '@/shared';
 
 export const updateProfileInfoSchema = z.object({
   display_name: z.string().min(RULES.AUTH.MIN_DISPLAY_NAME, {

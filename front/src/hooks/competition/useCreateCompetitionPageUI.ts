@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES } from '@/shared';
 import type { Competition } from '@/types';
 
 export const useCreateCompetitionPageUI = () => {

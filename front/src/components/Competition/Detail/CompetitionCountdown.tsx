@@ -1,6 +1,5 @@
-import { Text, TEXT_VARIANT } from '@/components/UI';
+import { Text, TEXT_VARIANT, cn } from '@/shared';
 import { useCompetitionCountdown } from '@/hooks';
-import { cn } from '@/utils';
 
 interface CompetitionCountdownProps {
   targetDate: string;

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services';
-import { ROUTES, LOG_MESSAGES } from '@/constants';
+import { ROUTES, LOG_MESSAGES } from '@/shared';
 import { useCallback } from 'react';
 import { useAuthContext } from '@/context';
 

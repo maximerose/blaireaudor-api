@@ -11,9 +11,14 @@ import {
   SECTION_HEADER_VARIANT,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-} from '@/components/UI';
-import { FORM, ICONS, BUTTONS, AVAILABILITY } from '@/constants';
-import { cn, formatJoinCode, generateClientSideCode } from '@/utils';
+  FORM,
+  ICONS,
+  BUTTONS,
+  AVAILABILITY,
+  cn,
+  formatJoinCode,
+  generateClientSideCode,
+} from '@/shared';
 import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/validations';

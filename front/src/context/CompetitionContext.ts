@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { CompetitionContextType } from '@/context';
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 
 export const CompetitionContext = createContext<
   CompetitionContextType | undefined

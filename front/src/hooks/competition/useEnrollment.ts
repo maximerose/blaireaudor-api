@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayerSearch } from '@/hooks';
-import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
+import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { ApiError, FormParticipant, PlayerCompact } from '@/types';
+import type { FormParticipant, PlayerCompact } from '@/types';
 import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
 import { useAuthContext } from '@/context';

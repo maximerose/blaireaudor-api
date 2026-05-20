@@ -9,14 +9,16 @@ import {
   CARD_VARIANT,
   SectionHeader,
   SECTION_HEADER_VARIANT,
-} from '@/components/UI';
+  FORM,
+  cn,
+  ICONS,
+  BUTTONS,
+} from '@/shared';
 import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import { cn } from '@/utils';
 import type { FormParticipant, Player, PlayerCompact } from '@/types';
-import { FORM, ICONS, BUTTONS } from '@/constants';
 import { useRefereeStepLogic } from '@/hooks';
 import { useAuthContext } from '@/context';
 import type { UseFormReturn } from 'react-hook-form';

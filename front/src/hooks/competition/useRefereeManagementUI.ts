@@ -3,8 +3,7 @@ import { getCompetitionReferees } from '@/utils';
 import { useCompetitionReferees, usePlayerSearch } from '@/hooks';
 import toast from 'react-hot-toast';
 import type { Player, Competition, RefereeListItem } from '@/types';
-import { CONFIRMS, ERRORS, SUCCESS } from '@/constants';
-import { useConfirmModal } from '@/context';
+import { CONFIRMS, ERRORS, SUCCESS, useConfirmModal } from '@/shared';
 
 export const useRefereeManagementUI = (competition: Competition) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(

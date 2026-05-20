@@ -1,19 +1,21 @@
 import type React from 'react';
 import {
   Badge,
-  RankedScore,
   Text,
   Button,
-  RoleBadge,
   BUTTON_VARIANT,
   BUTTON_SIZE,
   BADGE_VARIANT,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { getMedalStyle, cn } from '@/utils';
+  cn,
+  ICONS,
+} from '@/shared';
+import { getMedalStyle } from '@/utils';
 import { useLeaderboardRow } from '@/hooks';
 import type { Competition, EnrichedLeaderboardItem } from '@/types';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
+import { RoleBadge } from '@/components/UI/RoleBadge';
+import { RankedScore } from '@/components/UI/RankedScore';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   participation: EnrichedLeaderboardItem;

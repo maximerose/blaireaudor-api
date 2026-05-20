@@ -3,7 +3,6 @@ import {
   getDisplayDateText,
   getCompetitionStatus,
   canRevealScores,
-  getIdFromData,
 } from '@/utils';
 import type {
   Competition,
@@ -13,7 +12,7 @@ import type {
 } from '@/types';
 import { useAuthContext } from '@/context';
 import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants';
+import { getIdFromData, QUERY_KEYS } from '@/shared';
 import { competitionService } from '@/services';
 
 export const useCompetitionCard = (

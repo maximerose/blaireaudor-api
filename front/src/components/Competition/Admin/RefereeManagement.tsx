@@ -1,16 +1,19 @@
 import {
   Badge,
   BADGE_VARIANT,
+  FORM,
+  ICONS,
   Input,
-  PlayerSearchResultItem,
   SectionHeader,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { COMPETITION_UI, FORM, ICONS, UI } from '@/constants';
+  UI,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { useAuthContext, useCompetitionContext } from '@/context';
 import { usePermissions, useRefereeManagementUI } from '@/hooks';
 import type { Player, RefereeListItem } from '@/types';
+import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetitionContext();

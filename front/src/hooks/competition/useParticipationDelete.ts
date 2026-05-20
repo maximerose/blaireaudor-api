@@ -1,9 +1,9 @@
-import { CONFIRMS, ERRORS, ROUTES } from '@/constants';
+import { CONFIRMS, ERRORS, ROUTES, useConfirmModal } from '@/shared';
 import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
 import type { Participation } from '@/types';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext, useConfirmModal } from '@/context';
+import { useAuthContext } from '@/context';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const navigate = useNavigate();

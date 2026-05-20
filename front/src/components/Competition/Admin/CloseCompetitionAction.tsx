@@ -1,7 +1,6 @@
-import { Button, BUTTON_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
+import { Button, BUTTON_VARIANT, cn, Text, TEXT_VARIANT } from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import { useAdminContext } from '@/context';
-import { cn } from '@/utils';
 
 export const CloseCompetitionAction = () => {
   const { handleCloseCompetition, isUpdating, pendingCount } =

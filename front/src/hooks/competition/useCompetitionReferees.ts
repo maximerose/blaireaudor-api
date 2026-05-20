@@ -2,7 +2,7 @@ import { competitionService } from '@/services';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useInvalidateCompetition } from '@/hooks';
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 
 export const useCompetitionReferees = (
   competitionId: string,

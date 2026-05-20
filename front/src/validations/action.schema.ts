@@ -1,4 +1,4 @@
-import { ERRORS, RULES } from '@/constants';
+import { ERRORS, RULES } from '@/shared';
 import z from 'zod';
 
 export const getReportActionSchema = (minDate: string, maxDate: string) =>

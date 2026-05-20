@@ -1,5 +1,4 @@
-import { Badge } from '@/components/UI';
-import { ICONS } from '@/constants';
+import { Badge, ICONS } from '@/shared';
 
 interface RoleBadgeProps {
   role: 'creator' | 'referee' | 'guest';

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { competitionService } from '@/services';
-import { CONFIRMS, ERRORS, ROUTES, SUCCESS } from '@/constants';
+import { CONFIRMS, ERRORS, ROUTES, SUCCESS, useConfirmModal } from '@/shared';
 import toast from 'react-hot-toast';
-import { useAuthContext, useConfirmModal } from '@/context';
+import { useAuthContext } from '@/context';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();

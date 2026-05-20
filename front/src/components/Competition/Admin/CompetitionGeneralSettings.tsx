@@ -11,16 +11,14 @@ import {
   TEXT_VARIANT,
   CARD_VARIANT,
   Label,
-} from '@/components/UI';
-import { cn } from '@/utils';
-import { useEditCompetition, useJoinCodeCheck } from '@/hooks';
-import {
   FORM,
-  BUTTONS,
-  COMPETITION_UI,
-  ICONS,
   AVAILABILITY,
-} from '@/constants';
+  ICONS,
+  cn,
+  BUTTONS,
+} from '@/shared';
+import { useEditCompetition, useJoinCodeCheck } from '@/hooks';
+import { COMPETITION_UI } from '@/constants';
 import { useCompetitionContext } from '@/context';
 
 export const CompetitionGeneralSettings = () => {

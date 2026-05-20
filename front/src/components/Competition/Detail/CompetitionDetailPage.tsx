@@ -1,7 +1,6 @@
-import { MainLayout } from '@/components/Layout';
-import { LoadingScreen, NotFoundState } from '@/components/UI';
+import { MainLayout, LoadingScreen, NotFoundState, ERRORS } from '@/shared';
 import { CompetitionDetailContent } from '@/components/Competition';
-import { COMPETITION_UI, ERRORS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 import { CompetitionProvider } from '@/context';
 import { useCompetitionData } from '@/hooks';
 import { useParams } from 'react-router-dom';

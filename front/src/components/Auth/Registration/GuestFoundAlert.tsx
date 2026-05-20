@@ -6,8 +6,9 @@ import {
   BUTTON_VARIANT,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { AUTH_UI, ICONS } from '@/constants';
+  ICONS,
+} from '@/shared';
+import { AUTH_UI } from '@/constants';
 import type { PlayerCompact } from '@/types';
 
 interface GuestFoundAlertProps {

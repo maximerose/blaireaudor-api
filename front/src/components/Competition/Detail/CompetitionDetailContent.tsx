@@ -1,4 +1,3 @@
-// front/src/components/Competition/Detail/CompetitionDetailContent.tsx
 import {
   ActionTable,
   Leaderboard,
@@ -7,8 +6,7 @@ import {
   InlineEnrollment,
   ReportingSection,
 } from '@/components/Competition';
-import { MainLayout } from '@/components/Layout';
-import { SectionHeader, SECTION_HEADER_VARIANT } from '@/components/UI';
+import { MainLayout, SectionHeader, SECTION_HEADER_VARIANT } from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import { useCompetitionContext } from '@/context';
 

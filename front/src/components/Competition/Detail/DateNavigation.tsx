@@ -1,5 +1,10 @@
-import { Button, BUTTON_SIZE, BUTTON_VARIANT } from '@/components/UI';
-import { cn, formatLongDate } from '@/utils';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  cn,
+  formatLongDate,
+} from '@/shared';
 import { useDateNavigation } from '@/hooks';
 import { COMPETITION_UI } from '@/constants';
 import { useActionTableContext, useCompetitionContext } from '@/context';

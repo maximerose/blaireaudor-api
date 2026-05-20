@@ -1,5 +1,4 @@
-import { API, ERRORS } from '@/constants';
-import { apiFetch } from '@/services';
+import { API, apiFetch, ERRORS } from '@/shared';
 
 export const resetPasswordService = {
   /**

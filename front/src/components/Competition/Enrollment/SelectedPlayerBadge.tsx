@@ -1,5 +1,11 @@
-import { Badge, BADGE_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
-import { BUTTONS, ICONS } from '@/constants';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Text,
+  TEXT_VARIANT,
+  BUTTONS,
+  ICONS,
+} from '@/shared';
 import type { PlayerCompact } from '@/types';
 
 interface SelectedPlayerBadgeProps {

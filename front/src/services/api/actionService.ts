@@ -1,6 +1,5 @@
 import type { Action, ActionCreatePayload, ActionUpdatePayload } from '@/types';
-import { apiFetch } from '@/services';
-import { API } from '@/constants';
+import { API, apiFetch } from '@/shared';
 
 export const actionService = {
   create: async (

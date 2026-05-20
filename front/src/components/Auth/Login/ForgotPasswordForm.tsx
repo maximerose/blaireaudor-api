@@ -1,13 +1,15 @@
-import { ROUTES, FORM, AUTH_UI } from '@/constants';
 import {
   Input,
   Button,
-  AuthCard,
   Alert,
   BUTTON_VARIANT,
-} from '@/components/UI';
-import { WizardLayout } from '@/components/Layout';
+  WizardLayout,
+  FORM,
+  ROUTES,
+} from '@/shared';
 import { useForgotPassword } from '@/hooks';
+import { AUTH_UI } from '@/constants';
+import { AuthCard } from '@/components/UI/AuthCard';
 
 export const ForgotPasswordForm = () => {
   const { register, handleSubmit, errors, isSuccess, isSubmitting } =

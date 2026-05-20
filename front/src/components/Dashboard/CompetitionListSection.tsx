@@ -4,10 +4,10 @@ import {
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-} from '@/components/UI';
+  UI,
+} from '@/shared';
 import { CompetitionCard } from '@/components/Dashboard';
 import type { DashboardItem } from '@/types';
-import { UI } from '@/constants';
 
 interface CompetitionListSectionProps {
   title: string;

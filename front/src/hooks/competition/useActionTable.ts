@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useInfiniteActions } from '@/hooks';
-import { getIdFromData } from '@/utils';
+import { getIdFromData, QUERY_KEYS, UI } from '@/shared';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
 import { competitionService } from '@/services';
 import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS, UI } from '@/constants';
 import { useAuthContext, useCompetitionContext } from '@/context';
 
 export const useActionTable = (competitionId: string | undefined) => {
@@ -66,9 +65,11 @@ export const useActionTable = (competitionId: string | undefined) => {
     const userId = user?.id;
 
     return {
-      myPending: pending.filter((a) => getIdFromData(a.created_by) === userId),
+      myPending: pending.filter(
+        (a) => getIdFromData(a.created_by_id) === userId,
+      ),
       othersPending: pending.filter(
-        (a) => getIdFromData(a.created_by) !== userId,
+        (a) => getIdFromData(a.created_by_id) !== userId,
       ),
       validated: processedActions.filter(
         (a) => a.status === ActionStatus.VALIDATED,

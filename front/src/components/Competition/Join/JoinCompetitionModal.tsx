@@ -8,10 +8,12 @@ import {
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
-} from '@/components/UI';
+  preventDefault,
+  FORM,
+  ICONS,
+  BUTTONS,
+} from '@/shared';
 import { JoinModalHeader } from '@/components/Competition';
-import { preventDefault } from '@/utils';
-import { FORM, ICONS, BUTTONS } from '@/constants';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';

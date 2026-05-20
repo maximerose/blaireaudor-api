@@ -1,5 +1,5 @@
 import { getRankMedal } from '@/utils';
-import { BADGE_VARIANT, type BadgeVariant } from '@/components/UI';
+import { BADGE_VARIANT, type BadgeVariant } from '@/shared';
 
 const RANK_VARIANTS: Record<number, BadgeVariant> = {
   1: BADGE_VARIANT.GOLD,

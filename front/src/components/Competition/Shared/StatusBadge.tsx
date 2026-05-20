@@ -1,4 +1,4 @@
-import { Badge, BADGE_VARIANT } from '@/components/UI';
+import { Badge, BADGE_VARIANT } from '@/shared';
 import { CompetitionStatus, type CompetitionStatusType } from '@/types';
 
 const STATUS_CONFIG = {

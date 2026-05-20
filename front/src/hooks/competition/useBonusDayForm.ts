@@ -6,8 +6,7 @@ import {
   useCompetitionDateLimits,
 } from '@/hooks';
 import type { BonusDay } from '@/types';
-import { getLocalDayString, sortByDate } from '@/utils';
-import { ERRORS, RULES } from '@/constants';
+import { getLocalDayString, sortByDate, ERRORS, RULES } from '@/shared';
 import { useCompetitionContext } from '@/context';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

@@ -1,7 +1,12 @@
-import { ROUTES } from '@/constants/routes';
-import { Button, BUTTON_SIZE, BUTTON_VARIANT } from '@/components/UI';
-import { cn } from '@/utils';
-import { BUTTONS, ICONS } from '@/constants';
+import {
+  ROUTES,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  cn,
+  BUTTONS,
+  ICONS,
+} from '@/shared';
 
 export const CreateCompetitionStepper = ({ step }: { step: number }) => {
   const renderCircle = (num: number) => {

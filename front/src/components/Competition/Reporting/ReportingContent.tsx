@@ -8,7 +8,7 @@ import {
   CARD_VARIANT,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
+} from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import {
   CompetitionCountdown,

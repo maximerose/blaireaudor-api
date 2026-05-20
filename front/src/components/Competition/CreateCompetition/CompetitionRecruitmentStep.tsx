@@ -5,12 +5,14 @@ import {
   BUTTON_SIZE,
   SectionHeader,
   SECTION_HEADER_VARIANT,
-} from '@/components/UI';
+  FORM,
+  ICONS,
+  BUTTONS,
+} from '@/shared';
 import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import { FORM, ICONS, BUTTONS } from '@/constants';
 import type { Player, PlayerCompact } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/validations';

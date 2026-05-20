@@ -6,8 +6,6 @@ export * from './AuthContext';
 export * from './AuthProvider';
 export * from './CompetitionContext';
 export * from './CompetitionProvider';
-export * from './ConfirmModalContext';
-export * from './ConfirmModalProvider';
 export * from './contextTypes';
 export * from './ReportActionContext';
 export * from './ReportActionProvider';

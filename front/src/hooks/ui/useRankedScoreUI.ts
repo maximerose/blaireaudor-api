@@ -1,4 +1,4 @@
-import { cn } from '@/utils';
+import { cn } from '@/shared';
 
 const RANK_SIZES: Record<number, string> = {
   1: 'text-2xl md:text-3xl',

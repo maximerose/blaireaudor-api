@@ -1,8 +1,7 @@
-import { Text, TEXT_VARIANT } from '@/components/UI';
+import { Text, TEXT_VARIANT, cn } from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import { useActionTableContext } from '@/context';
 import type { ActionSortField } from '@/types';
-import { cn } from '@/utils';
 
 interface Column {
   id: ActionSortField;

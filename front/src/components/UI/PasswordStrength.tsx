@@ -1,4 +1,4 @@
-import { cn, getPasswordStrength } from '@/utils';
+import { cn, getPasswordStrength } from '@/shared';
 
 interface PasswordStrengthProps {
   password?: string;

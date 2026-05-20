@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { ROUTES, ERRORS, SUCCESS } from '@/constants';
 import {
-  combineDateTime,
+  ROUTES,
+  ERRORS,
+  SUCCESS,
   getDatePart,
   getTimePart,
   snakeToCamel,
-} from '@/utils';
+  type ApiError,
+} from '@/shared';
+import { combineDateTime } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services';
-import type { ApiError, Competition, CompetitionUpdatePayload } from '@/types';
+import type { Competition, CompetitionUpdatePayload } from '@/types';
 import { useInvalidateCompetition } from '@/hooks';
 import { useForm } from 'react-hook-form';
 import {

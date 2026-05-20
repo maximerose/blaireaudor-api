@@ -9,7 +9,7 @@ import {
 import { authService } from '@/services';
 import { AuthContext, type AuthContextType } from '@/context';
 import type { User, LoginCredentials, AuthResult } from '@/types';
-import { LOG_MESSAGES } from '@/constants';
+import { LOG_MESSAGES } from '@/shared';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

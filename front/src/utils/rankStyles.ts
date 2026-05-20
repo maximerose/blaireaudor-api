@@ -1,4 +1,4 @@
-import { ICONS } from '@/constants';
+import { ICONS } from '@/shared';
 
 export const getRankTextColor = (rank: number) => {
   if (rank === 1) return 'text-[#FFD700]'; // Or

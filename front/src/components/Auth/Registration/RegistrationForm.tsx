@@ -1,18 +1,23 @@
 import { useRegistration } from '@/hooks';
-import { ROUTES, FORM, ICONS, AUTH_UI, AVAILABILITY } from '@/constants';
+import { AUTH_UI } from '@/constants';
 import { HistoricalPlayerSearch, GuestFoundAlert } from '@/components/Auth';
 import {
-  AuthCard,
+  AVAILABILITY,
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
+  cn,
+  FORM,
+  ICONS,
   Input,
-  PasswordStrength,
+  preventDefault,
+  ROUTES,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { cn, preventDefault } from '@/utils';
-import { WizardLayout } from '@/components/Layout';
+  WizardLayout,
+} from '@/shared';
+import { AuthCard } from '@/components/UI/AuthCard';
+import { PasswordStrength } from '@/components/UI/PasswordStrength';
 
 export const RegistrationForm = () => {
   const {

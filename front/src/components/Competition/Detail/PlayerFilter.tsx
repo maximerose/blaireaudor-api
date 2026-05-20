@@ -1,6 +1,14 @@
-import { Button, BUTTON_SIZE, BUTTON_VARIANT, Dropdown } from '@/components/UI';
-import { cn, normalizeString } from '@/utils';
-import { COMPETITION_UI, ICONS, UI } from '@/constants';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Dropdown,
+  cn,
+  normalizeString,
+  ICONS,
+  UI,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { usePermissions } from '@/hooks';
 import {
   useActionTableContext,

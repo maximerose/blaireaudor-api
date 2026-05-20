@@ -6,7 +6,7 @@ import {
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
-} from '@/components/UI';
+} from '@/shared';
 import { AUTH_UI } from '@/constants';
 
 interface LinkedProfileCardProps {

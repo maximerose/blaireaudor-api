@@ -1,15 +1,18 @@
 import { useParams } from 'react-router-dom';
-import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
 import {
+  ROUTES,
+  ICONS,
+  FORM,
   Input,
   Button,
-  AuthCard,
   Alert,
   LoadingScreen,
-  PasswordStrength,
-} from '@/components/UI';
-import { WizardLayout } from '@/components/Layout';
+  WizardLayout,
+} from '@/shared';
 import { useResetPassword } from '@/hooks';
+import { AUTH_UI } from '@/constants';
+import { AuthCard } from '@/components/UI/AuthCard';
+import { PasswordStrength } from '@/components/UI/PasswordStrength';
 
 export const ResetPasswordForm = () => {
   const { token } = useParams<{ token: string }>();

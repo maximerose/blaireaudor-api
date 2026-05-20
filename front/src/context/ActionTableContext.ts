@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 import type { ActionTableContextType } from '@/context';
 
 export const ActionTableContext = createContext<

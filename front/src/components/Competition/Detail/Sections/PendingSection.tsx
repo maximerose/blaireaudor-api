@@ -5,9 +5,9 @@ import {
   BADGE_VARIANT,
   TEXT_VARIANT,
   CARD_VARIANT,
-} from '@/components/UI';
+  cn,
+} from '@/shared';
 import { ActionRow } from '@/components/Competition';
-import { cn } from '@/utils';
 import { COMPETITION_UI } from '@/constants';
 import type { Action } from '@/types';
 import { useActionTableContext } from '@/context';

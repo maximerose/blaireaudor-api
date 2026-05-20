@@ -1,5 +1,5 @@
 import React from 'react';
-import { SECTION_HEADER_VARIANT, SectionHeader } from '@/components/UI';
+import { SECTION_HEADER_VARIANT, SectionHeader } from '@/shared';
 
 const AUTH_FORM_CARD =
   'bg-white/5 backdrop-blur-xl p-6 sm:p-8 rounded-[2.5rem] border border-gold/20 shadow-2xl w-full relative overflow-hidden';

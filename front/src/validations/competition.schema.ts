@@ -1,4 +1,4 @@
-import { ERRORS, RULES } from '@/constants';
+import { ERRORS, RULES } from '@/shared';
 import type { FormParticipant } from '@/types';
 import { z } from 'zod';
 

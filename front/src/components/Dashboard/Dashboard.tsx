@@ -4,15 +4,17 @@ import {
   EmptyState,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-} from '@/components/UI';
-import { ROUTES } from '@/constants/routes';
+  ROUTES,
+  ICONS,
+  NAV,
+  MainLayout,
+} from '@/shared';
 import { useDashboardUI } from '@/hooks';
 import {
   DashboardHeader,
   CompetitionListSection,
 } from '@/components/Dashboard';
-import { DASHBOARD_UI, ICONS, NAV } from '@/constants';
-import { MainLayout } from '../Layout';
+import { DASHBOARD_UI } from '@/constants';
 
 export const Dashboard = () => {
   const {

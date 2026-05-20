@@ -1,15 +1,17 @@
 import {
   Input,
-  PlayerSearchResultItem,
   Card,
   Text,
   TEXT_VARIANT,
   CARD_VARIANT,
-} from '@/components/UI';
+  FORM,
+  ICONS,
+} from '@/shared';
 import { useHistoricalSearchUI, type PlayerSearchLogic } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
 import type { Player } from '@/types';
-import { AUTH_UI, ICONS, FORM } from '@/constants';
+import { AUTH_UI } from '@/constants';
+import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
 
 export interface HistoricalSearchUIProps extends PlayerSearchLogic {
   onSelect: (player: Player) => void;

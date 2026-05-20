@@ -1,4 +1,4 @@
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 import { createContext, useContext } from 'react';
 import type { AuthContextType } from '@/context';
 

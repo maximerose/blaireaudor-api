@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLogout } from '@/hooks';
-import { LoadingScreen } from '@/components/UI';
+import { LoadingScreen } from '@/shared';
 import { AUTH_UI } from '@/constants';
 
 export const LogoutHandler = () => {

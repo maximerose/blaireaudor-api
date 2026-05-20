@@ -1,9 +1,15 @@
-import { Text, TEXT_VARIANT } from '@/components/UI';
-import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
+import {
+  Text,
+  TEXT_VARIANT,
+  BUTTONS,
+  ICONS,
+  cn,
+  formatShortDate,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { useCompetitionContext } from '@/context';
 import { useActionRow, useCompetitionAdmin } from '@/hooks';
 import { ActionStatus, type Action } from '@/types';
-import { cn, formatShortDate } from '@/utils';
 
 interface ActionRowDisplayModeProps {
   action: Action;

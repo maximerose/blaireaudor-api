@@ -2,16 +2,18 @@ import {
   Input,
   Button,
   Card,
-  PlayerSearchResultItem,
   Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
   CARD_VARIANT,
-} from '@/components/UI';
+  FORM,
+  BUTTONS,
+  ICONS,
+} from '@/shared';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
-import { FORM, BUTTONS, ICONS } from '@/constants';
+import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
 
 export const InlineEnrollment = () => {
   const {

@@ -1,3 +1,4 @@
+import { getIdFromData } from '@/shared';
 import {
   type Player,
   type Competition,
@@ -5,12 +6,7 @@ import {
   type CompetitionStatusType,
   CompetitionStatus,
 } from '@/types';
-import {
-  getIdFromData,
-  resolveCreatorId,
-  resolvePlayerId,
-  resolveUserId,
-} from '@/utils';
+import { resolveCreatorId, resolvePlayerId, resolveUserId } from '@/utils';
 
 /**
  * Détermine le statut (Cohérence avec la fin de journée forcée)

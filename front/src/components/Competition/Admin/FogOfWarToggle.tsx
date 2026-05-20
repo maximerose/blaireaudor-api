@@ -6,10 +6,11 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { COMPETITION_UI, ICONS } from '@/constants';
+  cn,
+  ICONS,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { useAdminContext } from '@/context';
-import { cn } from '@/utils';
 
 export const FogOfWarToggle = () => {
   const { isFogActive, handleToggleFog, isUpdating } = useAdminContext();

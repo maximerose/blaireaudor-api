@@ -3,7 +3,7 @@ import {
   SectionHeader,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
+} from '@/shared';
 import { DASHBOARD_UI } from '@/constants';
 import { useDashboardHeader } from '@/hooks';
 

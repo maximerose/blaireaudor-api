@@ -1,8 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/services';
-import { ERRORS } from '@/constants';
+import { ERRORS, type ApiError } from '@/shared';
 import { useAuthContext } from '@/context';
-import type { ApiError } from '@/types';
 
 export const useJoinByCode = (onSuccess: (code: string) => void) => {
   const { user, refreshUser } = useAuthContext();

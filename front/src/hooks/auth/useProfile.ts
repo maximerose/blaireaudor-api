@@ -11,9 +11,15 @@ import { useUsernameCheck } from './useUsernameCheck';
 import { useEmailCheck } from './useEmailCheck';
 import { userService } from '@/services';
 import toast from 'react-hot-toast';
-import { AVAILABILITY, ERRORS, SUCCESS } from '@/constants';
-import { camelToSnake, finalizeSlug, slugify } from '@/utils';
-import type { ApiError } from '@/types';
+import {
+  AVAILABILITY,
+  ERRORS,
+  SUCCESS,
+  camelToSnake,
+  finalizeSlug,
+  slugify,
+  type ApiError,
+} from '@/shared';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();

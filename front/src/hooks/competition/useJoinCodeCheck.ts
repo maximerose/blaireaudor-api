@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services';
-import { AVAILABILITY } from '@/constants';
+import { AVAILABILITY } from '@/shared';
 
 export const useJoinCodeCheck = (
   code: string | null,

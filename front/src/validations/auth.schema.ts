@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ERRORS, RULES } from '@/constants';
+import { ERRORS, RULES } from '@/shared';
 
 export const loginSchema = z.object({
   username: z.string().min(1, { message: ERRORS.VALIDATION.REQUIRED }),

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { finalizeSlug, slugify } from '@/utils';
+import { finalizeSlug, slugify } from '@/shared';
 import type { PlayerCompact } from '@/types';
 
 export const useRegistrationForm = () => {

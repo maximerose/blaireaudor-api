@@ -6,10 +6,13 @@ import {
   BADGE_VARIANT,
   TEXT_VARIANT,
   SectionHeader,
-} from '@/components/UI';
-import { formatLongDate } from '@/utils';
+  formatLongDate,
+  FORM,
+  ICONS,
+  BUTTONS,
+} from '@/shared';
 import { useBonusDayForm } from '@/hooks';
-import { COMPETITION_UI, FORM, ICONS, BUTTONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 import type { BonusDay } from '@/types';
 
 export const BonusDayManagement = () => {

@@ -1,23 +1,25 @@
+import { COMPETITION_UI } from '@/constants';
+import { useAuthContext, useCompetitionContext } from '@/context';
+import { usePermissions } from '@/hooks';
 import {
   Badge,
   BADGE_VARIANT,
+  formatLongDate,
+  ICONS,
   SECTION_HEADER_VARIANT,
   SectionHeader,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
+  UI,
+} from '@/shared';
 import {
-  formatLongDate,
   getCompetitionReferees,
   getDisplayDateText,
   resolveCreatorName,
 } from '@/utils';
-import { CompetitionCountdown } from '@/components/Competition';
-import { usePermissions } from '@/hooks';
-import type { BonusDay, RefereeListItem } from '@/types';
-import { COMPETITION_UI, ICONS, UI } from '@/constants';
 import { useMemo } from 'react';
-import { useAuthContext, useCompetitionContext } from '@/context';
+import { CompetitionCountdown } from './CompetitionCountdown';
+import type { BonusDay, RefereeListItem } from '@/types';
 
 export const CompetitionHeader = () => {
   const { user } = useAuthContext();

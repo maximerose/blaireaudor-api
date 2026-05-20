@@ -1,7 +1,13 @@
-import { Badge, BADGE_VARIANT, Text, TEXT_VARIANT } from '@/components/UI';
-import { FORM, ICONS } from '@/constants';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Text,
+  TEXT_VARIANT,
+  FORM,
+  ICONS,
+  cn,
+} from '@/shared';
 import type { PlayerCompact } from '@/types';
-import { cn } from '@/utils';
 
 interface SelectedPlayersListProps {
   participants: PlayerCompact[];

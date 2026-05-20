@@ -1,5 +1,4 @@
-import { pluralize } from '@/utils';
-import { ICONS } from './icons';
+import { pluralize, ICONS } from '@/shared';
 
 export const DASHBOARD_UI = {
   BUTTONS: {

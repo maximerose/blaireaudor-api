@@ -3,13 +3,12 @@ import type {
   ActionStatus,
   ActionUpdatePayload,
   ActionUpdateStatusPayload,
-  ApiError,
   Competition,
   CompetitionUpdatePayload,
 } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { actionService, competitionService } from '@/services';
-import { ERRORS, LOG_MESSAGES } from '@/constants';
+import { ERRORS, LOG_MESSAGES, type ApiError } from '@/shared';
 import { useCompetitionContext } from '@/context';
 import { useInvalidateCompetition } from '@/hooks';
 import toast from 'react-hot-toast';

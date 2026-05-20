@@ -1,5 +1,4 @@
-import { apiFetch } from '@/services';
-import { API } from '@/constants';
+import { API, apiFetch } from '@/shared';
 import type {
   Action,
   Competition,

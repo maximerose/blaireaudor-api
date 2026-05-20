@@ -1,17 +1,22 @@
-import { MainLayout } from '@/components/Layout';
+import {} from '@/shared/components/Layout';
 import {
+  MainLayout,
   Button,
   Card,
   CARD_VARIANT,
   Input,
-  PasswordStrength,
   SECTION_HEADER_VARIANT,
   SectionHeader,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { AVAILABILITY, BUTTONS, FORM, ICONS, PROFILE_UI } from '@/constants';
+  AVAILABILITY,
+  BUTTONS,
+  FORM,
+  ICONS,
+} from '@/shared';
 import { useProfile } from '@/hooks';
+import { PROFILE_UI } from '@/constants';
+import { PasswordStrength } from '@/components/UI/PasswordStrength';
 
 export const ProfilePage = () => {
   const {

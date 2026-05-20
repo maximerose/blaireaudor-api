@@ -1,5 +1,4 @@
-import { API } from '@/constants';
-import { apiFetch } from '@/services';
+import { API, apiFetch } from '@/shared';
 import type { AuthResult, LoginCredentials, RegisterData, User } from '@/types';
 
 export const authService = {

@@ -1,5 +1,4 @@
-import { SECTION_HEADER_VARIANT, SectionHeader } from '@/components/UI';
-import { FORM, ICONS } from '@/constants';
+import { SECTION_HEADER_VARIANT, SectionHeader, FORM, ICONS } from '@/shared';
 
 export const JoinModalHeader = () => {
   return (

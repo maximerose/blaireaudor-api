@@ -1,4 +1,4 @@
-import { getIdFromData } from '@/utils';
+import { getIdFromData } from '@/shared';
 import type {
   User,
   Player,

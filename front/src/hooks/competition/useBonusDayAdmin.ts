@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bonusDayService } from '@/services';
 import { toast } from 'react-hot-toast';
-import { ERRORS, QUERY_KEYS, SUCCESS } from '@/constants';
-import type { ApiError, BonusDay } from '@/types';
+import { ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
+import type { BonusDay } from '@/types';
 
 export const useBonusDayAdmin = (
   competitionId: string,

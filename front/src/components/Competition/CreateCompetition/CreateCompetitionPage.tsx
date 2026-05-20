@@ -1,6 +1,5 @@
 import { CreateCompetitionView } from '@/components/Competition';
-import { WizardLayout } from '@/components/Layout';
-import { Card, CARD_VARIANT } from '@/components/UI';
+import { WizardLayout, Card, CARD_VARIANT } from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import { useCreateCompetitionPageUI } from '@/hooks';
 

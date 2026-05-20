@@ -1,7 +1,6 @@
 import type React from 'react';
-import { Badge, BADGE_VARIANT, Text } from '@/components/UI';
+import { Badge, BADGE_VARIANT, Text, FORM, ICONS } from '@/shared';
 import { usePlayerSearchResultUI } from '@/hooks';
-import { FORM, ICONS } from '@/constants';
 import type { PlayerCompact } from '@/types';
 
 interface Props extends Omit<

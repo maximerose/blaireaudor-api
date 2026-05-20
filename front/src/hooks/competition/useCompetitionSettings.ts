@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react';
-import { getLocalDayString, sortByDate } from '@/utils';
+import { getLocalDayString, sortByDate } from '@/shared';
 import type { Competition, BonusDay, EnrichedLeaderboardItem } from '@/types';
 import type { CompetitionContextType } from '@/context';
 

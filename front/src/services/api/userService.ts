@@ -1,5 +1,5 @@
-import { API } from '@/constants';
-import { apiFetch } from '@/services';
+import { API } from '@/shared';
+import { apiFetch } from '@/shared';
 
 export const userService = {
   /**

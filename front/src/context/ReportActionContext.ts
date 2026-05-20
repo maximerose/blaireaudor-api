@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { ReportActionContextType } from '@/context';
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 
 export const ReportActionContext = createContext<
   ReportActionContextType | undefined

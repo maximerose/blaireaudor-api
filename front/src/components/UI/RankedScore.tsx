@@ -1,6 +1,5 @@
 import type React from 'react';
-import { Text, TEXT_VARIANT } from '@/components/UI';
-import { cn } from '@/utils';
+import { Text, TEXT_VARIANT, cn } from '@/shared';
 import { useRankedScoreUI } from '@/hooks';
 
 interface RankedScoreProps extends React.HTMLAttributes<HTMLDivElement> {

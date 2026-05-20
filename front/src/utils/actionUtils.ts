@@ -12,17 +12,6 @@ export const groupActionsByDate = (actions: Action[]) => {
   }, {});
 };
 
-/**
- * Formate une date en "Lundi 19 avril"
- */
-export const formatLongDate = (dateStr: string) => {
-  return new Intl.DateTimeFormat('fr-FR', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(new Date(dateStr));
-};
-
 export const getUniqueDates = (actions: Action[]) => {
   const dates = new Set(actions.map((a) => a.date_action.split('T')[0]));
   return Array.from(dates).sort((a, b) => a.localeCompare(b));

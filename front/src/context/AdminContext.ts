@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { AdminContextType } from '@/context';
-import { ERRORS } from '@/constants';
+import { ERRORS } from '@/shared';
 
 export const AdminContext = createContext<AdminContextType | undefined>(
   undefined,

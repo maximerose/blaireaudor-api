@@ -1,5 +1,4 @@
-import { Input, Button, BUTTON_VARIANT } from '@/components/UI';
-import { FORM, BUTTONS } from '@/constants';
+import { Input, Button, BUTTON_VARIANT, FORM, BUTTONS } from '@/shared';
 import { useCompetitionContext } from '@/context';
 import { useActionRowInteraction, useCompetitionAdmin } from '@/hooks';
 import type { Action } from '@/types';

@@ -1,11 +1,5 @@
-import {
-  Card,
-  Text,
-  PlayerSearchResultItem,
-  TEXT_VARIANT,
-  CARD_VARIANT,
-} from '@/components/UI';
-import { FORM } from '@/constants';
+import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
+import { Card, Text, TEXT_VARIANT, CARD_VARIANT, FORM } from '@/shared';
 import type { PlayerCompact } from '@/types';
 
 interface PlayerSearchResultsDropdownProps {

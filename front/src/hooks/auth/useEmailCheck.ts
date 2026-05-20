@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '@/services';
-import { AVAILABILITY, QUERY_KEYS } from '@/constants';
+import { AVAILABILITY, QUERY_KEYS } from '@/shared';
 
 export const useEmailCheck = (email: string) => {
   const [debouncedEmail, setDebouncedEmail] = useState('');

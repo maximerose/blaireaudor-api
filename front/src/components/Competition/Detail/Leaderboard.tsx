@@ -4,10 +4,11 @@ import {
   EmptyState,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
+  ICONS,
+} from '@/shared';
 import { LeaderboardRow } from '@/components/Competition';
 import { useLeaderboardUI } from '@/hooks';
-import { COMPETITION_UI, ICONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 
 export const Leaderboard = () => {
   const {

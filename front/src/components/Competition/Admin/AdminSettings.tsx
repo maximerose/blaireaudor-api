@@ -4,11 +4,14 @@ import {
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
+  BUTTONS,
   Card,
   CARD_VARIANT,
+  cn,
+  ICONS,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
+} from '@/shared';
 import {
   BonusDayManagement,
   CloseCompetitionAction,
@@ -18,8 +21,7 @@ import {
   RefereeManagement,
 } from '@/components/Competition';
 import { useState } from 'react';
-import { cn } from '@/utils';
-import { COMPETITION_UI, BUTTONS, ICONS } from '@/constants';
+import { COMPETITION_UI } from '@/constants';
 import { usePermissions } from '@/hooks';
 import { AdminProvider, useCompetitionContext } from '@/context';
 

@@ -7,10 +7,11 @@ import {
   CARD_VARIANT,
   SectionHeader,
   SECTION_HEADER_VARIANT,
-} from '@/components/UI';
+  FORM,
+  ICONS,
+} from '@/shared';
 import { useReportAction } from '@/hooks';
 import { PlayerDropdownList } from '@/components/Competition';
-import { FORM, ICONS } from '@/constants';
 import { useCompetitionContext, useReportingContext } from '@/context';
 
 export const ReportActionForm = () => {

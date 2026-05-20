@@ -2,20 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services';
 import { useEmailCheck, usePlayerSearch, useUsernameCheck } from '@/hooks';
-import type {
-  Player,
-  AuthResponseData,
-  ApiError,
-  PlayerCompact,
-} from '@/types';
-import {
-  AUTH_UI,
-  FORM,
-  ERRORS,
-  ICONS,
-  LOG_MESSAGES,
-  AVAILABILITY,
-} from '@/constants';
+import type { Player, AuthResponseData, PlayerCompact } from '@/types';
+import { AUTH_UI } from '@/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthContext } from '@/context';
 import { useForm } from 'react-hook-form';
@@ -24,7 +12,16 @@ import {
   registerSchema,
 } from '@/validations/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { slugify, finalizeSlug } from '@/utils';
+import {
+  slugify,
+  finalizeSlug,
+  type ApiError,
+  LOG_MESSAGES,
+  AVAILABILITY,
+  FORM,
+  ICONS,
+  ERRORS,
+} from '@/shared';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();

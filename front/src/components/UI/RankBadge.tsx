@@ -1,6 +1,5 @@
 import type React from 'react';
-import { Badge } from '@/components/UI';
-import { cn } from '@/utils';
+import { Badge, cn } from '@/shared';
 import { useRankBadgeUI } from '@/hooks';
 
 interface RankBadgeProps extends React.HTMLAttributes<HTMLDivElement> {

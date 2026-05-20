@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES, ERRORS } from '@/constants';
-import { slugify } from '@/utils';
+import { ROUTES, ERRORS, slugify } from '@/shared';
 import { useAuthContext } from '@/context';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

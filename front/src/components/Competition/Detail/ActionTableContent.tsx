@@ -9,8 +9,10 @@ import {
   SectionHeader,
   Text,
   TEXT_VARIANT,
-} from '@/components/UI';
-import { COMPETITION_UI, ICONS, UI } from '@/constants';
+  ICONS,
+  UI,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { useActionTableContext, useCompetitionContext } from '@/context';
 import {
   ActionRow,

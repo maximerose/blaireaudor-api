@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useJoinByCode } from '@/hooks';
-import { formatJoinCode } from '@/utils';
+import { formatJoinCode } from '@/shared';
 
 export const useJoinCompetitionModal = (onJoined: (code: string) => void) => {
   const [code, setCode] = useState('');

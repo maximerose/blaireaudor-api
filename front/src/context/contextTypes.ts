@@ -6,7 +6,6 @@ import type {
   ActionSortField,
   PlayerCompact,
   ActionFormData,
-  ModalOptions,
   User,
   LoginCredentials,
   AuthResult,
@@ -87,13 +86,4 @@ export interface ReportActionContextType {
   searchContainerRef: React.RefObject<HTMLDivElement | null>;
   filteredPlayers: PlayerCompact[];
   selectPlayer: (id: string, name: string) => void;
-}
-
-export interface ConfirmModalContextType {
-  isOpen: boolean;
-  isLoading: boolean;
-  options: ModalOptions | null;
-  openModal: (options: ModalOptions) => void;
-  closeModal: () => void;
-  handleConfirm: () => Promise<void>;
 }

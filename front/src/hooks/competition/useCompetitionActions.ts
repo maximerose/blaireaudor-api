@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { competitionService } from '@/services';
-import { QUERY_KEYS } from '@/constants';
+import { QUERY_KEYS } from '@/shared';
 
 export const useCompetitionActions = (competitionId: string | undefined) => {
   return useInfiniteQuery({

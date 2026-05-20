@@ -1,5 +1,6 @@
+import { getIdFromData } from '@/shared';
 import type { Competition, EnrichedLeaderboardItem } from '@/types';
-import { getIdFromData, getRankMedal, isCreator, isReferee } from '@/utils';
+import { getRankMedal, isCreator, isReferee } from '@/utils';
 
 export const useLeaderboardRow = (
   participation: EnrichedLeaderboardItem,

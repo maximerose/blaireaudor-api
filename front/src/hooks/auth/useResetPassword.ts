@@ -4,10 +4,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { resetPasswordService } from '@/services';
-import { ROUTES, AUTH_UI, ERRORS } from '@/constants';
+import { ROUTES, ERRORS, type ApiError, camelToSnake } from '@/shared';
 import { resetPasswordSchema, type ResetPasswordFormData } from '@/validations';
-import type { ApiError } from '@/types';
-import { camelToSnake } from '@/utils';
+import { AUTH_UI } from '@/constants';
 
 export const useResetPassword = (token: string | undefined) => {
   const navigate = useNavigate();

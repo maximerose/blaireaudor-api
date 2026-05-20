@@ -5,8 +5,10 @@ import {
   BUTTON_SIZE,
   BADGE_VARIANT,
   SectionHeader,
-} from '@/components/UI';
-import { BUTTONS, COMPETITION_UI, ICONS } from '@/constants';
+  ICONS,
+  BUTTONS,
+} from '@/shared';
+import { COMPETITION_UI } from '@/constants';
 import { useCompetitionDelete, usePermissions } from '@/hooks';
 import { useCompetitionContext } from '@/context';
 

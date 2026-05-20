@@ -1,16 +1,19 @@
 import { useLogin } from '@/hooks';
-import { ROUTES, ICONS, FORM, AUTH_UI } from '@/constants';
 import {
   Input,
   Button,
-  AuthCard,
   Text,
   TEXT_VARIANT,
   Alert,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-} from '@/components/UI';
-import { WizardLayout } from '@/components/Layout';
+  WizardLayout,
+  FORM,
+  ICONS,
+  ROUTES,
+} from '@/shared';
+import { AUTH_UI } from '@/constants';
+import { AuthCard } from '@/components/UI/AuthCard';
 
 export const LoginForm = () => {
   const {

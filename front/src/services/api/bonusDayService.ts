@@ -1,6 +1,5 @@
 import type { BonusDay } from '@/types';
-import { apiFetch } from '@/services';
-import { API } from '@/constants';
+import { API, apiFetch } from '@/shared';
 
 export const bonusDayService = {
   create: async (competitionId: string, date: string, multiplier: number) => {
