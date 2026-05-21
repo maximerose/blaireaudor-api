@@ -1,4 +1,5 @@
-import type { Competition, Player } from '@/types';
+import type { Player } from '@/features/player';
+import type { Competition } from '@/types';
 
 export interface User {
   id: string;

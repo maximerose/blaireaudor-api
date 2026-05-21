@@ -19,7 +19,8 @@ import {
 } from '@/utils';
 import { useMemo } from 'react';
 import { CompetitionCountdown } from './CompetitionCountdown';
-import type { BonusDay, RefereeListItem } from '@/types';
+import type { BonusDay } from '@/types';
+import type { RefereeListItem } from '@/features/player';
 
 export const CompetitionHeader = () => {
   const { user } = useAuthContext();

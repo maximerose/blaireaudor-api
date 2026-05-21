@@ -1,4 +1,4 @@
-import type { Player } from '@/types/player';
+import type { Player } from '@/features/player';
 import { API, apiFetch } from '@/shared';
 
 export const playerService = {

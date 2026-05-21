@@ -1,9 +1,8 @@
+import type { FormParticipant, Player } from '@/features/player';
 import type {
   BonusDay,
   EnrichedLeaderboardItem,
-  FormParticipant,
   Participation,
-  Player,
   User,
 } from '@/types';
 

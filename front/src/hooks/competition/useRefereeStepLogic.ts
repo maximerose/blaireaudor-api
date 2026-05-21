@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { FormParticipant } from '@/types';
+import type { FormParticipant } from '@/features/player';
 import type { CreateCompetitionFormData } from '@/validations';
 
 export const useRefereeStepLogic = (formData: CreateCompetitionFormData) => {

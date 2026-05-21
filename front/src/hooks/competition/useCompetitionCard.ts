@@ -4,16 +4,12 @@ import {
   getCompetitionStatus,
   canRevealScores,
 } from '@/utils';
-import type {
-  Competition,
-  Participation,
-  Player,
-  PlayerCompact,
-} from '@/types';
+import type { Competition, Participation } from '@/types';
 import { useAuthContext } from '@/context';
 import { useQuery } from '@tanstack/react-query';
 import { getIdFromData, QUERY_KEYS } from '@/shared';
 import { competitionService } from '@/services';
+import type { Player, PlayerCompact } from '@/features/player';
 
 export const useCompetitionCard = (
   competition: Competition,

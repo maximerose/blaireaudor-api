@@ -13,7 +13,7 @@ import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import type { Player, PlayerCompact } from '@/types';
+import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/validations';
 

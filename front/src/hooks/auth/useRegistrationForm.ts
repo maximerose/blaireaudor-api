@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { finalizeSlug, slugify } from '@/shared';
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 
 export const useRegistrationForm = () => {
   const [formData, setFormData] = useState({

@@ -1,12 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useEnrollment, usePermissions } from '@/hooks';
-import type {
-  FormParticipant,
-  Participation,
-  Player,
-  PlayerCompact,
-} from '@/types';
+import type { Participation } from '@/types';
 import { useCompetitionContext } from '@/context';
+import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
 
 const getNewPlayers = (
   participants: FormParticipant[],

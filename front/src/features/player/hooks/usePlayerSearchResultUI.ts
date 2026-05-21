@@ -1,4 +1,4 @@
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 import { cn } from '@/shared';
 
 export const usePlayerSearchResultUI = (

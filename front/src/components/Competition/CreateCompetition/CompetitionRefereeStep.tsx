@@ -18,7 +18,7 @@ import {
   SelectedPlayersList,
   PlayerSearchResultsDropdown,
 } from '@/components/Competition';
-import type { FormParticipant, Player, PlayerCompact } from '@/types';
+import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
 import { useRefereeStepLogic } from '@/hooks';
 import { useAuthContext } from '@/context';
 import type { UseFormReturn } from 'react-hook-form';

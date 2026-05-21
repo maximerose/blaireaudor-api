@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { usePlayerSearch } from '@/hooks';
+import {
+  usePlayerSearch,
+  type FormParticipant,
+  type Player,
+  type PlayerCompact,
+} from '@/features/player';
 import { formatToApiISO } from '@/utils';
 import { competitionService } from '@/services';
-import type {
-  FormParticipant,
-  Player,
-  Competition,
-  PlayerCompact,
-  CompetitionCreatePayload,
-} from '@/types';
+import type { Competition, CompetitionCreatePayload } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   cleanJoinCode,

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services';
-import { useEmailCheck, usePlayerSearch, useUsernameCheck } from '@/hooks';
-import type { Player, AuthResponseData, PlayerCompact } from '@/types';
+import { useEmailCheck, useUsernameCheck } from '@/hooks';
+import type { AuthResponseData } from '@/types';
 import { AUTH_UI } from '@/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthContext } from '@/context';
@@ -22,6 +22,11 @@ import {
   ICONS,
   ERRORS,
 } from '@/shared';
+import {
+  usePlayerSearch,
+  type Player,
+  type PlayerCompact,
+} from '@/features/player';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();

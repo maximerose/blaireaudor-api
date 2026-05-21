@@ -9,7 +9,7 @@ import {
   ICONS,
 } from '@/shared';
 import { AUTH_UI } from '@/constants';
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 
 interface GuestFoundAlertProps {
   foundGuest: PlayerCompact;

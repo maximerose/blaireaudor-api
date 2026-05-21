@@ -1,10 +1,10 @@
+import type { PlayerCompact } from '@/features/player';
 import type {
   Competition,
   BonusDay,
   EnrichedLeaderboardItem,
   Action,
   ActionSortField,
-  PlayerCompact,
   ActionFormData,
   User,
   LoginCredentials,

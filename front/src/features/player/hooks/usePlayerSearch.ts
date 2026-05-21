@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { playerService } from '@/services';
-import type { Player } from '@/types';
+import { playerService, type Player } from '@/features/player';
 import { QUERY_KEYS } from '@/shared';
 
 export interface PlayerSearchLogic {

@@ -7,11 +7,14 @@ import {
   FORM,
   ICONS,
 } from '@/shared';
-import { useHistoricalSearchUI, type PlayerSearchLogic } from '@/hooks';
+import { useHistoricalSearchUI } from '@/hooks';
 import { LinkedProfileCard } from '@/components/Auth';
-import type { Player } from '@/types';
 import { AUTH_UI } from '@/constants';
-import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
+import {
+  PlayerSearchResultItem,
+  type Player,
+  type PlayerSearchLogic,
+} from '@/features/player';
 
 export interface HistoricalSearchUIProps extends PlayerSearchLogic {
   onSelect: (player: Player) => void;

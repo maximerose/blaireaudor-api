@@ -7,7 +7,7 @@ import {
   ICONS,
   cn,
 } from '@/shared';
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 
 interface SelectedPlayersListProps {
   participants: PlayerCompact[];

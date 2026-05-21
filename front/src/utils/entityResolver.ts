@@ -1,10 +1,6 @@
+import type { Player } from '@/features/player';
 import { getIdFromData } from '@/shared';
-import type {
-  User,
-  Player,
-  Competition,
-  EnrichedLeaderboardItem,
-} from '@/types';
+import type { User, Competition, EnrichedLeaderboardItem } from '@/types';
 
 /**
  * Extrait l'ID Utilisateur (UUID) de n'importe quel sujet

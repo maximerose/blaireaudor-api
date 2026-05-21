@@ -1,5 +1,5 @@
 import { Card, CARD_VARIANT, Text, TEXT_VARIANT, FORM, cn } from '@/shared';
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 
 interface PlayerDropdownListProps {
   filteredPlayers: PlayerCompact[];

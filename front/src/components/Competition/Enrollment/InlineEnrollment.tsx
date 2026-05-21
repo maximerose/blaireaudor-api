@@ -13,7 +13,7 @@ import {
 } from '@/shared';
 import { useInlineEnrollmentUI } from '@/hooks';
 import { SelectedPlayerBadge } from '@/components/Competition';
-import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
+import { PlayerSearchResultItem } from '@/features/player';
 
 export const InlineEnrollment = () => {
   const {

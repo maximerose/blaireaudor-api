@@ -12,8 +12,11 @@ import {
 import { COMPETITION_UI } from '@/constants';
 import { useAuthContext, useCompetitionContext } from '@/context';
 import { usePermissions, useRefereeManagementUI } from '@/hooks';
-import type { Player, RefereeListItem } from '@/types';
-import { PlayerSearchResultItem } from '@/components/UI/PlayerSearchResultItem';
+import {
+  PlayerSearchResultItem,
+  type Player,
+  type RefereeListItem,
+} from '@/features/player';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetitionContext();

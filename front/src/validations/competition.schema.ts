@@ -1,5 +1,5 @@
 import { ERRORS, RULES } from '@/shared';
-import type { FormParticipant } from '@/types';
+import type { FormParticipant } from '@/features/player';
 import { z } from 'zod';
 
 export const createCompetitionSchema = z

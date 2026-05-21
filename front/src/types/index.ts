@@ -3,5 +3,4 @@ export * from './auth';
 export * from './bonusDay';
 export * from './competition';
 export * from './participation';
-export * from './player';
 export * from './user';

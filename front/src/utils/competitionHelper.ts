@@ -1,6 +1,6 @@
+import type { Player } from '@/features/player';
 import { getIdFromData } from '@/shared';
 import {
-  type Player,
   type Competition,
   type User,
   type CompetitionStatusType,

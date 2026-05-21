@@ -6,7 +6,7 @@ import {
   BUTTONS,
   ICONS,
 } from '@/shared';
-import type { PlayerCompact } from '@/types';
+import type { PlayerCompact } from '@/features/player';
 
 interface SelectedPlayerBadgeProps {
   player: PlayerCompact;

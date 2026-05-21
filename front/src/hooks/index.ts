@@ -37,7 +37,6 @@ export * from './competition/useJoinCodeCheck';
 export * from './competition/useJoinCompetitionModal';
 export * from './competition/useLeaderboardUI';
 export * from './competition/useParticipationDelete';
-export * from './competition/usePlayerSearch';
 export * from './competition/useRefereeManagementUI';
 export * from './competition/useRefereeStepLogic';
 export * from './competition/useReportAction';
@@ -50,7 +49,6 @@ export * from './ui/useActionRow';
 export * from './ui/useDateNavigation';
 export * from './ui/useHistoricalSearchUI';
 export * from './ui/useLeaderboardRow';
-export * from './ui/usePlayerSearchResultUI';
 export * from './ui/useRankBadgeUI';
 export * from './ui/useRankedScoreUI';
 
