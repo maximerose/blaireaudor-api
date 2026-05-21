@@ -79,7 +79,7 @@ export const GuestFoundAlert = ({
         className="mt-2 w-full border-info-bright/30 hover:bg-info/20 text-info-bright transition-default"
         onClick={onLink}
         type="button"
-        aria-label={`Lier le profil existant de ${foundGuest.display_name} à mon compte`}
+        aria-label={AUTH_UI.GUEST_ALERT.ARIA_LINK(foundGuest.display_name)}
       >
         {AUTH_UI.GUEST_ALERT.LINK_BUTTON}
       </Button>

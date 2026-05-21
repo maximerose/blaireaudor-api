@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TEXT_VARIANT } from './Text';
 import { useEmptyStateUI } from '@/shared/hooks';
-import { ICONS } from '@/shared/constants';
+import { ICONS, UI } from '@/shared/constants';
 
 const ICON_STYLE =
   'text-3xl sm:text-4xl opacity-30 mb-4 animate-bounce-subtle select-none';
@@ -30,7 +30,7 @@ export const EmptyState = ({
       {...wrapperProps}
       {...props}
       role="status"
-      aria-label={`Information : ${title}`}
+      aria-label={UI.INFO_ARIA(title)}
     >
       <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 animate-fade-in">
         <div className={ICON_STYLE} aria-hidden="true">

@@ -165,7 +165,6 @@ export const ProfilePage = () => {
         <Card
           variant={CARD_VARIANT.DARK}
           className="p-6 sm:p-8 animate-slide-up"
-          style={{ animationDelay: '100ms' }}
         >
           <SectionHeader
             variant={SECTION_HEADER_VARIANT.BLOCK}

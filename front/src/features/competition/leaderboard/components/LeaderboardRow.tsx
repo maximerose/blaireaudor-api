@@ -130,7 +130,9 @@ export const LeaderboardRow = ({
 
       <div
         className="col-span-3 flex items-center justify-end"
-        aria-label={`Score : ${participation.score} points`}
+        aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_SCORE(
+          participation.score,
+        )}
       >
         {showRealStats || participation.isMe ? (
           <RankedScore

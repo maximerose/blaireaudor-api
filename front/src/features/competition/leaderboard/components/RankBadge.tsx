@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Badge, cn } from '@/shared';
 import { useRankBadgeUI } from '@/features/competition/leaderboard/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
 
 interface RankBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   rank: number;
@@ -15,7 +16,10 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
       className={cn('flex items-center gap-2', className)}
       {...props}
       role="group"
-      aria-label={`Rang : ${rank}${suffix}`}
+      aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_RANK(
+        rank,
+        suffix,
+      )}
     >
       {medal && (
         <span

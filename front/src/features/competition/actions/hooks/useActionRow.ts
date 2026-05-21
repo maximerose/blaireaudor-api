@@ -1,12 +1,13 @@
 import { useAuthContext } from '@/features/account';
 import { ActionStatus, type Action } from '@/features/competition/types';
 import { useCompetitionContext } from '@/features/competition/context';
+import { UI } from '@/shared';
 
 export const useActionRow = (action: Action) => {
   const { hidePoints, getMultiplier } = useCompetitionContext();
   const { user } = useAuthContext();
 
-  const playerName = action.player_name || 'Anonyme';
+  const playerName = action.player_name || UI.ANONYMOUS;
 
   const playerIsMe = action.player_id === user?.player?.id;
   const creatorIsMe = action.created_by_id === user?.id;

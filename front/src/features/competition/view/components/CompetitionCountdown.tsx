@@ -1,5 +1,6 @@
 import { Text, TEXT_VARIANT, cn } from '@/shared';
 import { useCompetitionCountdown } from '@/features/competition/view/hooks';
+import { COMPETITION_UI } from '../../constants';
 
 interface CompetitionCountdownProps {
   targetDate: string;
@@ -22,7 +23,11 @@ export const CompetitionCountdown = ({
   if (!timeLeft) return null;
 
   if (timeLeft.isElapsed) {
-    return <Text variant={TEXT_VARIANT.MONO}>{elapsedText || 'Terminée'}</Text>;
+    return (
+      <Text variant={TEXT_VARIANT.MONO}>
+        {elapsedText || COMPETITION_UI.DETAIL.COUNTDOWN.ELAPSED}
+      </Text>
+    );
   }
 
   return (
@@ -37,8 +42,8 @@ export const CompetitionCountdown = ({
       >
         {timeLeft.days > 0
           ? timeLeft.days === 1
-            ? 'demain'
-            : `dans ${timeLeft.days} jours`
+            ? COMPETITION_UI.DETAIL.COUNTDOWN.TOMORROW
+            : COMPETITION_UI.DETAIL.COUNTDOWN.IN_DAYS(timeLeft.days)
           : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
       </span>
     </Text>

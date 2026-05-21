@@ -22,7 +22,7 @@ export const DateNavigation = () => {
   return (
     <nav
       className="relative group z-20"
-      aria-label="Filtrer les actions par date"
+      aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ARIA_FILTER_DATE}
     >
       <div
         ref={scrollRef}

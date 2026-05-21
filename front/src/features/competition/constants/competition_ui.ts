@@ -58,6 +58,11 @@ export const COMPETITION_UI = {
     PROTECTED: 'Historique protégé',
     MASKED_POINTS: '??',
     POINTS_SHORT: 'pts',
+    COUNTDOWN: {
+      TOMORROW: 'demain',
+      IN_DAYS: (days: number) => `dans ${days} jours`,
+      ELAPSED: 'Terminée',
+    },
     SECTIONS: {
       HEADER: {
         JOIN_CODE_ARIA: "Code d'accès : ",
@@ -95,6 +100,7 @@ export const COMPETITION_UI = {
         DELETE_PARTICIPATION: 'Supprimer la participation',
         ARIA_DELETE_PARTICIPATION: (playerName: string) =>
           `Supprimer la participation de ${playerName} ?`,
+        ARIA_RANK: (rank: number, suffix: string) => `Rang : ${rank}${suffix}`,
         ARIA_SCORE: (points: number) =>
           `Score: ${points} ${pluralize(points, 'point')}`,
       },
@@ -110,6 +116,8 @@ export const COMPETITION_UI = {
           EMPTY_ACTIONS_TITLE: 'Journal vide',
           EMPTY_ACTIONS_SUBTITILE: 'Aucune action validée...',
           ALL_DATES: 'Toutes les dates',
+          ARIA_TABLE: 'Historique des actions',
+          ARIA_FILTER_DATE: 'Filtrer les actions par date',
         },
         SUB_SECTIONS: {
           PENDING: `${ICONS.REFEREE} Actions en attente`,

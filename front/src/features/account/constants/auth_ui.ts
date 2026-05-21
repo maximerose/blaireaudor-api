@@ -21,6 +21,8 @@ export const AUTH_UI = {
     NEW_PLAYER: 'Nouveau joueur',
     USERNAME_PREFIX: 'Le pseudo',
     LINK_BUTTON: "C'est moi, lier ce profil",
+    ARIA_LINK: (name: string) =>
+      `Lier le profil existant de ${name} à mon compte`,
   },
 
   HISTORICAL: {
@@ -52,5 +54,6 @@ export const AUTH_UI = {
     SUBMIT: 'Sauvegarder',
     SUCCESS: 'Mot de passe mis à jour ! Tu peux te connecter.',
     INVALID_TOKEN: 'Ce lien est invalide ou a expiré.',
+    VALIDATE_LINK: 'Vérification du lien...',
   },
 } as const;

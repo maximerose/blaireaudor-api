@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Text, TEXT_VARIANT } from './Text';
 import { cn } from '@/shared/utils';
+import { UI } from '@/shared/constants';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -13,7 +14,7 @@ const BAR_ANIMATION =
   'absolute inset-0 bg-gold/40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden';
 
 export const LoadingScreen = ({
-  message = 'Chargement...',
+  message = UI.LOADING_DEFAULT,
   layout = 'fullscreen',
   className = '',
   ...props
@@ -53,9 +54,7 @@ export const LoadingScreen = ({
         </div>
       </div>
 
-      <span className="sr-only">
-        Veuillez patienter, le contenu de l'arène est en cours de chargement.
-      </span>
+      <span className="sr-only">{UI.LOADING_SR}</span>
     </div>
   );
 };

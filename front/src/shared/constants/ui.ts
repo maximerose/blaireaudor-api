@@ -7,5 +7,10 @@ export const UI = {
   ENTRIES: (count: number) => `${count} ${pluralize(count, 'entrée')}`,
   NOT_FOUND_TITLE: 'Erreur 404',
   NOT_FOUND_SUBTITLE:
-    "La ressource que tu cherches n'existe pas ou a été supprimée.",
+    "La ressource que vous cherchez n'existe pas ou a été supprimée.",
+  ANONYMOUS: 'Anonyme',
+  LOADING_DEFAULT: 'Chargement...',
+  LOADING_SR:
+    'Veuillez patienter, le contenu de la page est en cours de chargement.',
+  INFO_ARIA: (title: string) => `Information : ${title}`,
 };

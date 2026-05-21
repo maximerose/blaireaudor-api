@@ -28,7 +28,8 @@ export const ResetPasswordForm = () => {
 
   const passwordValue = watch('plain_password') || '';
 
-  if (isValidating) return <LoadingScreen message="Vérification du lien..." />;
+  if (isValidating)
+    return <LoadingScreen message={AUTH_UI.RESET_PASSWORD.VALIDATE_LINK} />;
 
   return (
     <WizardLayout title={AUTH_UI.RESET_PASSWORD.TITLE}>

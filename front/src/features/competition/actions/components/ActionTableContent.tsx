@@ -53,12 +53,10 @@ export const ActionTableContent = () => {
       <div
         className="space-y-12 animate-fade-in"
         role="table"
-        aria-label="Historique des actions"
+        aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ARIA_TABLE}
       >
-        {/* 1. Modération : Pending & Jury */}
         <PendingSection />
 
-        {/* 2. Journal principal : Validated */}
         <section className="space-y-4">
           <PlayerFilter />
 
@@ -121,7 +119,6 @@ export const ActionTableContent = () => {
           </Card>
         </section>
 
-        {/* 3. Archives : Rejected */}
         {isAdmin && categories.rejected.length > 0 && (
           <section className="opacity-20 grayscale hover:opacity-60 transition-all duration-700">
             <Text
