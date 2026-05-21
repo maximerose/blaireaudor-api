@@ -3,7 +3,7 @@ import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
 import type { Participation } from '@/types';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const useParticipationDelete = (onSuccess: () => void) => {
   const navigate = useNavigate();

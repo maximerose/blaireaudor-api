@@ -6,20 +6,7 @@ import type {
   Action,
   ActionSortField,
   ActionFormData,
-  User,
-  LoginCredentials,
-  AuthResult,
 } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
-export interface AuthContextType {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
-  loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<AuthResult>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-}
 
 export interface AdminContextType {
   isFogActive: boolean;

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { getCompetitionStatus } from '@/utils';
 import { DASHBOARD_UI } from '@/constants';
 import { CompetitionStatus } from '@/types';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const useDashboardHeader = () => {
   const { user } = useAuthContext();

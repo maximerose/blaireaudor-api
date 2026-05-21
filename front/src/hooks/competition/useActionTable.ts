@@ -4,7 +4,8 @@ import { getIdFromData, QUERY_KEYS, UI } from '@/shared';
 import { ActionStatus, type Action, type ActionSortField } from '@/types';
 import { competitionService } from '@/services';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthContext, useCompetitionContext } from '@/context';
+import { useCompetitionContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const useActionTable = (competitionId: string | undefined) => {
   const { competition } = useCompetitionContext();

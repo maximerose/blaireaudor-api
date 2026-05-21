@@ -20,7 +20,7 @@ import {
 } from '@/components/Competition';
 import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
 import { useRefereeStepLogic } from '@/hooks';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/validations';
 

@@ -8,7 +8,6 @@ import './App.css';
 import { QueryClient } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import { useAuthContext } from '@/context';
 import {
   ROUTES,
   ConfirmModalProvider,
@@ -17,13 +16,14 @@ import {
 } from '@/shared';
 import { Dashboard } from '@/components/Dashboard';
 import {
+  useAuthContext,
   ForgotPasswordForm,
   LoginForm,
   LogoutHandler,
   ProfilePage,
   RegistrationForm,
   ResetPasswordForm,
-} from '@/components/Auth';
+} from '@/features/account';
 import {
   CompetitionDetailPage,
   CreateCompetitionPage,

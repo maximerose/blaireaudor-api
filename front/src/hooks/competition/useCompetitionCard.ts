@@ -5,7 +5,7 @@ import {
   canRevealScores,
 } from '@/utils';
 import type { Competition, Participation } from '@/types';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import { useQuery } from '@tanstack/react-query';
 import { getIdFromData, QUERY_KEYS } from '@/shared';
 import { competitionService } from '@/services';

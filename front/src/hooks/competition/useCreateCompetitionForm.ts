@@ -20,7 +20,7 @@ import {
   snakeToCamel,
   type ApiError,
 } from '@/shared';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import {
   createCompetitionSchema,
   type CreateCompetitionFormData,

@@ -1,7 +1,8 @@
-import { CompetitionContext, useAuthContext } from '@/context';
+import { CompetitionContext } from '@/context';
 import { canManage, isCreator, isParticipant, isReferee } from '@/utils';
 import type { Competition } from '@/types';
 import { useContext } from 'react';
+import { useAuthContext } from '@/features/account';
 
 export const usePermissions = (manualCompetition?: Competition | null) => {
   const { user } = useAuthContext();

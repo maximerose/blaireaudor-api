@@ -4,7 +4,7 @@ import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/services';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import {
   usePlayerSearch,
   type FormParticipant,

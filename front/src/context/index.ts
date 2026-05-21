@@ -2,8 +2,6 @@ export * from './ActionTableContext';
 export * from './ActionTableProvider';
 export * from './AdminContext';
 export * from './AdminProvider';
-export * from './AuthContext';
-export * from './AuthProvider';
 export * from './CompetitionContext';
 export * from './CompetitionProvider';
 export * from './contextTypes';

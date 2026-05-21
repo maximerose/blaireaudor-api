@@ -1,5 +1,5 @@
 import { COMPETITION_UI } from '@/constants';
-import { useAuthContext, useCompetitionContext } from '@/context';
+import { useCompetitionContext } from '@/context';
 import { usePermissions } from '@/hooks';
 import {
   Badge,
@@ -21,6 +21,7 @@ import { useMemo } from 'react';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import type { BonusDay } from '@/types';
 import type { RefereeListItem } from '@/features/player';
+import { useAuthContext } from '@/features/account';
 
 export const CompetitionHeader = () => {
   const { user } = useAuthContext();

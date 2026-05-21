@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { CompetitionContext, useAuthContext } from '@/context';
+import { CompetitionContext } from '@/context';
 import { useCompetitionSettings } from '@/hooks';
 import { isReferee } from '@/utils';
 import type {
@@ -7,6 +7,7 @@ import type {
   EnrichedLeaderboardItem,
   Participation,
 } from '@/types';
+import { useAuthContext } from '@/features/account';
 
 interface ProviderProps {
   children: ReactNode;

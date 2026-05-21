@@ -1,4 +1,5 @@
-import { useAuthContext, useCompetitionContext } from '@/context';
+import { useCompetitionContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import { ActionStatus, type Action } from '@/types';
 
 export const useActionRow = (action: Action) => {

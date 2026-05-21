@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const useNavbarUI = () => {
   const { user } = useAuthContext();

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { competitionService } from '@/services';
 import { CONFIRMS, ERRORS, ROUTES, SUCCESS, useConfirmModal } from '@/shared';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();

@@ -10,11 +10,8 @@ import {
 } from '@/shared';
 import { COMPETITION_UI } from '@/constants';
 import { usePermissions } from '@/hooks';
-import {
-  useActionTableContext,
-  useAuthContext,
-  useCompetitionContext,
-} from '@/context';
+import { useActionTableContext, useCompetitionContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 
 export const PlayerFilter = () => {
   const { selectedPlayerId, setSelectedPlayerId } = useActionTableContext();

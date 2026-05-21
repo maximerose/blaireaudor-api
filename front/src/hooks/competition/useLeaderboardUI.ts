@@ -1,4 +1,5 @@
-import { useAuthContext, useCompetitionContext } from '@/context';
+import { useCompetitionContext } from '@/context';
+import { useAuthContext } from '@/features/account';
 import { useParticipationDelete } from '@/hooks';
 import type { Participation } from '@/types';
 import { useMemo } from 'react';
