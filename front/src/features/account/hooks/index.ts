@@ -1,5 +1,6 @@
 export * from './useEmailCheck';
 export * from './useForgotPassword';
+export * from './useHistoricalSearchUI';
 export * from './useLogin';
 export * from './useLogout';
 export * from './useProfile';

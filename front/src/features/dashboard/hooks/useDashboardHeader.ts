@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
-import { getCompetitionStatus } from '@/utils';
+import {
+  getCompetitionStatus,
+  CompetitionStatus,
+} from '@/features/competition';
 import { DASHBOARD_UI } from '@/features/dashboard';
-import { CompetitionStatus } from '@/types';
 import { useAuthContext } from '@/features/account';
 
 export const useDashboardHeader = () => {

@@ -1,4 +1,4 @@
-import type { User } from '@/types';
+import type { User } from '@/features/account';
 import type { Dispatch, SetStateAction } from 'react';
 
 export interface LoginCredentials {

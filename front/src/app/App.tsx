@@ -27,7 +27,7 @@ import {
 import {
   CompetitionDetailPage,
   CreateCompetitionPage,
-} from '@/components/Competition';
+} from '@/features/competition';
 
 const queryClient = new QueryClient();
 

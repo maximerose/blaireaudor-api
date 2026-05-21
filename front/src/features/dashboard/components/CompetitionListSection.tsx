@@ -1,4 +1,4 @@
-import { CompetitionCard } from '@/components/Competition/CompetitionCard';
+import { CompetitionCard } from '@/features/competition';
 import {
   Badge,
   BADGE_VARIANT,

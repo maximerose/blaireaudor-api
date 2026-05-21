@@ -6,11 +6,11 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import type { User } from '@/types';
 import { LOG_MESSAGES } from '@/shared';
 import {
   AuthContext,
   authService,
+  type User,
   type AuthContextType,
   type AuthResult,
   type LoginCredentials,

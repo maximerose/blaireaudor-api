@@ -19,3 +19,29 @@ export const getIdFromData = (data: Identifiable): string | null => {
   // Cas de l'objet (TypeScript sait ici que data est l'objet avec .id)
   return data.id?.toString() || null;
 };
+
+/**
+ * Extrait l'ID Utilisateur (UUID) de n'importe quel sujet (User, Player ou IRI)
+ */
+export const resolveUserId = (subject: any): string | null => {
+  if (!subject) return null;
+  if (typeof subject === 'string') return subject;
+  return 'associated_user' in subject
+    ? subject.associated_user
+      ? getIdFromData(subject.associated_user)
+      : null
+    : getIdFromData(subject);
+};
+
+/**
+ * Extrait l'ID Joueur (UUID) de n'importe quel sujet (User, Player ou IRI)
+ */
+export const resolvePlayerId = (subject: any): string | null => {
+  if (!subject) return null;
+  if (typeof subject === 'string') return subject;
+  return 'player' in subject
+    ? subject.player
+      ? getIdFromData(subject.player)
+      : null
+    : getIdFromData(subject);
+};

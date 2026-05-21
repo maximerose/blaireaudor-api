@@ -1,0 +1,47 @@
+import { CONFIRMS, ERRORS, ROUTES, useConfirmModal } from '@/shared';
+import { competitionService, type Participation } from '@/features/competition';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '@/features/account';
+
+export const useParticipationDelete = (onSuccess: () => void) => {
+  const navigate = useNavigate();
+  const { user, refreshUser } = useAuthContext();
+  const { openModal } = useConfirmModal();
+
+  const deleteParticipation = (participation: Participation) => {
+    if (participation.has_actions) {
+      toast.error(
+        ERRORS.COMPETITION.PARTICIPATION_HAS_ACTIONS(
+          participation.player?.display_name,
+        ),
+      );
+      return;
+    }
+
+    openModal({
+      title: CONFIRMS.PARTICIPATION.REMOVE_TITLE,
+      message: CONFIRMS.PARTICIPATION.REMOVE_MESSAGE(
+        participation.player?.display_name,
+      ),
+      onConfirm: async () => {
+        try {
+          const success = await competitionService.removeParticipation(
+            participation.id,
+          );
+          if (success) {
+            await refreshUser();
+            if (success && participation.player.id === user?.player?.id) {
+              navigate(ROUTES.NAV.DASHBOARD);
+            }
+            onSuccess();
+          }
+        } catch {
+          toast.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
+        }
+      },
+    });
+  };
+
+  return { deleteParticipation };
+};

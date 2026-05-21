@@ -3,8 +3,8 @@ import type {
   AuthResult,
   LoginCredentials,
   RegisterData,
+  User,
 } from '@/features/account';
-import type { User } from '@/types';
 
 export const authService = {
   register: async (formData: RegisterData): Promise<AuthResult> => {

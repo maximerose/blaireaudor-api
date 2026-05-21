@@ -1,4 +1,4 @@
-import type { Competition, Participation } from '@/types';
+import type { Competition, Participation } from '@/features/competition';
 
 export interface DashboardItem {
   competition: Competition;

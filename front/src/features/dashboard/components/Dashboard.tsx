@@ -1,4 +1,4 @@
-import { JoinCompetitionModal } from '@/components/Competition';
+import { JoinCompetitionModal } from '@/features/competition';
 import {
   Button,
   EmptyState,

@@ -7,8 +7,11 @@ import {
   FORM,
   ICONS,
 } from '@/shared';
-import { useHistoricalSearchUI } from '@/hooks';
-import { AUTH_UI, LinkedProfileCard } from '@/features/account';
+import {
+  AUTH_UI,
+  LinkedProfileCard,
+  useHistoricalSearchUI,
+} from '@/features/account';
 import {
   PlayerSearchResultItem,
   type Player,

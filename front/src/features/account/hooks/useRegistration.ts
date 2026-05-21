@@ -10,8 +10,6 @@ import {
   type RegisterFormData,
   registerSchema,
 } from '@/features/account';
-import {} from '@/hooks';
-import type {} from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
