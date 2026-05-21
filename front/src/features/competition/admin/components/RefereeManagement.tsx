@@ -10,17 +10,15 @@ import {
   UI,
 } from '@/shared';
 import {
-  COMPETITION_UI,
-  useCompetitionContext,
-  usePermissions,
-  useRefereeManagementUI,
-} from '@/features/competition';
-import {
   PlayerSearchResultItem,
   type Player,
   type RefereeListItem,
 } from '@/features/player';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context';
+import { useCompetitionContext } from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
+import { useRefereeManagementUI } from '@/features/competition/admin/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetitionContext();

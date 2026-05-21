@@ -7,7 +7,7 @@ import {
   SectionHeader,
   UI,
 } from '@/shared';
-import type { DashboardItem } from '@/features/dashboard';
+import type { DashboardItem } from '@/features/dashboard/types';
 
 interface CompetitionListSectionProps {
   title: string;

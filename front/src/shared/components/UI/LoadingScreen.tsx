@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Text, TEXT_VARIANT } from '@/shared/components/UI';
+import { Text, TEXT_VARIANT } from './Text';
 import { cn } from '@/shared/utils';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {

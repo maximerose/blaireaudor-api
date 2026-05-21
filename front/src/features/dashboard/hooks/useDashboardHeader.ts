@@ -3,7 +3,7 @@ import {
   getCompetitionStatus,
   CompetitionStatus,
 } from '@/features/competition';
-import { DASHBOARD_UI } from '@/features/dashboard';
+import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useAuthContext } from '@/features/account';
 
 export const useDashboardHeader = () => {

@@ -8,9 +8,9 @@ import {
 import {
   useActionTableContext,
   useCompetitionContext,
-  useDateNavigation,
-  COMPETITION_UI,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import { useDateNavigation } from '@/features/competition/actions/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const DateNavigation = () => {
   const { availableDates, selectedDate, setSelectedDate } =

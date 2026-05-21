@@ -6,14 +6,11 @@ import {
   cn,
   formatShortDate,
 } from '@/shared';
-import {
-  ActionStatus,
-  COMPETITION_UI,
-  useActionRow,
-  useCompetitionAdmin,
-  useCompetitionContext,
-  type Action,
-} from '@/features/competition';
+import { ActionStatus, type Action } from '@/features/competition/types';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useActionRow } from '@/features/competition/actions/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useCompetitionAdmin } from '@/features/competition/admin';
 
 interface ActionRowDisplayModeProps {
   action: Action;

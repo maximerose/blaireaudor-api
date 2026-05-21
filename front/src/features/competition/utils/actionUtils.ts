@@ -1,4 +1,4 @@
-import type { Action } from '@/features/competition';
+import type { Action } from '@/features/competition/types';
 
 /**
  * Groupe les action par date

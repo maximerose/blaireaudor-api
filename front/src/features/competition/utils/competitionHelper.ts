@@ -5,7 +5,7 @@ import {
   type Competition,
   type CompetitionStatusType,
   type EnrichedLeaderboardItem,
-} from '@/features/competition';
+} from '@/features/competition/types';
 import type { User } from '@/features/account';
 
 /**

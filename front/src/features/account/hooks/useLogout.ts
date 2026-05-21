@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { authService, useAuthContext } from '@/features/account';
 import { ROUTES, LOG_MESSAGES } from '@/shared';
 import { useCallback } from 'react';
+import { useAuthContext } from '@/features/account/context';
+import { authService } from '@/features/account/services';
 
 export const useLogout = () => {
   const { setUser } = useAuthContext();

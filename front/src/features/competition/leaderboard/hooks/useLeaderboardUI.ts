@@ -1,10 +1,8 @@
-import {
-  useCompetitionContext,
-  useParticipationDelete,
-  type Participation,
-} from '@/features/competition';
 import { useAuthContext } from '@/features/account';
 import { useMemo } from 'react';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useParticipationDelete } from '@/features/competition/admin';
+import type { Participation } from '@/features/competition/types';
 
 export const useLeaderboardUI = () => {
   const { user } = useAuthContext();

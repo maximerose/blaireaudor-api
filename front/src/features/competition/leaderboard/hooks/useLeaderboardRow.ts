@@ -1,11 +1,13 @@
 import { getIdFromData } from '@/shared';
+import type {
+  Competition,
+  EnrichedLeaderboardItem,
+} from '@/features/competition/types';
 import {
   getRankMedal,
   isCreator,
   isReferee,
-  type Competition,
-  type EnrichedLeaderboardItem,
-} from '@/features/competition';
+} from '@/features/competition/utils';
 
 export const useLeaderboardRow = (
   participation: EnrichedLeaderboardItem,

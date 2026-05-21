@@ -6,7 +6,7 @@ import type {
   CompetitionUpdatePayload,
   GetActionsParams,
   Participation,
-} from '@/features/competition';
+} from '@/features/competition/types';
 
 export const competitionService = {
   create: async (payload: CompetitionCreatePayload): Promise<Competition> => {

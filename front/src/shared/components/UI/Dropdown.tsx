@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ICONS } from '@/shared/constants';
 import { cn } from '@/shared/utils';
-import {
-  Button,
-  BUTTON_SIZE,
-  BUTTON_VARIANT,
-  Card,
-  CARD_VARIANT,
-} from '@/shared/components/UI';
+import { Button, BUTTON_SIZE, BUTTON_VARIANT } from './Button';
+import { Card, CARD_VARIANT } from './Card';
 
 interface DropdownOption {
   value: string;

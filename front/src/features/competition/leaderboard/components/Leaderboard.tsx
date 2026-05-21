@@ -6,12 +6,10 @@ import {
   TEXT_VARIANT,
   ICONS,
 } from '@/shared';
-import {
-  COMPETITION_UI,
-  LeaderboardRow,
-  useLeaderboardUI,
-  type EnrichedLeaderboardItem,
-} from '@/features/competition';
+import { useLeaderboardUI } from '@/features/competition/leaderboard/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import type { EnrichedLeaderboardItem } from '@/features/competition/types';
+import { LeaderboardRow } from './LeaderboardRow';
 
 export const Leaderboard = () => {
   const {

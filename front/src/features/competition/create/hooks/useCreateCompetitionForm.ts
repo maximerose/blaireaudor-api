@@ -7,14 +7,6 @@ import {
   type Player,
   type PlayerCompact,
 } from '@/features/player';
-import {
-  competitionService,
-  createCompetitionSchema,
-  formatToApiISO,
-  type Competition,
-  type CompetitionCreatePayload,
-  type CreateCompetitionFormData,
-} from '@/features/competition';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   cleanJoinCode,
@@ -27,6 +19,16 @@ import {
 } from '@/shared';
 import { useAuthContext } from '@/features/account';
 import toast from 'react-hot-toast';
+import type {
+  Competition,
+  CompetitionCreatePayload,
+} from '@/features/competition/types';
+import {
+  createCompetitionSchema,
+  type CreateCompetitionFormData,
+} from '@/features/competition/validations';
+import { formatToApiISO } from '@/features/competition/utils';
+import { competitionService } from '@/features/competition/services';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,

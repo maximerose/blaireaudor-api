@@ -1,8 +1,8 @@
 import { useCallback, useState, type ReactNode } from 'react';
-import { ConfirmModalContext } from '@/shared/context';
 import { ConfirmModal } from '@/shared/components/UI';
 import { ERRORS } from '@/shared/constants';
 import type { ModalOptions } from '@/shared/types';
+import { ConfirmModalContext } from './ConfirmModalContext';
 
 export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);

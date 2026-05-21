@@ -12,17 +12,18 @@ import {
   ICONS,
   UI,
 } from '@/shared';
+
+import { ActionRow } from './ActionRow';
+import { DateNavigation } from './DateNavigation';
+import { PendingSection } from './PendingSection';
+import { PlayerFilter } from './PlayerFilter';
+import { TableHeader } from './TableHeader';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import {
-  ActionRow,
-  DateNavigation,
-  PendingSection,
-  PlayerFilter,
-  TableHeader,
-  COMPETITION_UI,
   useActionTableContext,
   useCompetitionContext,
-  type Action,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import type { Action } from '@/features/competition/types';
 
 export const ActionTableContent = () => {
   const { isAdmin } = useCompetitionContext();

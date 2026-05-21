@@ -1,9 +1,9 @@
+import { API, apiFetch } from '@/shared';
 import type {
   Action,
   ActionCreatePayload,
   ActionUpdatePayload,
-} from '@/features/competition';
-import { API, apiFetch } from '@/shared';
+} from '@/features/competition/types';
 
 export const actionService = {
   create: async (

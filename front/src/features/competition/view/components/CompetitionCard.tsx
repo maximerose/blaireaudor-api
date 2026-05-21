@@ -1,14 +1,4 @@
 import {
-  RankBadge,
-  RankedScore,
-  RoleBadge,
-  StatusBadge,
-  useCompetitionCard,
-  type Competition,
-  type Participation,
-} from '@/features/competition';
-import { DASHBOARD_UI } from '@/features/dashboard';
-import {
   Card,
   ROUTES,
   Button,
@@ -21,6 +11,12 @@ import {
   cn,
   SECTION_HEADER_VARIANT,
 } from '@/shared';
+import { DASHBOARD_UI } from '@/features/dashboard';
+import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
+import type { Competition, Participation } from '@/features/competition/types';
+import { useCompetitionCard } from '@/features/competition/view/hooks';
+import { RoleBadge } from './RoleBadge';
+import { StatusBadge } from './StatusBadge';
 
 interface CompetitionCardProps {
   competition: Competition;

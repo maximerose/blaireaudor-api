@@ -1,5 +1,5 @@
-import type { Player } from '@/features/player';
 import { API, apiFetch } from '@/shared';
+import type { Player } from '@/features/player/types';
 
 export const playerService = {
   search: async (term: string, signal?: AbortSignal): Promise<Player[]> => {

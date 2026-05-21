@@ -11,11 +11,9 @@ import {
   ICONS,
   BUTTONS,
 } from '@/shared';
-import {
-  COMPETITION_UI,
-  useBonusDayForm,
-  type BonusDay,
-} from '@/features/competition';
+import { useBonusDayForm } from '@/features/competition/admin/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import type { BonusDay } from '@/features/competition/types';
 
 export const BonusDayManagement = () => {
   const {

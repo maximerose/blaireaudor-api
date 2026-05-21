@@ -8,7 +8,7 @@ import {
   TEXT_VARIANT,
   ICONS,
 } from '@/shared';
-import { AUTH_UI } from '@/features/account';
+import { AUTH_UI } from '@/features/account/constants';
 import type { PlayerCompact } from '@/features/player';
 
 interface GuestFoundAlertProps {

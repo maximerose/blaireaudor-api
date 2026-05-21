@@ -21,10 +21,8 @@ import {
 } from '@/shared';
 import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import {
-  useJoinCodeCheck,
-  type CreateCompetitionFormData,
-} from '@/features/competition';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import { useJoinCodeCheck } from '@/features/competition/join';
 
 interface ConfigStepProps {
   formMethods: UseFormReturn<CreateCompetitionFormData>;

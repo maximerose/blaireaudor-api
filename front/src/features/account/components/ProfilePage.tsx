@@ -13,7 +13,9 @@ import {
   FORM,
   ICONS,
 } from '@/shared';
-import { useProfile, PROFILE_UI, PasswordStrength } from '@/features/account';
+import { useProfile } from '@/features/account/hooks';
+import { PROFILE_UI } from '@/features/account/constants';
+import { PasswordStrength } from './PasswordStrength';
 
 export const ProfilePage = () => {
   const {

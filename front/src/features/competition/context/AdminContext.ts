@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { AdminContextType } from '@/context';
+import type { AdminContextType } from '@/features/competition/types';
 import { ERRORS } from '@/shared';
 
 export const AdminContext = createContext<AdminContextType | undefined>(

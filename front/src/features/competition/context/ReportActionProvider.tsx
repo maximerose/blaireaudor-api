@@ -1,10 +1,8 @@
 import type { ReactNode } from 'react';
-import {
-  ReportActionContext,
-  useCompetitionContext,
-  useReportAction,
-  useReportingContext,
-} from '@/features/competition';
+import { useCompetitionContext } from './CompetitionContext';
+import { useReportingContext } from './ReportingContext';
+import { useReportAction } from '@/features/competition/reporting';
+import { ReportActionContext } from './ReportActionContext';
 
 export const ReportActionProvider = ({ children }: { children: ReactNode }) => {
   const { refresh } = useCompetitionContext();

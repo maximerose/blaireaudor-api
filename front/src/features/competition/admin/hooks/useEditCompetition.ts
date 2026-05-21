@@ -9,19 +9,21 @@ import {
   snakeToCamel,
   type ApiError,
 } from '@/shared';
-import {
-  combineDateTime,
-  competitionService,
-  useInvalidateCompetition,
-  type Competition,
-  type CompetitionUpdatePayload,
-  editCompetitionSchema,
-  type EditCompetitionFormData,
-} from '@/features/competition';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type {
+  Competition,
+  CompetitionUpdatePayload,
+} from '@/features/competition/types';
+import { useInvalidateCompetition } from '@/features/competition/view';
+import {
+  editCompetitionSchema,
+  type EditCompetitionFormData,
+} from '@/features/competition/validations';
+import { competitionService } from '@/features/competition/services';
+import { combineDateTime } from '@/features/competition/utils';
 
 export const useEditCompetition = (
   competition: Competition,

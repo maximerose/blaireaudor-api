@@ -1,9 +1,7 @@
 import React from 'react';
-import {
-  AdminContext,
-  useAdminSettings,
-  type Competition,
-} from '@/features/competition';
+import type { Competition } from '@/features/competition/types';
+import { useAdminSettings } from '@/features/competition/admin';
+import { AdminContext } from './AdminContext';
 
 interface AdminProviderProps {
   children: React.ReactNode;

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ReportingContextType } from '@/features/competition';
+import type { ReportingContextType } from '@/features/competition/types';
 import { ERRORS } from '@/shared';
 
 export const ReportingContext = createContext<ReportingContextType | undefined>(

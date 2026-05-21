@@ -1,6 +1,6 @@
 import { ERRORS } from '@/shared';
 import { createContext, useContext } from 'react';
-import type { AuthContextType } from '@/features/account';
+import type { AuthContextType } from '@/features/account/types';
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,

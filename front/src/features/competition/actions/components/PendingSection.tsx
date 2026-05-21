@@ -7,12 +7,10 @@ import {
   CARD_VARIANT,
   cn,
 } from '@/shared';
-import {
-  ActionRow,
-  COMPETITION_UI,
-  useActionTableContext,
-  type Action,
-} from '@/features/competition';
+import { useActionTableContext } from '@/features/competition/context';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { ActionRow } from './ActionRow';
+import type { Action } from '@/features/competition/types';
 
 export const PendingSection = () => {
   const { categories } = useActionTableContext();

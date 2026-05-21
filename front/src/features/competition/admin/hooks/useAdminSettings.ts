@@ -1,11 +1,10 @@
 import toast from 'react-hot-toast';
-import {
-  competitionService,
-  useCompetitionAdmin,
-  type Competition,
-} from '@/features/competition';
+
 import { CONFIRMS, ERRORS, QUERY_KEYS, useConfirmModal } from '@/shared';
 import { useQuery } from '@tanstack/react-query';
+import { useCompetitionAdmin } from './useCompetitionAdmin';
+import type { Competition } from '@/features/competition/types';
+import { competitionService } from '@/features/competition/services';
 
 interface UseAdminSettingsProps {
   competition: Competition;

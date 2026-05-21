@@ -1,4 +1,5 @@
-import { API, getApiError } from '@/shared';
+import { getApiError } from '@/shared/types';
+import { API } from '../constants';
 
 let isRefreshing = false;
 let failedQueue: Array<{

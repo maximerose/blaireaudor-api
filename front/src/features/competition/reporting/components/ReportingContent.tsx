@@ -10,12 +10,12 @@ import {
   TEXT_VARIANT,
 } from '@/shared';
 import {
-  COMPETITION_UI,
-  CompetitionCountdown,
-  ReportActionForm,
   useCompetitionContext,
   useReportingContext,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { CompetitionCountdown } from '@/features/competition/view';
+import { ReportActionForm } from './ReportActionForm';
 
 export const ReportingContent = () => {
   const { isReporting, toggleReporting } = useReportingContext();

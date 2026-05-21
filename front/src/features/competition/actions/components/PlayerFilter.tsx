@@ -8,14 +8,14 @@ import {
   ICONS,
   UI,
 } from '@/shared';
+import { useAuthContext } from '@/features/account';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import {
-  COMPETITION_UI,
   useActionTableContext,
   useCompetitionContext,
-  usePermissions,
-  type Participation,
-} from '@/features/competition';
-import { useAuthContext } from '@/features/account';
+} from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
+import type { Participation } from '@/features/competition/types';
 
 export const PlayerFilter = () => {
   const { selectedPlayerId, setSelectedPlayerId } = useActionTableContext();

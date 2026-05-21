@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAuthContext } from '@/features/account';
-import type { DashboardItem } from '@/features/dashboard';
+import type { DashboardItem } from '@/features/dashboard/types';
 
 export const useDashboardUI = () => {
   const { user } = useAuthContext();

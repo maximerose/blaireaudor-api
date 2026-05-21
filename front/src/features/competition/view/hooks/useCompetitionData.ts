@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { competitionService } from '@/features/competition';
+import { competitionService } from '@/features/competition/services';
 import { ERRORS, QUERY_KEYS } from '@/shared';
 
 export const useCompetitionData = (code: string) => {

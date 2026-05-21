@@ -1,8 +1,8 @@
 import {
-  ActionTableContent,
   ActionTableProvider,
   useCompetitionContext,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import { ActionTableContent } from './ActionTableContent';
 
 export const ActionTable = () => {
   const { competition } = useCompetitionContext();

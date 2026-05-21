@@ -4,7 +4,7 @@ import type {
   LoginCredentials,
   RegisterData,
   User,
-} from '@/features/account';
+} from '@/features/account/types';
 
 export const authService = {
   register: async (formData: RegisterData): Promise<AuthResult> => {

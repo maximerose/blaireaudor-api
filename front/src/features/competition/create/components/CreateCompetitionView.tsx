@@ -1,11 +1,9 @@
-import {
-  CreateCompetitionStepper,
-  CompetitionConfigStep,
-  CompetitionRecruitmentStep,
-  CompetitionRefereeStep,
-  type Competition,
-  useCreateCompetitionForm,
-} from '@/features/competition';
+import type { Competition } from '@/features/competition/types';
+import { useCreateCompetitionForm } from '@/features/competition/create/hooks';
+import { CreateCompetitionStepper } from './CreateCompetitionStepper';
+import { CompetitionConfigStep } from './CompetitionConfigStep';
+import { CompetitionRecruitmentStep } from './CompetitionRecruitmentStep';
+import { CompetitionRefereeStep } from './CompetitionRefereeStep';
 
 interface Props {
   onSuccess: (competition: Competition) => void;

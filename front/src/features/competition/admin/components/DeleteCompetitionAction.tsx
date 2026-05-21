@@ -8,13 +8,11 @@ import {
   ICONS,
   BUTTONS,
 } from '@/shared';
-import {
-  COMPETITION_UI,
-  useCompetitionContext,
-  useCompetitionDelete,
-  usePermissions,
-  type Participation,
-} from '@/features/competition';
+import { useCompetitionContext } from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
+import { useCompetitionDelete } from '@/features/competition/admin/hooks';
+import type { Participation } from '@/features/competition/types';
+import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const DeleteCompetitionAction = () => {
   const { competition } = useCompetitionContext();

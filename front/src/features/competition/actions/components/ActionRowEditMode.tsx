@@ -1,10 +1,8 @@
 import { Input, Button, BUTTON_VARIANT, FORM, BUTTONS } from '@/shared';
-import {
-  useCompetitionContext,
-  useActionRowInteraction,
-  useCompetitionAdmin,
-  type Action,
-} from '@/features/competition';
+import type { Action } from '@/features/competition/types';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useCompetitionAdmin } from '@/features/competition/admin';
+import { useActionRowInteraction } from '@/features/competition/actions/hooks';
 
 interface ActionRowEditModeProps {
   action: Action;

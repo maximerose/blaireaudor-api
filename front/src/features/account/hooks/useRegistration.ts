@@ -1,15 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  authService,
-  useEmailCheck,
-  useUsernameCheck,
-  type AuthResponseData,
-  AUTH_UI,
-  useAuthContext,
-  type RegisterFormData,
-  registerSchema,
-} from '@/features/account';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,6 +18,16 @@ import {
   type Player,
   type PlayerCompact,
 } from '@/features/player';
+import { useAuthContext } from '@/features/account/context';
+import {
+  registerSchema,
+  type RegisterFormData,
+} from '@/features/account/validations';
+import { useUsernameCheck } from './useUsernameCheck';
+import { useEmailCheck } from './useEmailCheck';
+import type { AuthResponseData } from '@/features/account/types';
+import { authService } from '@/features/account/services';
+import { AUTH_UI } from '@/features/account/constants';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();

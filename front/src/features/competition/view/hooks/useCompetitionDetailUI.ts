@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useCompetitionData } from '@/features/competition';
+import { useCompetitionData } from './useCompetitionData';
 
 export const useCompetitionDetailUI = () => {
   const { code } = useParams<{ code: string }>();

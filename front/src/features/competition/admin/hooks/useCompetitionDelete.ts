@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { competitionService } from '@/features/competition';
+import { competitionService } from '@/features/competition/services';
 import { CONFIRMS, ERRORS, ROUTES, SUCCESS, useConfirmModal } from '@/shared';
 import toast from 'react-hot-toast';
 import { useAuthContext } from '@/features/account';

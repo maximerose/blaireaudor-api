@@ -9,12 +9,10 @@ import {
   LoadingScreen,
   WizardLayout,
 } from '@/shared';
-import {
-  useResetPassword,
-  AUTH_UI,
-  PasswordStrength,
-} from '@/features/account';
 import { AuthCard } from '@/components/UI/AuthCard';
+import { useResetPassword } from '@/features/account/hooks';
+import { AUTH_UI } from '@/features/account/constants';
+import { PasswordStrength } from './PasswordStrength';
 
 export const ResetPasswordForm = () => {
   const { token } = useParams<{ token: string }>();

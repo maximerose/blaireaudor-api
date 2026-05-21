@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { playerService, type Player } from '@/features/player';
+import { playerService } from '@/features/player/services';
 import { QUERY_KEYS } from '@/shared';
+import type { Player } from '@/features/player/types';
 
 export interface PlayerSearchLogic {
   searchTerm: string;

@@ -4,7 +4,8 @@ import {
   Text,
   TEXT_VARIANT,
 } from '@/shared';
-import { DASHBOARD_UI, useDashboardHeader } from '@/features/dashboard';
+import { DASHBOARD_UI } from '@/features/dashboard/constants';
+import { useDashboardHeader } from '@/features/dashboard/hooks';
 
 export const DashboardHeader = () => {
   const { displayName, totalParticipations, statItems } = useDashboardHeader();

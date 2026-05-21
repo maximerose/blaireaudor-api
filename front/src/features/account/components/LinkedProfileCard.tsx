@@ -7,7 +7,7 @@ import {
   TEXT_VARIANT,
   CARD_VARIANT,
 } from '@/shared';
-import { AUTH_UI } from '@/features/account';
+import { AUTH_UI } from '@/features/account/constants';
 
 interface LinkedProfileCardProps {
   name?: string;

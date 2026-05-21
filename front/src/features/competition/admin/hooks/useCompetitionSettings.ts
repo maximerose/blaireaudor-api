@@ -1,11 +1,11 @@
 import { useMemo, useCallback } from 'react';
 import { getLocalDayString, sortByDate } from '@/shared';
 import type {
-  Competition,
   BonusDay,
-  EnrichedLeaderboardItem,
+  Competition,
   CompetitionContextType,
-} from '@/features/competition';
+  EnrichedLeaderboardItem,
+} from '@/features/competition/types';
 
 interface UseCompetitionProps {
   competition: Competition;

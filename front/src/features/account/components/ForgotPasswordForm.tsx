@@ -7,8 +7,9 @@ import {
   FORM,
   ROUTES,
 } from '@/shared';
-import { useForgotPassword, AUTH_UI } from '@/features/account';
 import { AuthCard } from '@/components/UI/AuthCard';
+import { useForgotPassword } from '@/features/account/hooks';
+import { AUTH_UI } from '@/features/account/constants';
 
 export const ForgotPasswordForm = () => {
   const { register, handleSubmit, errors, isSuccess, isSubmitting } =

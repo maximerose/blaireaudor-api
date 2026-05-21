@@ -1,16 +1,15 @@
 import { useMemo } from 'react';
-import {
-  getDisplayDateText,
-  getCompetitionStatus,
-  canRevealScores,
-  type Competition,
-  type Participation,
-  competitionService,
-} from '@/features/competition';
 import { useAuthContext } from '@/features/account';
 import { useQuery } from '@tanstack/react-query';
 import { getIdFromData, QUERY_KEYS } from '@/shared';
 import type { Player, PlayerCompact } from '@/features/player';
+import type { Competition, Participation } from '@/features/competition/types';
+import {
+  canRevealScores,
+  getCompetitionStatus,
+  getDisplayDateText,
+} from '@/features/competition/utils';
+import { competitionService } from '@/features/competition/services';
 
 export const useCompetitionCard = (
   competition: Competition,

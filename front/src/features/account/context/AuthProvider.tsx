@@ -7,14 +7,14 @@ import {
   useCallback,
 } from 'react';
 import { LOG_MESSAGES } from '@/shared';
-import {
-  AuthContext,
-  authService,
-  type User,
-  type AuthContextType,
-  type AuthResult,
-  type LoginCredentials,
-} from '@/features/account';
+import type {
+  AuthContextType,
+  AuthResult,
+  LoginCredentials,
+  User,
+} from '@/features/account/types';
+import { authService } from '@/features/account/services';
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

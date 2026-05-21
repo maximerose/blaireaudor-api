@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { competitionService } from '@/features/competition';
+import { competitionService } from '@/features/competition/services';
 import { ERRORS, type ApiError } from '@/shared';
 import { useAuthContext } from '@/features/account';
 

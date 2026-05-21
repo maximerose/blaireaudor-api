@@ -1,15 +1,13 @@
-import {
-  Button,
-  Text,
-  Card,
-  BUTTON_VARIANT,
-  type ButtonVariant,
-  BUTTON_SIZE,
-  TEXT_VARIANT,
-  CARD_VARIANT,
-} from '@/shared/components/UI';
 import { BUTTONS } from '@/shared/constants';
 import { cn } from '@/shared/utils';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  type ButtonVariant,
+} from './Button';
+import { Card, CARD_VARIANT } from './Card';
+import { Text, TEXT_VARIANT } from './Text';
 
 const MODAL_OVERLAY =
   'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';

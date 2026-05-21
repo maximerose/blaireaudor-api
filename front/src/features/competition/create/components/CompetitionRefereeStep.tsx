@@ -14,15 +14,15 @@ import {
   ICONS,
   BUTTONS,
 } from '@/shared';
-import {
-  SelectedPlayersList,
-  PlayerSearchResultsDropdown,
-  type CreateCompetitionFormData,
-  useRefereeStepLogic,
-} from '@/features/competition';
 import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
 import { useAuthContext } from '@/features/account';
 import type { UseFormReturn } from 'react-hook-form';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import { useRefereeStepLogic } from '@/features/competition/create/hooks';
+import {
+  PlayerSearchResultsDropdown,
+  SelectedPlayersList,
+} from '@/features/competition/enrollment';
 
 interface SearchState {
   searchTerm: string;
@@ -62,7 +62,10 @@ export const CompetitionRefereeStep = ({
     useRefereeStepLogic(watch());
 
   const filteredResults = results.filter(
-    (result) => !referees.some((r) => String(r.id) === String(result.id)),
+    (result) =>
+      !referees.some(
+        (r: FormParticipant) => String(r.id) === String(result.id),
+      ),
   );
 
   return (
@@ -158,7 +161,9 @@ export const CompetitionRefereeStep = ({
             <SelectedPlayersList
               participants={externalReferees}
               onRemove={(id) => {
-                const person = externalReferees.find((p) => p.id === id);
+                const person = externalReferees.find(
+                  (p: FormParticipant) => p.id === id,
+                );
                 if (person) onToggleReferee(person);
               }}
             />

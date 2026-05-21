@@ -9,13 +9,13 @@ import {
   ICONS,
   BUTTONS,
 } from '@/shared';
-import {
-  SelectedPlayersList,
-  PlayerSearchResultsDropdown,
-  type CreateCompetitionFormData,
-} from '@/features/competition';
 import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import {
+  PlayerSearchResultsDropdown,
+  SelectedPlayersList,
+} from '@/features/competition/enrollment';
 
 interface PlayerManagement {
   searchTerm: string;

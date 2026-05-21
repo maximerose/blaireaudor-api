@@ -1,6 +1,6 @@
 import type { PlayerCompact } from '@/features/player';
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
-import type { ReportActionFormData } from '@/features/competition';
+import type { ReportActionFormData } from '@/features/competition/validations';
 
 export const ActionStatus = {
   PENDING: 'pending',

@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, BUTTON_VARIANT, EmptyState } from '@/shared/components/UI';
+import { Button, BUTTON_VARIANT } from './Button';
 import { BUTTONS, ICONS, ROUTES, UI } from '@/shared/constants';
 import { useDocumentTitle } from '@/shared/hooks';
+import { EmptyState } from './EmptyState';
 
 interface NotFoundStateProps {
   title?: string;

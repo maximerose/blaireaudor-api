@@ -1,4 +1,5 @@
-import type { Competition, Participation, User } from '@/types';
+import type { User } from '@/features/account';
+import type { Competition, Participation } from '@/features/competition';
 
 /**
  * Structure exacte provenant de l'API (Backend)

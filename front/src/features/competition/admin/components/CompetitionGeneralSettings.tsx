@@ -17,12 +17,10 @@ import {
   cn,
   BUTTONS,
 } from '@/shared';
-import {
-  COMPETITION_UI,
-  useCompetitionContext,
-  useEditCompetition,
-  useJoinCodeCheck,
-} from '@/features/competition';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useEditCompetition } from '@/features/competition/admin/hooks';
+import { useJoinCodeCheck } from '@/features/competition/join';
 
 export const CompetitionGeneralSettings = () => {
   const { competition, refresh } = useCompetitionContext();

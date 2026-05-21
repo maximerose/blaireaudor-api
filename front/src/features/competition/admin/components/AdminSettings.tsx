@@ -12,18 +12,18 @@ import {
   Text,
   TEXT_VARIANT,
 } from '@/shared';
+import { BonusDayManagement } from './BonusDayManagement';
+import { CloseCompetitionAction } from './CloseCompetitionAction';
+import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
+import { DeleteCompetitionAction } from './DeleteCompetitionAction';
+import { FogOfWarToggle } from './FogOfWarToggle';
+import { RefereeManagement } from './RefereeManagement';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import {
-  AdminProvider,
-  BonusDayManagement,
-  CloseCompetitionAction,
-  COMPETITION_UI,
-  CompetitionGeneralSettings,
-  DeleteCompetitionAction,
-  FogOfWarToggle,
-  RefereeManagement,
   useCompetitionContext,
-  usePermissions,
-} from '@/features/competition';
+  AdminProvider,
+} from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
 import { useState } from 'react';
 
 export const AdminSettings = () => {

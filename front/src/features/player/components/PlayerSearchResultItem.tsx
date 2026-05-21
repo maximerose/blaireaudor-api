@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Badge, BADGE_VARIANT, Text, FORM, ICONS } from '@/shared';
-import { usePlayerSearchResultUI, type PlayerCompact } from '@/features/player';
+import type { PlayerCompact } from '@/features/player/types';
+import { usePlayerSearchResultUI } from '@/features/player/hooks';
 
 interface Props extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,

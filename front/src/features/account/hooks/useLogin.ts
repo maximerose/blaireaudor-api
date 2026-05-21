@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, ERRORS, slugify } from '@/shared';
-import {
-  useAuthContext,
-  loginSchema,
-  type LoginFormData,
-} from '@/features/account';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthContext } from '@/features/account/context';
+import {
+  loginSchema,
+  type LoginFormData,
+} from '@/features/account/validations';
 
 export const useLogin = () => {
   const [globalError, setGlobalError] = useState('');

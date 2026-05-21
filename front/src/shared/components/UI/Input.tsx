@@ -1,5 +1,5 @@
 import React, { forwardRef, useId } from 'react';
-import { Text, TEXT_VARIANT } from '@/shared/components/UI';
+import { Text, TEXT_VARIANT } from './Text';
 import { useInputUI } from '@/shared/hooks';
 import { cn } from '@/shared/utils';
 import { ICONS } from '@/shared/constants';

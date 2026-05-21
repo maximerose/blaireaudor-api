@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { competitionService } from '@/features/competition';
+import { competitionService } from '@/features/competition/services';
 import toast from 'react-hot-toast';
 import { useAuthContext } from '@/features/account';
 import {

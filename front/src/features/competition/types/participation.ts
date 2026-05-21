@@ -1,5 +1,5 @@
 import type { Player, PlayerCompact } from '@/features/player';
-import type { Competition } from '@/features/competition';
+import type { Competition } from './competition';
 
 export interface Participation {
   id: string;

@@ -9,7 +9,8 @@ import {
   cn,
   ICONS,
 } from '@/shared';
-import { COMPETITION_UI, useAdminContext } from '@/features/competition';
+import { useAdminContext } from '@/features/competition/context';
+import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const FogOfWarToggle = () => {
   const { isFogActive, handleToggleFog, isUpdating } = useAdminContext();

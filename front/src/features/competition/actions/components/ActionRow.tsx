@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import {
-  ActionRowDisplayMode,
-  ActionRowEditMode,
-  type Action,
-} from '@/features/competition';
+import type { Action } from '@/features/competition/types';
+import { ActionRowEditMode } from './ActionRowEditMode';
+import { ActionRowDisplayMode } from './ActionRowDisplayMode';
 
 export const ActionRow = ({ action }: { action: Action }) => {
   const [isEditing, setIsEditing] = useState(false);

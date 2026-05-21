@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { ERRORS } from '@/shared';
-import type { ActionTableContextType } from '@/features/competition';
+import type { ActionTableContextType } from '@/features/competition/types';
 
 export const ActionTableContext = createContext<
   ActionTableContextType | undefined

@@ -1,11 +1,4 @@
 import {
-  AUTH_UI,
-  GuestFoundAlert,
-  HistoricalPlayerSearch,
-  useRegistration,
-  PasswordStrength,
-} from '@/features/account';
-import {
   AVAILABILITY,
   Button,
   BUTTON_SIZE,
@@ -21,6 +14,11 @@ import {
   WizardLayout,
 } from '@/shared';
 import { AuthCard } from '@/components/UI/AuthCard';
+import { useRegistration } from '@/features/account/hooks';
+import { AUTH_UI } from '@/features/account/constants';
+import { HistoricalPlayerSearch } from './HistoricalPlayerSearch';
+import { GuestFoundAlert } from './GuestFoundAlert';
+import { PasswordStrength } from './PasswordStrength';
 
 export const RegistrationForm = () => {
   const {

@@ -13,20 +13,22 @@ import {
   snakeToCamel,
 } from '@/shared';
 import {
-  actionService,
-  ActionStatus,
-  formatToApiISO,
-  useCompetitionContext,
-  useCompetitionDateLimits,
-  useInvalidateCompetition,
-  usePermissions,
-  type Action,
-  type ActionCreatePayload,
-} from '@/features/competition';
-import {
   getReportActionSchema,
   type ReportActionFormData,
 } from '@/features/competition/validations';
+import { useCompetitionContext } from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
+import {
+  useCompetitionDateLimits,
+  useInvalidateCompetition,
+} from '@/features/competition/view';
+import {
+  ActionStatus,
+  type Action,
+  type ActionCreatePayload,
+} from '@/features/competition/types';
+import { actionService } from '@/features/competition/services';
+import { formatToApiISO } from '@/features/competition/utils';
 
 export const useReportAction = (
   players: { id: string; display_name: string }[],

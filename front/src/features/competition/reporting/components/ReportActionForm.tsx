@@ -11,11 +11,11 @@ import {
   ICONS,
 } from '@/shared';
 import {
-  PlayerDropdownList,
   useCompetitionContext,
-  useReportAction,
   useReportingContext,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import { useReportAction } from '@/features/competition/reporting/hooks';
+import { PlayerDropdownList } from '@/features/competition/enrollment';
 
 export const ReportActionForm = () => {
   const { refresh } = useCompetitionContext();

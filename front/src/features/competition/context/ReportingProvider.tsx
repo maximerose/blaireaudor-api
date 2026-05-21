@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
-import {
-  ReportingContext,
-  useCompetitionContext,
-} from '@/features/competition';
+import { useCompetitionContext } from './CompetitionContext';
+import { ReportingContext } from './ReportingContext';
 
 export const ReportingProvider = ({
   children,

@@ -1,13 +1,3 @@
-import {
-  updatePasswordSchema,
-  updateProfileInfoSchema,
-  useAuthContext,
-  useEmailCheck,
-  useUsernameCheck,
-  userService,
-  type UpdatePasswordData,
-  type UpdateProfileInfoData,
-} from '@/features/account';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -20,6 +10,16 @@ import {
   slugify,
   type ApiError,
 } from '@/shared';
+import { useAuthContext } from '@/features/account/context';
+import {
+  updatePasswordSchema,
+  updateProfileInfoSchema,
+  type UpdatePasswordData,
+  type UpdateProfileInfoData,
+} from '@/features/account/validations';
+import { useUsernameCheck } from './useUsernameCheck';
+import { useEmailCheck } from './useEmailCheck';
+import { userService } from '@/features/account/services';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { bonusDayService } from '@/features/competition';
+import { bonusDayService } from '@/features/competition/services';
 import { QUERY_KEYS } from '@/shared';
 
 export const useBonusDays = (competitionId: string) => {

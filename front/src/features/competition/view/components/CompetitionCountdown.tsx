@@ -1,5 +1,5 @@
 import { Text, TEXT_VARIANT, cn } from '@/shared';
-import { useCompetitionCountdown } from '@/features/competition';
+import { useCompetitionCountdown } from '@/features/competition/view/hooks';
 
 interface CompetitionCountdownProps {
   targetDate: string;

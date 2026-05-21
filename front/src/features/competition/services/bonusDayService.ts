@@ -1,4 +1,4 @@
-import type { BonusDay } from '@/features/competition';
+import type { BonusDay } from '@/features/competition/types';
 import { API, apiFetch } from '@/shared';
 
 export const bonusDayService = {

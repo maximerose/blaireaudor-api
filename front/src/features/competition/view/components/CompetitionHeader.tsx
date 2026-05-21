@@ -9,19 +9,19 @@ import {
   TEXT_VARIANT,
   UI,
 } from '@/shared';
+import { useAuthContext } from '@/features/account';
+import { useMemo } from 'react';
+import type { RefereeListItem } from '@/features/player';
+import { CompetitionCountdown } from './CompetitionCountdown';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useCompetitionContext } from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
 import {
-  COMPETITION_UI,
   getCompetitionReferees,
   getDisplayDateText,
   resolveCreatorName,
-  useCompetitionContext,
-  usePermissions,
-  type BonusDay,
-} from '@/features/competition';
-import { useMemo } from 'react';
-import { CompetitionCountdown } from './CompetitionCountdown';
-import type { RefereeListItem } from '@/features/player';
-import { useAuthContext } from '@/features/account';
+} from '@/features/competition/utils';
+import type { BonusDay } from '@/features/competition/types';
 
 export const CompetitionHeader = () => {
   const { user } = useAuthContext();

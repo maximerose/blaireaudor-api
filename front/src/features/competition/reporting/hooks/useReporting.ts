@@ -1,4 +1,4 @@
-import type { Participation } from '@/features/competition';
+import type { Participation } from '@/features/competition/types';
 import { useState, useMemo } from 'react';
 
 interface ReportingTarget {

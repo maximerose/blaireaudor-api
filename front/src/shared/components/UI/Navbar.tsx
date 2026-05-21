@@ -1,16 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
 import { useNavbarUI } from '@/shared/hooks';
-import {
-  Button,
-  BUTTON_VARIANT,
-  SECTION_HEADER_VARIANT,
-  SectionHeader,
-  Text,
-  TEXT_VARIANT,
-} from '@/shared/components/UI';
 import { ICONS, NAV } from '@/shared/constants';
 import { cn } from '@/shared/utils';
+import { SECTION_HEADER_VARIANT, SectionHeader } from './SectionHeader';
+import { Text, TEXT_VARIANT } from './Text';
+import { Button, BUTTON_VARIANT } from './Button';
 
 interface NavbarProps {
   subtitle?: string;

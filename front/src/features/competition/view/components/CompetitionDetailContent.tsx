@@ -1,14 +1,12 @@
-import {
-  ActionTable,
-  Leaderboard,
-  CompetitionHeader,
-  AdminSettings,
-  InlineEnrollment,
-  ReportingSection,
-  useCompetitionContext,
-  COMPETITION_UI,
-} from '@/features/competition';
 import { MainLayout, SectionHeader, SECTION_HEADER_VARIANT } from '@/shared';
+import { useCompetitionContext } from '@/features/competition/context';
+import { CompetitionHeader } from './CompetitionHeader';
+import { AdminSettings } from '@/features/competition/admin';
+import { ReportingSection } from '@/features/competition/reporting';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { Leaderboard } from '@/features/competition/leaderboard';
+import { InlineEnrollment } from '@/features/competition/enrollment';
+import { ActionTable } from '@/features/competition/actions';
 
 export const CompetitionDetailContent = () => {
   const { competition } = useCompetitionContext();

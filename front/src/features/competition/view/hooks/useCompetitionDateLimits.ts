@@ -1,4 +1,4 @@
-import type { Competition } from '@/features/competition';
+import type { Competition } from '@/features/competition/types';
 import { useMemo } from 'react';
 
 export const useCompetitionDateLimits = (

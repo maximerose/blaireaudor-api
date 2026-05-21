@@ -1,5 +1,5 @@
-import type { CompetitionFormData } from '@/features/competition';
 import { useState } from 'react';
+import type { CompetitionFormData } from '@/features/competition/types';
 
 export const useCompetitionForm = (initialData: CompetitionFormData) => {
   const [formData, setFormData] = useState<CompetitionFormData>(initialData);

@@ -4,8 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
-  resetPasswordService,
-} from '@/features/account';
+} from '@/features/account/validations';
+import { resetPasswordService } from '@/features/account/services';
 
 export const useForgotPassword = () => {
   const {

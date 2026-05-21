@@ -1,17 +1,17 @@
 import { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import {
-  getBonusDaySchema,
-  useBonusDayAdmin,
-  useBonusDays,
-  useCompetitionContext,
-  useCompetitionDateLimits,
-  type BonusDay,
-  type BonusDayFormData,
-} from '@/features/competition';
 import { getLocalDayString, sortByDate, ERRORS, RULES } from '@/shared';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useBonusDays } from './useBonusDays';
+import { useBonusDayAdmin } from './useBonusDayAdmin';
+import { useCompetitionDateLimits } from '@/features/competition/view';
+import {
+  getBonusDaySchema,
+  type BonusDayFormData,
+} from '@/features/competition/validations';
+import type { BonusDay } from '@/features/competition/types';
 
 export const useBonusDayForm = () => {
   const { competition, refresh } = useCompetitionContext();

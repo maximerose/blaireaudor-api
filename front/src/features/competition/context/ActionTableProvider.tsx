@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
-import { ActionTableContext, useActionTable } from '@/features/competition';
+import { ActionTableContext } from '@/features/competition/context';
+import { useActionTable } from '@/features/competition/actions';
 
 interface ActionTableProviderProps {
   children: ReactNode;

@@ -1,7 +1,7 @@
 import { ICONS } from '@/shared/constants';
 import type React from 'react';
-import { Text, TEXT_VARIANT } from '@/shared/components/UI';
 import { cn } from '@/shared/utils';
+import { Text, TEXT_VARIANT } from './Text';
 
 export const ALERT_VARIANT = {
   DANGER: 'danger',

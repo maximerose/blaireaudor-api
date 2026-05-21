@@ -1,18 +1,20 @@
-import {
-  actionService,
-  competitionService,
-  useCompetitionContext,
-  useInvalidateCompetition,
-  type Action,
-  type ActionStatus,
-  type ActionUpdatePayload,
-  type ActionUpdateStatusPayload,
-  type Competition,
-  type CompetitionUpdatePayload,
-} from '@/features/competition';
 import { useMutation } from '@tanstack/react-query';
 import { ERRORS, LOG_MESSAGES, type ApiError } from '@/shared';
 import toast from 'react-hot-toast';
+import { useCompetitionContext } from '@/features/competition/context';
+import { useInvalidateCompetition } from '@/features/competition/view';
+import type {
+  Action,
+  ActionStatus,
+  ActionUpdatePayload,
+  ActionUpdateStatusPayload,
+  Competition,
+  CompetitionUpdatePayload,
+} from '@/features/competition/types';
+import {
+  actionService,
+  competitionService,
+} from '@/features/competition/services';
 
 export const useCompetitionAdmin = () => {
   const { competition } = useCompetitionContext();

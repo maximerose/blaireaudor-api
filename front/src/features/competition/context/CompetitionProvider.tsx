@@ -1,13 +1,13 @@
 import { useMemo, type ReactNode } from 'react';
-import {
-  CompetitionContext,
-  isReferee,
-  useCompetitionSettings,
-  type Competition,
-  type EnrichedLeaderboardItem,
-  type Participation,
-} from '@/features/competition';
 import { useAuthContext } from '@/features/account';
+import type {
+  Competition,
+  EnrichedLeaderboardItem,
+  Participation,
+} from '@/features/competition/types';
+import { isReferee } from '@/features/competition/utils';
+import { useCompetitionSettings } from '@/features/competition/admin';
+import { CompetitionContext } from './CompetitionContext';
 
 interface ProviderProps {
   children: ReactNode;

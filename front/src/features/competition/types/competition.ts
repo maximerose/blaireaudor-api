@@ -1,10 +1,7 @@
 import type { FormParticipant, Player } from '@/features/player';
-import type {
-  BonusDay,
-  EnrichedLeaderboardItem,
-  Participation,
-} from '@/features/competition';
 import type { User } from '@/features/account';
+import type { BonusDay } from './bonusDay';
+import type { EnrichedLeaderboardItem, Participation } from './participation';
 
 export interface Competition {
   id: string;

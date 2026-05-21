@@ -2,7 +2,7 @@ import { Badge, BADGE_VARIANT } from '@/shared';
 import {
   CompetitionStatus,
   type CompetitionStatusType,
-} from '@/features/competition';
+} from '@/features/competition/types';
 
 const STATUS_CONFIG = {
   [CompetitionStatus.ACTIVE]: {

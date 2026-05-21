@@ -11,8 +11,9 @@ import {
   ICONS,
   ROUTES,
 } from '@/shared';
-import { AUTH_UI, useLogin } from '@/features/account';
 import { AuthCard } from '@/components/UI/AuthCard';
+import { useLogin } from '@/features/account/hooks';
+import { AUTH_UI } from '@/features/account/constants';
 
 export const LoginForm = () => {
   const {

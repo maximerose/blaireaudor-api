@@ -1,4 +1,4 @@
-import { getRankMedal } from '@/features/competition';
+import { getRankMedal } from '@/features/competition/utils';
 import { BADGE_VARIANT, type BadgeVariant } from '@/shared';
 
 const RANK_VARIANTS: Record<number, BadgeVariant> = {

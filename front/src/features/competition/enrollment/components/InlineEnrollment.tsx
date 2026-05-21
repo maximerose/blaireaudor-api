@@ -12,14 +12,12 @@ import {
   ICONS,
 } from '@/shared';
 import {
-  SelectedPlayerBadge,
-  useInlineEnrollmentUI,
-} from '@/features/competition';
-import {
   PlayerSearchResultItem,
   type Player,
   type PlayerCompact,
 } from '@/features/player';
+import { useInlineEnrollmentUI } from '@/features/competition/enrollment/hooks';
+import { SelectedPlayerBadge } from './SelectedPlayerBadge';
 
 export const InlineEnrollment = () => {
   const {

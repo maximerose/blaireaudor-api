@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import {
   ActionStatus,
   type Action,
   type ActionEditData,
   type OnActionUpdate,
-} from '@/features/competition';
-import { useState } from 'react';
+} from '@/features/competition/types';
 
 export const useActionRowInteraction = (
   action: Action,

@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Text, TEXT_VARIANT, cn } from '@/shared';
-import { useRankedScoreUI } from '@/features/competition';
+import { useRankedScoreUI } from '@/features/competition/leaderboard/hooks';
 
 interface RankedScoreProps extends React.HTMLAttributes<HTMLDivElement> {
   score: number | string;

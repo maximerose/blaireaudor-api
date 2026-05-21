@@ -1,16 +1,17 @@
 import { useState, useMemo } from 'react';
 import { getIdFromData, QUERY_KEYS, UI } from '@/shared';
+
+import { useQuery } from '@tanstack/react-query';
+import { useAuthContext } from '@/features/account';
+import { useCompetitionContext } from '@/features/competition/context';
 import {
   ActionStatus,
-  competitionService,
-  useCompetitionContext,
-  useInfiniteActions,
   type Action,
   type ActionSortField,
   type Participation,
-} from '@/features/competition';
-import { useQuery } from '@tanstack/react-query';
-import { useAuthContext } from '@/features/account';
+} from '@/features/competition/types';
+import { competitionService } from '@/features/competition/services';
+import { useInfiniteActions } from './useInfiniteActions';
 
 export const useActionTable = (competitionId: string | undefined) => {
   const { competition } = useCompetitionContext();

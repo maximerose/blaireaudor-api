@@ -1,9 +1,9 @@
 import {
-  ReportingContent,
   ReportingProvider,
   useCompetitionContext,
-  usePermissions,
-} from '@/features/competition';
+} from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
+import { ReportingContent } from './ReportingContent';
 
 export const ReportingSection = () => {
   const { competition } = useCompetitionContext();

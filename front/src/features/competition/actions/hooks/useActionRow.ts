@@ -1,9 +1,6 @@
 import { useAuthContext } from '@/features/account';
-import {
-  ActionStatus,
-  useCompetitionContext,
-  type Action,
-} from '@/features/competition';
+import { ActionStatus, type Action } from '@/features/competition/types';
+import { useCompetitionContext } from '@/features/competition/context';
 
 export const useActionRow = (action: Action) => {
   const { hidePoints, getMultiplier } = useCompetitionContext();

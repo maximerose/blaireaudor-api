@@ -1,5 +1,5 @@
-import type { User } from '@/features/account';
 import type { Dispatch, SetStateAction } from 'react';
+import type { User } from './user';
 
 export interface LoginCredentials {
   username: string;

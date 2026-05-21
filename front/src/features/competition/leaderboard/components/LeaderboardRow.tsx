@@ -10,15 +10,15 @@ import {
   cn,
   ICONS,
 } from '@/shared';
-import {
-  COMPETITION_UI,
-  getMedalStyle,
-  useLeaderboardRow,
-  type Competition,
-  type EnrichedLeaderboardItem,
-} from '@/features/competition';
-import { RoleBadge } from '@/features/competition/view/components/RoleBadge';
-import { RankedScore } from '@/features/competition/leaderboard/components/RankedScore';
+import { RoleBadge } from '@/features/competition/view';
+import { useLeaderboardRow } from '@/features/competition/leaderboard/hooks';
+import type {
+  Competition,
+  EnrichedLeaderboardItem,
+} from '@/features/competition/types';
+import { getMedalStyle } from '@/features/competition/utils';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { RankedScore } from './RankedScore';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   participation: EnrichedLeaderboardItem;

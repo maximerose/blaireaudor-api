@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TEXT_VARIANT } from '@/shared/components/UI';
+import { Text, TEXT_VARIANT } from './Text';
 import { useEmptyStateUI } from '@/shared/hooks';
 import { ICONS } from '@/shared/constants';
 

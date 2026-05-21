@@ -1,11 +1,9 @@
 import { MainLayout, LoadingScreen, NotFoundState, ERRORS } from '@/shared';
-import {
-  COMPETITION_UI,
-  CompetitionDetailContent,
-  CompetitionProvider,
-  useCompetitionData,
-} from '@/features/competition';
 import { useParams } from 'react-router-dom';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { CompetitionProvider } from '@/features/competition/context';
+import { CompetitionDetailContent } from './CompetitionDetailContent';
+import { useCompetitionData } from '@/features/competition/view/hooks';
 
 export const CompetitionDetailPage = () => {
   const { code } = useParams<{ code: string }>();

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { PlayerCompact } from '@/features/player';
 import { AVAILABILITY, QUERY_KEYS } from '@/shared';
-import { userService } from '@/features/account';
+import { userService } from '@/features/account/services';
 
 export const useUsernameCheck = (
   username: string,
