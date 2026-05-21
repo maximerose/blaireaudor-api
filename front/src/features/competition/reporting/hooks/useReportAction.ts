@@ -68,7 +68,7 @@ export const useReportAction = (
     setError,
   } = useForm<ReportActionFormData>({
     resolver: zodResolver(getReportActionSchema(minDate, maxDate)),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       targetPlayerId: '',
       description: '',

@@ -1,3 +1,9 @@
+export const STALE_TIMES = {
+  SHORT: 1000 * 30, // 30 secondes (données très volatiles)
+  MUTATION_CHECK: 1000 * 60 * 2, // 2 minutes (validation de formulaires / doublons)
+  LONG: 1000 * 60 * 5, // 5 minutes (listes globales, métadonnées)
+} as const;
+
 export const QUERY_KEYS = {
   arbitrage: {
     pendingGlobal: ['actions', 'pending-global'] as const,

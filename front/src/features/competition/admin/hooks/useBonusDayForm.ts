@@ -29,7 +29,7 @@ export const useBonusDayForm = () => {
     formState: { errors, isValid },
   } = useForm<BonusDayFormData>({
     resolver: zodResolver(getBonusDaySchema(minDate, maxDate)),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       newDate: '',
       multiplier: RULES.BONUS.MIN_MULTIPLIER,

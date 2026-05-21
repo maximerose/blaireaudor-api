@@ -21,6 +21,7 @@ export const useLogin = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
     defaultValues: {
       username: '',
       password: '',
@@ -48,7 +49,7 @@ export const useLogin = () => {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('username', slugify(e.target.value), { shouldValidate: true });
+    setValue('username', slugify(e.target.value), { shouldValidate: false });
   };
 
   return {

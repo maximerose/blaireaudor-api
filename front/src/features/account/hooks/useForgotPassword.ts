@@ -14,6 +14,7 @@ export const useForgotPassword = () => {
     formState: { errors },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onBlur',
   });
 
   const mutation = useMutation({

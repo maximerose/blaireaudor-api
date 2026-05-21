@@ -1,3 +1,4 @@
+export * from './useAccountValidation';
 export * from './useEmailCheck';
 export * from './useForgotPassword';
 export * from './useHistoricalSearchUI';

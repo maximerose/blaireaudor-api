@@ -23,11 +23,10 @@ import {
   registerSchema,
   type RegisterFormData,
 } from '@/features/account/validations';
-import { useUsernameCheck } from './useUsernameCheck';
-import { useEmailCheck } from './useEmailCheck';
 import type { AuthResponseData } from '@/features/account/types';
 import { authService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
+import { useAccountValidation } from './useAccountValidation';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();
@@ -40,10 +39,11 @@ export const useRegistration = (redirectUrl: string) => {
     setValue,
     watch,
     setError,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       display_name: '',
       username: '',
@@ -54,13 +54,23 @@ export const useRegistration = (redirectUrl: string) => {
     },
   });
 
+  const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
+  const [showUsernameHint, setShowUsernameHint] = useState(false);
+
   const currentUsername = watch('username');
   const currentEmail = watch('email');
   const currentPlayerId = watch('player_id');
   const currentDisplayName = watch('display_name');
 
-  const [isUsernameCustomized, setIsUsernameCustomized] = useState(false);
-  const [showUsernameHint, setShowUsernameHint] = useState(false);
+  const validation = useAccountValidation<RegisterFormData>({
+    currentUsername,
+    currentEmail,
+    setValue,
+    trigger,
+    currentPlayerId,
+    onUsernameChange: () => setIsUsernameCustomized(true),
+    onUsernameBlur: () => setShowUsernameHint(false),
+  });
 
   const {
     searchTerm,
@@ -69,16 +79,6 @@ export const useRegistration = (redirectUrl: string) => {
     searching,
     clearSearch,
   } = usePlayerSearch();
-
-  const {
-    status: usernameStatus,
-    isLoading: usernameCheckLoading,
-    foundGuest,
-  } = useUsernameCheck(currentUsername, currentPlayerId ?? null);
-
-  const { status: emailStatus, isLoading: emailCheckLoading } =
-    useEmailCheck(currentEmail);
-
   const filteredResults = rawSearchResults.filter(
     (p: Player) => p.has_account === false,
   );
@@ -105,28 +105,15 @@ export const useRegistration = (redirectUrl: string) => {
 
   const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setValue('display_name', val, { shouldValidate: true });
-
+    setValue('display_name', val, { shouldValidate: false });
     if (!isUsernameCustomized) {
-      setValue('username', slugify(val), { shouldValidate: true });
+      setValue('username', slugify(val), { shouldValidate: false });
     }
-  };
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsUsernameCustomized(true);
-    setValue('username', slugify(e.target.value), { shouldValidate: true });
-  };
-
-  const handleUsernameBlur = () => {
-    setShowUsernameHint(false);
-    setValue('username', finalizeSlug(currentUsername), {
-      shouldValidate: true,
-    });
   };
 
   const handleDisplayNameBlur = () => {
     if (!isUsernameCustomized) {
-      setValue('username', finalizeSlug(currentUsername), {
+      setValue('username', finalizeSlug(watch('username')), {
         shouldValidate: true,
       });
     }
@@ -146,12 +133,10 @@ export const useRegistration = (redirectUrl: string) => {
         username: variables.username,
         password: variables.plain_password,
       });
-
       navigate(redirectUrl);
     },
     onError: (apiError: ApiError) => {
       console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, apiError);
-
       if (apiError.violations && apiError.violations.length > 0) {
         apiError.violations.forEach((violation) => {
           setError(violation.propertyPath as keyof RegisterFormData, {
@@ -170,10 +155,10 @@ export const useRegistration = (redirectUrl: string) => {
 
   const onSubmit = (data: RegisterFormData) => {
     if (
-      usernameCheckLoading ||
-      emailCheckLoading ||
-      usernameStatus === AVAILABILITY.TAKEN ||
-      emailStatus === AVAILABILITY.TAKEN
+      validation.usernameLoading ||
+      validation.emailLoading ||
+      validation.usernameStatus === AVAILABILITY.TAKEN ||
+      validation.emailStatus === AVAILABILITY.TAKEN
     )
       return;
     setGlobalMessage('');
@@ -182,11 +167,11 @@ export const useRegistration = (redirectUrl: string) => {
 
   const getSubmitButtonText = () => {
     if (registerMutation.isPending) return AUTH_UI.REGISTER.LOADING_SUBMIT;
-    if (usernameCheckLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
-    if (emailCheckLoading) return FORM.AUTH.HINTS.EMAIL_CHECK;
-    if (usernameStatus === AVAILABILITY.TAKEN)
+    if (validation.usernameLoading) return FORM.AUTH.HINTS.USERNAME_CHECK;
+    if (validation.emailLoading) return FORM.AUTH.HINTS.EMAIL_CHECK;
+    if (validation.usernameStatus === AVAILABILITY.TAKEN)
       return FORM.AUTH.HINTS.USERNAME_TAKEN;
-    if (usernameStatus === AVAILABILITY.GUEST_EXISTS)
+    if (validation.usernameStatus === AVAILABILITY.GUEST_EXISTS)
       return AUTH_UI.GUEST_ALERT.TITLE;
     return AUTH_UI.REGISTER.SUBMIT;
   };
@@ -197,37 +182,31 @@ export const useRegistration = (redirectUrl: string) => {
     errors,
     watch,
     handleDisplayNameChange,
-    handleUsernameChange,
-    handleUsernameFocus: () => setShowUsernameHint(true),
-    handleUsernameBlur,
     handleDisplayNameBlur,
-
+    handleUsernameFocus: () => setShowUsernameHint(true),
     globalMessage,
     isLoading: registerMutation.isPending,
     isSubmitting,
-    usernameStatus,
-    usernameCheckLoading,
     displayStates: {
       shouldShowUsernameCheck:
         currentUsername.length >= 3 &&
-        usernameStatus !== AVAILABILITY.GUEST_EXISTS &&
-        (usernameCheckLoading || usernameStatus !== null),
-      shouldShowEmailCheck: currentEmail.includes('@') && emailStatus !== null,
+        validation.usernameStatus !== AVAILABILITY.GUEST_EXISTS &&
+        (validation.usernameLoading || validation.usernameStatus !== null),
+      shouldShowEmailCheck:
+        currentEmail.includes('@') && validation.emailStatus !== null,
       shouldShowGuestAlert:
-        !usernameCheckLoading &&
-        usernameStatus === AVAILABILITY.GUEST_EXISTS &&
-        !!foundGuest,
+        !validation.usernameLoading &&
+        validation.usernameStatus === AVAILABILITY.GUEST_EXISTS &&
+        !!validation.foundGuest,
       shouldShowUsernameHint: showUsernameHint,
     },
-    emailStatus,
-    emailCheckLoading,
     submitButtonText: getSubmitButtonText(),
     isSubmitDisabled:
       registerMutation.isPending ||
-      usernameCheckLoading ||
-      usernameStatus === AVAILABILITY.TAKEN ||
-      emailCheckLoading ||
-      emailStatus === AVAILABILITY.TAKEN,
+      validation.usernameLoading ||
+      validation.usernameStatus === AVAILABILITY.TAKEN ||
+      validation.emailLoading ||
+      validation.emailStatus === AVAILABILITY.TAKEN,
 
     playerSearch: {
       searchTerm,
@@ -241,7 +220,8 @@ export const useRegistration = (redirectUrl: string) => {
       isLinked: !!currentPlayerId,
       hasResults: filteredResults.length > 0,
     },
-    foundGuest,
-    linkFoundGuest: () => foundGuest && linkPlayer(foundGuest),
+    linkFoundGuest: () =>
+      validation.foundGuest && linkPlayer(validation.foundGuest),
+    ...validation,
   };
 };

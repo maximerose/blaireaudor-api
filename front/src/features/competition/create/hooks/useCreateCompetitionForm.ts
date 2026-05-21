@@ -41,7 +41,7 @@ export const useCreateCompetitionForm = (
 
   const formMethods = useForm<CreateCompetitionFormData>({
     resolver: zodResolver(createCompetitionSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       name: '',
       joinCode: '',

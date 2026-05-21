@@ -3,11 +3,8 @@ import {
   Button,
   Card,
   CARD_VARIANT,
-  Input,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-  Text,
-  TEXT_VARIANT,
   AVAILABILITY,
   BUTTONS,
   FORM,
@@ -15,7 +12,11 @@ import {
 } from '@/shared';
 import { useProfile } from '@/features/account/hooks';
 import { PROFILE_UI } from '@/features/account/constants';
-import { PasswordStrength } from './PasswordStrength';
+import { DisplayNameField } from './fields/DisplayNameField';
+import { UsernameField } from './fields/UsernameField';
+import { EmailField } from './fields/EmailField';
+import { PasswordField } from './fields/PasswordField';
+import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 
 export const ProfilePage = () => {
   const {
@@ -23,9 +24,15 @@ export const ProfilePage = () => {
     passwordForm,
     handleUsernameBlur,
     handleUsernameChange,
+    handleEmailBlur,
     onInfoSubmit,
     onPasswordSubmit,
-    status,
+    usernameStatus,
+    usernameLoading,
+    isUsernameUnchanged,
+    emailStatus,
+    emailLoading,
+    isEmailUnchanged,
   } = useProfile();
 
   const passwordValue = passwordForm.watch('new_password') || '';
@@ -51,99 +58,30 @@ export const ProfilePage = () => {
           />
 
           <form onSubmit={onInfoSubmit} className="space-y-6 mt-6" noValidate>
-            <Input
-              label={FORM.AUTH.LABELS.DISPLAY_NAME}
-              placeholder={FORM.AUTH.PLACEHOLDERS.DISPLAY_NAME}
-              error={infoForm.formState.errors.display_name?.message}
-              required
+            <DisplayNameField
+              error={infoForm.formState.errors?.display_name?.message}
               {...infoForm.register('display_name')}
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <Input
-                  label={FORM.AUTH.LABELS.USERNAME}
-                  icon="@"
-                  error={infoForm.formState.errors.username?.message}
-                  required
-                  {...infoForm.register('username', {
-                    onChange: handleUsernameChange,
-                    onBlur: handleUsernameBlur,
-                  })}
-                />
+              <UsernameField
+                usernameStatus={usernameStatus}
+                usernameLoading={usernameLoading}
+                isUsernameUnchanged={isUsernameUnchanged}
+                error={infoForm.formState.errors.username?.message}
+                {...infoForm.register('username', {
+                  onChange: handleUsernameChange,
+                  onBlur: handleUsernameBlur,
+                })}
+              />
 
-                <div className="h-4 flex justify-center" aria-live="polite">
-                  {!status.isUsernameUnchanged && (
-                    <>
-                      {status.isUsernameLoading ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-gold animate-pulse text-center"
-                        >
-                          {FORM.AUTH.HINTS.USERNAME_CHECK}
-                        </Text>
-                      ) : status.username === AVAILABILITY.AVAILABLE ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-success-bright text-center"
-                        >
-                          <span className="mr-1">{ICONS.SUCCESS}</span>{' '}
-                          {FORM.AUTH.HINTS.USERNAME_AVAILABLE}
-                        </Text>
-                      ) : status.username === AVAILABILITY.TAKEN ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-danger-bright text-center"
-                        >
-                          <span className="mr-1">{ICONS.FAILURE}</span>{' '}
-                          {FORM.AUTH.HINTS.USERNAME_TAKEN}
-                        </Text>
-                      ) : null}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <Input
-                  label={FORM.AUTH.LABELS.EMAIL}
-                  type="email"
-                  icon={ICONS.SEARCH}
-                  error={infoForm.formState.errors.email?.message}
-                  required
-                  {...infoForm.register('email')}
-                />
-                <div className="h-4 flex justify-center" aria-live="polite">
-                  {!status.isEmailUnchanged && (
-                    <>
-                      {status.isEmailLoading ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-gold animate-pulse text-center"
-                        >
-                          {FORM.AUTH.HINTS.EMAIL_CHECK}
-                        </Text>
-                      ) : status.email === AVAILABILITY.AVAILABLE ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-success-bright text-center"
-                        >
-                          <span className="mr-1">{ICONS.SUCCESS}</span>{' '}
-                          {FORM.AUTH.HINTS.EMAIL_AVAILABLE}
-                        </Text>
-                      ) : status.email === AVAILABILITY.TAKEN ? (
-                        <Text
-                          variant={TEXT_VARIANT.MICRO}
-                          className="text-danger-bright text-center"
-                        >
-                          <span className="mr-1">{ICONS.FAILURE}</span>{' '}
-                          {FORM.AUTH.HINTS.EMAIL_TAKEN}
-                        </Text>
-                      ) : null}
-                    </>
-                  )}
-                </div>
-              </div>
+              <EmailField
+                emailStatus={emailStatus}
+                emailLoading={emailLoading}
+                isEmailUnchanged={isEmailUnchanged}
+                error={infoForm.formState.errors.email?.message}
+                {...infoForm.register('email', { onBlur: handleEmailBlur })}
+              />
             </div>
 
             <Button
@@ -152,8 +90,8 @@ export const ProfilePage = () => {
               disabled={
                 !infoForm.formState.isDirty ||
                 !infoForm.formState.isValid ||
-                status.username === AVAILABILITY.TAKEN ||
-                status.email === AVAILABILITY.TAKEN
+                usernameStatus === AVAILABILITY.TAKEN ||
+                emailStatus === AVAILABILITY.TAKEN
               }
               fullWidth
             >
@@ -180,37 +118,23 @@ export const ProfilePage = () => {
             className="space-y-6 mt-6"
             noValidate
           >
-            <Input
+            <PasswordField
               label={FORM.AUTH.LABELS.CURRENT_PASSWORD}
-              type="password"
-              icon={ICONS.SECRET}
               error={passwordForm.formState.errors.current_password?.message}
-              required
               {...passwordForm.register('current_password')}
             />
 
             <div className="space-y-4 pt-4 border-t border-white/5">
-              <div className="space-y-1">
-                <Input
-                  label={FORM.AUTH.LABELS.NEW_PASSWORD}
-                  type="password"
-                  icon={ICONS.STARS}
-                  error={passwordForm.formState.errors.new_password?.message}
-                  required
-                  {...passwordForm.register('new_password')}
-                />
-                {passwordValue.length > 0 &&
-                  !passwordForm.formState.errors.new_password && (
-                    <PasswordStrength password={passwordValue} />
-                  )}
-              </div>
+              <PasswordField
+                label={FORM.AUTH.LABELS.NEW_PASSWORD}
+                icon={ICONS.STARS}
+                watchValue={passwordValue}
+                error={passwordForm.formState.errors.new_password?.message}
+                {...passwordForm.register('new_password')}
+              />
 
-              <Input
-                label={FORM.AUTH.LABELS.CONFIRM_PASSWORD}
-                type="password"
-                icon={ICONS.CHECK}
+              <ConfirmPasswordField
                 error={passwordForm.formState.errors.confirm_password?.message}
-                required
                 {...passwordForm.register('confirm_password')}
               />
             </div>

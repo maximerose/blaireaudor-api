@@ -6,8 +6,6 @@ import {
   ERRORS,
   SUCCESS,
   camelToSnake,
-  finalizeSlug,
-  slugify,
   type ApiError,
 } from '@/shared';
 import { useAuthContext } from '@/features/account/context';
@@ -17,16 +15,15 @@ import {
   type UpdatePasswordData,
   type UpdateProfileInfoData,
 } from '@/features/account/validations';
-import { useUsernameCheck } from './useUsernameCheck';
-import { useEmailCheck } from './useEmailCheck';
 import { userService } from '@/features/account/services';
+import { useAccountValidation } from './useAccountValidation';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
 
   const infoForm = useForm<UpdateProfileInfoData>({
     resolver: zodResolver(updateProfileInfoSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       display_name: user?.player?.display_name || '',
       username: user?.username || '',
@@ -36,7 +33,7 @@ export const useProfile = () => {
 
   const passwordForm = useForm<UpdatePasswordData>({
     resolver: zodResolver(updatePasswordSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       current_password: '',
       new_password: '',
@@ -44,42 +41,22 @@ export const useProfile = () => {
     },
   });
 
-  const currentUsername = infoForm.watch('username');
-  const currentEmail = infoForm.watch('email');
-
-  const { status: rawUsernameStatus, isLoading: usernameLoading } =
-    useUsernameCheck(currentUsername, user?.player?.id || null);
-  const { status: rawEmailStatus, isLoading: emailLoading } =
-    useEmailCheck(currentEmail);
-
-  const isUsernameUnchanged = currentUsername === user?.username;
-  const isEmailUnchanged = currentEmail === user?.email;
-
-  const usernameStatus = isUsernameUnchanged
-    ? AVAILABILITY.AVAILABLE
-    : rawUsernameStatus;
-  const emailStatus = isEmailUnchanged
-    ? AVAILABILITY.AVAILABLE
-    : rawEmailStatus;
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    infoForm.setValue('username', slugify(e.target.value), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
-
-  const handleUsernameBlur = () => {
-    infoForm.setValue('username', finalizeSlug(currentUsername), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
+  const validation = useAccountValidation<UpdateProfileInfoData>({
+    currentUsername: infoForm.watch('username'),
+    currentEmail: infoForm.watch('email'),
+    setValue: infoForm.setValue,
+    trigger: infoForm.trigger,
+    currentPlayerId: user?.player?.id || null,
+    originalUsername: user?.username,
+    originalEmail: user?.email,
+  });
 
   const onInfoSubmit = async (data: UpdateProfileInfoData) => {
     if (
-      (usernameStatus === AVAILABILITY.TAKEN && !isUsernameUnchanged) ||
-      (emailStatus === AVAILABILITY.TAKEN && !isEmailUnchanged)
+      (validation.usernameStatus === AVAILABILITY.TAKEN &&
+        !validation.isUsernameUnchanged) ||
+      (validation.emailStatus === AVAILABILITY.TAKEN &&
+        !validation.isEmailUnchanged)
     )
       return;
 
@@ -114,7 +91,6 @@ export const useProfile = () => {
       if (apiError.violations) {
         apiError.violations.forEach((v) => {
           const formKey = camelToSnake(v.propertyPath);
-
           passwordForm.setError(formKey as keyof UpdatePasswordData, {
             type: 'server',
             message: v.message,
@@ -129,17 +105,8 @@ export const useProfile = () => {
   return {
     infoForm,
     passwordForm,
-    handleUsernameChange,
-    handleUsernameBlur,
     onInfoSubmit: infoForm.handleSubmit(onInfoSubmit),
     onPasswordSubmit: passwordForm.handleSubmit(onPasswordSubmit),
-    status: {
-      username: usernameStatus,
-      email: emailStatus,
-      isUsernameLoading: usernameLoading,
-      isEmailLoading: emailLoading,
-      isUsernameUnchanged,
-      isEmailUnchanged,
-    },
+    ...validation,
   };
 };

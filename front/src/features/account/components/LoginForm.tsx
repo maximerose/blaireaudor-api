@@ -8,12 +8,12 @@ import {
   BUTTON_SIZE,
   WizardLayout,
   FORM,
-  ICONS,
   ROUTES,
 } from '@/shared';
 import { AuthCard } from '@/components/UI/AuthCard';
 import { useLogin } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
+import { PasswordField } from './fields/PasswordField';
 
 export const LoginForm = () => {
   const {
@@ -42,11 +42,8 @@ export const LoginForm = () => {
             {...register('username', { onChange: handleUsernameChange })}
           />
           <div className="space-y-1">
-            <Input
+            <PasswordField
               label={FORM.AUTH.LABELS.PASSWORD}
-              type="password"
-              icon={ICONS.SECRET}
-              placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
               autoComplete="current-password"
               disabled={isSubmitting}
               align="center"

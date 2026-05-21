@@ -1,9 +1,7 @@
 import { useParams } from 'react-router-dom';
 import {
   ROUTES,
-  ICONS,
   FORM,
-  Input,
   Button,
   Alert,
   LoadingScreen,
@@ -12,7 +10,8 @@ import {
 import { AuthCard } from '@/components/UI/AuthCard';
 import { useResetPassword } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
-import { PasswordStrength } from './PasswordStrength';
+import { PasswordField } from './fields/PasswordField';
+import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 
 export const ResetPasswordForm = () => {
   const { token } = useParams<{ token: string }>();
@@ -42,25 +41,15 @@ export const ResetPasswordForm = () => {
           <Alert variant="danger">{AUTH_UI.RESET_PASSWORD.INVALID_TOKEN}</Alert>
         ) : (
           <div className="space-y-4">
-            <Input
+            <PasswordField
               label={FORM.AUTH.LABELS.NEW_PASSWORD}
-              type="password"
-              icon={ICONS.SECRET}
-              placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
               disabled={isSubmitting}
+              watchValue={passwordValue}
               error={errors.plain_password?.message}
               {...register('plain_password')}
             />
 
-            {passwordValue.length > 0 && !errors.plain_password && (
-              <PasswordStrength password={passwordValue} />
-            )}
-
-            <Input
-              label={FORM.AUTH.LABELS.CONFIRM_PASSWORD}
-              type="password"
-              icon={ICONS.CHECK}
-              placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
+            <ConfirmPasswordField
               disabled={isSubmitting}
               error={errors.confirm_password?.message}
               {...register('confirm_password')}

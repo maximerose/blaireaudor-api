@@ -49,7 +49,7 @@ export const useEditCompetition = (
     setError,
   } = useForm<EditCompetitionFormData>({
     resolver: zodResolver(editCompetitionSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       name: competition.name || '',
       joinCode: competition.join_code || '',

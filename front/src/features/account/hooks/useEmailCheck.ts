@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AVAILABILITY, QUERY_KEYS } from '@/shared';
+import { AVAILABILITY, QUERY_KEYS, STALE_TIMES } from '@/shared';
 import { userService } from '@/features/account/services';
 
 export const useEmailCheck = (email: string) => {
@@ -13,18 +13,22 @@ export const useEmailCheck = (email: string) => {
 
   const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(debouncedEmail);
 
-  const { data, isFetching } = useQuery({
+  const { data, isFetching: emailLoading } = useQuery({
     queryKey: QUERY_KEYS.auth.emailCheck(debouncedEmail),
     queryFn: ({ signal }) => userService.checkEmail(debouncedEmail, signal),
     enabled: isValidFormat,
-    staleTime: 1000 * 60 * 2,
+    staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
-  const status = !data
+  const emailStatus = !data
     ? null
     : !data.available
       ? AVAILABILITY.TAKEN
       : AVAILABILITY.AVAILABLE;
 
-  return { status, isLoading: isFetching };
+  return {
+    emailStatus,
+    emailLoading,
+    debouncedEmail,
+  };
 };

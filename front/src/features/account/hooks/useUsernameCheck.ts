@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { PlayerCompact } from '@/features/player';
-import { AVAILABILITY, QUERY_KEYS } from '@/shared';
+import { AVAILABILITY, QUERY_KEYS, STALE_TIMES } from '@/shared';
 import { userService } from '@/features/account/services';
 
 export const useUsernameCheck = (
   username: string,
   currentPlayerId: string | null,
 ) => {
-  const [debouncedTerm, setDebouncedTerm] = useState('');
+  const [debouncedUsername, setDebouncedUsername] = useState('');
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedTerm(username), 400);
+    const timer = setTimeout(() => setDebouncedUsername(username), 400);
     return () => clearTimeout(timer);
   }, [username]);
 
-  const { data, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.auth.usernameCheck(debouncedTerm),
-    queryFn: ({ signal }) => userService.checkUsername(debouncedTerm, signal),
-    enabled: debouncedTerm.length >= 2,
-    staleTime: 1000 * 60 * 5,
+  const { data, isLoading: usernameLoading } = useQuery({
+    queryKey: QUERY_KEYS.auth.usernameCheck(debouncedUsername),
+    queryFn: ({ signal }) =>
+      userService.checkUsername(debouncedUsername, signal),
+    enabled: debouncedUsername.length >= 2,
+    staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
-  const status = !data
+  const usernameStatus = !data
     ? null
     : !data.available
       ? AVAILABILITY.TAKEN
@@ -31,11 +31,9 @@ export const useUsernameCheck = (
         : AVAILABILITY.AVAILABLE;
 
   return {
-    status,
-    isLoading,
-    foundGuest:
-      data?.is_guest_profile && data.player
-        ? (data.player as PlayerCompact)
-        : null,
+    usernameStatus,
+    usernameLoading,
+    debouncedUsername,
+    foundGuest: data?.is_guest_profile && data.player ? data.player : null,
   };
 };
