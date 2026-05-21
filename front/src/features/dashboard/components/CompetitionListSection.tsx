@@ -1,3 +1,4 @@
+import { CompetitionCard } from '@/components/Competition/CompetitionCard';
 import {
   Badge,
   BADGE_VARIANT,
@@ -6,8 +7,7 @@ import {
   SectionHeader,
   UI,
 } from '@/shared';
-import { CompetitionCard } from '@/components/Dashboard';
-import type { DashboardItem } from '@/types';
+import type { DashboardItem } from '@/features/dashboard';
 
 interface CompetitionListSectionProps {
   title: string;

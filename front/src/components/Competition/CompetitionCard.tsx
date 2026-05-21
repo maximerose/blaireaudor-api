@@ -14,7 +14,7 @@ import {
 } from '@/shared';
 import { useCompetitionCard } from '@/hooks';
 import type { Competition, Participation } from '@/types';
-import { DASHBOARD_UI } from '@/constants';
+import { DASHBOARD_UI } from '@/features/dashboard';
 import { RoleBadge } from '../UI/RoleBadge';
 import { RankedScore } from '../UI/RankedScore';
 import { RankBadge } from '../UI/RankBadge';

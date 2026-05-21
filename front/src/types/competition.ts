@@ -68,8 +68,3 @@ export const CompetitionStatus = {
 
 export type CompetitionStatusType =
   (typeof CompetitionStatus)[keyof typeof CompetitionStatus];
-
-export interface DashboardItem {
-  competition: Competition;
-  participation?: Participation;
-}

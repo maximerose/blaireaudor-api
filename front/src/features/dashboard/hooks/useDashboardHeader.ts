@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { getCompetitionStatus } from '@/utils';
-import { DASHBOARD_UI } from '@/constants';
+import { DASHBOARD_UI } from '@/features/dashboard';
 import { CompetitionStatus } from '@/types';
 import { useAuthContext } from '@/features/account';
 

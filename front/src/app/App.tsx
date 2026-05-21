@@ -14,7 +14,7 @@ import {
   LoadingScreen,
   ScrollToTop,
 } from '@/shared';
-import { Dashboard } from '@/components/Dashboard';
+import { Dashboard } from '@/features/dashboard';
 import {
   useAuthContext,
   ForgotPasswordForm,

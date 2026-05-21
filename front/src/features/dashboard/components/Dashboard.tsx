@@ -9,12 +9,12 @@ import {
   NAV,
   MainLayout,
 } from '@/shared';
-import { useDashboardUI } from '@/hooks';
 import {
   DashboardHeader,
   CompetitionListSection,
-} from '@/components/Dashboard';
-import { DASHBOARD_UI } from '@/constants';
+  useDashboardUI,
+  DASHBOARD_UI,
+} from '@/features/dashboard';
 
 export const Dashboard = () => {
   const {

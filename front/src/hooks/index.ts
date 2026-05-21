@@ -32,9 +32,6 @@ export * from './competition/useRefereeStepLogic';
 export * from './competition/useReportAction';
 export * from './competition/useReporting';
 
-export * from './dashboard/useDashboardHeader';
-export * from './dashboard/useDashboardUI';
-
 export * from './ui/useActionRow';
 export * from './ui/useDateNavigation';
 export * from './ui/useHistoricalSearchUI';
