@@ -13,6 +13,7 @@ import {
   Stack,
   Row,
   Divider,
+  Alert,
 } from '@/shared';
 import { useRegistration } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
@@ -23,8 +24,12 @@ import { EmailField } from './fields/EmailField';
 import { UsernameField } from './fields/UsernameField';
 import { PasswordField } from './fields/PasswordField';
 import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
+import { useSearchParams } from 'react-router-dom';
 
 export const RegistrationForm = () => {
+  const [searchParams] = useSearchParams();
+  const joinCode = searchParams.get('code');
+
   const {
     register,
     handleSubmit,
@@ -36,7 +41,6 @@ export const RegistrationForm = () => {
     isLoading,
     isSubmitting,
     displayStates,
-    submitButtonText,
     isSubmitDisabled,
     playerSearch,
     foundGuest,
@@ -45,6 +49,10 @@ export const RegistrationForm = () => {
 
   const passwordValue = watch('plain_password') || '';
   const isInputDisabled = isLoading || isSubmitting;
+
+  const loginUrl = joinCode
+    ? ROUTES.NAV.LOGIN_WITH_JOIN_CODE(joinCode)
+    : ROUTES.NAV.LOGIN;
 
   return (
     <WizardLayout title={AUTH_UI.REGISTER.TITLE}>
@@ -55,6 +63,15 @@ export const RegistrationForm = () => {
         onSubmit={preventDefault(handleSubmit)}
         noValidate
       >
+        {joinCode && (
+          <Alert variant="info" className="mb-4">
+            {AUTH_UI.REGISTER.QR_JOIN_REGISTER(
+              <span className="font-mono font-black text-gold tracking-widest px-1">
+                {joinCode}
+              </span>,
+            )}
+          </Alert>
+        )}
         <HistoricalPlayerSearch
           searchProps={playerSearch}
           selectedName={watch('display_name')}
@@ -82,11 +99,11 @@ export const RegistrationForm = () => {
               register={register}
               watch={watch}
               errors={errors}
+              currentPlayerId={watch('player_id')}
               showHint={displayStates.shouldShowUsernameHint}
               disabled={isInputDisabled}
             />
 
-            {/* Alerte profil invité trouvé */}
             {displayStates.shouldShowGuestAlert && foundGuest && (
               <GuestFoundAlert
                 foundGuest={foundGuest}
@@ -120,7 +137,7 @@ export const RegistrationForm = () => {
             fullWidth
             className="cursor-pointer"
           >
-            {submitButtonText}
+            {AUTH_UI.REGISTER.SUBMIT}
           </Button>
 
           {globalMessage && (
@@ -138,7 +155,7 @@ export const RegistrationForm = () => {
 
         <Row justify="center" className="w-full">
           <Button
-            to={ROUTES.NAV.LOGIN}
+            to={loginUrl}
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
             className="cursor-pointer"

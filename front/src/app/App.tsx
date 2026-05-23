@@ -27,6 +27,7 @@ import {
 import {
   CompetitionDetailPage,
   CreateCompetitionPage,
+  QRJoinPage,
 } from '@/features/competition';
 
 const queryClient = new QueryClient();
@@ -54,27 +55,21 @@ function App() {
           <ScrollToTop />
           <div className="min-h-screen w-full bg-dark">
             <Routes>
+              <Route path={ROUTES.NAV.QR_JOIN_PATH} element={<QRJoinPage />} />
               <Route
                 path={ROUTES.NAV.FORGOT_PASSWORD}
-                element={
-                  user ? (
-                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                  ) : (
-                    <ForgotPasswordForm />
-                  )
-                }
+                element={<ForgotPasswordForm />}
               />
-
               <Route
                 path={ROUTES.NAV.RESET_PASSWORD_PATH}
-                element={
-                  user ? (
-                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                  ) : (
-                    <ResetPasswordForm />
-                  )
-                }
+                element={<ResetPasswordForm />}
               />
+              <Route path={ROUTES.NAV.LOGIN} element={<LoginForm />} />
+              <Route
+                path={ROUTES.NAV.REGISTER}
+                element={<RegistrationForm />}
+              />
+
               <Route
                 path={ROUTES.NAV.DASHBOARD}
                 element={
@@ -95,16 +90,7 @@ function App() {
                   )
                 }
               />
-              <Route
-                path={ROUTES.NAV.LOGIN}
-                element={
-                  user ? (
-                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                  ) : (
-                    <LoginForm />
-                  )
-                }
-              />
+
               <Route
                 path={ROUTES.NAV.HOME}
                 element={
@@ -114,16 +100,7 @@ function App() {
                   />
                 }
               />
-              <Route
-                path={ROUTES.NAV.REGISTER}
-                element={
-                  user ? (
-                    <Navigate to={ROUTES.NAV.DASHBOARD} replace />
-                  ) : (
-                    <RegistrationForm />
-                  )
-                }
-              />
+
               <Route
                 path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
                 element={

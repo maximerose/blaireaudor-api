@@ -1,6 +1,3 @@
-// front/src/features/competition/view/components/CompetitionHeader.tsx
-
-import { useMemo } from 'react';
 import {
   Badge,
   BADGE_VARIANT,
@@ -10,35 +7,36 @@ import {
   SectionHeader,
   Text,
   TEXT_VARIANT,
-  TEXT_THEME, // 🟢 Import ajouté
+  TEXT_THEME,
   UI,
-  Stack, // 🟢 Brique de Layout
-  Row, // 🟢 Brique de Layout
+  Stack,
+  Row,
+  Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZE,
 } from '@/shared';
-import { useAuthContext } from '@/features/account';
 import type { RefereeListItem } from '@/features/player';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { COMPETITION_UI } from '@/features/competition/constants';
-import { useCompetitionContext } from '@/features/competition/context';
-import { usePermissions } from '@/features/competition/hooks';
-import {
-  getCompetitionReferees,
-  getDisplayDateText,
-  resolveCreatorName,
-} from '@/features/competition/utils';
 import type { BonusDay } from '@/features/competition/types';
+import { CompetitionQRCodeModal } from './CompetitionQRCodeModal';
+import { useCompetitionHeaderUI } from '@/features/competition/view/hooks';
 
 export const CompetitionHeader = () => {
-  const { user } = useAuthContext();
-  const { competition, leaderboard, bonusDays } = useCompetitionContext();
-  const { roles } = usePermissions();
+  const {
+    competition,
+    bonusDays,
+    roles,
+    user,
+    referees,
+    creatorName,
+    dateText,
+    isQRModalOpen,
+    openQRModal,
+    closeQRModal,
+  } = useCompetitionHeaderUI();
 
-  const referees = getCompetitionReferees(competition);
-
-  const creatorName = useMemo(
-    () => resolveCreatorName(competition, leaderboard, user),
-    [competition, leaderboard, user],
-  );
+  const canShowQR = roles.isManager && !competition.is_finished;
 
   return (
     <Stack as="header" gap="md" align="center" mb="md" className="text-center">
@@ -47,26 +45,38 @@ export const CompetitionHeader = () => {
         variant={SECTION_HEADER_VARIANT.TITLE}
         title={competition.name}
         centered
-        subtitle={
-          <Text
-            variant={TEXT_VARIANT.MONO}
-            colorTheme={TEXT_THEME.GOLD}
-            className="tracking-[0.4em] uppercase text-sm inline-block bg-gold-soft px-3 py-1 rounded border border-gold-border"
-          >
-            <span className="sr-only">
-              {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
-            </span>
-            {competition.join_code}
-          </Text>
-        }
       />
+
+      <Row justify="center" align="center" gap="sm" wrap className="mt-1">
+        <Text
+          variant={TEXT_VARIANT.MONO}
+          colorTheme={TEXT_THEME.GOLD}
+          className="tracking-[0.4em] uppercase text-sm bg-gold-soft px-4 py-2 rounded-xl border border-gold-border flex items-center justify-center min-h-10"
+        >
+          <span className="sr-only">
+            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
+          </span>
+          {competition.join_code}
+        </Text>
+
+        {canShowQR && (
+          <Button
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZE.MEDIUM}
+            onClick={openQRModal}
+            icon={ICONS.QR}
+          >
+            {COMPETITION_UI.DETAIL.SECTIONS.HEADER.QR_BUTTON}
+          </Button>
+        )}
+      </Row>
 
       <Stack gap="xs" align="center">
         <Text variant={TEXT_VARIANT.CAPTION} colorTheme={TEXT_THEME.MUTED}>
           <span className="sr-only">
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.DATES_ARIA}
           </span>
-          {getDisplayDateText(competition.start_date, competition.end_date)}
+          {dateText}
         </Text>
 
         {competition.has_started &&
@@ -196,6 +206,13 @@ export const CompetitionHeader = () => {
             </Row>
           ))}
         </Row>
+      )}
+
+      {isQRModalOpen && (
+        <CompetitionQRCodeModal
+          joinCode={competition.join_code}
+          onClose={closeQRModal}
+        />
       )}
     </Stack>
   );

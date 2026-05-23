@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { useInputUI } from '@/shared/hooks';
 import { cn } from '@/shared/utils';
@@ -55,10 +55,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       className = '',
       id,
       error,
+      onChange,
       ...props
     },
     ref,
   ) => {
+    const [internalError, setInternalError] = useState(error);
+
+    useEffect(() => {
+      setInternalError(error);
+    }, [error]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (internalError) {
+        setInternalError(undefined);
+      }
+      if (onChange) {
+        onChange(e);
+      }
+    };
+
     const { inputId, labelClasses, inputClasses } = useInputUI(id, {
       align,
       icon,
@@ -112,6 +128,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             aria-invalid={!!error}
+            onChange={handleChange}
             {...props}
             className={cn(
               inputClasses,
@@ -128,14 +145,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && (
+        {internalError && (
           <Text
             variant={TEXT_VARIANT.MICRO}
             colorTheme={TEXT_THEME.DANGER}
             className="text-center animate-fade-in"
           >
             <span aria-hidden="true">{ICONS.DANGER} </span>
-            {error}
+            {internalError}
           </Text>
         )}
       </Stack>

@@ -12,6 +12,7 @@ export interface RegisterData {
   display_name?: string;
   email?: string;
   player_id?: string | null;
+  join_code?: string | null;
 }
 
 export interface AuthContextType {

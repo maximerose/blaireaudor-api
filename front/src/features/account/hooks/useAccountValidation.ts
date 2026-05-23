@@ -81,7 +81,7 @@ export const useAccountValidation = <T extends FieldValues>({
     setValue(
       'username' as Path<T>,
       finalizeSlug(currentUsername) as PathValue<T, Path<T>>,
-      { shouldValidate: true, shouldDirty: true },
+      { shouldValidate: false, shouldDirty: true },
     );
     onUsernameBlur?.();
   };

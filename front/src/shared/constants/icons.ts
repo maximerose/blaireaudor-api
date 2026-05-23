@@ -41,4 +41,5 @@ export const ICONS = {
   EMPTY: '🏜️',
   CHEVRON_DOWN: '▽',
   HOME: '🏠',
+  QR: '📱',
 } as const;

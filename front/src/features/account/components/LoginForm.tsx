@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Input,
   Button,
@@ -22,6 +22,12 @@ import { AUTH_UI } from '@/features/account/constants';
 import { PasswordField } from './fields/PasswordField';
 
 export const LoginForm = () => {
+  const [searchParams] = useSearchParams();
+  const joinCode = searchParams.get('code');
+  const registerUrl = joinCode
+    ? ROUTES.NAV.REGISTER_WITH_JOIN_CODE(joinCode)
+    : ROUTES.NAV.REGISTER;
+
   const {
     register,
     handleSubmit,
@@ -41,6 +47,15 @@ export const LoginForm = () => {
         noValidate
       >
         {globalError && <Alert variant="danger">{globalError}</Alert>}
+        {joinCode && (
+          <Alert variant="info" className="mb-4">
+            {AUTH_UI.LOGIN.QR_JOIN_LOGIN(
+              <span className="font-mono font-black text-gold tracking-widest px-1">
+                {joinCode}
+              </span>,
+            )}
+          </Alert>
+        )}
 
         <Input
           label={FORM.AUTH.LABELS.USERNAME}
@@ -91,7 +106,7 @@ export const LoginForm = () => {
           </Text>
 
           <Button
-            to={ROUTES.NAV.REGISTER}
+            to={registerUrl}
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
           >

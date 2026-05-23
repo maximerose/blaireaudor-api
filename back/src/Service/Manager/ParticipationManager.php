@@ -33,6 +33,15 @@ class ParticipationManager
      */
     public function joinCompetition(Player $player, Competition $competition): Participation
     {
+        $existing = $this->entityManager->getRepository(Participation::class)->findOneBy([
+            'player' => $player,
+            'competition' => $competition,
+        ]);
+
+        if ($existing) {
+            return $existing;
+        }
+
         $participation = new Participation();
         $participation->setPlayer($player);
         $participation->setCompetition($competition);

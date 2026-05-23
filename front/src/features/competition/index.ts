@@ -3,6 +3,7 @@ export { CompetitionDetailPage } from './view/components/CompetitionDetailPage';
 export { CreateCompetitionPage } from './create/components/CreateCompetitionPage';
 export { CompetitionCard } from './view/components/CompetitionCard';
 export { JoinCompetitionModal } from './join/components/JoinCompetitionModal';
+export { QRJoinPage } from './join/components/QRJoinPage';
 
 // 2. Outils métiers requis par l'extérieur (ex: le Dashboard)
 export { getCompetitionStatus } from './utils/competitionHelper';

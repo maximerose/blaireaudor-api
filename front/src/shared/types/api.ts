@@ -12,6 +12,7 @@ export interface HydraCollection<T> {
 export type ApiId = string;
 
 export interface ApiError {
+  status?: number;
   message: string;
   violations?: ApiViolation[];
 }
@@ -30,9 +31,9 @@ export const getApiError = async (response: Response): Promise<ApiError> => {
   try {
     const data = await response.json();
 
-    // 1. Format API Platform 4 / Hydra (Validation de formulaires, DTOs, etc.)
     if (data.violations && Array.isArray(data.violations)) {
       return {
+        status: response.status,
         message:
           data['hydra:description'] || data.detail || 'Erreur de validation.',
         violations: data.violations.map(
@@ -44,12 +45,12 @@ export const getApiError = async (response: Response): Promise<ApiError> => {
       };
     }
 
-    // 2. Format Custom, Exception standard Symfony ou JWT (ex: { message: "..." } ou { error: "..." })
     return {
+      status: response.status,
       message: data.message || data.error || fallbackMessage,
       violations: [],
     };
   } catch {
-    return { message: fallbackMessage };
+    return { status: response.status, message: fallbackMessage };
   }
 };

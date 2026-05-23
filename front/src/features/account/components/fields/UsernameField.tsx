@@ -39,13 +39,9 @@ export const UsernameField = ({
 }: UsernameFieldProps) => {
   const currentUsername = watch(fieldName);
 
-  const { usernameStatus, usernameLoading } = useUsernameCheck(
-    currentUsername,
-    currentPlayerId,
-  );
+  const { usernameStatus, usernameLoading, shouldShowFeedback } =
+    useUsernameCheck(currentUsername, currentPlayerId, initialUsername);
 
-  const isUsernameChanged =
-    currentUsername && currentUsername !== initialUsername;
   const error = errors[fieldName]?.message as string;
 
   return (
@@ -65,7 +61,6 @@ export const UsernameField = ({
         })}
       />
 
-      {/* Affichage de l'aide contextuelle */}
       {showHint && !error && (
         <Text
           variant={TEXT_VARIANT.MICRO}
@@ -79,8 +74,7 @@ export const UsernameField = ({
         </Text>
       )}
 
-      {/* Zone de Feedback API isolée */}
-      {isUsernameChanged && (
+      {shouldShowFeedback && (
         <Row justify="center" className="h-4" aria-live="polite">
           {usernameLoading ? (
             <Text

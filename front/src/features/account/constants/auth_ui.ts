@@ -1,10 +1,17 @@
+import type { ReactNode } from 'react';
+
 export const AUTH_UI = {
   LOGIN: {
     TITLE: 'Se connecter',
-    SUBTITLE: "Identifiez-vous pour entrer dans l'arène",
+    SUBTITLE: "Identifie-toi pour entrer dans l'arène",
     SUBMIT: 'Se connecter',
     NO_ACCOUNT: 'Pas encore de compte ?',
     REGISTER_LINK: "S'inscrire ici",
+    QR_JOIN_LOGIN: (code: ReactNode) => [
+      'Connecte-toi pour entrer dans la compétition ',
+      code,
+      ' !',
+    ],
   },
 
   REGISTER: {
@@ -12,6 +19,11 @@ export const AUTH_UI = {
     ALREADY_ACCOUNT: 'Déjà inscrit ?',
     SUBMIT: "S'inscrire",
     LOADING_SUBMIT: 'Inscription en cours...',
+    QR_JOIN_REGISTER: (code: ReactNode) => [
+      'Inscris-toi pour rejoindre la compétition ',
+      code,
+      ' !',
+    ],
   },
 
   GUEST_ALERT: {

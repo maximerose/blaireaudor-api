@@ -24,5 +24,9 @@ export const ROUTES = {
     RESET_PASSWORD_PATH: '/reset-password/:token',
     COMPETITION_DETAIL: (code: string) => `/competitions/${code}`,
     COMPETITION_DETAIL_PATH: '/competitions/:code',
+    LOGIN_WITH_JOIN_CODE: (code: string) => `/login?code=${code}`,
+    REGISTER_WITH_JOIN_CODE: (code: string) => `/register?code=${code}`,
+    QR_JOIN: (code: string) => `/q/${code}`,
+    QR_JOIN_PATH: '/q/:code',
   },
 } as const;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +12,7 @@ import {
   FORM,
   ICONS,
   ERRORS,
+  ROUTES,
 } from '@/shared';
 import {
   usePlayerSearch,
@@ -31,7 +32,10 @@ import { useAccountValidation } from './useAccountValidation';
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [globalMessage, setGlobalMessage] = useState('');
+
+  const joinCode = searchParams.get('code');
 
   const {
     register,
@@ -125,7 +129,14 @@ export const useRegistration = (redirectUrl: string) => {
     RegisterFormData
   >({
     mutationFn: async (data: RegisterFormData) => {
-      const result = await authService.register(data);
+      const result = await authService.register({
+        username: data.username,
+        plain_password: data.plain_password,
+        display_name: data.display_name,
+        email: data.email,
+        player_id: data.player_id,
+        join_code: joinCode,
+      });
       return result.data;
     },
     onSuccess: async (_data, variables) => {
@@ -133,7 +144,11 @@ export const useRegistration = (redirectUrl: string) => {
         username: variables.username,
         password: variables.plain_password,
       });
-      navigate(redirectUrl);
+      if (joinCode) {
+        navigate(ROUTES.NAV.COMPETITION_DETAIL(joinCode));
+      } else {
+        navigate(redirectUrl);
+      }
     },
     onError: (apiError: ApiError) => {
       console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, apiError);

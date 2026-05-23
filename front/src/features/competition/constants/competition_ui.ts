@@ -4,6 +4,7 @@ export const COMPETITION_UI = {
   CREATE: {
     TITLE: "Création d'une nouvelle compétition",
   },
+  REDIRECT: 'Redirection vers la compétition...',
   ADMIN: {
     GENERAL: {
       SETTINGS_LABEL: 'Paramètres de la compétition',
@@ -71,6 +72,10 @@ export const COMPETITION_UI = {
         CREATOR_LABEL: 'Créateur',
         REFEREE_LABEL: (count: number) => pluralize(count, 'Arbitre'),
         MULTIPLIERS_SECTION_TITLE: `Calendrier des Bonus ${ICONS.FIRE}`,
+        QR_BUTTON: 'QR Code',
+        QR_MODAL_TITLE: 'Inviter des blaireaux',
+        QR_MODAL_SUBTITLE: 'Fais scanner ce code pour une entrée directe.',
+        QR_DIRECT_LINK: 'Code manuel :',
       },
       REPORTING: {
         BONUS_DAY: 'Journée bonus en cours !',
