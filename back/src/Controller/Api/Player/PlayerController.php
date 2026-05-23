@@ -19,7 +19,7 @@ final class PlayerController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route('/search', name: 'search', methods: ['GET'], priority: 10)]
     public function searchPlayers(Request $request): JsonResponse
     {
         $query = $request->query->get('displayName', '');

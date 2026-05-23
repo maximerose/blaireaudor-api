@@ -44,6 +44,10 @@ class Player
     #[Groups(['competition:read', 'action:read', 'user:read', 'player:read'])]
     private ?string $displayName = null;
 
+    #[Gedmo\Slug(fields: ['displayName'])]
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     /**
      * @var string|null Nom d'utilisateur unique utilisé pour le slug et l'identification.
      *                  * Est synchronisé avec le username de l'User associé s'il existe.
@@ -87,6 +91,11 @@ class Player
         $this->displayName = $displayName;
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
 
     public function getUsername(): ?string

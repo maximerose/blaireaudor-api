@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Player;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * Repository gérant l'accès aux données des profils Joueurs.
@@ -24,10 +25,13 @@ class PlayerRepository extends ServiceEntityRepository
 
     public function searchByName(string $query, bool $unlinkedOnly = false): array
     {
+        $slugger = new AsciiSlugger();
+        $canonicalQuery = strtolower($slugger->slug($query)->toString());
+
         $qb = $this->createQueryBuilder('p')
-            ->where('unaccent(LOWER(p.displayName)) LIKE unaccent(LOWER(:query))')
-            ->setParameter('query', '%'.$query.'%')
-            ->orderBy('p.displayName', 'ASC');
+        ->where('p.slug LIKE :query')
+        ->setParameter('query', (string) '%'.$canonicalQuery.'%')
+        ->orderBy('p.slug', 'ASC');
 
         if ($unlinkedOnly) {
             $qb->andWhere('p.associatedUser IS NULL');

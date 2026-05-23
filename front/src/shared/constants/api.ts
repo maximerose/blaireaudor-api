@@ -41,7 +41,8 @@ export const API = {
     // PLAYER (Le profil métier, les scores, la recherche)
     PLAYER: {
       LIST: BASES.PLAYERS,
-      SEARCH: (query: string) => `${BASES.PLAYERS}?displayName=${query}`,
+      SEARCH: (query: string) =>
+        `${BASES.PLAYERS}/search?displayName=${encodeURIComponent(query)}`,
     },
 
     // COMPETITIONS (Les Arènes)
