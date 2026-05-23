@@ -47,17 +47,17 @@ export const useDashboardHeader = () => {
       color: 'text-info-bright',
     },
     {
-      label: DASHBOARD_UI.HEADER.STATS.FINISHED,
+      label: DASHBOARD_UI.HEADER.STATS.FINISHED(stats.finished),
       val: stats.finished,
       color: 'text-danger-bright',
     },
     {
-      label: DASHBOARD_UI.HEADER.STATS.CREATED,
+      label: DASHBOARD_UI.HEADER.STATS.CREATED(stats.created),
       val: stats.created,
       color: 'text-role-creator-bright',
     },
     {
-      label: DASHBOARD_UI.HEADER.STATS.REFEREED,
+      label: DASHBOARD_UI.HEADER.STATS.REFEREED(stats.refereed),
       val: stats.refereed,
       color: 'text-role-referee-bright',
     },

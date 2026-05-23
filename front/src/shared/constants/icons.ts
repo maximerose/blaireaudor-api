@@ -42,4 +42,5 @@ export const ICONS = {
   CHEVRON_DOWN: '▽',
   HOME: '🏠',
   QR: '📱',
+  STAB: '⚔️',
 } as const;

@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\DTO\User\PlayerStatsOutput;
 use App\DTO\User\ProfileUpdateInput;
 use App\DTO\User\RegistrationInput;
 use App\Entity\Trait\TimestampableTrait;
@@ -105,6 +106,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Competition::class)]
     #[Groups(['user:read'])]
     private Collection $createdCompetitions;
+
+    /**
+     * @var PlayerStatsOutput|null Statistiques de carrière injectées à la volée
+     */
+    #[Groups(['user:read'])]
+    public ?PlayerStatsOutput $stats = null;
 
     public function __construct()
     {

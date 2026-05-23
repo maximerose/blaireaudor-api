@@ -1,8 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/shared';
+import { useAuthContext } from '@/features/account';
 
 export const useInvalidateCompetition = () => {
   const queryClient = useQueryClient();
+  const { refreshUser } = useAuthContext();
 
   const invalidateAll = async (id: string | undefined, code?: string) => {
     if (!id) return;
@@ -28,6 +30,8 @@ export const useInvalidateCompetition = () => {
       queryKey: QUERY_KEYS.competition.all,
       exact: true,
     });
+
+    await refreshUser();
   };
 
   return { invalidateAll };

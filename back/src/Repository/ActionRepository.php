@@ -9,6 +9,7 @@ use App\Entity\Action;
 use App\Entity\Competition;
 use App\Entity\Participation;
 use App\Entity\Player;
+use App\Entity\User;
 use App\Enum\ActionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -201,5 +202,143 @@ class ActionRepository extends ServiceEntityRepository
             ->setParameter('status', ActionStatus::PENDING)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * Compile l'intégralité du profil statistique d'un joueur de manière optimisée.
+     */
+    public function getCareerStatsData(Player $player, User $user): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $playerId = $player->getId()->toString();
+        $userId = $user->getId()->toString();
+
+        // 1. Nombre d'arènes rejointes par le joueur
+        $sqlComps = 'SELECT COUNT(id) FROM participation WHERE player_id = :player_id';
+        $totalCompetitions = (int) $conn->fetchOne($sqlComps, ['player_id' => $playerId]);
+
+        // 2. Somme cumulative de tous les points validés avec leurs multiplicateurs bonus
+        $sqlPoints = '
+            SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0) as total_points
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id
+            LEFT JOIN bonus_day b ON (
+                DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date 
+                AND b.competition_id = p.competition_id
+            )
+            WHERE p.player_id = :player_id AND a.status = :status
+        ';
+        $totalPoints = (int) $conn->fetchOne($sqlPoints, [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+            'tz' => AppConstants::TIMEZONE,
+        ]);
+
+        // 3. Calcul du pire score de saison de toute sa carrière (Plafond MAX)
+        $sqlMaxSeasonScore = '
+            SELECT COALESCE(MAX(season_score), 0) FROM (
+                SELECT SUM(a.points * COALESCE(b.multiplier, 1)) as season_score
+                FROM participation p
+                JOIN action a ON a.participation_id = p.id
+                LEFT JOIN bonus_day b ON (
+                    DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date 
+                    AND b.competition_id = p.competition_id
+                )
+                WHERE p.player_id = :player_id AND a.status = :status
+                GROUP BY p.id
+            ) as sub
+        ';
+        $maxSeasonScore = (int) $conn->fetchOne($sqlMaxSeasonScore, [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+            'tz' => AppConstants::TIMEZONE,
+        ]);
+
+        // 4. Volume global de méfaits validés subis
+        $sqlCount = '
+            SELECT COUNT(id) FROM action 
+            WHERE participation_id IN (SELECT id FROM participation WHERE player_id = :player_id)
+              AND status = :status
+        ';
+        $totalActions = (int) $conn->fetchOne($sqlCount, [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        // 5. Plus grand nombre de méfaits validés subis sur une seule saison
+        $sqlMaxActions = '
+            SELECT COALESCE(MAX(action_count), 0) FROM (
+                SELECT COUNT(a.id) as action_count FROM participation p
+                JOIN action a ON a.participation_id = p.id
+                WHERE p.player_id = :player_id AND a.status = :status GROUP BY p.id
+            ) as sub
+        ';
+        $maxSeasonActions = (int) $conn->fetchOne($sqlMaxActions, [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        // 6. Profil Délation (Total envoyé toutes catégories, et total validé par l\'arbitre)
+        $sqlReportedTotal = 'SELECT COUNT(id) FROM action WHERE created_by_id = :user_id';
+        $totalReported = (int) $conn->fetchOne($sqlReportedTotal, ['user_id' => $userId]);
+
+        $sqlReportedValid = 'SELECT COUNT(id) FROM action WHERE created_by_id = :user_id AND status = :status';
+        $totalReportedValid = (int) $conn->fetchOne($sqlReportedValid, [
+            'user_id' => $userId,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        $sqlReportedJudged = '
+            SELECT COUNT(id) FROM action 
+            WHERE created_by_id = :user_id AND status IN (\'validated\', \'rejected\')
+        ';
+        $totalReportedJudged = (int) $conn->fetchOne($sqlReportedJudged, ['user_id' => $userId]);
+
+        // 7. Pire Record Absolu (Méfait unique le plus lourd subi)
+        $sqlRecord = '
+            SELECT a.points, a.description, c.name as competition_name,
+                   COALESCE(cp.display_name, u.username, \'Anonyme\') as involved_name
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id 
+            JOIN competition c ON p.competition_id = c.id
+            LEFT JOIN "user" u ON a.created_by_id = u.id
+            LEFT JOIN player cp ON cp.associated_user_id = u.id
+            WHERE p.player_id = :player_id AND a.status = :status 
+            ORDER BY a.points DESC, a.created_at DESC LIMIT 1
+        ';
+        $recordData = $conn->fetchAssociative($sqlRecord, [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        // 8. Pire Coup Envoyé (Méfait unique infligé à autrui le plus lourd)
+        $sqlWorstStab = '
+            SELECT a.points, a.description, c.name as competition_name,
+                   tp.display_name as involved_name
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id 
+            JOIN player tp ON p.player_id = tp.id
+            JOIN competition c ON p.competition_id = c.id
+            WHERE a.created_by_id = :user_id AND a.status = :status AND p.player_id != :player_id
+            ORDER BY a.points DESC, a.created_at DESC LIMIT 1
+        ';
+        $worstStabData = $conn->fetchAssociative($sqlWorstStab, [
+            'user_id' => $userId,
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
+
+        return [
+            'totalAccumulatedPoints' => $totalPoints,
+            'totalCompetitions' => $totalCompetitions,
+            'maxSeasonScore' => $maxSeasonScore,
+            'totalActionsCount' => $totalActions,
+            'maxSeasonActions' => $maxSeasonActions,
+            'totalReportedCount' => $totalReported,
+            'totalReportedJudged' => $totalReportedJudged,
+            'totalReportedValid' => $totalReportedValid,
+            'record' => $recordData ?: null,
+            'worstStab' => $worstStabData ?: null,
+        ];
     }
 }

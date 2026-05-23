@@ -22,6 +22,7 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
         rank,
         suffix,
       )}
+      fullWidth={false}
     >
       {medal && (
         <span

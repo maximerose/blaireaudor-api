@@ -1,0 +1,154 @@
+import {
+  Card,
+  CARD_VARIANT,
+  Text,
+  TEXT_VARIANT,
+  TEXT_THEME,
+  Stack,
+  Grid,
+  Badge,
+  BADGE_VARIANT,
+  cn,
+} from '@/shared';
+import { DASHBOARD_UI } from '@/features/dashboard/constants';
+import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
+import { useDashboardPalmares } from '../hooks';
+
+export const DashboardPalmares = () => {
+  const { palmares } = useDashboardPalmares();
+
+  if (palmares.length === 0) {
+    return (
+      <Stack gap="sm" className="w-full animate-fade-in mt-2">
+        <Text
+          variant={TEXT_VARIANT.CAPTION}
+          colorTheme={TEXT_THEME.GOLD}
+          className="pl-1 font-black"
+        >
+          {DASHBOARD_UI.PALMARES_PANEL.TITLE}
+        </Text>
+        <Card
+          variant={CARD_VARIANT.DARK}
+          className="w-full border-border-subtle bg-surface-base/10"
+        >
+          <Card.Body p="md" align="center">
+            <Text
+              variant={TEXT_VARIANT.BODY}
+              colorTheme={TEXT_THEME.DIMMED}
+              className="italic text-center text-xs"
+            >
+              {DASHBOARD_UI.PALMARES_PANEL.EMPTY}
+            </Text>
+          </Card.Body>
+        </Card>
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack gap="sm" className="w-full animate-fade-in mt-2">
+      <Text
+        variant={TEXT_VARIANT.CAPTION}
+        colorTheme={TEXT_THEME.GOLD}
+        className="pl-1 font-black"
+      >
+        {DASHBOARD_UI.PALMARES_PANEL.TITLE}
+      </Text>
+
+      <Card
+        variant={CARD_VARIANT.DARK}
+        padding="none"
+        className="w-full border-border-subtle shadow-2xl overflow-hidden"
+      >
+        <Grid
+          cols={12}
+          gap="sm"
+          className="bg-white/5 px-4 py-2 border-b border-border-subtle"
+        >
+          <div className="col-span-6 text-left">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              colorTheme={TEXT_THEME.DIMMED}
+              className="font-black tracking-widest"
+            >
+              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_COMPETITION}
+            </Text>
+          </div>
+          <div className="col-span-3 flex justify-center">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              colorTheme={TEXT_THEME.DIMMED}
+              className="font-black tracking-widest"
+            >
+              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_RANK}
+            </Text>
+          </div>
+          <div className="col-span-3 flex justify-end">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              colorTheme={TEXT_THEME.DIMMED}
+              className="font-black tracking-widest"
+            >
+              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_SCORE}
+            </Text>
+          </div>
+        </Grid>
+
+        <div className="divide-y divide-white/5" role="list">
+          {palmares.map((p) => {
+            const isTop3 = p.rank <= 3;
+
+            return (
+              <Grid
+                key={p.id}
+                cols={12}
+                gap="sm"
+                align="center"
+                className="p-4 hover:bg-surface-base/20 transition-default"
+              >
+                <Stack gap="none" className="col-span-6 text-left min-w-0">
+                  <Text
+                    variant={TEXT_VARIANT.H3}
+                    className="truncate text-sm text-silver font-bold normal-case"
+                  >
+                    {p.competition.name}
+                  </Text>
+                  <Text
+                    variant={TEXT_VARIANT.MICRO}
+                    colorTheme={TEXT_THEME.GOLD}
+                    className="text-[8px] font-mono mt-0.5 tracking-wider"
+                  >
+                    {p.competition.join_code}
+                  </Text>
+                </Stack>
+
+                <div
+                  className={cn('col-span-3 flex items-center justify-center')}
+                >
+                  {isTop3 ? (
+                    <RankBadge rank={p.rank} />
+                  ) : (
+                    <Badge
+                      variant={BADGE_VARIANT.GHOST}
+                      className="font-mono text-xs font-bold px-2.5 py-0.5"
+                    >
+                      {p.rank}ème
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="col-span-3 flex justify-end">
+                  <RankedScore
+                    score={p.score}
+                    rank={p.rank}
+                    className="text-right"
+                  />
+                </div>
+              </Grid>
+            );
+          })}
+        </div>
+      </Card>
+    </Stack>
+  );
+};
