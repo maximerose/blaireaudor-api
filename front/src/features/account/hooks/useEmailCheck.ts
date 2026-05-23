@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AVAILABILITY, QUERY_KEYS, STALE_TIMES } from '@/shared';
+import { AVAILABILITY, QUERY_KEYS, RULES, STALE_TIMES } from '@/shared';
 import { userService } from '@/features/account/services';
 
 export const useEmailCheck = (email: string) => {
   const [debouncedEmail, setDebouncedEmail] = useState('');
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedEmail(email), 400);
+    const timer = setTimeout(
+      () => setDebouncedEmail(email),
+      RULES.SEARCH.DEBOUNCE_DELAY,
+    );
     return () => clearTimeout(timer);
   }, [email]);
 

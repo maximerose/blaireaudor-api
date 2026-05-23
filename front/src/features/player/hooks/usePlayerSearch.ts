@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { playerService } from '@/features/player/services';
-import { QUERY_KEYS, STALE_TIMES } from '@/shared';
+import { QUERY_KEYS, RULES, STALE_TIMES } from '@/shared';
 import type { Player } from '@/features/player/types';
 
 export interface PlayerSearchLogic {
@@ -12,29 +12,29 @@ export interface PlayerSearchLogic {
   clearSearch: () => void;
 }
 
-export const usePlayerSearch = (debounceDelay = 400): PlayerSearchLogic => {
+export const usePlayerSearch = (): PlayerSearchLogic => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedTerm, setDebouncedTerm] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedTerm(searchTerm);
-    }, debounceDelay);
+    }, RULES.SEARCH.DEBOUNCE_DELAY);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, debounceDelay]);
+  }, [searchTerm]);
 
   const { data: results = [], isFetching: searching } = useQuery<Player[]>({
     queryKey: QUERY_KEYS.player.search(debouncedTerm),
     queryFn: ({ signal }) => playerService.search(debouncedTerm, signal),
-    enabled: debouncedTerm.trim().length >= 2,
+    enabled: debouncedTerm.trim().length >= RULES.SEARCH.MIN_CHARS,
     staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
   return {
     searchTerm,
     setSearchTerm,
-    results: searchTerm.trim().length < 2 ? [] : results,
+    results: searchTerm.trim().length < RULES.SEARCH.MIN_CHARS ? [] : results,
     searching,
     clearSearch: () => setSearchTerm(''),
   };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AVAILABILITY, QUERY_KEYS, STALE_TIMES } from '@/shared';
+import { AVAILABILITY, QUERY_KEYS, RULES, STALE_TIMES } from '@/shared';
 import { userService } from '@/features/account/services';
 
 export const useUsernameCheck = (
@@ -13,7 +13,10 @@ export const useUsernameCheck = (
   const isTyping = username !== debouncedUsername;
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedUsername(username), 400);
+    const timer = setTimeout(
+      () => setDebouncedUsername(username),
+      RULES.SEARCH.DEBOUNCE_DELAY,
+    );
     return () => clearTimeout(timer);
   }, [username]);
 
@@ -21,7 +24,7 @@ export const useUsernameCheck = (
     queryKey: QUERY_KEYS.auth.usernameCheck(debouncedUsername),
     queryFn: ({ signal }) =>
       userService.checkUsername(debouncedUsername, signal),
-    enabled: debouncedUsername.length >= 2,
+    enabled: debouncedUsername.length >= RULES.AUTH.MIN_USERNAME,
     staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
@@ -41,9 +44,7 @@ export const useUsernameCheck = (
   const shouldShowFeedback = Boolean(
     isUsernameChanged &&
     !isTyping &&
-    // 1. On affiche le "chargement" UNIQUEMENT s'il n'y a pas de joueur lié
     ((isFetching && !currentPlayerId) ||
-      // 2. Une fois chargé, on affiche le résultat final SAUF si c'est un profil lié (LINKED)
       (!isFetching &&
         usernameStatus !== null &&
         usernameStatus !== AVAILABILITY.LINKED)),

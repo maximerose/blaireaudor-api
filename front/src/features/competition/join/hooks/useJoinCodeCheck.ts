@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
-import { AVAILABILITY, STALE_TIMES } from '@/shared';
+import { AVAILABILITY, RULES, STALE_TIMES } from '@/shared';
 
 export const useJoinCodeCheck = (
   code: string | null,
@@ -10,7 +10,10 @@ export const useJoinCodeCheck = (
   const [debouncedCode, setDebouncedCode] = useState(code || '');
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedCode(code || ''), 400);
+    const timer = setTimeout(
+      () => setDebouncedCode(code || ''),
+      RULES.SEARCH.DEBOUNCE_DELAY,
+    );
     return () => clearTimeout(timer);
   }, [code]);
 
@@ -20,7 +23,8 @@ export const useJoinCodeCheck = (
     queryKey: ['competitions', 'check-code', debouncedCode],
     queryFn: ({ signal }) =>
       competitionService.checkJoinCode(debouncedCode, signal),
-    enabled: debouncedCode.length >= 3 && !isOriginal,
+    enabled:
+      debouncedCode.length >= RULES.COMPETITION.MIN_JOIN_CODE && !isOriginal,
     staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 

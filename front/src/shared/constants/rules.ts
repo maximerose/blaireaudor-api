@@ -17,4 +17,9 @@ export const RULES = {
     MIN_NAME: 3,
     MIN_JOIN_CODE: 3,
   },
+
+  SEARCH: {
+    DEBOUNCE_DELAY: 400,
+    MIN_CHARS: 2,
+  },
 } as const;
