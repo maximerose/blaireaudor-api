@@ -16,8 +16,8 @@ export const CONFIRMS = {
   REFEREE: {
     RESIGN_TITLE: 'Démissionner',
     REVOKE_TITLE: 'Révoquer un arbitre',
-    RESIGN_MESSAGE: "Êtes-vous sûr de vouloir démissionner de l'arbitrage ?",
+    RESIGN_MESSAGE: "Es-tu sûr de vouloir démissionner de l'arbitrage ?",
     REVOKE_MESSAGE: (name: string) =>
-      `Voulez-vous vraiment révoquer les droits de ${name} ?`,
+      `Veux-tu vraiment révoquer les droits de ${name} ?`,
   },
 } as const;

@@ -26,10 +26,10 @@ export const ERRORS = {
     USERNAME_TAKEN: "Ce nom d'utilisateur est déjà utilisé.",
     EMAIL_TAKEN: 'Cette adresse email est déjà utilisée.',
     INVALID_CREDENTIALS: 'Identifiants invalides.',
-    SESSION_EXPIRED: 'Votre session a expiré, merci de vous reconnecter.',
-    UNAUTHORIZED: "Vous n'avez pas les droits pour accéder à cette arène.",
-    REGISTRATION_FAILED: "L'inscription a échoué. Vérifiez vos informations.",
-    FORBIDDEN: "Action interdite : vous n'êtes pas administrateur.",
+    SESSION_EXPIRED: 'Ta session a expiré, merci de te reconnecter.',
+    UNAUTHORIZED: "Tu n'as pas les droits pour accéder à cette compétition.",
+    REGISTRATION_FAILED: "L'inscription a échoué. Vérifie tes informations.",
+    FORBIDDEN: "Action interdite : tu n'es pas administrateur.",
     UPDATE_INFO_FAILED: 'Erreur lors de la mise à jour des informations.',
     UPDATE_PASSWORD_FAILED: 'Erreur lors de la mise à jour du mot de passe.',
     INVALID_TOKEN: 'Token invalide.',
@@ -68,7 +68,7 @@ export const ERRORS = {
     REFEREE_ADD_FAILED: 'Impossible de nommer ce joueur arbitre.',
     REFEREE_REMOVE_FAILED: "Erreur lors de la destitution de l'arbitre.",
 
-    NO_REFEREE: 'Vous devez désigner au moins un arbitre',
+    NO_REFEREE: 'Tu dois désigner au moins un arbitre',
     INVALID_NAME: `Le nom doit contenir au moins ${RULES.COMPETITION.MIN_NAME} caractères.`,
     INVALID_JOIN_CODE: `Le code d'accès doit contenir au moins ${RULES.COMPETITION.MIN_JOIN_CODE} caractères.`,
     INVALID_DATE_ORDER: 'La date de fin ne peut pas précéder la date de début.',
@@ -77,8 +77,7 @@ export const ERRORS = {
   // 4. Joueurs
   PLAYER: {
     SEARCH_FAILED: 'La recherche de joueurs a échoué.',
-    SEARCH_TOO_SHORT:
-      'Veuillez saisir au moins 2 caractères pour la recherche.',
+    SEARCH_TOO_SHORT: 'Saisis au moins 2 caractères pour la recherche.',
   },
 
   // 5. Actions (Méfaits)
@@ -86,7 +85,7 @@ export const ERRORS = {
     REPORT_FAILED: "Erreur lors du signalement de l'action.",
     STATUS_UPDATE_FAILED: "Erreur lors du changement de statut de l'action.",
     UPDATE_FAILED: "Erreur lors de la mise à jour de l'action.",
-    INVALID_PLAYER: 'Veuillez sélectionner un coupable dans la liste.',
+    INVALID_PLAYER: 'Sélectionne un coupable dans la liste.',
     INVALID_DESCRIPTION: `La description doit contenir au mois ${RULES.ACTION.MIN_DESCRIPTION} caractères.`,
     INVALID_POINTS: 'Les points doivent être un nombre entier.',
     INVALID_DATE: 'La date est obligatoire.',
@@ -100,7 +99,7 @@ export const ERRORS = {
     FETCH_FAILED: 'Erreur lors de la récupération des jours bonus.',
     INVALID_MULTIPLIER: `Le multiplicateur doit être d'au moins ${RULES.BONUS.MIN_MULTIPLIER}`,
     DUPLICATE_DATE: 'Un bonus existe déjà pour cette date.',
-    INVALID_DATES: 'Date incorrecte, vérifiez les dates de la compétition',
+    INVALID_DATES: 'Date incorrecte, vérifie les dates de la compétition',
   },
 
   // 7. Formulaires & Validation

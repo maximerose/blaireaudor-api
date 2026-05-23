@@ -6,7 +6,7 @@ import { cn } from '@/shared/utils';
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   subtitle?: string;
   isFluid?: boolean;
 }

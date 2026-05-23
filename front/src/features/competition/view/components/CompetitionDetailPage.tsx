@@ -12,7 +12,7 @@ export const CompetitionDetailPage = () => {
 
   if (isLoading) {
     return (
-      <MainLayout title={COMPETITION_UI.DETAIL.LOADING}>
+      <MainLayout>
         <LoadingScreen layout="local" message={COMPETITION_UI.DETAIL.LOADING} />
       </MainLayout>
     );

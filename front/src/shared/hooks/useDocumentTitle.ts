@@ -1,8 +1,14 @@
 import { UI } from '@/shared/constants';
 import { useEffect } from 'react';
 
-export const useDocumentTitle = (title: string) => {
+export const useDocumentTitle = (title?: string, enabled = true) => {
   useEffect(() => {
-    document.title = `${title} | ${UI.APP_NAME}`;
-  }, ['title']);
+    if (!enabled || !title) return;
+
+    if (title === UI.APP_NAME) {
+      document.title = title;
+    } else {
+      document.title = `${title} | ${UI.APP_NAME}`;
+    }
+  }, [title, enabled]);
 };

@@ -23,7 +23,7 @@ export const DASHBOARD_UI = {
       REFEREED: 'Arbitrées',
     },
     ARIA: {
-      SUMMARY: 'Résumé de vos compétitions',
+      SUMMARY: 'Résumé de tes compétitions',
       STAT_DETAIL: (val: number, label: string) =>
         `${val} ${pluralize(val, 'compétition')} ${label.toLowerCase()}`,
     },

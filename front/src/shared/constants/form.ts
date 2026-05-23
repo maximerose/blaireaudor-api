@@ -22,16 +22,16 @@ export const FORM = {
    */
   AUTH: {
     LABELS: {
-      USERNAME: "Nom d'utilisateur",
+      USERNAME: 'Pseudo',
       PASSWORD: 'Mot de passe',
-      DISPLAY_NAME: "Nom d'affichage",
+      DISPLAY_NAME: 'Ton petit nom',
       EMAIL: 'Adresse email',
       CURRENT_PASSWORD: 'Mot de passe actuel',
       NEW_PASSWORD: 'Nouveau mot de passe',
       CONFIRM_PASSWORD: 'Confirmer le mot de passe',
     },
     PLACEHOLDERS: {
-      USERNAME: 'votre-pseudo',
+      USERNAME: 'ton-pseudo',
       PASSWORD: '••••••••',
       DISPLAY_NAME: 'Ex: Jean Dupont',
       EMAIL: 'blaireau@or.com',
@@ -158,7 +158,7 @@ export const FORM = {
   ADMIN: {
     BONUS: {
       TITLE: `${ICONS.FIRE} Multiplicateurs`,
-      SUBTITLE: 'Multipliez les points de la journée.',
+      SUBTITLE: 'Multiplier les points de la journée.',
       EMPTY: 'Aucun multiplicateur programmé.',
     },
     EDIT_MODE: {
