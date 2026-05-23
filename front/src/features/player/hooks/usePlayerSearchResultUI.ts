@@ -10,7 +10,7 @@ export const usePlayerSearchResultUI = (
 
   const classes = {
     container: cn(
-      'w-full text-left p-3 hover:bg-surface-hover rounded-xl transition-default flex justify-between items-center group border border-transparent hover:border-border-base',
+      'w-full text-left p-3 hover:bg-surface-hover transition-default flex justify-between items-center group border border-transparent hover:border-border-base',
       'focus:outline-none focus:bg-gold/10 focus:border-gold/20',
       className,
     ),

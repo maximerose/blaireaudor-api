@@ -24,7 +24,7 @@ final class ActionVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE]) && $subject instanceof Action;
+        return \in_array($attribute, [self::EDIT, self::DELETE]) && $subject instanceof Action;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool

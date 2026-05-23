@@ -3,6 +3,7 @@ import { CONFIRMS, ERRORS, SUCCESS, useConfirmModal } from '@/shared';
 import {
   usePlayerSearch,
   type Player,
+  type PlayerCompact,
   type RefereeListItem,
 } from '@/features/player';
 import type { Competition } from '@/features/competition/types';
@@ -38,7 +39,7 @@ export const useRefereeManagementUI = (competition: Competition) => {
     );
   }, [rawSearchResults, referees]);
 
-  const handleAdd = async (player: Player) => {
+  const handleAdd = async (player: PlayerCompact) => {
     const success = await addReferee(player.id);
     if (success) {
       setSearchQuery('');

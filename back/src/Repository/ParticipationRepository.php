@@ -43,7 +43,7 @@ class ParticipationRepository extends ServiceEntityRepository
         ->where('p.competition = :competition')
         ->setParameter('competition', $competition)
         ->orderBy('p.score', 'DESC')
-        ->addOrderBy('player.displayName', 'ASC')
+        ->addOrderBy('player.slug', 'ASC')
         ->getQuery()
         ->getResult();
 

@@ -36,7 +36,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new \ApiPlatform\Metadata\Get(),
-        new \ApiPlatform\Metadata\Post(),
         new \ApiPlatform\Metadata\Delete(
             processor: ParticipationDeleteProcessor::class
         ),

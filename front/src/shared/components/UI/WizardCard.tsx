@@ -40,7 +40,10 @@ export const WizardCard = <T extends React.ElementType = 'div'>({
     <Card
       as={as}
       variant={variant}
-      className={cn('relative w-full', isAnimated && 'animate-slide-up')}
+      className={cn(
+        'relative w-full overflow-visible',
+        isAnimated && 'animate-slide-up',
+      )}
       {...(props as any)}
     >
       <div

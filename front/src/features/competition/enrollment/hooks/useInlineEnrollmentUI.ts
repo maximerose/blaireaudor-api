@@ -57,7 +57,7 @@ export const useInlineEnrollmentUI = () => {
     enrollment.searchResults,
   );
 
-  const handleAddExistingPlayer = (player: Player) => {
+  const handleAddExistingPlayer = (player: PlayerCompact) => {
     enrollment.setSearchTerm('');
     setTimeout(() => {
       enrollment.addExistingPlayer(player);

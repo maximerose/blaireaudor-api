@@ -1,12 +1,10 @@
 import {
   Button,
-  Input,
   BUTTON_VARIANT,
   BUTTON_SIZE,
   SectionHeader,
   SECTION_HEADER_VARIANT,
   FORM,
-  ICONS,
   BUTTONS,
   Stack,
   Row,
@@ -14,10 +12,8 @@ import {
 import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateCompetitionFormData } from '@/features/competition/validations';
-import {
-  PlayerSearchResultsDropdown,
-  SelectedPlayersList,
-} from '@/features/competition/enrollment';
+import { SelectedPlayersList } from '@/features/competition/enrollment';
+import { PlayerSearchField } from '../../fields';
 
 interface PlayerManagement {
   searchTerm: string;
@@ -60,31 +56,20 @@ export const CompetitionRecruitmentStep = ({
       />
 
       <Stack gap="sm" className="w-full">
-        <div className="relative w-full">
-          <Input
-            autoFocus
-            align="center"
-            placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
-            value={searchTerm}
-            onChange={(e) => players.setSearchTerm(e.target.value)}
-            icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
-          />
-
-          {searchTerm.length >= 1 && (
-            <PlayerSearchResultsDropdown
-              results={results}
-              searchTerm={searchTerm}
-              onSelect={(p) => {
-                players.add(p);
-                players.setSearchTerm('');
-              }}
-              onCreateNew={(name) => {
-                players.addNew(name);
-                players.setSearchTerm('');
-              }}
-            />
-          )}
-        </div>
+        <PlayerSearchField
+          searchTerm={searchTerm}
+          setSearchTerm={players.setSearchTerm}
+          isSearching={players.searching}
+          results={results}
+          onSelect={(p) => {
+            players.add(p);
+            players.setSearchTerm('');
+          }}
+          onCreateNew={(name) => {
+            players.addNew(name);
+            players.setSearchTerm('');
+          }}
+        />
 
         <SelectedPlayersList
           participants={currentPlayers}

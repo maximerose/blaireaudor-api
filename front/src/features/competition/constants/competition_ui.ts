@@ -99,6 +99,7 @@ export const COMPETITION_UI = {
         RANK: 'Rang ',
         EXAEQUO: 'Ex-æquo',
         DELETE_PARTICIPATION: 'Supprimer la participation',
+        ARIA_LEAVE_COMPETITION: 'Quitter la compétition ?',
         ARIA_DELETE_PARTICIPATION: (playerName: string) =>
           `Supprimer la participation de ${playerName} ?`,
         ARIA_RANK: (rank: number, suffix: string) => `Rang : ${rank}${suffix}`,

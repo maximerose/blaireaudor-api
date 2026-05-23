@@ -40,8 +40,15 @@ export const LeaderboardRow = ({
   competition,
   ...props
 }: LeaderboardRowProps) => {
-  const { canDelete, medal, playerName, hasAccount, isReferee, isCreator } =
-    useLeaderboardRow(participation, isAdmin, competition);
+  const {
+    canDelete,
+    isMe,
+    medal,
+    playerName,
+    hasAccount,
+    isReferee,
+    isCreator,
+  } = useLeaderboardRow(participation, isAdmin, competition);
   const showRealStats = !isFogActive || isAdmin;
 
   return (
@@ -95,9 +102,7 @@ export const LeaderboardRow = ({
             <Text
               variant={TEXT_VARIANT.H3}
               as="span"
-              colorTheme={
-                participation.isMe ? TEXT_THEME.GOLD : TEXT_THEME.DEFAULT
-              }
+              colorTheme={isMe ? TEXT_THEME.GOLD : TEXT_THEME.DEFAULT}
               className="truncate normal-case italic max-w-30 sm:max-w-none"
             >
               {playerName}
@@ -126,12 +131,25 @@ export const LeaderboardRow = ({
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
             onClick={onDelete}
-            className="text-danger hover:text-danger-bright hover:bg-danger-soft"
-            aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
-              playerName,
+            className={cn(
+              isMe
+                ? 'text-warning hover:text-warning-bright hover:bg-warning-soft'
+                : 'text-danger hover:text-danger-bright hover:bg-danger-soft',
             )}
+            aria-label={
+              isMe
+                ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                    .ARIA_LEAVE_COMPETITION
+                : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
+                    playerName,
+                  )
+            }
             title={
-              COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.DELETE_PARTICIPATION
+              isMe
+                ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                    .ARIA_LEAVE_COMPETITION
+                : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                    .DELETE_PARTICIPATION
             }
           >
             <span aria-hidden="true">{ICONS.CANCEL}</span>

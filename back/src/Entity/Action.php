@@ -16,6 +16,8 @@ use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ActionRepository;
+use App\Security\Voter\ActionVoter;
+use App\Security\Voter\CompetitionVoter;
 use App\State\Processor\Action\ActionCreateProcessor;
 use App\Validator\ValidActionDate;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,10 +48,19 @@ use Symfony\Component\Validator\Constraints as Assert;
                 summary: 'Déclare une nouvelle action de jeu dans la compétition',
             )
         ),
-        new \ApiPlatform\Metadata\GetCollection(),
-        new \ApiPlatform\Metadata\Get(),
-        new \ApiPlatform\Metadata\Patch(),
-        new \ApiPlatform\Metadata\Delete(),
+        new \ApiPlatform\Metadata\Get(
+            security: 'is_granted('.CompetitionVoter::VIEW.'), object.getCompetition())'
+        ),
+        new \ApiPlatform\Metadata\Patch(
+            security: "is_granted('".ActionVoter::EDIT."', object)",
+            securityMessage: 'Vous n\'avez pas le droit de modifier cette action.',
+            denormalizationContext: ['groups' => ['action:write']],
+            normalizationContext: ['groups' => ['action:read']]
+        ),
+        new \ApiPlatform\Metadata\Delete(
+            security: "is_granted('".ActionVoter::DELETE."', object)",
+            securityMessage: 'Vous n\'avez pas le droit de supprimer cette action.'
+        ),
     ]
 )]
 class Action
@@ -87,7 +98,6 @@ class Action
 
     #[ORM\ManyToOne(targetEntity: Participation::class, inversedBy: 'actions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['action:write'])]
     private ?Participation $participation = null;
 
     #[Groups(['competition:read'])]

@@ -8,7 +8,7 @@ import { competitionService } from '@/features/competition/services';
 export const useParticipationDelete = (onSuccess: () => void) => {
   const navigate = useNavigate();
   const { user, refreshUser } = useAuthContext();
-  const { openModal } = useConfirmModal();
+  const { openModal, closeModal } = useConfirmModal();
 
   const deleteParticipation = (participation: Participation) => {
     if (participation.has_actions) {
@@ -31,6 +31,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
             participation.id,
           );
           if (success) {
+            closeModal();
             onSuccess();
             if (success && participation.player.id === user?.player?.id) {
               navigate(ROUTES.NAV.DASHBOARD);
@@ -39,6 +40,7 @@ export const useParticipationDelete = (onSuccess: () => void) => {
             refreshUser();
           }
         } catch {
+          closeModal();
           toast.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);
         }
       },

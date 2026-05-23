@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Competition;
 
+use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
-use App\Service\Manager\CompetitionManager;
+use App\Service\Manager\ParticipationManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,10 +23,31 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/competitions', name: 'api.competition.')]
 final class CompetitionController extends AbstractController
 {
-    public function __construct(
-        private CompetitionManager $competitionManager,
-        private EntityManagerInterface $entityManager,
-    ) {
+    #[Route('/join', name: 'join_by_code', methods: ['POST'])]
+    public function joinByCode(
+        Request $request,
+        CompetitionRepository $repository,
+        ParticipationManager $participationManager,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$user->getPlayer()) {
+            return $this->json(['message' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $joinCode = strtoupper(trim($data['joinCode'] ?? ''));
+
+        $competition = $repository->findOneBy(['joinCode' => $joinCode]);
+
+        if (!$competition) {
+            return $this->json(['message' => 'Code d\'accès invalide ou expiré.'], Response::HTTP_FORBIDDEN);
+        }
+
+        $participation = $participationManager->joinCompetition($user->getPlayer(), $competition);
+        $entityManager->flush();
+
+        return $this->json($participation, Response::HTTP_CREATED, [], ['groups' => ['competition:read']]);
     }
 
     #[Route('/by-code/{code}', name: 'by_code', methods: ['GET'])]

@@ -1,25 +1,18 @@
 import {
-  Input,
   Button,
   Card,
-  Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
-  TEXT_VARIANT,
   CARD_VARIANT,
   FORM,
   BUTTONS,
-  ICONS,
   Row,
   Stack,
 } from '@/shared';
-import {
-  PlayerSearchResultItem,
-  type Player,
-  type PlayerCompact,
-} from '@/features/player';
+import { type PlayerCompact } from '@/features/player';
 import { useInlineEnrollmentUI } from '@/features/competition/enrollment/hooks';
 import { SelectedPlayerBadge } from './SelectedPlayerBadge';
+import { PlayerSearchField } from '../../fields';
 
 export const InlineEnrollment = () => {
   const {
@@ -64,60 +57,15 @@ export const InlineEnrollment = () => {
       aria-label="Formulaire de recrutement"
     >
       <Stack gap="md" className="w-full">
-        {/* CHAMP DE RECHERCHE */}
-        <div className="relative w-full">
-          <Stack gap="xs" className="w-full">
-            <Input
-              autoFocus
-              align="center"
-              label={FORM.PLAYER.LABELS.SEARCH_PLAYER}
-              placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              icon={isSearching ? ICONS.LOADING : ICONS.SEARCH}
-              role="combobox"
-              aria-autocomplete="list"
-              aria-expanded={searchResults.length > 0}
-              aria-controls="search-results-list"
-            />
-
-            {canCreatePlayer && (
-              <Button
-                variant={BUTTON_VARIANT.SECONDARY}
-                size={BUTTON_SIZE.SMALL}
-                fullWidth
-                onClick={() => addNewPlayer(searchTerm)}
-                className="border-dashed border-border-base italic normal-case transition-default hover:border-gold-border"
-                aria-label={FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
-              >
-                <Text variant={TEXT_VARIANT.MICRO} className="opacity-100">
-                  {FORM.ADMIN.ENROLLMENT.CREATE_NEW(searchTerm)}
-                </Text>
-              </Button>
-            )}
-          </Stack>
-
-          {searchResults.length > 0 && (
-            <Card
-              id="search-results-list"
-              role="listbox"
-              variant={CARD_VARIANT.DARK}
-              padding="none"
-              radius="lg"
-              className="absolute top-full left-0 right-0 mt-1 z-50 border-gold-border shadow-2xl bg-dark max-h-56 overflow-y-auto no-scrollbar"
-            >
-              {searchResults.map((p: Player) => (
-                <PlayerSearchResultItem
-                  key={p.id}
-                  player={p}
-                  role="option"
-                  onClick={() => addExistingPlayer(p)}
-                  actionIcon={BUTTONS.ADD}
-                />
-              ))}
-            </Card>
-          )}
-        </div>
+        <PlayerSearchField
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          isSearching={isSearching}
+          results={searchResults}
+          onSelect={addExistingPlayer}
+          onCreateNew={canCreatePlayer ? addNewPlayer : undefined}
+          placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
+        />
 
         {newPlayers.length > 0 && (
           <Row

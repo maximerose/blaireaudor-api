@@ -16,7 +16,7 @@ import { useCompetitionContext } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
 import { useRefereeManagementUI } from '@/features/competition/admin/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
-import { RefereeSearchField } from '@/features/competition/fields';
+import { PlayerSearchField } from '@/features/competition/fields';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetitionContext();
@@ -94,14 +94,16 @@ export const RefereeManagement = () => {
       )}
 
       <Row justify="center" className="w-full pt-2">
-        <RefereeSearchField
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          isSearching={isSearching}
-          searchResults={searchResults}
-          onSelectPlayer={handleAdd}
-          disabled={isGlobalLoading}
-        />
+        <div className="w-full sm:max-w-md">
+          <PlayerSearchField
+            searchTerm={searchQuery}
+            setSearchTerm={setSearchQuery}
+            isSearching={isSearching}
+            results={searchResults}
+            onSelect={handleAdd}
+            disabled={isGlobalLoading}
+          />
+        </div>
       </Row>
     </Stack>
   );

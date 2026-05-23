@@ -11,7 +11,6 @@ import { AdminSettings } from '@/features/competition/admin';
 import { ReportingSection } from '@/features/competition/reporting';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { Leaderboard } from '@/features/competition/leaderboard';
-import { InlineEnrollment } from '@/features/competition/enrollment';
 import { ActionTable } from '@/features/competition/actions';
 
 export const CompetitionDetailContent = () => {
@@ -33,7 +32,6 @@ export const CompetitionDetailContent = () => {
             )}
           />
           <Leaderboard />
-          {!competition.is_finished && <InlineEnrollment />}
         </Stack>
 
         <Stack as="section" gap="lg" className="xl:col-span-7">

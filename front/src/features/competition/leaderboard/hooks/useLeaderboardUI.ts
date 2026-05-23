@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useCompetitionContext } from '@/features/competition/context';
 import { useParticipationDelete } from '@/features/competition/admin';
 import type { Participation } from '@/features/competition/types';
+import { normalizeString } from '@/shared';
 
 export const useLeaderboardUI = () => {
   const { user } = useAuthContext();
@@ -24,7 +25,10 @@ export const useLeaderboardUI = () => {
     if (!hidePoints) return enriched;
 
     return [...enriched].sort((a, b) =>
-      (a.player.display_name || '').localeCompare(b.player.display_name || ''),
+      normalizeString(a.player.display_name || '').localeCompare(
+        normalizeString(b.player.display_name || ''),
+        'fr',
+      ),
     );
   }, [leaderboard, hidePoints, user]);
 

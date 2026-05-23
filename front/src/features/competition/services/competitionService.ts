@@ -55,16 +55,10 @@ export const competitionService = {
     return response.json();
   },
 
-  join: async (
-    playerId: string,
-    competitionId: string,
-  ): Promise<Participation> => {
-    const response = await apiFetch(API.ENDPOINTS.PARTICIPATIONS.BASE, {
+  join: async (joinCode: string): Promise<Participation> => {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.JOIN, {
       method: 'POST',
-      body: JSON.stringify({
-        player: API.IRI.PLAYER(playerId),
-        competition: API.IRI.COMPETITION(competitionId),
-      }),
+      body: JSON.stringify({ joinCode }),
     });
     return response.json();
   },

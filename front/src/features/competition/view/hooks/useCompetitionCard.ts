@@ -36,11 +36,24 @@ export const useCompetitionCard = (
     const referees = competition.referees || [];
     const idToMatch = currentPlayerId || currentUserId;
 
-    return referees.some(
+    const inRefereesList = referees.some(
       (ref: string | Player | PlayerCompact) =>
         getIdFromData(ref) === idToMatch,
     );
-  }, [competition.referees, currentPlayerId, currentUserId]);
+
+    const inMyRefereedComps =
+      user?.player?.refereed_competitions?.some(
+        (c: Competition) => c.id === competition.id,
+      ) ?? false;
+
+    return inRefereesList || inMyRefereedComps;
+  }, [
+    competition.referees,
+    competition.id,
+    currentPlayerId,
+    currentUserId,
+    user?.player?.refereed_competitions,
+  ]);
 
   const shouldReveal = canRevealScores(competition);
   const score = participation?.score;

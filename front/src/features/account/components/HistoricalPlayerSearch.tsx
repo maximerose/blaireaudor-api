@@ -85,7 +85,6 @@ export const HistoricalPlayerSearch = ({
                 role="option"
                 onClick={() => onSelect(player)}
                 actionIcon={AUTH_UI.HISTORICAL.ACTION_SELECT}
-                className="rounded-none first:rounded-t-xl"
               />
             ))}
           </List>

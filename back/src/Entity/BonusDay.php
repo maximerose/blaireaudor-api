@@ -39,7 +39,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['bonus:read']]),
+        new Get(
+            security: "is_granted('".CompetitionVoter::VIEW."', object.getCompetition())",
+            normalizationContext: ['groups' => ['bonus:read']]
+        ),
         new GetCollection(normalizationContext: ['groups' => ['bonus:read']]),
         new Post(
             securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
@@ -49,6 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             security: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
+            securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityMessage: 'Seul un arbitre peut modifier ce jour bonus.',
             denormalizationContext: ['groups' => ['bonus:write']],
             normalizationContext: ['groups' => ['bonus:read']]
@@ -66,13 +70,13 @@ class BonusDay
     use TimestampableTrait;
     use BlameableTrait;
 
-    public const DEFAULT_MULTIPLIER = 2;
-    public const ERROR_DATE_OUT_OF_RANGE = 'La date du jour bonus doit être comprise dans les dates de la compétition.';
-    public const ERROR_DUPLICATE_BONUS = 'Un bonus est déjà programmé pour cette arène à cette date.';
+    public const int DEFAULT_MULTIPLIER = 2;
+    public const string ERROR_DATE_OUT_OF_RANGE = 'La date du jour bonus doit être comprise dans les dates de la compétition.';
+    public const string ERROR_DUPLICATE_BONUS = 'Un bonus est déjà programmé pour cette arène à cette date.';
 
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'bonusDays')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['bonus:read', 'bonus:write'])]
+    #[Groups(['bonus:read'])]
     private ?Competition $competition = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]

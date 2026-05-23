@@ -16,10 +16,11 @@ final class CompetitionVoter extends Voter
     public const string CREATOR = 'COMPETITION_CREATOR';
     public const string REFEREE = 'COMPETITION_REFEREE';
     public const string PLAYER = 'COMPETITION_PLAYER';
+    public const string VIEW = 'COMPETITION_VIEW';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return \in_array($attribute, [self::MANAGE, self::CREATOR, self::REFEREE, self::PLAYER])
+        return \in_array($attribute, [self::MANAGE, self::CREATOR, self::REFEREE, self::PLAYER, self::VIEW])
                && $subject instanceof Competition;
     }
 
@@ -50,6 +51,7 @@ final class CompetitionVoter extends Voter
             self::REFEREE => $isReferee,
             self::PLAYER => $isPlayer,
             self::MANAGE => $isCreator || $isReferee,
+            self::VIEW => $isCreator || $isReferee || $isPlayer,
             default => false,
         };
     }

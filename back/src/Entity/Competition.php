@@ -140,7 +140,7 @@ class Competition
     private Collection $participations;
 
     #[ORM\ManyToMany(targetEntity: Player::class, inversedBy: 'refereedCompetitions')]
-    #[Groups(['competition:read', 'competition:admin',  'user:read'])]
+    #[Groups(['competition:read', 'competition:admin'])]
     private Collection $referees;
 
     /**
