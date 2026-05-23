@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Badge, cn } from '@/shared';
+import { Badge, cn, Row } from '@/shared';
 import { useRankBadgeUI } from '@/features/competition/leaderboard/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
 
@@ -12,8 +12,10 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
     useRankBadgeUI(rank);
 
   return (
-    <div
-      className={cn('flex items-center gap-2', className)}
+    <Row
+      align="center"
+      gap="sm"
+      className={className}
       {...props}
       role="group"
       aria-label={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_RANK(
@@ -33,13 +35,7 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
         </span>
       )}
 
-      <Badge
-        variant={variant}
-        className={cn(
-          'px-2.5 py-0.5 text-[10px] font-black italic transition-default',
-          badgeShadow,
-        )}
-      >
+      <Badge variant={variant} className={cn('font-black italic', badgeShadow)}>
         <span className="flex items-baseline" aria-hidden="true">
           {rank}
           <span className="text-[7px] lowercase ml-0.5 opacity-70 font-bold">
@@ -48,6 +44,6 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
         </span>
         <span className="sr-only">{srText}</span>
       </Badge>
-    </div>
+    </Row>
   );
 };

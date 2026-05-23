@@ -1,12 +1,15 @@
-import React from 'react';
-import { Text, TEXT_VARIANT } from './Text';
+import type React from 'react';
+import { Text, TEXT_VARIANT, TEXT_THEME, type TextTheme } from './Text';
 import { cn } from '@/shared/utils';
+import { Stack } from '../Layout/Stack';
+import { Row } from '../Layout/Row';
+import { Badge, BADGE_VARIANT } from './Badge';
 
 export const SECTION_HEADER_VARIANT = {
-  TITLE: 'title', // Gros (H1 visuel) - Dashboard, Page Titre, Auth
-  BLOCK: 'block', // Moyen (H2 visuel) - Modales, Gros blocs
-  SUB: 'sub', // Petit (H3 visuel) - Sections Admin, Paramètres
-  DIVIDER: 'divider', // Séparateur horizontal
+  TITLE: 'title',
+  BLOCK: 'block',
+  SUB: 'sub',
+  DIVIDER: 'divider',
 } as const;
 
 export const SECTION_HEADER_THEME = {
@@ -32,62 +35,96 @@ export interface SectionHeaderProps {
   id?: string;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div' | 'p' | 'span';
   rightElement?: React.ReactNode;
+  badge?: string | number;
 }
+
+const HEADER_TO_TEXT_THEME: Record<SectionHeaderTheme, TextTheme> = {
+  [SECTION_HEADER_THEME.DEFAULT]: TEXT_THEME.DEFAULT,
+  [SECTION_HEADER_THEME.GOLD]: TEXT_THEME.GOLD,
+  [SECTION_HEADER_THEME.DIMMED]: TEXT_THEME.DIMMED,
+  [SECTION_HEADER_THEME.DANGER]: TEXT_THEME.DANGER,
+};
 
 export const SectionHeader = ({
   title,
   subtitle,
   icon,
   variant = SECTION_HEADER_VARIANT.SUB,
-  colorTheme = SECTION_HEADER_THEME.DEFAULT,
+  colorTheme,
   centered = false,
   className,
   id,
   as,
   rightElement,
+  badge,
 }: SectionHeaderProps) => {
-  // --- 1. Variante DIVIDER ---
-  if (variant === SECTION_HEADER_VARIANT.DIVIDER) {
-    return (
-      <header className={cn('flex items-center gap-4 px-1', className)}>
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          className={cn(
-            'whitespace-nowrap font-bold uppercase tracking-widest',
-            colorTheme === SECTION_HEADER_THEME.DANGER
-              ? 'text-danger-bright'
-              : colorTheme === SECTION_HEADER_THEME.GOLD
-                ? 'text-gold opacity-60'
-                : colorTheme === SECTION_HEADER_THEME.DIMMED
-                  ? 'text-white opacity-20'
-                  : 'text-white opacity-40',
-          )}
-        >
-          {title}
-        </Text>
-        <div
-          className={cn(
-            'h-px flex-1 ml-4',
-            colorTheme === SECTION_HEADER_THEME.GOLD
-              ? 'bg-gold/10'
-              : colorTheme === SECTION_HEADER_THEME.DIMMED
-                ? 'bg-white/2'
-                : 'bg-white/5',
-          )}
-        />
-        {rightElement && <div className="shrink-0">{rightElement}</div>}
-      </header>
-    );
-  }
-
-  // --- 2. Variantes Textuelles (TITLE, BLOCK, SUB) ---
   const isTitle = variant === SECTION_HEADER_VARIANT.TITLE;
   const isBlock = variant === SECTION_HEADER_VARIANT.BLOCK;
   const isSub = variant === SECTION_HEADER_VARIANT.SUB;
+  const isDivider = variant === SECTION_HEADER_VARIANT.DIVIDER;
+
+  const resolvedTheme =
+    colorTheme && colorTheme !== SECTION_HEADER_THEME.DEFAULT
+      ? HEADER_TO_TEXT_THEME[colorTheme]
+      : isDivider
+        ? TEXT_THEME.MUTED
+        : TEXT_THEME.GOLD;
+
+  if (isDivider) {
+    const renderRightElement =
+      rightElement ||
+      (badge !== undefined && (
+        <Badge
+          variant={BADGE_VARIANT.GHOST}
+          className="uppercase tracking-wider opacity-60"
+        >
+          {badge}
+        </Badge>
+      ));
+    return (
+      <Row align="center" gap="md" px="xs" className={className}>
+        <Row
+          align="center"
+          gap="xs"
+          fullWidth={false}
+          className="whitespace-nowrap shrink-0"
+        >
+          {icon && (
+            <div
+              className={cn(
+                resolvedTheme === TEXT_THEME.GOLD
+                  ? 'text-gold'
+                  : resolvedTheme === TEXT_THEME.DANGER
+                    ? 'text-danger-bright'
+                    : 'text-text-muted',
+              )}
+            >
+              {icon}
+            </div>
+          )}
+          <Text variant={TEXT_VARIANT.CAPTION} colorTheme={resolvedTheme}>
+            {title}
+          </Text>
+        </Row>
+        <div
+          className={cn(
+            'h-px flex-1',
+            resolvedTheme === TEXT_THEME.GOLD
+              ? 'bg-gold-soft'
+              : resolvedTheme === TEXT_THEME.DIMMED
+                ? 'bg-surface-base'
+                : 'bg-border-subtle',
+          )}
+        />
+        {renderRightElement && (
+          <div className="shrink-0">{renderRightElement}</div>
+        )}
+      </Row>
+    );
+  }
 
   const defaultTag = isTitle ? 'h1' : isBlock ? 'h2' : 'h3';
   const TitleTag = as || defaultTag;
-
   const titleVariant = isTitle
     ? TEXT_VARIANT.H1
     : isBlock
@@ -95,29 +132,20 @@ export const SectionHeader = ({
       : TEXT_VARIANT.H3;
 
   return (
-    <header
-      className={cn(
-        'flex flex-col',
-        centered ? 'items-center text-center' : 'items-start text-left',
-        !isSub ? 'space-y-2 mb-4' : 'gap-1',
-        className,
-      )}
+    <Stack
+      align={centered ? 'center' : 'start'}
+      gap={isSub ? 'xs' : 'sm'}
+      className={cn(centered ? 'text-center' : 'text-left', className)}
     >
-      {icon && (
-        <div
-          className={cn('flex items-center justify-center', !isSub && 'mb-2')}
-        >
-          {icon}
-        </div>
-      )}
+      {icon && <div className="flex items-center justify-center">{icon}</div>}
 
       <Text
         id={id}
         as={TitleTag}
         variant={titleVariant}
+        colorTheme={resolvedTheme}
         className={cn(
-          isBlock && 'text-gold italic flex items-center justify-center gap-2',
-          colorTheme === SECTION_HEADER_THEME.DANGER && 'text-danger',
+          isBlock && 'italic flex items-center justify-center gap-2',
         )}
       >
         {title}
@@ -126,11 +154,17 @@ export const SectionHeader = ({
       {subtitle && (
         <Text
           variant={isSub ? TEXT_VARIANT.MICRO : TEXT_VARIANT.CAPTION}
-          className={isSub ? 'opacity-50' : 'text-white/60'}
+          colorTheme={
+            resolvedTheme === TEXT_THEME.DIMMED
+              ? TEXT_THEME.DIMMED
+              : isSub
+                ? TEXT_THEME.DIMMED
+                : TEXT_THEME.MUTED
+          }
         >
           {subtitle}
         </Text>
       )}
-    </header>
+    </Stack>
   );
 };

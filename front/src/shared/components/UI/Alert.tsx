@@ -1,7 +1,10 @@
-import { ICONS } from '@/shared/constants';
+// front/src/shared/components/UI/Alert.tsx
+
 import type React from 'react';
+import { ICONS } from '@/shared/constants';
 import { cn } from '@/shared/utils';
-import { Text, TEXT_VARIANT } from './Text';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { Row, Stack } from '../Layout';
 
 export const ALERT_VARIANT = {
   DANGER: 'danger',
@@ -20,12 +23,12 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const ALERT_STYLES: Record<AlertVariant, string> = {
   [ALERT_VARIANT.DANGER]:
-    'bg-danger/10 border-danger-bright/30 text-danger-bright',
+    'bg-danger-soft border-danger-border text-danger-bright',
   [ALERT_VARIANT.WARNING]:
-    'bg-warning/10 border-warning-bright/30 text-warning-bright',
-  [ALERT_VARIANT.INFO]: 'bg-info/10 border-info-bright/30 text-info-bright',
+    'bg-warning-soft border-warning-border text-warning-bright',
+  [ALERT_VARIANT.INFO]: 'bg-info-soft border-info-border text-info-bright',
   [ALERT_VARIANT.SUCCESS]:
-    'bg-success/10 border-success-bright/30 text-success-bright',
+    'bg-success-soft border-success-border text-success-bright',
 };
 
 const ALERT_ICONS: Record<AlertVariant, string> = {
@@ -43,9 +46,12 @@ export const Alert = ({
   ...props
 }: AlertProps) => {
   return (
-    <div
+    <Row
+      gap="sm"
+      p="xs"
+      align="center"
       className={cn(
-        'p-1 border rounded-xl flex gap-3 justify-center animate-fade-in',
+        'border rounded-xl animate-fade-in',
         ALERT_STYLES[variant],
         className,
       )}
@@ -55,22 +61,21 @@ export const Alert = ({
       <span className="text-xl shrink-0" aria-hidden="true">
         {ALERT_ICONS[variant]}
       </span>
-      <div className="flex flex-col justify-center min-w-0">
+
+      <Stack justify="center" gap="none">
         {title && (
           <Text
             variant={TEXT_VARIANT.H3}
-            className="text-inherit mb-1 truncate"
+            colorTheme={TEXT_THEME.INHERIT}
+            className="truncate"
           >
             {title}
           </Text>
         )}
-        <Text
-          variant={TEXT_VARIANT.BODY}
-          className="text-inherit text-sm opacity-90 leading-tight"
-        >
+        <Text variant={TEXT_VARIANT.BODY} colorTheme={TEXT_THEME.INHERIT}>
           {children}
         </Text>
-      </div>
-    </div>
+      </Stack>
+    </Row>
   );
 };

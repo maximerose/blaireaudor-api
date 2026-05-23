@@ -5,10 +5,13 @@ import {
   CARD_VARIANT,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-  AVAILABILITY,
   BUTTONS,
   FORM,
   ICONS,
+  BUTTON_VARIANT,
+  SECTION_HEADER_THEME,
+  Stack,
+  Grid,
 } from '@/shared';
 import { useProfile } from '@/features/account/hooks';
 import { PROFILE_UI } from '@/features/account/constants';
@@ -19,112 +22,104 @@ import { PasswordField } from './fields/PasswordField';
 import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 
 export const ProfilePage = () => {
-  const {
-    infoForm,
-    passwordForm,
-    handleUsernameBlur,
-    handleUsernameChange,
-    handleEmailBlur,
-    onInfoSubmit,
-    onPasswordSubmit,
-    usernameStatus,
-    usernameLoading,
-    isUsernameUnchanged,
-    emailStatus,
-    emailLoading,
-    isEmailUnchanged,
-  } = useProfile();
+  const { infoForm, passwordForm, onInfoSubmit, onPasswordSubmit } =
+    useProfile();
 
   const passwordValue = passwordForm.watch('new_password') || '';
 
+  const defaultUsername = infoForm.formState.defaultValues?.username || '';
+  const defaultEmail = infoForm.formState.defaultValues?.email || '';
+
   return (
     <MainLayout title={PROFILE_UI.TITLE} subtitle={PROFILE_UI.TITLE}>
-      <div className="max-w-2xl mx-auto space-y-8 pb-10">
+      <Stack gap="xl" className="max-w-2xl mx-auto w-full">
         <SectionHeader
           variant={SECTION_HEADER_VARIANT.TITLE}
+          colorTheme={SECTION_HEADER_THEME.GOLD}
           title={PROFILE_UI.TITLE}
           centered
         />
 
+        {/* --- FORMULAIRE DES INFORMATIONS GÉNÉRALES --- */}
         <Card
+          as="form"
           variant={CARD_VARIANT.GLASS}
-          className="p-6 sm:p-8 animate-slide-up"
+          onSubmit={onInfoSubmit}
+          noValidate
+          className="animate-slide-up w-full"
         >
-          <SectionHeader
-            variant={SECTION_HEADER_VARIANT.BLOCK}
-            title={PROFILE_UI.INFO_TITLE}
-            subtitle={PROFILE_UI.INFO_SUBTITLE}
-            as="h2"
-          />
+          <Card.Body p="lg" gap="lg">
+            <SectionHeader
+              variant={SECTION_HEADER_VARIANT.BLOCK}
+              title={PROFILE_UI.INFO_TITLE}
+              subtitle={PROFILE_UI.INFO_SUBTITLE}
+              as="h2"
+              centered
+            />
 
-          <form onSubmit={onInfoSubmit} className="space-y-6 mt-6" noValidate>
             <DisplayNameField
               error={infoForm.formState.errors?.display_name?.message}
               {...infoForm.register('display_name')}
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Grid cols={1} sm={2} gap="lg" className="w-full">
               <UsernameField
-                usernameStatus={usernameStatus}
-                usernameLoading={usernameLoading}
-                isUsernameUnchanged={isUsernameUnchanged}
-                error={infoForm.formState.errors.username?.message}
-                {...infoForm.register('username', {
-                  onChange: handleUsernameChange,
-                  onBlur: handleUsernameBlur,
-                })}
+                register={infoForm.register}
+                watch={infoForm.watch}
+                errors={infoForm.formState.errors}
+                initialUsername={defaultUsername}
               />
 
               <EmailField
-                emailStatus={emailStatus}
-                emailLoading={emailLoading}
-                isEmailUnchanged={isEmailUnchanged}
-                error={infoForm.formState.errors.email?.message}
-                {...infoForm.register('email', { onBlur: handleEmailBlur })}
+                register={infoForm.register}
+                watch={infoForm.watch}
+                errors={infoForm.formState.errors}
+                initialEmail={defaultEmail}
               />
-            </div>
+            </Grid>
 
             <Button
               type="submit"
               isLoading={infoForm.formState.isSubmitting}
               disabled={
-                !infoForm.formState.isDirty ||
-                !infoForm.formState.isValid ||
-                usernameStatus === AVAILABILITY.TAKEN ||
-                emailStatus === AVAILABILITY.TAKEN
+                !infoForm.formState.isDirty || !infoForm.formState.isValid
               }
               fullWidth
+              className="cursor-pointer"
             >
               {BUTTONS.SAVE}
             </Button>
-          </form>
+          </Card.Body>
         </Card>
 
+        {/* --- FORMULAIRE DE MODIFICATION DU MOT DE PASSE --- */}
         <Card
-          variant={CARD_VARIANT.DARK}
-          className="p-6 sm:p-8 animate-slide-up"
+          as="form"
+          variant={CARD_VARIANT.GLASS}
+          onSubmit={onPasswordSubmit}
+          noValidate
+          className="animate-slide-up w-full"
         >
-          <SectionHeader
-            variant={SECTION_HEADER_VARIANT.BLOCK}
-            title={PROFILE_UI.PASSWORD_TITLE}
-            subtitle={PROFILE_UI.PASSWORD_SUBTITLE}
-            as="h2"
-            centered
-            colorTheme="danger"
-          />
+          <Card.Body p="lg" gap="lg">
+            <SectionHeader
+              variant={SECTION_HEADER_VARIANT.BLOCK}
+              title={PROFILE_UI.PASSWORD_TITLE}
+              subtitle={PROFILE_UI.PASSWORD_SUBTITLE}
+              as="h2"
+              centered
+              colorTheme={SECTION_HEADER_THEME.DANGER}
+            />
 
-          <form
-            onSubmit={onPasswordSubmit}
-            className="space-y-6 mt-6"
-            noValidate
-          >
             <PasswordField
               label={FORM.AUTH.LABELS.CURRENT_PASSWORD}
               error={passwordForm.formState.errors.current_password?.message}
               {...passwordForm.register('current_password')}
             />
 
-            <div className="space-y-4 pt-4 border-t border-white/5">
+            <Stack
+              gap="md"
+              className="pt-4 border-t border-border-subtle w-full"
+            >
               <PasswordField
                 label={FORM.AUTH.LABELS.NEW_PASSWORD}
                 icon={ICONS.STARS}
@@ -137,23 +132,24 @@ export const ProfilePage = () => {
                 error={passwordForm.formState.errors.confirm_password?.message}
                 {...passwordForm.register('confirm_password')}
               />
-            </div>
+            </Stack>
 
             <Button
               type="submit"
-              variant="danger"
+              variant={BUTTON_VARIANT.DANGER}
               isLoading={passwordForm.formState.isSubmitting}
               disabled={
                 !passwordForm.formState.isDirty ||
                 !passwordForm.formState.isValid
               }
               fullWidth
+              className="cursor-pointer"
             >
               {FORM.AUTH.BUTTONS.CHANGE_PASSWORD}
             </Button>
-          </form>
+          </Card.Body>
         </Card>
-      </div>
+      </Stack>
     </MainLayout>
   );
 };

@@ -5,11 +5,14 @@ import {
   Badge,
   BADGE_VARIANT,
   TEXT_VARIANT,
+  TEXT_THEME,
   SectionHeader,
   formatLongDate,
   FORM,
-  ICONS,
   BUTTONS,
+  Row,
+  Stack,
+  Grid,
 } from '@/shared';
 import { useBonusDayForm } from '@/features/competition/admin/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -29,75 +32,77 @@ export const BonusDayManagement = () => {
   } = useBonusDayForm();
 
   return (
-    <div className="space-y-4 pt-6 border-t border-white/10">
+    <Stack gap="md" className="pt-6 border-t border-border-subtle w-full">
       <SectionHeader
         title={COMPETITION_UI.ADMIN.BONUS.TITLE}
         subtitle={COMPETITION_UI.ADMIN.BONUS.SUBTITLE}
         centered
       />
 
-      <div className="flex flex-wrap justify-center gap-2">
+      <Row wrap justify="center" gap="sm" className="w-full">
         {(bonusDays as BonusDay[]).map((bd) => (
           <Badge
             key={bd.id}
             variant={BADGE_VARIANT.BONUS}
-            className="pl-3 pr-1 gap-3"
+            onRemove={() => deleteBonus(bd.id)}
+            removeLabel={FORM.BONUS_DAY.BUTTONS.DELETE}
           >
             <span className="font-mono text-[10px]">
               {formatLongDate(bd.date)} —{' '}
-              <span className="text-silver-light">x{bd.multiplier}</span>
+              <span className="text-text-muted">x{bd.multiplier}</span>
             </span>
-            <button
-              type="button"
-              onClick={() => deleteBonus(bd.id)}
-              className="w-5 h-5 flex items-center justify-center rounded-md text-game-bonus-bright hover:text-game-bonus transition-default"
-              aria-label={FORM.BONUS_DAY.BUTTONS.DELETE}
-            >
-              {ICONS.CANCEL}
-            </button>
           </Badge>
         ))}
 
         {bonusDays.length === 0 && (
-          <Text variant={TEXT_VARIANT.MICRO} className="italic opacity-20 py-2">
+          <Text
+            variant={TEXT_VARIANT.MICRO}
+            colorTheme={TEXT_THEME.DIMMED}
+            className="italic py-2"
+          >
             {FORM.ADMIN.BONUS.EMPTY}
           </Text>
         )}
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-3 bg-white/2 p-4 rounded-2xl border border-white/5"
-        noValidate
-      >
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="w-full sm:w-2/3">
-            <Input
-              type="date"
-              label={FORM.SHARED.LABELS.DATE}
-              min={minDate}
-              max={maxDate}
-              error={errors?.newDate?.message}
-              {...register('newDate')}
-            />
-          </div>
-          <div className="w-full sm:w-1/3">
-            <Input
-              type="number"
-              label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
-              error={errors?.multiplier?.message}
-              {...register('multiplier', { valueAsNumber: true })}
-            />
-          </div>
-        </div>
-        <Button
-          type="submit"
-          isLoading={isAdding}
-          disabled={!isValid || isAdding}
-          fullWidth
+      </Row>
+
+      <form onSubmit={handleSubmit} noValidate className="w-full">
+        <Stack
+          gap="md"
+          className="bg-surface-base p-4 rounded-2xl border border-border-subtle w-full"
         >
-          {BUTTONS.ADD}
-        </Button>
+          <Grid cols={1} sm={12} gap="md" className="w-full">
+            <div className="sm:col-span-7">
+              <Input
+                type="date"
+                label={FORM.SHARED.LABELS.DATE}
+                min={minDate}
+                max={maxDate}
+                error={errors?.newDate?.message}
+                {...register('newDate')}
+              />
+            </div>
+
+            <div className="sm:col-span-5">
+              <Input
+                type="number"
+                label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
+                error={errors?.multiplier?.message}
+                {...register('multiplier', { valueAsNumber: true })}
+              />
+            </div>
+          </Grid>
+
+          <Button
+            type="submit"
+            isLoading={isAdding}
+            disabled={!isValid || isAdding}
+            fullWidth
+            className="cursor-pointer"
+          >
+            {BUTTONS.ADD}
+          </Button>
+        </Stack>
       </form>
-    </div>
+    </Stack>
   );
 };

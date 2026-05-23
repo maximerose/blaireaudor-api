@@ -1,4 +1,13 @@
-import { Card, CARD_VARIANT, Text, TEXT_VARIANT, FORM, cn } from '@/shared';
+import {
+  Card,
+  CARD_VARIANT,
+  Text,
+  TEXT_VARIANT,
+  TEXT_THEME,
+  FORM,
+  cn,
+  Row,
+} from '@/shared';
 import type { PlayerCompact } from '@/features/player';
 
 interface PlayerDropdownListProps {
@@ -13,10 +22,12 @@ export const PlayerDropdownList = ({
   <Card
     id="report-search-results"
     role="listbox"
+    padding="none"
+    radius="lg"
     variant={CARD_VARIANT.DARK}
     className={cn(
-      'absolute top-full left-0 right-0 mt-1 z-50 border-gold/30',
-      'max-h-55 overflow-y-auto shadow-2xl bg-black/95 backdrop-blur-xl',
+      'absolute top-full left-0 right-0 mt-1 z-50 border-gold-border',
+      'max-h-56 overflow-y-auto shadow-2xl bg-dark no-scrollbar',
       'animate-fade-in',
     )}
   >
@@ -27,13 +38,14 @@ export const PlayerDropdownList = ({
             key={p.id}
             type="button"
             role="option"
-            className="w-full p-3 text-center hover:bg-gold/10 text-gold border-b border-white/5 transition-default font-bold italic group cursor-pointer focus:bg-gold/10 focus:outline-none"
+            className="w-full p-3 text-center hover:bg-gold/10 border-b border-border-subtle transition-default group cursor-pointer focus:bg-gold/10 focus:outline-none"
             onClick={() => selectPlayer(p.id, p.display_name)}
           >
             <Text
               variant={TEXT_VARIANT.BODY}
+              colorTheme={TEXT_THEME.GOLD}
               as="span"
-              className="group-hover:text-gold transition-default font-bold"
+              className="font-bold italic"
             >
               {p.display_name}
             </Text>
@@ -41,11 +53,15 @@ export const PlayerDropdownList = ({
         ))}
       </>
     ) : (
-      <div className="p-4 text-center">
-        <Text variant={TEXT_VARIANT.MICRO} className="opacity-40 italic">
+      <Row justify="center" className="p-4 w-full">
+        <Text
+          variant={TEXT_VARIANT.MICRO}
+          colorTheme={TEXT_THEME.DIMMED}
+          className="italic"
+        >
           {FORM.PLAYER.HINT.NOT_FOUND}
         </Text>
-      </div>
+      </Row>
     )}
   </Card>
 );

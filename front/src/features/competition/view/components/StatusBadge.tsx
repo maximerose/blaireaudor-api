@@ -31,14 +31,13 @@ export const StatusBadge = ({ status }: { status: CompetitionStatusType }) => {
   if (!config) return null;
 
   return (
-    <span role="status" aria-relevant="all">
-      <Badge
-        variant={config.variant}
-        isPulse={config.isPulse}
-        aria-label={config.ariaLabel}
-      >
-        {config.label}
-      </Badge>
-    </span>
+    <Badge
+      role="status"
+      variant={config.variant}
+      isPulse={config.isPulse}
+      aria-label={config.ariaLabel}
+    >
+      {config.label}
+    </Badge>
   );
 };

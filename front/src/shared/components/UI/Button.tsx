@@ -1,12 +1,17 @@
+// front/src/shared/components/UI/Button.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/shared/utils';
+import { Row } from '../Layout/Row';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 
 export const BUTTON_VARIANT = {
   PRIMARY: 'primary',
   SECONDARY: 'secondary',
   DANGER: 'danger',
   GHOST: 'ghost',
+  GHOST_NEUTRAL: 'ghost-neutral',
 } as const;
 
 export const BUTTON_SIZE = {
@@ -29,23 +34,25 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE_STYLES =
-  'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-default rounded-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none shrink-0';
+  'inline-flex items-center justify-center transition-default rounded-xl border disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark outline-none shrink-0';
 
 const VARIANTS_STYLES: Record<ButtonVariant, string> = {
   [BUTTON_VARIANT.PRIMARY]:
-    'bg-gold border border-transparent text-black hover:bg-gold-light hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] shadow-lg shadow-gold/5',
+    'bg-gold border-transparent text-black hover:bg-gold-light hover:shadow-glow-gold shadow-lg shadow-gold/5',
   [BUTTON_VARIANT.SECONDARY]:
-    'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20',
+    'bg-surface-base border-border-base text-text-muted hover:bg-surface-raised hover:text-silver hover:border-border-subtle',
   [BUTTON_VARIANT.DANGER]:
-    'bg-danger/20 border border-danger/30 text-danger-bright hover:bg-danger hover:text-white transition-slow',
+    'bg-danger-soft border-danger-border text-danger-bright hover:bg-danger hover:text-white transition-slow',
   [BUTTON_VARIANT.GHOST]:
-    'text-gold/50 hover:text-gold hover:bg-gold/5 border border-transparent',
+    'text-gold/60 hover:text-gold hover:bg-gold-soft border-transparent',
+  [BUTTON_VARIANT.GHOST_NEUTRAL]:
+    'text-text-dimmed hover:text-text-muted hover:bg-surface-base border-transparent',
 };
 
 const SIZES_STYLES: Record<ButtonSize, string> = {
-  [BUTTON_SIZE.SMALL]: 'px-3 py-1.5 text-[9px]',
-  [BUTTON_SIZE.MEDIUM]: 'px-6 py-2.5 text-[10px]',
-  [BUTTON_SIZE.LARGE]: 'px-8 py-4 text-xs',
+  [BUTTON_SIZE.SMALL]: 'px-3 py-1.5 min-h-8',
+  [BUTTON_SIZE.MEDIUM]: 'px-6 py-2.5 min-h-10',
+  [BUTTON_SIZE.LARGE]: 'px-8 py-4 min-h-[3.25rem]',
 };
 
 export const Button = ({
@@ -55,7 +62,7 @@ export const Button = ({
   isLoading = false,
   fullWidth = false,
   icon,
-  className = '',
+  className,
   disabled,
   to,
   ...props
@@ -68,8 +75,15 @@ export const Button = ({
     className,
   );
 
+  const textVariant =
+    size === BUTTON_SIZE.SMALL
+      ? TEXT_VARIANT.MICRO
+      : size === BUTTON_SIZE.MEDIUM
+        ? TEXT_VARIANT.CAPTION
+        : TEXT_VARIANT.BODY;
+
   const content = (
-    <div className="flex items-center justify-center gap-2 w-full">
+    <Row justify="center" gap="sm" className="w-full">
       {isLoading && (
         <div
           className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full shrink-0"
@@ -78,16 +92,25 @@ export const Button = ({
       )}
       {!isLoading && icon && (
         <span
-          className="flex items-center justify-center shrink-0"
+          className="flex items-center justify-center shrink-0 leading-none"
           aria-hidden="true"
         >
           {icon}
         </span>
       )}
-      <span className="leading-none flex-1 text-center">
+
+      <Text
+        as="span"
+        variant={textVariant}
+        colorTheme={TEXT_THEME.INHERIT}
+        className={cn(
+          'leading-none text-center',
+          size === BUTTON_SIZE.LARGE && 'font-bold uppercase tracking-widest',
+        )} // Forçage du style sur le bouton large si on utilise le variant BODY
+      >
         {isLoading && typeof children === 'string' ? 'Chargement...' : children}
-      </span>
-    </div>
+      </Text>
+    </Row>
   );
 
   if (to) {

@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
-import { QUERY_KEYS } from '@/shared';
+import { QUERY_KEYS, STALE_TIMES } from '@/shared';
 
 export const useCompetitionActions = (competitionId: string | undefined) => {
   return useInfiniteQuery({
@@ -17,6 +17,6 @@ export const useCompetitionActions = (competitionId: string | undefined) => {
       const { page, last_page } = lastPage.meta;
       return page < last_page ? page + 1 : undefined;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 };

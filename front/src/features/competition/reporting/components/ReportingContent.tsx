@@ -8,6 +8,9 @@ import {
   CARD_VARIANT,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
+  Stack,
+  Row,
 } from '@/shared';
 import {
   useCompetitionContext,
@@ -24,59 +27,87 @@ export const ReportingContent = () => {
 
   if (!competition.has_started) {
     return (
-      <section className="mb-10 max-w-2xl mx-auto animate-slide-up">
+      <Stack
+        as="section"
+        mb="lg"
+        align="center"
+        className="max-w-2xl mx-auto animate-slide-up"
+      >
         <Card
-          variant={CARD_VARIANT.DARK}
-          className="text-center p-4 border-dashed border-gold/10 max-w-md mx-auto"
+          variant={CARD_VARIANT.GLASS}
+          className="border-dashed border-gold-border w-full max-w-md"
         >
-          <Text
-            variant={TEXT_VARIANT.H2}
-            className="text-gold/30 italic font-medium"
-          >
-            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_TITLE}
-          </Text>
-          <div className="mt-2 opacity-60">
-            <Text variant={TEXT_VARIANT.BODY} className="mt-2 opacity-60">
-              {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_SUBTITLE}
-            </Text>
-            <CompetitionCountdown
-              targetDate={competition.start_date}
-              elapsedText={
-                COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_ELAPSED
-              }
-            />
-          </div>
+          <Card.Body p="md">
+            <Stack gap="sm" align="center">
+              <Text
+                variant={TEXT_VARIANT.H2}
+                colorTheme={TEXT_THEME.GOLD}
+                className="italic font-medium text-center opacity-30"
+              >
+                {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_TITLE}
+              </Text>
+
+              <Stack gap="sm" align="center" className="w-full opacity-60">
+                <Text variant={TEXT_VARIANT.BODY} className="text-center">
+                  {
+                    COMPETITION_UI.DETAIL.SECTIONS.REPORTING
+                      .NOT_STARTED_SUBTITLE
+                  }
+                </Text>
+                <CompetitionCountdown
+                  targetDate={competition.start_date}
+                  elapsedText={
+                    COMPETITION_UI.DETAIL.SECTIONS.REPORTING.NOT_STARTED_ELAPSED
+                  }
+                />
+              </Stack>
+            </Stack>
+          </Card.Body>
         </Card>
-      </section>
+      </Stack>
     );
   }
 
   return (
-    <section className="mb-10 max-w-2xl mx-auto animate-slide-up space-y-4">
+    <Stack
+      as="section"
+      gap="md"
+      mb="sm"
+      className="max-w-2xl mx-auto animate-slide-up"
+    >
       {todayBonus && (
         <Card
           variant={CARD_VARIANT.DARK}
-          className="border-game-bonus-bright/30 bg-game-bonus/20 p-4 flex items-center gap-4 animate-pulse"
+          className="border-bonus-border bg-bonus-soft animate-pulse"
         >
-          <div className="flex-1 flex items-center gap-4">
-            <Badge variant={BADGE_VARIANT.BONUS} className="text-xl">
-              x{todayBonus.multiplier}
-            </Badge>
-            <div>
-              <Text
-                variant={TEXT_VARIANT.CAPTION}
-                className="text-game-bonus-bright font-bold uppercase tracking-wider"
-              >
-                {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_DAY}
-              </Text>
-              <Text as="p" variant={TEXT_VARIANT.MICRO} className="opacity-70">
-                {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
-              </Text>
-            </div>
-          </div>
-          <Badge variant={BADGE_VARIANT.BONUS} className="text-xl">
-            x{todayBonus.multiplier}
-          </Badge>
+          <Card.Body p="md">
+            <Row justify="between" align="center" className="w-full">
+              <Row align="center" gap="md" className="min-w-0">
+                <Badge variant={BADGE_VARIANT.BONUS} className="text-xl">
+                  x{todayBonus.multiplier}
+                </Badge>
+                <Stack gap="none" className="min-w-0">
+                  <Text
+                    variant={TEXT_VARIANT.CAPTION}
+                    className="text-game-bonus-bright font-bold uppercase tracking-wider"
+                  >
+                    {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_DAY}
+                  </Text>
+                  <Text
+                    as="p"
+                    variant={TEXT_VARIANT.MICRO}
+                    colorTheme={TEXT_THEME.MUTED}
+                  >
+                    {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.BONUS_HINT}
+                  </Text>
+                </Stack>
+              </Row>
+
+              <Badge variant={BADGE_VARIANT.BONUS} className="text-xl shrink-0">
+                x{todayBonus.multiplier}
+              </Badge>
+            </Row>
+          </Card.Body>
         </Card>
       )}
 
@@ -93,6 +124,6 @@ export const ReportingContent = () => {
       ) : (
         <ReportActionForm />
       )}
-    </section>
+    </Stack>
   );
 };

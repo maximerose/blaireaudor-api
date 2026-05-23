@@ -6,7 +6,10 @@ import {
   BUTTON_VARIANT,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
   ICONS,
+  Row,
+  Stack,
 } from '@/shared';
 import { AUTH_UI } from '@/features/account/constants';
 import type { PlayerCompact } from '@/features/player';
@@ -23,51 +26,69 @@ export const GuestFoundAlert = ({
   onLink,
 }: GuestFoundAlertProps) => {
   return (
-    <div
-      className="flex flex-col items-center gap-2 mt-3 p-4 bg-info/10 border border-info-bright/20 rounded-2xl animate-slide-up"
+    <Stack
+      align="center"
+      gap="sm"
+      p="md"
+      className="bg-info-soft border border-info-border rounded-2xl animate-slide-up"
       role="alert"
     >
       <Text
         variant={TEXT_VARIANT.MICRO}
-        className="text-info-bright text-center opacity-100"
+        colorTheme={TEXT_THEME.INFO}
+        className="text-center"
       >
-        <span aria-hidden="true">{ICONS.GUEST_EYE} </span>{' '}
+        <span className="mr-1" aria-hidden="true">
+          {ICONS.GUEST_EYE}
+        </span>{' '}
         {AUTH_UI.GUEST_ALERT.TITLE}
       </Text>
 
       <Text
         variant={TEXT_VARIANT.BODY}
-        className="text-white/70 text-[11px] text-center leading-tight"
+        colorTheme={TEXT_THEME.MUTED}
+        className="text-center leading-tight"
       >
         {AUTH_UI.GUEST_ALERT.USERNAME_PREFIX}{' '}
         <Text
           variant={TEXT_VARIANT.MONO}
           as="span"
-          className="text-white text-[11px]"
+          colorTheme={TEXT_THEME.INFO}
+          className="lowercase"
         >
           @{username}
         </Text>{' '}
         {AUTH_UI.GUEST_ALERT.BELONGS_TO}{' '}
-        <span className="text-white font-bold">{foundGuest.display_name}</span>.
+        <Text as="span" colorTheme={TEXT_THEME.INFO} className="font-bold">
+          {foundGuest.display_name}
+        </Text>
+        .
       </Text>
 
       {foundGuest.last_competition_name ? (
-        <div className="flex items-center gap-1 mt-1 overflow-hidden">
+        <Row
+          align="center"
+          justify="center"
+          gap="xs"
+          className="overflow-hidden"
+        >
           <Text
             variant={TEXT_VARIANT.MICRO}
-            className="italic shrink-0 opacity-20 font-bold"
+            colorTheme={TEXT_THEME.DIMMED}
+            className="italic shrink-0"
           >
             {AUTH_UI.GUEST_ALERT.LAST_COMPETITION}
           </Text>
           <Text
             variant={TEXT_VARIANT.MICRO}
-            className="text-info-bright/60 italic truncate opacity-100"
+            colorTheme={TEXT_THEME.INFO}
+            className="italic truncate"
           >
             {foundGuest.last_competition_name}
           </Text>
-        </div>
+        </Row>
       ) : (
-        <Badge variant={BADGE_VARIANT.INFO} className="mt-1 opacity-60">
+        <Badge variant={BADGE_VARIANT.INFO}>
           {AUTH_UI.GUEST_ALERT.NEW_PLAYER}{' '}
           <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
         </Badge>
@@ -76,13 +97,12 @@ export const GuestFoundAlert = ({
       <Button
         variant={BUTTON_VARIANT.SECONDARY}
         size={BUTTON_SIZE.SMALL}
-        className="mt-2 w-full border-info-bright/30 hover:bg-info/20 text-info-bright transition-default"
+        fullWidth
         onClick={onLink}
-        type="button"
         aria-label={AUTH_UI.GUEST_ALERT.ARIA_LINK(foundGuest.display_name)}
       >
         {AUTH_UI.GUEST_ALERT.LINK_BUTTON}
       </Button>
-    </div>
+    </Stack>
   );
 };

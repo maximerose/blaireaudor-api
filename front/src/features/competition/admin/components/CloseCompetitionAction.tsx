@@ -1,4 +1,11 @@
-import { Button, BUTTON_VARIANT, cn, Text, TEXT_VARIANT } from '@/shared';
+import {
+  Button,
+  BUTTON_VARIANT,
+  Text,
+  TEXT_VARIANT,
+  TEXT_THEME,
+  Stack,
+} from '@/shared';
 import { useAdminContext } from '@/features/competition/context';
 import { COMPETITION_UI } from '@/features/competition/constants';
 
@@ -7,35 +14,34 @@ export const CloseCompetitionAction = () => {
     useAdminContext();
 
   return (
-    <div className="flex flex-col items-center gap-3 border-t md:border-t-0 border-white/5 pt-6 md:pt-0">
-      <Text
-        variant={TEXT_VARIANT.CAPTION}
-        className="opacity-40 uppercase font-black text-[10px] tracking-widest"
-      >
+    <Stack
+      align="center"
+      gap="sm"
+      className="border-t md:border-t-0 border-border-subtle pt-6 md:pt-0 w-full"
+    >
+      <Text variant={TEXT_VARIANT.CAPTION} colorTheme={TEXT_THEME.MUTED}>
         {COMPETITION_UI.ADMIN.CLOSE.HEADER}
       </Text>
-      <div className="flex flex-col items-center gap-2">
-        <Button
-          variant={BUTTON_VARIANT.DANGER}
-          onClick={handleCloseCompetition}
-          isLoading={isUpdating}
-          disabled={pendingCount > 0}
-          className={cn(
-            'w-full sm:w-auto',
-            pendingCount > 0 && 'opacity-50 cursor-not-allowed',
-          )}
+
+      <Button
+        variant={BUTTON_VARIANT.DANGER}
+        onClick={handleCloseCompetition}
+        isLoading={isUpdating}
+        disabled={pendingCount > 0}
+        className="w-full sm:w-auto cursor-pointer"
+      >
+        {COMPETITION_UI.ADMIN.CLOSE.SUBMIT}
+      </Button>
+
+      {pendingCount > 0 && (
+        <Text
+          variant={TEXT_VARIANT.MICRO}
+          colorTheme={TEXT_THEME.DANGER}
+          className="animate-pulse text-center"
         >
-          {COMPETITION_UI.ADMIN.CLOSE.SUBMIT}
-        </Button>
-        {pendingCount > 0 && (
-          <Text
-            variant={TEXT_VARIANT.MICRO}
-            className="text-danger-bright animate-pulse font-bold"
-          >
-            {COMPETITION_UI.ADMIN.CLOSE.PENDING_WARNING(pendingCount)}
-          </Text>
-        )}
-      </div>
-    </div>
+          {COMPETITION_UI.ADMIN.CLOSE.PENDING_WARNING(pendingCount)}
+        </Text>
+      )}
+    </Stack>
   );
 };

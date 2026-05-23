@@ -5,8 +5,10 @@ import {
   BUTTON_SIZE,
   BADGE_VARIANT,
   SectionHeader,
+  SECTION_HEADER_VARIANT,
   ICONS,
   BUTTONS,
+  Stack,
 } from '@/shared';
 import { useCompetitionContext } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
@@ -26,7 +28,11 @@ export const DeleteCompetitionAction = () => {
   if (!roles.isCreator) return null;
 
   return (
-    <div className="pt-4 border-t border-danger/20 flex flex-col items-center justify-center gap-4">
+    <Stack
+      align="center"
+      gap="md"
+      className="pt-6 border-t border-danger/20 w-full"
+    >
       {canDelete.allowed ? (
         <>
           <SectionHeader
@@ -34,7 +40,7 @@ export const DeleteCompetitionAction = () => {
             colorTheme="danger"
             subtitle={COMPETITION_UI.ADMIN.GENERAL.DELETE_HINT}
             className="text-danger-bright"
-            variant="sub"
+            variant={SECTION_HEADER_VARIANT.SUB || 'sub'}
             centered
           />
 
@@ -45,7 +51,7 @@ export const DeleteCompetitionAction = () => {
               deleteCompetition(competition.id, competition.name, hasActions)
             }
             icon={ICONS.TRASH}
-            className="shrink-0"
+            className="cursor-pointer"
           >
             {BUTTONS.DELETE}
           </Button>
@@ -53,11 +59,11 @@ export const DeleteCompetitionAction = () => {
       ) : (
         <Badge
           variant={BADGE_VARIANT.GHOST}
-          className="opacity-70 italic text-[8px] shrink-0"
+          className="opacity-70 italic text-[8px]"
         >
           {COMPETITION_UI.DETAIL.PROTECTED}
         </Badge>
       )}
-    </div>
+    </Stack>
   );
 };

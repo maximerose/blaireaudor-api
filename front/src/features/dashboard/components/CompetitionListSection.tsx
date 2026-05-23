@@ -1,16 +1,17 @@
 import { CompetitionCard } from '@/features/competition';
 import {
-  Badge,
-  BADGE_VARIANT,
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-  UI,
+  Stack,
+  Grid,
 } from '@/shared';
 import type { DashboardItem } from '@/features/dashboard/types';
+import { DASHBOARD_UI } from '../constants';
 
 interface CompetitionListSectionProps {
   title: string;
+  icon?: string;
   items: DashboardItem[];
   variant?: 'gold' | 'white' | 'dimmed';
   emptyState?: React.ReactNode;
@@ -18,6 +19,7 @@ interface CompetitionListSectionProps {
 
 export const CompetitionListSection = ({
   title,
+  icon,
   items,
   variant = 'white',
   emptyState,
@@ -32,24 +34,18 @@ export const CompetitionListSection = ({
         : SECTION_HEADER_THEME.DEFAULT;
 
   return (
-    <section className="space-y-4">
+    <Stack as="section" gap="md" className="w-full">
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.DIVIDER}
         colorTheme={themeMap}
         title={title}
-        rightElement={
-          <Badge
-            variant={BADGE_VARIANT.GHOST}
-            className="opacity-60 text-[8px]"
-          >
-            {UI.ENTRIES(items.length)}
-          </Badge>
-        }
+        icon={icon}
+        badge={DASHBOARD_UI.NB_COMPETITIONS(items.length)}
       />
 
-      <div className="grid lg:grid-cols-2 gap-3">
+      <Grid cols={1} lg={2} gap="sm" className="w-full">
         {items?.length > 0
-          ? items?.map((item) => (
+          ? items.map((item) => (
               <CompetitionCard
                 key={item.competition.id}
                 competition={item.competition}
@@ -57,7 +53,7 @@ export const CompetitionListSection = ({
               />
             ))
           : emptyState}
-      </div>
-    </section>
+      </Grid>
+    </Stack>
   );
 };

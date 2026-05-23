@@ -1,4 +1,4 @@
-import { Badge, ICONS } from '@/shared';
+import { Badge, BADGE_VARIANT, ICONS } from '@/shared';
 
 interface RoleBadgeProps {
   role: 'creator' | 'referee' | 'guest';
@@ -6,19 +6,19 @@ interface RoleBadgeProps {
 
 const ROLE_CONFIG = {
   creator: {
-    variant: 'creator' as const,
+    variant: BADGE_VARIANT.CREATOR,
     label: 'Créateur',
     icon: ICONS.CREATOR,
     className: '',
   },
   referee: {
-    variant: 'referee' as const,
+    variant: BADGE_VARIANT.REFEREE,
     label: 'Arbitre',
     icon: ICONS.REFEREE,
     className: '',
   },
   guest: {
-    variant: 'guest' as const,
+    variant: BADGE_VARIANT.GHOST,
     label: 'Invité',
     icon: undefined,
     className: 'opacity-60 text-[8px] py-0 px-1.5',

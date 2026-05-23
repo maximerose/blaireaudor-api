@@ -2,9 +2,7 @@ import React from 'react';
 import { Text, TEXT_VARIANT } from './Text';
 import { useEmptyStateUI } from '@/shared/hooks';
 import { ICONS, UI } from '@/shared/constants';
-
-const ICON_STYLE =
-  'text-3xl sm:text-4xl opacity-30 mb-4 animate-bounce-subtle select-none';
+import { Stack } from '../Layout/Stack';
 
 interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: string | React.ReactNode;
@@ -32,14 +30,23 @@ export const EmptyState = ({
       role="status"
       aria-label={UI.INFO_ARIA(title)}
     >
-      <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 animate-fade-in">
-        <div className={ICON_STYLE} aria-hidden="true">
+      <Stack
+        align="center"
+        justify="center"
+        p="xl"
+        gap="sm"
+        className="text-center animate-fade-in"
+      >
+        <div
+          className="text-3xl sm:text-4xl opacity-30 mb-2 animate-bounce-subtle select-none"
+          aria-hidden="true"
+        >
           {icon}
         </div>
 
         <Text
           variant={TEXT_VARIANT.CAPTION}
-          className="text-white/50 font-bold uppercase tracking-widest"
+          className="text-text-muted font-bold uppercase tracking-widest"
         >
           {title}
         </Text>
@@ -47,16 +54,16 @@ export const EmptyState = ({
         {message && (
           <Text
             variant={TEXT_VARIANT.BODY}
-            className="text-white/20 text-[10px] sm:text-xs italic mt-2 leading-tight"
+            className="text-text-dimmed text-[10px] sm:text-xs italic leading-tight"
           >
             {message}
           </Text>
         )}
 
         {action && (
-          <div className="mt-6 w-full max-w-xs animate-slide-up">{action}</div>
+          <div className="mt-4 w-full max-w-xs animate-slide-up">{action}</div>
         )}
-      </div>
+      </Stack>
     </Wrapper>
   );
 };

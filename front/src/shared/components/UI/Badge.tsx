@@ -1,5 +1,7 @@
 import React from 'react';
 import { cn } from '@/shared/utils';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { BUTTONS, ICONS } from '@/shared/constants';
 
 export const BADGE_VARIANT = {
   GOLD: 'gold',
@@ -25,42 +27,47 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   className?: string;
   isPulse?: boolean;
   icon?: React.ReactNode;
+  onRemove?: () => void;
+  removeLabel?: string;
 }
 
 const VARIANTS_STYLES: Record<BadgeVariant, string> = {
-  [BADGE_VARIANT.GOLD]: 'bg-gold/10 text-gold border-gold/20',
-  [BADGE_VARIANT.SILVER]: 'bg-silver/10 text-silver border-silver/20',
-  [BADGE_VARIANT.BRONZE]: 'bg-bronze/10 text-bronze border-bronze/20',
+  [BADGE_VARIANT.GOLD]: 'bg-gold-soft border-gold-border text-gold',
+  [BADGE_VARIANT.SILVER]: 'bg-silver-soft border-silver-border text-silver',
+  [BADGE_VARIANT.BRONZE]: 'bg-bronze-soft border-bronze-border text-bronze',
   [BADGE_VARIANT.SUCCESS]:
-    'bg-success/20 text-success-bright border-success-bright/20',
-  [BADGE_VARIANT.DANGER]: 'bg-danger/20 text-danger-bright border-danger/20',
-  [BADGE_VARIANT.INFO]: 'bg-info/20 text-info-bright border-info-bright/20',
+    'bg-success-soft border-success-border text-success-bright',
+  [BADGE_VARIANT.DANGER]:
+    'bg-danger-soft border-danger-border text-danger-bright',
+  [BADGE_VARIANT.INFO]: 'bg-info-soft border-info-border text-info-bright',
   [BADGE_VARIANT.WARNING]:
-    'bg-warning/20 text-warning-bright border-warning-bright/20',
-  [BADGE_VARIANT.GHOST]: 'bg-white/5 text-white/40 border-white/10',
+    'bg-warning-soft border-warning-border text-warning-bright',
+  [BADGE_VARIANT.GHOST]: 'bg-surface-base border-border-subtle text-text-muted',
   [BADGE_VARIANT.CREATOR]:
-    'bg-role-creator/20 text-role-creator-bright border-role-creator-bright/20',
+    'bg-creator-soft border-creator-border text-role-creator-bright',
   [BADGE_VARIANT.REFEREE]:
-    'bg-role-referee/20 text-role-referee-bright border-role-referee-bright/20',
-  [BADGE_VARIANT.GUEST]:
-    'bg-role-guest/10 text-role-guest border-role-guest/20',
+    'bg-referee-soft border-referee-border text-role-referee-bright',
+  [BADGE_VARIANT.GUEST]: 'bg-guest-soft border-guest-border text-role-guest',
   [BADGE_VARIANT.BONUS]:
-    'bg-game-bonus/20 text-game-bonus-bright border-game-bonus-bright/20',
-  [BADGE_VARIANT.ME]: 'bg-player-me/10 text-player-me-bright border-gold/20',
+    'bg-bonus-soft border-bonus-border text-game-bonus-bright',
+  [BADGE_VARIANT.ME]: 'bg-me-soft border-me-border text-player-me',
 };
 
 export const Badge = ({
   children,
   variant = BADGE_VARIANT.GOLD,
-  className = '',
+  className,
   isPulse = false,
   icon,
+  onRemove,
+  removeLabel = BUTTONS.REMOVE,
   ...props
 }: BadgeProps) => {
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-between gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-tight shrink-0 transition-default',
+        'inline-flex items-center justify-center gap-1.5 px-2 py-1 rounded-md border shrink-0 transition-default whitespace-nowrap',
+        onRemove ? 'pl-2.5 pr-1' : 'px-2',
         VARIANTS_STYLES[variant],
         isPulse && 'animate-pulse motion-reduce:animate-none',
         className,
@@ -70,12 +77,35 @@ export const Badge = ({
       {icon && (
         <span
           aria-hidden="true"
-          className="text-[11px] items-center justify-center leading-none -mt-px"
+          className="flex items-center justify-center text-xs"
         >
           {icon}
         </span>
       )}
-      {children}
+      <Text
+        as="span"
+        variant={TEXT_VARIANT.MICRO}
+        colorTheme={TEXT_THEME.INHERIT}
+        className="tracking-normal inline-flex items-center gap-1"
+      >
+        {children}
+      </Text>
+      {onRemove && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="w-4 h-4 rounded-md inline-flex items-center justify-center text-inherit opacity-40 hover:opacity-100 hover:bg-black/20 focus:outline-none focus:ring-1 focus:ring-current transition-all select-none"
+          title={removeLabel}
+          aria-label={removeLabel}
+        >
+          <span className="text-[10px] leading-none" aria-hidden="true">
+            {ICONS.CANCEL}
+          </span>
+        </button>
+      )}
     </span>
   );
 };

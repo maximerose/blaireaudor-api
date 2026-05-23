@@ -8,14 +8,19 @@ import {
   SectionHeader,
   SECTION_HEADER_VARIANT,
   FORM,
-  ICONS,
+  Stack,
+  Grid,
 } from '@/shared';
 import {
   useCompetitionContext,
   useReportingContext,
 } from '@/features/competition/context';
 import { useReportAction } from '@/features/competition/reporting/hooks';
-import { PlayerDropdownList } from '@/features/competition/enrollment';
+import {
+  ActionDescriptionField,
+  ActionPlayerField,
+  ActionPointsField,
+} from '@/features/competition/actions/fields';
 
 export const ReportActionForm = () => {
   const { refresh } = useCompetitionContext();
@@ -40,89 +45,81 @@ export const ReportActionForm = () => {
   });
 
   return (
-    <div className="animate-slide-up" role="dialog">
-      <Card variant={CARD_VARIANT.GLASS} className="shadow-2xl p-5 sm:p-8">
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-          <SectionHeader
-            icon={ICONS.BADGER}
-            title={FORM.REPORT_ACTION.TITLE}
-            subtitle={FORM.REPORT_ACTION.SUBTITLE}
-            variant={SECTION_HEADER_VARIANT.BLOCK}
-            centered
-          />
-
-          <div className="space-y-4">
-            <input type="hidden" {...register('targetPlayerId')} />
-            <div className="relative" ref={searchContainerRef}>
-              <Input
-                label={FORM.REPORT_ACTION.LABELS.PLAYER}
-                placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.PLAYER}
-                value={search}
-                required
-                autoComplete="off"
-                onFocus={() => setShowDropdown(true)}
-                onChange={handleSearchChange}
-                icon={showDropdown ? ICONS.SEARCH : ICONS.PLAYER}
-                error={errors?.targetPlayerId?.message}
+    <div className="animate-slide-up w-full max-w-md mx-auto" role="dialog">
+      <Card variant={CARD_VARIANT.GLASS} className="shadow-modal w-full">
+        <Card.Body p="xl">
+          <form onSubmit={handleSubmit} noValidate className="w-full">
+            <Stack gap="lg" className="w-full">
+              <SectionHeader
+                title={FORM.REPORT_ACTION.TITLE}
+                subtitle={FORM.REPORT_ACTION.SUBTITLE}
+                variant={SECTION_HEADER_VARIANT.BLOCK}
+                centered
               />
-              {showDropdown && (
-                <PlayerDropdownList
+
+              <Stack gap="md" className="w-full">
+                <input type="hidden" {...register('targetPlayerId')} />
+
+                <ActionPlayerField
+                  search={search}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  searchContainerRef={searchContainerRef}
                   filteredPlayers={filteredPlayers}
                   selectPlayer={selectPlayer}
+                  handleSearchChange={handleSearchChange}
+                  disabled={loading}
+                  error={errors?.targetPlayerId?.message}
                 />
-              )}
-            </div>
 
-            <Input
-              label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
-              placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
-              autoComplete="off"
-              required
-              error={errors?.description?.message}
-              {...register('description')}
-            />
+                <ActionDescriptionField
+                  disabled={loading}
+                  error={errors?.description?.message}
+                  {...register('description')}
+                />
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label={FORM.REPORT_ACTION.LABELS.POINTS}
-                type="number"
-                icon={ICONS.POINTS}
-                step="10"
-                required
-                error={errors?.points?.message}
-                {...register('points', { valueAsNumber: true })}
-              />
-              <Input
-                label={FORM.SHARED.LABELS.DATE}
-                type="date"
-                min={dateLimits.minDate}
-                max={dateLimits.maxDate}
-                error={errors?.dateAction?.message}
-                required
-                {...register('dateAction')}
-              />
-            </div>
-          </div>
+                <Grid cols={2} gap="md" className="w-full">
+                  <ActionPointsField
+                    disabled={loading}
+                    error={errors?.points?.message}
+                    {...register('points', { valueAsNumber: true })}
+                  />
 
-          <div className="flex flex-col gap-3">
-            <Button
-              variant={BUTTON_VARIANT.PRIMARY}
-              fullWidth
-              type="submit"
-              isLoading={loading}
-            >
-              {FORM.REPORT_ACTION.BUTTONS.SUBMIT}
-            </Button>
-            <Button
-              variant={BUTTON_VARIANT.GHOST}
-              fullWidth
-              onClick={toggleReporting}
-              size={BUTTON_SIZE.SMALL}
-            >
-              {FORM.REPORT_ACTION.BUTTONS.CANCEL}
-            </Button>
-          </div>
-        </form>
+                  <Input
+                    label={FORM.SHARED.LABELS.DATE}
+                    type="date"
+                    min={dateLimits.minDate}
+                    max={dateLimits.maxDate}
+                    error={errors?.dateAction?.message}
+                    required
+                    disabled={loading}
+                    {...register('dateAction')}
+                  />
+                </Grid>
+              </Stack>
+
+              <Stack gap="sm" className="w-full pt-2">
+                <Button
+                  variant={BUTTON_VARIANT.PRIMARY}
+                  fullWidth
+                  type="submit"
+                  isLoading={loading}
+                >
+                  {FORM.REPORT_ACTION.BUTTONS.SUBMIT}
+                </Button>
+                <Button
+                  variant={BUTTON_VARIANT.GHOST_NEUTRAL}
+                  fullWidth
+                  onClick={toggleReporting}
+                  size={BUTTON_SIZE.SMALL}
+                  disabled={loading}
+                >
+                  {FORM.REPORT_ACTION.BUTTONS.CANCEL}
+                </Button>
+              </Stack>
+            </Stack>
+          </form>
+        </Card.Body>
       </Card>
     </div>
   );

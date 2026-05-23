@@ -48,6 +48,10 @@ export const FORM = {
     BUTTONS: {
       CHANGE_PASSWORD: 'Changer le mot de passe',
     },
+    ARIA: {
+      CHANGE_LINKED_PLAYER: (playerName: string | undefined) =>
+        `Changer de joueur à lier, actuellement défini sur ${playerName ? playerName : 'personne'}`,
+    },
   },
 
   BONUS_DAY: {
@@ -140,6 +144,7 @@ export const FORM = {
     PLACEHOLDERS: {
       PLAYER: 'Chercher un blaireau...',
       DESCRIPTION: 'Ex: Tombé à ski...',
+      POINTS: '10',
     },
     BUTTONS: {
       SUBMIT: "Dénoncer l'action",

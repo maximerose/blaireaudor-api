@@ -3,6 +3,8 @@ import { ICONS } from '@/shared/constants';
 import { cn } from '@/shared/utils';
 import { Button, BUTTON_SIZE, BUTTON_VARIANT } from './Button';
 import { Card, CARD_VARIANT } from './Card';
+import { List } from './List';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 
 interface DropdownOption {
   value: string;
@@ -47,7 +49,10 @@ export const Dropdown = ({
         variant={BUTTON_VARIANT.GHOST}
         size={BUTTON_SIZE.SMALL}
         onClick={() => setIsOpen(!isOpen)}
-        className={cn('border-white/10', value && 'text-gold border-gold/30')}
+        className={cn(
+          'border-border-base',
+          value && 'text-gold border-gold-border',
+        )}
         icon={ICONS.CHEVRON_DOWN}
       >
         {selectedOption ? selectedOption.label : placeholder}
@@ -56,22 +61,31 @@ export const Dropdown = ({
       {isOpen && (
         <Card
           variant={CARD_VARIANT.DARK}
-          className="bg-dark absolute top-full left-0 mt-2 z-50 min-w-40 shadow-2xl border-white/10 animate-fade-in overflow-hidden"
+          padding="none"
+          radius="xl"
+          className="absolute top-full left-0 mt-2 z-50 min-w-40 bg-dark-lighter shadow-2xl animate-fade-in"
         >
-          <div className="flex flex-col">
+          <List>
             {options.map((opt) => (
               <button
                 key={opt.value}
-                className="px-4 py-3 text-left text-[9px] font-black uppercase tracking-widest hover:bg-gold/10 hover:text-gold transition-colors border-b border-white/5 last:border-0"
+                type="button"
+                className="w-full px-4 py-3 text-left hover:bg-surface-base transition-default focus:outline-none focus:bg-surface-base group cursor-pointer"
                 onClick={() => {
                   onChange(opt.value);
                   setIsOpen(false);
                 }}
               >
-                {opt.label}
+                <Text
+                  variant={TEXT_VARIANT.CAPTION}
+                  colorTheme={TEXT_THEME.INHERIT}
+                  className="group-hover:text-gold transition-default"
+                >
+                  {opt.label}
+                </Text>
               </button>
             ))}
-          </div>
+          </List>
         </Card>
       )}
     </div>

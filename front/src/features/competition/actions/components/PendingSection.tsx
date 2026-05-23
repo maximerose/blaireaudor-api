@@ -4,8 +4,14 @@ import {
   Badge,
   BADGE_VARIANT,
   TEXT_VARIANT,
+  TEXT_THEME,
   CARD_VARIANT,
   cn,
+  Stack,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
+  ICONS,
+  SECTION_HEADER_THEME,
 } from '@/shared';
 import { useActionTableContext } from '@/features/competition/context';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -35,31 +41,32 @@ export const PendingSection = () => {
   ] as const;
 
   return (
-    <section className="space-y-6 animate-slide-up">
-      <div className="flex items-center gap-3 px-1">
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          className="text-gold uppercase font-bold tracking-widest opacity-80"
-        >
-          {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.PENDING}
-        </Text>
-        <Badge variant={BADGE_VARIANT.GHOST} isPulse>
-          {total}
-        </Badge>
-        <div className="h-px flex-1 bg-gold/10 ml-4" />
-      </div>
+    <Stack as="section" gap="lg" className="animate-slide-up">
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.DIVIDER}
+        colorTheme={SECTION_HEADER_THEME.GOLD}
+        icon={ICONS.REFEREE}
+        title={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.SUB_SECTIONS.PENDING}
+        rightElement={
+          <Badge variant={BADGE_VARIANT.GHOST} isPulse>
+            {total}
+          </Badge>
+        }
+      />
 
-      <div className="space-y-8">
+      <Stack gap="xl">
         {sections.map(
           (section) =>
             section.data.length > 0 && (
-              <div key={section.label} className="space-y-3">
+              <Stack key={section.label} gap="xs">
                 <Text
                   variant={TEXT_VARIANT.MICRO}
-                  className="ml-4 opacity-40 uppercase font-black italic"
+                  colorTheme={TEXT_THEME.DIMMED}
+                  className="ml-4 uppercase font-black italic"
                 >
                   {section.label}
                 </Text>
+
                 <Card
                   variant={CARD_VARIANT.DARK}
                   className={cn(
@@ -71,10 +78,10 @@ export const PendingSection = () => {
                     <ActionRow key={action.id} action={action} />
                   ))}
                 </Card>
-              </div>
+              </Stack>
             ),
         )}
-      </div>
-    </section>
+      </Stack>
+    </Stack>
   );
 };

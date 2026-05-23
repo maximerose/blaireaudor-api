@@ -21,13 +21,13 @@ export const DateNavigation = () => {
 
   return (
     <nav
-      className="relative group z-20"
+      className="relative group z-20 w-full"
       aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ARIA_FILTER_DATE}
     >
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex gap-2 overflow-x-auto pb-4 no-scrollbar select-none"
+        className="flex items-center justify-start gap-2 overflow-x-auto pb-4 no-scrollbar select-none touch-pan-x w-full"
         role="group"
       >
         <Button
@@ -38,7 +38,10 @@ export const DateNavigation = () => {
           }
           size={BUTTON_SIZE.SMALL}
           onClick={() => setSelectedDate(null)}
-          className={cn(selectedDate !== null && 'opacity-40')}
+          className={cn(
+            'transition-default cursor-pointer shrink-0',
+            selectedDate !== null && 'opacity-40 hover:opacity-80',
+          )}
         >
           {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.ALL_DATES}
         </Button>
@@ -48,7 +51,7 @@ export const DateNavigation = () => {
           const isActive = selectedDate === date;
 
           return (
-            <div key={date} className="relative">
+            <div key={date} className="relative shrink-0">
               <Button
                 variant={
                   isActive ? BUTTON_VARIANT.PRIMARY : BUTTON_VARIANT.SECONDARY
@@ -56,15 +59,15 @@ export const DateNavigation = () => {
                 size={BUTTON_SIZE.SMALL}
                 onClick={() => setSelectedDate(date)}
                 className={cn(
-                  'whitespace-nowrap transition-default relative overflow-hidden px-4',
+                  'whitespace-nowrap transition-default relative overflow-hidden px-4 cursor-pointer',
                   !isActive && 'opacity-40 hover:opacity-80',
-                  multiplier && 'border-game-bonus/50 pr-8',
+                  multiplier && 'border-game-bonus/50 pr-9',
                 )}
               >
                 {formatLongDate(date)}
 
                 {multiplier && (
-                  <div className="absolute top-0 right-0 bottom-0 w-6 bg-game-bonus flex items-center justify-center border-l border-white/20">
+                  <div className="absolute top-0 right-0 bottom-0 w-6 bg-game-bonus flex items-center justify-center border-l border-border-subtle animate-fade-in">
                     <span className="text-[10px] font-black text-white">
                       x{multiplier}
                     </span>
@@ -75,6 +78,7 @@ export const DateNavigation = () => {
           );
         })}
       </div>
+
       <div
         aria-hidden="true"
         className={cn(

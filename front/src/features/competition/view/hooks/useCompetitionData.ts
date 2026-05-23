@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
-import { ERRORS, QUERY_KEYS } from '@/shared';
+import { ERRORS, QUERY_KEYS, STALE_TIMES } from '@/shared';
 
 export const useCompetitionData = (code: string) => {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export const useCompetitionData = (code: string) => {
     queryKey: QUERY_KEYS.competition.byCode(code),
     queryFn: ({ signal }) => competitionService.getByCode(code, signal),
     enabled: !!code,
-    staleTime: 1000 * 60 * 5,
+    staleTime: STALE_TIMES.MUTATION_CHECK,
     retry: false,
   });
 

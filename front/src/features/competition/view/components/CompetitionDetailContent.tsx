@@ -1,4 +1,10 @@
-import { MainLayout, SectionHeader, SECTION_HEADER_VARIANT } from '@/shared';
+import {
+  MainLayout,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
+  Grid,
+  Stack,
+} from '@/shared';
 import { useCompetitionContext } from '@/features/competition/context';
 import { CompetitionHeader } from './CompetitionHeader';
 import { AdminSettings } from '@/features/competition/admin';
@@ -17,20 +23,23 @@ export const CompetitionDetailContent = () => {
       <AdminSettings />
       <ReportingSection />
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
-        <section className="xl:col-span-5 space-y-6">
+      <Grid cols={1} xl={12} align="start" mt="xl" className="gap-12">
+        <Stack as="section" gap="lg" className="xl:col-span-5">
           <SectionHeader
             title={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
             variant={SECTION_HEADER_VARIANT.DIVIDER}
+            badge={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.NB_PLAYERS(
+              competition.participations?.length || 0,
+            )}
           />
           <Leaderboard />
           {!competition.is_finished && <InlineEnrollment />}
-        </section>
+        </Stack>
 
-        <section className="xl:col-span-7 space-y-6">
+        <Stack as="section" gap="lg" className="xl:col-span-7">
           <ActionTable />
-        </section>
-      </div>
+        </Stack>
+      </Grid>
     </MainLayout>
   );
 };

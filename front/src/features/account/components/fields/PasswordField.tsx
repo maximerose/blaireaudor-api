@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Input, type InputProps, FORM, ICONS } from '@/shared';
+import { Input, type InputProps, FORM, ICONS, Stack } from '@/shared';
 import { PasswordStrength } from '../PasswordStrength';
 
 interface PasswordFieldProps extends Partial<InputProps> {
@@ -17,7 +17,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
     },
     ref,
   ) => (
-    <div className="space-y-1 w-full">
+    <Stack gap="none" className="w-full">
       <Input
         ref={ref}
         type="password"
@@ -31,7 +31,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
       {watchValue && watchValue.length > 0 && !error && (
         <PasswordStrength password={watchValue} />
       )}
-    </div>
+    </Stack>
   ),
 );
 

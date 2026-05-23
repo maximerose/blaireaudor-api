@@ -1,6 +1,23 @@
 @import 'tailwindcss';
 
 @theme {
+  /* --- RADIUS --- */
+  --radius-card: 2.5rem;
+
+  /* --- SÉMANTIQUE DE LAYOUT --- */
+  --color-surface-base: rgba(255, 255, 255, 0.05);
+  --color-surface-raised: rgba(255, 255, 255, 0.1);
+  --color-surface-sunken: rgba(0, 0, 0, 0.4);
+  --color-surface-hover: color-mix(in srgb, var(--color-gold) 2%, transparent);
+
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-border-base: rgba(255, 255, 255, 0.1);
+
+  --color-text-muted: rgba(255, 255, 255, 0.4);
+  --color-text-dimmed: rgba(255, 255, 255, 0.2);
+
+  --color-overlay: rgba(0, 0, 0, 0.8);
+
   /* --- COULEURS --- */
   --color-gold: #d4af37;
   --color-gold-light: #f3e5ab;
@@ -37,6 +54,113 @@
 
   --color-role-guest: #888888;
 
+  /* --- SÉMANTIQUE MÉTIER : ALERTES & BADGES --- */
+  --color-danger-soft: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  --color-danger-border: color-mix(
+    in srgb,
+    var(--color-danger-bright) 30%,
+    transparent
+  );
+
+  --color-warning-soft: color-mix(
+    in srgb,
+    var(--color-warning) 10%,
+    transparent
+  );
+  --color-warning-border: color-mix(
+    in srgb,
+    var(--color-warning-bright) 30%,
+    transparent
+  );
+
+  --color-info-soft: color-mix(in srgb, var(--color-info) 10%, transparent);
+  --color-info-border: color-mix(
+    in srgb,
+    var(--color-info-bright) 30%,
+    transparent
+  );
+
+  --color-success-soft: color-mix(
+    in srgb,
+    var(--color-success) 10%,
+    transparent
+  );
+  --color-success-border: color-mix(
+    in srgb,
+    var(--color-success-bright) 30%,
+    transparent
+  );
+
+  /* --- SÉMANTIQUE MÉTIER : BADGES CLASSIQUES --- */
+  --color-gold-soft: color-mix(in srgb, var(--color-gold) 10%, transparent);
+  --color-gold-border: color-mix(in srgb, var(--color-gold) 20%, transparent);
+
+  --color-silver-soft: color-mix(in srgb, var(--color-silver) 10%, transparent);
+  --color-silver-border: color-mix(
+    in srgb,
+    var(--color-silver) 20%,
+    transparent
+  );
+
+  --color-bronze-soft: color-mix(in srgb, var(--color-bronze) 10%, transparent);
+  --color-bronze-border: color-mix(
+    in srgb,
+    var(--color-bronze) 20%,
+    transparent
+  );
+
+  /* --- SÉMANTIQUE MÉTIER : ROLES ET JEU --- */
+  --color-creator-soft: color-mix(
+    in srgb,
+    var(--color-role-creator) 20%,
+    transparent
+  );
+  --color-creator-border: color-mix(
+    in srgb,
+    var(--color-role-creator-bright) 20%,
+    transparent
+  );
+
+  --color-referee-soft: color-mix(
+    in srgb,
+    var(--color-role-referee) 20%,
+    transparent
+  );
+  --color-referee-border: color-mix(
+    in srgb,
+    var(--color-role-referee-bright) 20%,
+    transparent
+  );
+
+  --color-guest-soft: color-mix(
+    in srgb,
+    var(--color-role-guest) 10%,
+    transparent
+  );
+  --color-guest-border: color-mix(
+    in srgb,
+    var(--color-role-guest) 20%,
+    transparent
+  );
+
+  --color-bonus-soft: color-mix(
+    in srgb,
+    var(--color-game-bonus) 20%,
+    transparent
+  );
+  --color-bonus-border: color-mix(
+    in srgb,
+    var(--color-game-bonus-bright) 20%,
+    transparent
+  );
+
+  --color-me-soft: color-mix(in srgb, var(--color-player-me) 10%, transparent);
+  --color-me-border: color-mix(
+    in srgb,
+    var(--color-player-me) 20%,
+    transparent
+  );
+
   /* --- SÉMANTIQUE MÉTIER : LES JOUEURS --- */
   --color-player-me: var(--color-gold);
   --color-player-other: var(--color-silver-light);
@@ -55,6 +179,11 @@
   --animate-slide-up: slide-up 0.5s cubic-bezier(0, 0, 0.2, 1);
   --animate-bounce-subtle: bounce-subtle 2s infinite;
   --animate-danger-glow: danger-glow 2s infinite ease-in-out;
+
+  /* --- EFFETS ET OMBRES --- */
+  --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  --shadow-modal-gold: var(--shadow-modal), var(--shadow-glow-gold);
 }
 
 @layer utilities {

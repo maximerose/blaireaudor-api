@@ -113,8 +113,7 @@ export const useReportAction = (
         status: ActionStatus;
       },
     ) => actionService.create(competition.id, payload),
-    onSuccess: async () => {
-      await invalidateAll(competition.id, competition.join_code);
+    onSuccess: () => {
       toast.success(
         isAdmin ? SUCCESS.ACTION.REPORTED_ADMIN : SUCCESS.ACTION.REPORTED_USER,
       );
@@ -126,8 +125,9 @@ export const useReportAction = (
         dateAction: getLocalDayString(new Date()),
       });
       setSearch('');
-
       onSuccess();
+
+      invalidateAll(competition.id, competition.join_code);
       refresh();
     },
     onError: (apiError: ApiError) => {

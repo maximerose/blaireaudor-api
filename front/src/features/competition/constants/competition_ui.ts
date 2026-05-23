@@ -84,6 +84,7 @@ export const COMPETITION_UI = {
         REPORT_BUTTON: 'Dénoncer un adversaire',
       },
       LEADERBOARD: {
+        NB_PLAYERS: (count: number) => `${count} ${pluralize(count, 'joueur')}`,
         TITLE: 'Classement',
         ARIA_TITLE: (competitionName?: string) =>
           `Classement pour la compétition ${competitionName ? competitionName : 'en cours'} `,
@@ -105,6 +106,7 @@ export const COMPETITION_UI = {
           `Score: ${points} ${pluralize(points, 'point')}`,
       },
       ACTIONS: {
+        NB_ACTIONS: (count: number) => `${count} ${pluralize(count, 'action')}`,
         TITLE: 'Journal des actions',
         LOADING: 'Chargement des actions...',
         END: 'Fin des actions',
@@ -120,13 +122,16 @@ export const COMPETITION_UI = {
           ARIA_FILTER_DATE: 'Filtrer les actions par date',
         },
         SUB_SECTIONS: {
-          PENDING: `${ICONS.REFEREE} Actions en attente`,
+          PENDING: `Actions en attente`,
           MY_SUBMISSIONS: 'Mes envois',
           OTHER_SUBMISSIONS: 'Signalements des autres',
           REJECTED: `${ICONS.TRASH} Actions rejetées(Archive)`,
         },
         OTHER_PLAYERS: 'Autres joueurs...',
         REPORTED_BY: 'Dénoncé par : ',
+        ARIA: {
+          UPDATE_ACTION: "Modifier l'action",
+        },
       },
     },
   },

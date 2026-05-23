@@ -1,5 +1,9 @@
+// front/src/shared/components/UI/Card.tsx
+
 import React from 'react';
 import { cn } from '@/shared/utils';
+import { LAYOUT, type LayoutP } from '@/shared/constants';
+import { Row, Stack } from '../Layout';
 
 export const CARD_VARIANT = {
   DEFAULT: 'default',
@@ -8,43 +12,61 @@ export const CARD_VARIANT = {
 } as const;
 
 export type CardVariant = (typeof CARD_VARIANT)[keyof typeof CARD_VARIANT];
+export type CardRadius = 'none' | 'md' | 'lg' | 'xl' | '2xl' | 'card';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BaseCardProps {
   children: React.ReactNode;
   className?: string;
   isHoverable?: boolean;
   variant?: CardVariant;
-  as?: React.ElementType;
+  padding?: LayoutP;
+  radius?: CardRadius;
 }
 
+export type CardProps<T extends React.ElementType = 'div'> = BaseCardProps & {
+  as?: T;
+} & Omit<React.ComponentPropsWithoutRef<T>, keyof BaseCardProps | 'as'>;
+
 const CARD_STYLES: Record<CardVariant, string> = {
-  [CARD_VARIANT.DEFAULT]: 'bg-dark-lighter/40 border-gold/10',
-  [CARD_VARIANT.DARK]: 'bg-black/40 border-white/5',
-  [CARD_VARIANT.GLASS]: 'bg-white/5 border-white/10 backdrop-blur-md',
+  [CARD_VARIANT.DEFAULT]: 'bg-surface-sunken border-gold-soft',
+  [CARD_VARIANT.DARK]: 'bg-surface-sunken border-border-subtle',
+  [CARD_VARIANT.GLASS]: 'bg-surface-base border-border-base backdrop-blur-md',
 };
 
-const BASE_STYLES = 'border rounded-2xl shadow-xl transition-default';
+const RADIUS_STYLES: Record<CardRadius, string> = {
+  none: 'rounded-none',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
+  card: 'rounded-card',
+};
 
-export const Card = ({
-  as: Tag = 'div',
+const BASE_STYLES = 'border shadow-xl transition-default overflow-hidden';
+
+export const CardRoot = <T extends React.ElementType = 'div'>({
+  as,
   children,
-  className = '',
+  className,
   isHoverable = false,
   variant = CARD_VARIANT.DEFAULT,
+  padding,
+  radius = 'xl',
   onClick,
   ...props
-}: CardProps) => {
+}: CardProps<T>) => {
+  const Tag = as || 'div';
   const isClickable = !!onClick;
-  const shouldHover = isHoverable || isClickable;
 
-  const hoverStyles = shouldHover
-    ? 'hover:border-gold/30 hover:bg-gold/[0.02] hover:shadow-gold/5'
-    : '';
+  const hoverStyles =
+    isHoverable || isClickable
+      ? 'hover:border-gold-border hover:bg-surface-hover hover:shadow-lg hover:shadow-gold-soft cursor-pointer focus:outline-none focus:ring-1 focus:ring-gold-border'
+      : '';
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
-      onClick?.(e as any);
+      (onClick as any)?.(e);
     }
   };
 
@@ -54,10 +76,67 @@ export const Card = ({
       onKeyDown={isClickable ? handleKeyDown : undefined}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
-      className={cn(BASE_STYLES, CARD_STYLES[variant], hoverStyles, className)}
-      {...props}
+      className={cn(
+        BASE_STYLES,
+        CARD_STYLES[variant],
+        RADIUS_STYLES[radius],
+        hoverStyles,
+        padding && LAYOUT.P[padding],
+        className,
+      )}
+      {...(props as any)}
     >
       {children}
     </Tag>
   );
 };
+
+// --- SOUS COMPOSANTS DU COMPOUND PATTERN ---
+
+const CardHeader = ({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof Row>) => (
+  <Row
+    justify="between"
+    align="center"
+    p="md"
+    className={cn('border-b border-border-subtle bg-black/5', className)}
+    {...props}
+  >
+    {children}
+  </Row>
+);
+
+const CardBody = ({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof Stack>) => (
+  <Stack gap="md" p="md" className={className} {...props}>
+    {children}
+  </Stack>
+);
+
+const CardFooter = ({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof Row>) => (
+  <Row
+    justify="between"
+    align="center"
+    p="md"
+    className={cn('border-t border-border-subtle bg-black/5', className)}
+    {...props}
+  >
+    {children}
+  </Row>
+);
+
+export const Card = Object.assign(CardRoot, {
+  Header: CardHeader,
+  Body: CardBody,
+  Footer: CardFooter,
+});

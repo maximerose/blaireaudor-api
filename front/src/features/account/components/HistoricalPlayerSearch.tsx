@@ -3,9 +3,11 @@ import {
   Card,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
   CARD_VARIANT,
   FORM,
   ICONS,
+  List,
 } from '@/shared';
 import {
   PlayerSearchResultItem,
@@ -54,7 +56,7 @@ export const HistoricalPlayerSearch = ({
   }
 
   return (
-    <div className="relative mb-8" ref={searchContainerRef}>
+    <div className="relative" ref={searchContainerRef}>
       <Input
         label={AUTH_UI.HISTORICAL.LABEL}
         placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER}
@@ -72,9 +74,10 @@ export const HistoricalPlayerSearch = ({
           id="historical-search-results"
           role="listbox"
           variant={CARD_VARIANT.DARK}
-          className="absolute z-50 w-full mt-2 border-gold/30 shadow-2xl overflow-hidden animate-slide-up bg-black/95 backdrop-blur-xl"
+          padding="none"
+          className="absolute z-50 w-full mt-2 border-gold-border shadow-2xl bg-dark animate-slide-up"
         >
-          <div className="max-h-72 overflow-y-auto no-scrollbar divide-y divide-white/5">
+          <List className="max-h-72 overflow-y-auto no-scrollbar">
             {results.map((player) => (
               <PlayerSearchResultItem
                 key={player.id}
@@ -82,21 +85,21 @@ export const HistoricalPlayerSearch = ({
                 role="option"
                 onClick={() => onSelect(player)}
                 actionIcon={AUTH_UI.HISTORICAL.ACTION_SELECT}
+                className="rounded-none first:rounded-t-xl"
               />
             ))}
-          </div>
+          </List>
 
           <button
             type="button"
             onClick={onCloseSearch}
-            className="w-full p-3 hover:bg-white/5 transition-default border-t border-white/5 flex justify-center cursor-pointer focus:bg-white/10 focus:outline-none"
+            className="w-full p-3 hover:bg-surface-base transition-default border-t border-border-subtle flex justify-center cursor-pointer focus:bg-surface-raised focus:outline-none rounded-b-xl"
             aria-label={AUTH_UI.HISTORICAL.CLOSE_SEARCH}
           >
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className="text-gold opacity-100"
-            >
-              <span aria-hidden="true">{ICONS.CANCEL}</span>{' '}
+            <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.GOLD}>
+              <span className="mr-1" aria-hidden="true">
+                {ICONS.CANCEL}
+              </span>{' '}
               {AUTH_UI.HISTORICAL.CLOSE_SEARCH}
             </Text>
           </button>

@@ -4,15 +4,16 @@ import { useNavbarUI } from '@/shared/hooks';
 import { ICONS, NAV } from '@/shared/constants';
 import { cn } from '@/shared/utils';
 import { SECTION_HEADER_VARIANT, SectionHeader } from './SectionHeader';
-import { Text, TEXT_VARIANT } from './Text';
-import { Button, BUTTON_VARIANT } from './Button';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { Button, BUTTON_VARIANT, BUTTON_SIZE } from './Button';
+import { Row, Stack } from '../Layout';
 
 interface NavbarProps {
   subtitle?: string;
 }
 
 const LOGO_LINK =
-  'flex flex-col group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none rounded-lg p-1';
+  'flex flex-col group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:outline-none rounded-lg p-1';
 
 export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
   const { displayName, isScrolled, isMenuOpen, setIsMenuOpen } = useNavbarUI();
@@ -27,9 +28,9 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
     <>
       <nav
         className={cn(
-          'sticky top-0 z-40 w-full flex items-center justify-between border-b transition-all duration-300 ease-in-out px-4',
+          'sticky top-0 z-40 w-full flex items-center justify-between border-b transition-all duration-300 ease-in-out px-4 sm:px-6',
           isScrolled
-            ? ' bg-dark/95 backdrop-blur-md border-gold/10 shadow-lg'
+            ? 'bg-dark/95 backdrop-blur-md border-border-base shadow-lg'
             : 'bg-transparent border-transparent',
         )}
         aria-label={NAV.ARIA.MAIN_NAV}
@@ -58,35 +59,34 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
 
           <Text
             variant={TEXT_VARIANT.MICRO}
+            colorTheme={TEXT_THEME.MUTED}
             className={isScrolled ? 'text-center' : ''}
           >
             {subtitle}
           </Text>
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-6">
-          <Button
-            variant={BUTTON_VARIANT.GHOST}
-            onClick={() => setIsMenuOpen(true)}
-            className="relative p-2 text-gold/60 hover:text-gold transition-colors focus:outline-none"
-            aria-label={NAV.ARIA.OPEN_MENU}
-            aria-expanded={isMenuOpen}
+        <Button
+          variant={BUTTON_VARIANT.GHOST_NEUTRAL}
+          onClick={() => setIsMenuOpen(true)}
+          aria-label={NAV.ARIA.OPEN_MENU}
+          aria-expanded={isMenuOpen}
+          className="px-2"
+        >
+          <svg
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Button>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </Button>
       </nav>
 
       <div
@@ -96,37 +96,44 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
         )}
       >
         <div
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          className="absolute inset-0 bg-overlay backdrop-blur-sm"
           onClick={() => setIsMenuOpen(false)}
           aria-hidden="true"
         />
 
         <div
           className={cn(
-            'absolute right-0 top-0 bottom-0 w-72 max-w-[85vw] bg-dark-lighter border-l border-white/5 shadow-2xl flex flex-col transform transition-transform duration-300 ease-out',
+            'absolute right-0 top-0 bottom-0 w-72 max-w-[85vw] bg-dark-lighter border-l border-border-subtle shadow-2xl flex flex-col transform transition-transform duration-300 ease-out',
             isMenuOpen ? 'translate-x-0' : 'translate-x-full',
           )}
         >
-          <div className="p-6 border-b border-white/5 flex items-center justify-between">
-            <div className="flex flex-col">
-              <Text
-                variant={TEXT_VARIANT.MICRO}
-                className="text-white/40 uppercase"
-              >
+          <Row
+            align="center"
+            justify="between"
+            p="lg"
+            className="border-b border-border-subtle"
+          >
+            <Stack gap="none">
+              <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.DIMMED}>
                 {NAV.CONNECTED_AS}
               </Text>
-              <Text variant={TEXT_VARIANT.H3} className="text-gold truncate">
+              <Text
+                variant={TEXT_VARIANT.H3}
+                colorTheme={TEXT_THEME.GOLD}
+                className="truncate"
+              >
                 {displayName}
               </Text>
-            </div>
+            </Stack>
+
             <Button
-              variant="ghost"
+              variant={BUTTON_VARIANT.GHOST_NEUTRAL}
+              size={BUTTON_SIZE.SMALL}
               onClick={() => setIsMenuOpen(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-full text-white/50 hover:text-white transition-colors"
             >
               {ICONS.CANCEL}
             </Button>
-          </div>
+          </Row>
 
           <div className="flex-1 py-4 flex flex-col">
             {navLinks.map((link) => {
@@ -137,32 +144,36 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
                   to={link.to}
                   onClick={() => setIsMenuOpen(false)}
                   className={cn(
-                    'flex items-center justify-between px-6 py-4 transition-all duration-200 border-l-2',
+                    'flex items-center gap-4 px-6 py-4 transition-all duration-200 border-l-2',
                     isActive
-                      ? 'bg-gold/10 border-gold text-gold'
-                      : 'border-transparent text-white/70 hover:bg-white/5 hover:text-white',
+                      ? 'bg-gold-soft border-gold text-gold'
+                      : 'border-transparent text-text-muted hover:bg-surface-base hover:text-silver',
                   )}
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="text-xl" aria-hidden="true">
-                      {link.icon}
-                    </span>
-                    <span className="font-bold tracking-wide">
-                      {link.label}
-                    </span>
-                  </div>
+                  <span className="text-xl" aria-hidden="true">
+                    {link.icon}
+                  </span>
+                  <Text
+                    variant={TEXT_VARIANT.BODY}
+                    colorTheme={TEXT_THEME.INHERIT}
+                    className="font-bold tracking-wide"
+                  >
+                    {link.label}
+                  </Text>
                 </Link>
               );
             })}
           </div>
 
-          <div className="p-6 border-t border-white/5">
-            <Link
+          <div className="p-6 border-t border-border-subtle">
+            <Button
+              variant={BUTTON_VARIANT.DANGER}
               to={ROUTES.NAV.LOGOUT}
-              className="flex items-center gap-3 w-full p-3 rounded-xl bg-danger/10 text-danger-bright hover:bg-danger/20 transition-colors justify-center font-bold uppercase tracking-widest text-[10px]"
+              fullWidth
+              size={BUTTON_SIZE.MEDIUM}
             >
               {NAV.LINK.LOGOUT}
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -31,11 +31,12 @@ export const useParticipationDelete = (onSuccess: () => void) => {
             participation.id,
           );
           if (success) {
-            await refreshUser();
+            onSuccess();
             if (success && participation.player.id === user?.player?.id) {
               navigate(ROUTES.NAV.DASHBOARD);
             }
-            onSuccess();
+
+            refreshUser();
           }
         } catch {
           toast.error(ERRORS.COMPETITION.PARTICIPATION_REMOVE_FAILED);

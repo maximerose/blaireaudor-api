@@ -1,11 +1,12 @@
-import React, { forwardRef, useId } from 'react';
-import { Text, TEXT_VARIANT } from './Text';
+import React, { forwardRef } from 'react';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { useInputUI } from '@/shared/hooks';
 import { cn } from '@/shared/utils';
 import { ICONS } from '@/shared/constants';
+import { Stack } from '../Layout/Stack';
 
 // ==========================================
-// 1. COMPOSANT LABEL GÉNÉRIQUE (Pour unifier ton text-gold)
+// 1. COMPOSANT LABEL GÉNÉRIQUE
 // ==========================================
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   required?: boolean;
@@ -20,7 +21,8 @@ export const Label = ({
   <Text
     as="label"
     variant={TEXT_VARIANT.CAPTION}
-    className={cn('text-gold tracking-widest uppercase pl-1 block', className)}
+    colorTheme={TEXT_THEME.GOLD}
+    className={className}
     {...props}
   >
     {children}
@@ -33,7 +35,7 @@ export const Label = ({
 );
 
 // ==========================================
-// 2. COMPOSANT INPUT UNIFIÉ (Gère Date, Time, Text...)
+// 2. COMPOSANT INPUT UNIFIÉ
 // ==========================================
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -57,9 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
-    const generatedId = useId();
-    const inputId = id || generatedId;
-    const { labelClasses, inputClasses } = useInputUI(inputId, {
+    const { inputId, labelClasses, inputClasses } = useInputUI(id, {
       align,
       icon,
       className,
@@ -82,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       : '';
 
     return (
-      <div className="w-full space-y-1">
+      <Stack gap="xs" className="w-full">
         {label && (
           <Label
             htmlFor={inputId}
@@ -100,7 +100,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 'absolute left-4 text-xs pointer-events-none transition-default',
                 error
                   ? 'text-danger-bright'
-                  : 'text-gold/30 group-focus-with:text-gold',
+                  : 'text-text-dimmed group-focus-within:text-gold',
               )}
               aria-hidden="true"
             >
@@ -117,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               inputClasses,
               shadowDomClasses,
               error &&
-                'border-danger-bright focus:border-danger-bright focus:ring-danger/10',
+                'border-danger-border focus:border-danger-bright focus:shadow-[0_0_10px_rgba(248,113,113,0.15)]',
             )}
           />
 
@@ -131,13 +131,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {error && (
           <Text
             variant={TEXT_VARIANT.MICRO}
-            className="text-danger-bright text-center animate-fade-in block mt-1"
+            colorTheme={TEXT_THEME.DANGER}
+            className="text-center animate-fade-in"
           >
             <span aria-hidden="true">{ICONS.DANGER} </span>
             {error}
           </Text>
         )}
-      </div>
+      </Stack>
     );
   },
 );

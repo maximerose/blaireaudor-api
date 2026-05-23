@@ -1,7 +1,8 @@
 import type React from 'react';
-import { Text, TEXT_VARIANT } from './Text';
+import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { cn } from '@/shared/utils';
 import { UI } from '@/shared/constants';
+import { Stack } from '../Layout/Stack';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -9,9 +10,9 @@ interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const SPINNER_BASE = 'relative flex items-center justify-center';
-const BAR_CONTAINER = 'w-12 h-px bg-gold/10 relative overflow-hidden';
+const BAR_CONTAINER = 'w-12 h-px bg-gold-soft relative overflow-hidden';
 const BAR_ANIMATION =
-  'absolute inset-0 bg-gold/40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden';
+  'absolute inset-0 bg-gold opacity-40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden';
 
 export const LoadingScreen = ({
   message = UI.LOADING_DEFAULT,
@@ -33,17 +34,18 @@ export const LoadingScreen = ({
       aria-busy="true"
       {...props}
     >
-      <div className="flex flex-col items-center gap-8">
+      <Stack align="center" gap="xl">
         <div className={SPINNER_BASE} aria-hidden="true">
-          <div className="w-16 h-16 border-2 border-gold/5 rounded-full" />
+          <div className="w-16 h-16 border-2 border-gold-soft rounded-full" />
           <div className="absolute w-16 h-16 border-2 border-transparent border-t-gold rounded-full animate-spin motion-reduce:animate-none" />
-          <div className="absolute w-1 h-1 bg-gold/20 rounded-full" />
+          <div className="absolute w-1 h-1 bg-gold-border rounded-full" />
         </div>
 
-        <div className="flex flex-col items-center gap-2">
+        <Stack align="center" gap="sm" px="lg">
           <Text
             variant={TEXT_VARIANT.CAPTION}
-            className="animate-pulse motion-reduce:animate-none italic text-gold tracking-[0.4em] text-center px-6"
+            colorTheme={TEXT_THEME.GOLD}
+            className="animate-pulse motion-reduce:animate-none italic tracking-[0.4em] text-center"
           >
             {message}
           </Text>
@@ -51,8 +53,8 @@ export const LoadingScreen = ({
           <div className={BAR_CONTAINER} aria-hidden="true">
             <div className={BAR_ANIMATION} />
           </div>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
 
       <span className="sr-only">{UI.LOADING_SR}</span>
     </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
-import { AVAILABILITY } from '@/shared';
+import { AVAILABILITY, STALE_TIMES } from '@/shared';
 
 export const useJoinCodeCheck = (
   code: string | null,
@@ -21,7 +21,7 @@ export const useJoinCodeCheck = (
     queryFn: ({ signal }) =>
       competitionService.checkJoinCode(debouncedCode, signal),
     enabled: debouncedCode.length >= 3 && !isOriginal,
-    staleTime: 1000 * 60 * 5,
+    staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
   const status =

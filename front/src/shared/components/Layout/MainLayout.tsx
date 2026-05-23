@@ -1,22 +1,39 @@
+import React from 'react';
 import { useDocumentTitle } from '@/shared/hooks';
-import type React from 'react';
 import { Navbar } from '@/shared/components/UI';
+import { Stack } from './Stack';
+import { cn } from '@/shared/utils';
 
 interface MainLayoutProps {
   children: React.ReactNode;
   title: string;
   subtitle?: string;
+  isFluid?: boolean;
 }
 
-export const MainLayout = ({ children, title, subtitle }: MainLayoutProps) => {
+export const MainLayout = ({
+  children,
+  title,
+  subtitle,
+  isFluid = false,
+}: MainLayoutProps) => {
   useDocumentTitle(title);
 
   return (
-    <div className="w-full mx-auto min-h-screen flex flex-col">
+    <Stack gap="none" className="min-h-screen">
       <Navbar subtitle={subtitle} />
-      <main className="flex-1 w-full max-w-full min-w-0 mx-auto px-4 sm:px-6 pb-10 mt-4 animate-fade-in flex flex-col">
+      <Stack
+        as="main"
+        gap="md"
+        px="lg"
+        mt="md"
+        className={cn(
+          'flex-1 w-full pb-10 animate-fade-in mx-auto',
+          isFluid ? 'max-w-full' : 'max-w-6xl',
+        )}
+      >
         {children}
-      </main>
-    </div>
+      </Stack>
+    </Stack>
   );
 };

@@ -1,8 +1,17 @@
-import { Input, Button, BUTTON_VARIANT, FORM, BUTTONS } from '@/shared';
+import {
+  Button,
+  BUTTON_VARIANT,
+  BUTTONS,
+  preventDefault,
+  Grid,
+  Row,
+  Stack,
+} from '@/shared';
 import type { Action } from '@/features/competition/types';
 import { useCompetitionContext } from '@/features/competition/context';
 import { useCompetitionAdmin } from '@/features/competition/admin';
 import { useActionRowInteraction } from '@/features/competition/actions/hooks';
+import { ActionDescriptionField, ActionPointsField } from '../fields';
 
 interface ActionRowEditModeProps {
   action: Action;
@@ -27,13 +36,15 @@ export const ActionRowEditMode = ({
   };
 
   return (
-    <div className="p-6 bg-gold/10 border-y border-gold/20 animate-fade-in space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        {/* Input Description */}
+    <Stack
+      as="form"
+      gap="md"
+      onSubmit={preventDefault(onInternalSave)}
+      className="p-6 bg-gold/10 border-y border-gold/20 animate-fade-in"
+    >
+      <Grid cols={1} md={12} gap="md" align="end">
         <div className="md:col-span-9">
-          <Input
-            label={FORM.REPORT_ACTION.LABELS.DESCRIPTION}
-            placeholder={FORM.REPORT_ACTION.PLACEHOLDERS.DESCRIPTION}
+          <ActionDescriptionField
             value={editData.description}
             onChange={(e) =>
               setEditData({ ...editData, description: e.target.value })
@@ -41,24 +52,20 @@ export const ActionRowEditMode = ({
           />
         </div>
 
-        {/* Input Points */}
         <div className="md:col-span-3">
-          <Input
-            label={FORM.REPORT_ACTION.LABELS.POINTS}
-            type="number"
+          <ActionPointsField
             value={editData.points}
             onChange={(e) =>
               setEditData({ ...editData, points: Number(e.target.value) })
             }
           />
         </div>
-      </div>
+      </Grid>
 
-      {/* Actions du formulaire */}
-      <div className="flex gap-2 pt-2">
+      <Row gap="sm" className="pt-2">
         <Button
           className="flex-1"
-          variant={BUTTON_VARIANT.GHOST}
+          variant={BUTTON_VARIANT.GHOST_NEUTRAL}
           onClick={onCancel}
           type="button"
         >
@@ -67,12 +74,11 @@ export const ActionRowEditMode = ({
         <Button
           className="flex-1"
           variant={BUTTON_VARIANT.PRIMARY}
-          onClick={onInternalSave}
-          type="button"
+          type="submit"
         >
           {BUTTONS.SAVE}
         </Button>
-      </div>
-    </div>
+      </Row>
+    </Stack>
   );
 };

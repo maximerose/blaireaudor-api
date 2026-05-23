@@ -29,6 +29,8 @@ export const DASHBOARD_UI = {
     },
     ADMIN_ACCESS: `${ICONS.REFEREE} Espace d'arbitrage`,
   },
+  NB_COMPETITIONS: (count: number) =>
+    `${count} ${pluralize(count, 'compétition')}`,
   NO_COMPETITON_ENTRIES: 'Aucune compétition',
   CARD: {
     ACCESS_LABEL: 'Accès',
@@ -55,9 +57,9 @@ export const DASHBOARD_UI = {
         `Rang : ${rank}, Score : ${score}`,
     },
     SECTIONS: {
-      ONGOING: `${ICONS.ONGOING} En cours`,
-      UPCOMING: `${ICONS.UPCOMING} À venir`,
-      FINISHED: `${ICONS.FINISHED} Terminées`,
+      ONGOING: 'En cours',
+      UPCOMING: 'À venir',
+      FINISHED: 'Terminées',
     },
     EMPTY: {
       TITLE: 'Aucune compétition',

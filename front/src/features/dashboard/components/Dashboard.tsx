@@ -8,6 +8,8 @@ import {
   ICONS,
   NAV,
   MainLayout,
+  Grid,
+  Stack,
 } from '@/shared';
 import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useDashboardUI } from '@/features/dashboard/hooks';
@@ -32,59 +34,69 @@ export const Dashboard = () => {
       title={DASHBOARD_UI.HEADER.TITLE}
       subtitle={NAV.SUBTITLE.DASHBOARD}
     >
-      <DashboardHeader />
-      <section
-        className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4"
-        aria-label={DASHBOARD_UI.CARD.ARIA.QUICK_ACTIONS}
-      >
-        <Button
-          to={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
-          variant={BUTTON_VARIANT.PRIMARY}
-          size={BUTTON_SIZE.MEDIUM}
+      <Stack gap="xl" className="w-full">
+        <DashboardHeader />
+
+        <Grid
+          as="section"
+          cols={1}
+          sm={2}
+          gap="sm"
+          aria-label={DASHBOARD_UI.CARD.ARIA.QUICK_ACTIONS}
+          className="w-full"
         >
-          {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
-        </Button>
-        <Button
-          onClick={openJoinModal}
-          variant={BUTTON_VARIANT.SECONDARY}
-          size={BUTTON_SIZE.MEDIUM}
-        >
-          {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
-        </Button>
-      </section>
+          <Button
+            to={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
+            variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZE.MEDIUM}
+            className="w-full cursor-pointer"
+          >
+            {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
+          </Button>
+          <Button
+            onClick={openJoinModal}
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZE.MEDIUM}
+            className="w-full cursor-pointer"
+          >
+            {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
+          </Button>
+        </Grid>
 
-      {isTotallyEmpty ? (
-        <EmptyState
-          layout="dashed"
-          icon={ICONS.EMPTY}
-          title={DASHBOARD_UI.CARD.EMPTY.TITLE}
-          message={DASHBOARD_UI.CARD.EMPTY.MESSAGE}
-        />
-      ) : (
-        <div className="space-y-10">
-          <CompetitionListSection
-            title={DASHBOARD_UI.CARD.SECTIONS.ONGOING}
-            items={ongoing}
-            variant="gold"
-            emptyState={
-              <EmptyState
-                title={DASHBOARD_UI.NO_COMPETITON_ENTRIES}
-              ></EmptyState>
-            }
+        {isTotallyEmpty ? (
+          <EmptyState
+            layout="dashed"
+            icon={ICONS.EMPTY}
+            title={DASHBOARD_UI.CARD.EMPTY.TITLE}
+            message={DASHBOARD_UI.CARD.EMPTY.MESSAGE}
           />
+        ) : (
+          <Stack gap="xl" className="w-full">
+            <CompetitionListSection
+              title={DASHBOARD_UI.CARD.SECTIONS.ONGOING}
+              icon={ICONS.ONGOING}
+              items={ongoing}
+              variant="gold"
+              emptyState={
+                <EmptyState title={DASHBOARD_UI.NO_COMPETITON_ENTRIES} />
+              }
+            />
 
-          <CompetitionListSection
-            title={DASHBOARD_UI.CARD.SECTIONS.UPCOMING}
-            items={upcoming}
-          />
+            <CompetitionListSection
+              title={DASHBOARD_UI.CARD.SECTIONS.UPCOMING}
+              icon={ICONS.UPCOMING}
+              items={upcoming}
+            />
 
-          <CompetitionListSection
-            title={DASHBOARD_UI.CARD.SECTIONS.FINISHED}
-            items={finished}
-            variant="dimmed"
-          />
-        </div>
-      )}
+            <CompetitionListSection
+              title={DASHBOARD_UI.CARD.SECTIONS.FINISHED}
+              items={finished}
+              icon={ICONS.FINISHED}
+              variant="dimmed"
+            />
+          </Stack>
+        )}
+      </Stack>
 
       {isJoinModalOpen && (
         <JoinCompetitionModal
@@ -97,4 +109,5 @@ export const Dashboard = () => {
     </MainLayout>
   );
 };
+
 export default Dashboard;

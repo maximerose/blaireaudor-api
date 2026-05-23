@@ -57,6 +57,20 @@ export const useInlineEnrollmentUI = () => {
     enrollment.searchResults,
   );
 
+  const handleAddExistingPlayer = (player: Player) => {
+    enrollment.setSearchTerm('');
+    setTimeout(() => {
+      enrollment.addExistingPlayer(player);
+    }, 0);
+  };
+
+  const handleAddNewPlayer = (name: string) => {
+    enrollment.setSearchTerm('');
+    setTimeout(() => {
+      enrollment.addNewPlayer(name);
+    }, 0);
+  };
+
   return {
     isOpen,
     setIsOpen,
@@ -64,5 +78,7 @@ export const useInlineEnrollmentUI = () => {
     newPlayers,
     canCreatePlayer,
     ...enrollment,
+    addExistingPlayer: handleAddExistingPlayer,
+    addNewPlayer: handleAddNewPlayer,
   };
 };

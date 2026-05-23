@@ -6,21 +6,26 @@ interface SwitchProps {
   label?: string;
 }
 
-export const Switch = ({ checked, onChange }: SwitchProps) => {
+export const Switch = ({ checked, onChange, label }: SwitchProps) => {
   return (
-    <div
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
       onClick={onChange}
       className={cn(
-        'w-9 h-5 rounded-full relative transition-all duration-300 cursor-pointer shrink-0',
-        checked ? 'bg-gold' : 'bg-white/10',
+        'w-9 h-5 rounded-full relative transition-default outline-none shrink-0 border border-transparent',
+        'focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:ring-offset-2 focus-visible:ring-offset-dark',
+        checked ? 'bg-gold' : 'bg-surface-raised',
       )}
     >
       <div
         className={cn(
-          'absolute top-1 w-3 h-3 bg-dark rounded-full transition-all duration-300 shadow-sm',
-          checked ? 'translate-x-5' : 'translate-x-1',
+          'absolute top-0.5 w-3 h-3 bg-dark rounded-full transition-default shadow-sm',
+          checked ? 'left-5' : 'left-1',
         )}
       />
-    </div>
+    </button>
   );
 };

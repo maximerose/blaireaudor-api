@@ -5,7 +5,7 @@ import { userService } from '@/features/account/services';
 
 export const useUsernameCheck = (
   username: string,
-  currentPlayerId: string | null,
+  currentPlayerId: string | null = null,
 ) => {
   const [debouncedUsername, setDebouncedUsername] = useState('');
 

@@ -7,6 +7,8 @@ import {
   normalizeString,
   ICONS,
   UI,
+  Row,
+  Divider,
 } from '@/shared';
 import { useAuthContext } from '@/features/account';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -30,7 +32,6 @@ export const PlayerFilter = () => {
     .sort((a: Participation, b: Participation) => {
       const nameA = normalizeString(a.player.display_name);
       const nameB = normalizeString(b.player.display_name);
-
       return nameA.localeCompare(nameB, 'fr');
     })
     .map((p: Participation) => ({
@@ -39,22 +40,18 @@ export const PlayerFilter = () => {
     }));
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-6 animate-fade-in">
-      {/* Bouton "Tous" */}
+    <Row wrap gap="sm" align="center" className="animate-fade-in">
       <Button
         variant={
           !selectedPlayerId ? BUTTON_VARIANT.SECONDARY : BUTTON_VARIANT.GHOST
         }
         size={BUTTON_SIZE.SMALL}
         onClick={() => setSelectedPlayerId(null)}
-        className={cn(
-          !selectedPlayerId && 'bg-white/10 border-white/20 text-white',
-        )}
+        className="cursor-pointer"
       >
         {UI.ALL}
       </Button>
 
-      {/* Raccourci "Moi" en Gold */}
       {currentUserId && roles.isParticipant && (
         <Button
           variant={
@@ -66,9 +63,9 @@ export const PlayerFilter = () => {
           onClick={() => setSelectedPlayerId(currentUserId)}
           icon={ICONS.PLAYER}
           className={cn(
-            'transition-all duration-300',
+            'transition-default cursor-pointer', // 🟢 Utilisation de ton token transition-default globale
             selectedPlayerId === currentUserId
-              ? 'text-player-me border-player-me bg-player-me-bg'
+              ? 'text-player-me border-player-me bg-me-soft'
               : 'text-player-me/40 hover:text-player-me border-transparent',
           )}
         >
@@ -76,7 +73,7 @@ export const PlayerFilter = () => {
         </Button>
       )}
 
-      <div className="h-4 w-px bg-white/10 mx-1" />
+      <Divider orientation="vertical" className="h-4 self-center" />
 
       <Dropdown
         options={otherPlayersOptions}
@@ -84,6 +81,6 @@ export const PlayerFilter = () => {
         onChange={setSelectedPlayerId}
         placeholder={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.OTHER_PLAYERS}
       />
-    </div>
+    </Row>
   );
 };

@@ -2,23 +2,20 @@ import {
   Button,
   Input,
   Card,
+  CARD_VARIANT,
   Text,
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
-  CARD_VARIANT,
+  TEXT_THEME,
   preventDefault,
   FORM,
   ICONS,
   BUTTONS,
+  Stack,
 } from '@/shared';
 import { useJoinCompetitionModal } from '@/features/competition/join/hooks';
 import { JoinModalHeader } from './JoinModalHeader';
-
-const MODAL_OVERLAY =
-  'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
-const MODAL_CARD =
-  'w-full max-w-sm p-8 bg-[#161616] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_rgba(212,175,55,0.1)] border-gold/20 rounded-[2.5rem] space-y-8 animate-slide-up';
 
 interface Props {
   onClose: () => void;
@@ -31,64 +28,77 @@ export const JoinCompetitionModal = ({ onClose, onJoined }: Props) => {
 
   return (
     <div
-      className={MODAL_OVERLAY}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay backdrop-blur-md animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
+      onClick={onClose}
     >
-      <Card variant={CARD_VARIANT.DEFAULT} className={MODAL_CARD}>
-        <JoinModalHeader />
+      <div
+        className="w-full max-w-sm animate-slide-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Card
+          variant={CARD_VARIANT.DARK}
+          className="w-full shadow-modal-gold border-gold/20"
+        >
+          <Card.Body p="xl" gap="xl">
+            <JoinModalHeader />
 
-        <form onSubmit={preventDefault(handleSubmit)} className="space-y-8">
-          <div className="space-y-3">
-            <Input
-              label={FORM.MODALS.JOIN.INPUT_LABEL}
-              placeholder={FORM.COMPETITION.PLACEHOLDERS.JOIN_CODE}
-              value={code}
-              onChange={handleCodeChange}
-              className="text-center font-mono font-black tracking-[0.2em] text-xl uppercase"
-              autoFocus
-              required
-              align="center"
-              aria-invalid={!!error}
-              aria-describedby={error ? 'join-error' : undefined}
-            />
+            <form onSubmit={preventDefault(handleSubmit)} className="w-full">
+              <Stack gap="xl" className="w-full">
+                <Stack gap="xs" className="w-full">
+                  <Input
+                    label={FORM.MODALS.JOIN.INPUT_LABEL}
+                    placeholder={FORM.COMPETITION.PLACEHOLDERS.JOIN_CODE}
+                    value={code}
+                    onChange={handleCodeChange}
+                    className="text-center font-mono font-black tracking-[0.2em] text-xl uppercase"
+                    autoFocus
+                    required
+                    align="center"
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'join-error' : undefined}
+                  />
 
-            {error && (
-              <Text
-                id="join-error"
-                role="alert"
-                variant={TEXT_VARIANT.MICRO}
-                className="text-danger-bright text-center animate-pulse"
-              >
-                {ICONS.DANGER} {error}
-              </Text>
-            )}
-          </div>
+                  {error && (
+                    <Text
+                      id="join-error"
+                      role="alert"
+                      variant={TEXT_VARIANT.MICRO}
+                      colorTheme={TEXT_THEME.DANGER}
+                      className="text-center animate-pulse flex items-center justify-center gap-1"
+                    >
+                      <span aria-hidden="true">{ICONS.DANGER}</span> {error}
+                    </Text>
+                  )}
+                </Stack>
 
-          <div className="flex flex-col gap-2">
-            <Button
-              type="submit"
-              isLoading={loading}
-              fullWidth
-              size={BUTTON_SIZE.MEDIUM}
-              className="transition-default"
-            >
-              {FORM.MODALS.JOIN.SUBMIT}
-            </Button>
+                <Stack gap="sm" className="w-full">
+                  <Button
+                    type="submit"
+                    isLoading={loading}
+                    fullWidth
+                    size={BUTTON_SIZE.MEDIUM}
+                  >
+                    {FORM.MODALS.JOIN.SUBMIT}
+                  </Button>
 
-            <Button
-              variant={BUTTON_VARIANT.GHOST}
-              size={BUTTON_SIZE.SMALL}
-              onClick={onClose}
-              className="text-white/20 hover:text-white/50 transition-default"
-              aria-label="Fermer la modale"
-            >
-              {BUTTONS.CANCEL}
-            </Button>
-          </div>
-        </form>
-      </Card>
+                  <Button
+                    variant={BUTTON_VARIANT.GHOST_NEUTRAL}
+                    size={BUTTON_SIZE.SMALL}
+                    onClick={onClose}
+                    fullWidth
+                    aria-label={BUTTONS.CANCEL}
+                  >
+                    {BUTTONS.CANCEL}
+                  </Button>
+                </Stack>
+              </Stack>
+            </form>
+          </Card.Body>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -1,3 +1,6 @@
+// front/src/features/competition/view/components/CompetitionHeader.tsx
+
+import { useMemo } from 'react';
 import {
   Badge,
   BADGE_VARIANT,
@@ -7,10 +10,12 @@ import {
   SectionHeader,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME, // 🟢 Import ajouté
   UI,
+  Stack, // 🟢 Brique de Layout
+  Row, // 🟢 Brique de Layout
 } from '@/shared';
 import { useAuthContext } from '@/features/account';
-import { useMemo } from 'react';
 import type { RefereeListItem } from '@/features/player';
 import { CompetitionCountdown } from './CompetitionCountdown';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -36,7 +41,7 @@ export const CompetitionHeader = () => {
   );
 
   return (
-    <header className="mb-10 text-center space-y-5">
+    <Stack as="header" gap="md" align="center" mb="md" className="text-center">
       <SectionHeader
         as="h1"
         variant={SECTION_HEADER_VARIANT.TITLE}
@@ -45,7 +50,8 @@ export const CompetitionHeader = () => {
         subtitle={
           <Text
             variant={TEXT_VARIANT.MONO}
-            className="text-gold/50 tracking-[0.4em] uppercase text-sm inline-block bg-gold/5 px-3 py-1 rounded border border-gold/10"
+            colorTheme={TEXT_THEME.GOLD}
+            className="tracking-[0.4em] uppercase text-sm inline-block bg-gold-soft px-3 py-1 rounded border border-gold-border"
           >
             <span className="sr-only">
               {COMPETITION_UI.DETAIL.SECTIONS.HEADER.JOIN_CODE_ARIA}
@@ -55,9 +61,8 @@ export const CompetitionHeader = () => {
         }
       />
 
-      {/* 2. Infos Temporelles */}
-      <div className="flex flex-col items-center gap-1">
-        <Text variant={TEXT_VARIANT.CAPTION} className="opacity-60">
+      <Stack gap="xs" align="center">
+        <Text variant={TEXT_VARIANT.CAPTION} colorTheme={TEXT_THEME.MUTED}>
           <span className="sr-only">
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.DATES_ARIA}
           </span>
@@ -68,7 +73,7 @@ export const CompetitionHeader = () => {
           !competition.is_finished &&
           competition.end_date && (
             <div
-              className="mt-1 bg-black/20 px-3 py-1 rounded-full border border-white/5"
+              className="bg-surface-base px-3 py-1 rounded-full border border-border-subtle"
               aria-live="polite"
             >
               <CompetitionCountdown
@@ -77,17 +82,22 @@ export const CompetitionHeader = () => {
               />
             </div>
           )}
-      </div>
+      </Stack>
 
-      {/* 3. Méta-informations groupées */}
       {(creatorName || referees.length > 0) && (
-        <div className="pt-4 border-t border-white/5 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-3">
-          {/* Section Créateur : Toujours affichée si présente */}
+        <Row
+          wrap
+          justify="center"
+          align="center"
+          gap="md"
+          className="border-t pt-4 border-border-subtle max-w-xl mx-auto"
+        >
           {creatorName && (
-            <div className="flex items-center gap-2">
+            <Row gap="xs" align="center" fullWidth={false}>
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                className="opacity-40 uppercase tracking-widest"
+                colorTheme={TEXT_THEME.DIMMED}
+                className="uppercase tracking-widest"
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.HEADER.CREATOR_LABEL}
               </Text>
@@ -102,23 +112,28 @@ export const CompetitionHeader = () => {
                   </span>
                 )}
               </Text>
-            </div>
+            </Row>
           )}
 
-          {/* Séparateur visuel si on a les deux infos */}
           {creatorName && referees.length > 0 && (
             <span
-              className="hidden sm:inline-block w-1 h-1 rounded-full bg-white/20"
+              className="hidden sm:inline-block w-1 h-1 rounded-full bg-text-dimmed"
               aria-hidden="true"
             />
           )}
 
-          {/* Section Arbitres : Liste complète des arbitres */}
           {referees.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            <Row
+              wrap
+              justify="center"
+              align="center"
+              gap="xs"
+              fullWidth={false}
+            >
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                className="opacity-40 uppercase tracking-widest sm:mr-1"
+                colorTheme={TEXT_THEME.DIMMED}
+                className="uppercase tracking-widest sm:mr-1"
               >
                 {COMPETITION_UI.DETAIL.SECTIONS.HEADER.REFEREE_LABEL(
                   referees.length,
@@ -145,34 +160,43 @@ export const CompetitionHeader = () => {
                   </Badge>
                 );
               })}
-            </div>
+            </Row>
           )}
-        </div>
+        </Row>
       )}
 
       {bonusDays.length > 0 && (
-        <div className="pt-3 flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
+        <Row
+          wrap
+          justify="center"
+          align="center"
+          gap="xs"
+          className="pt-4 max-w-xl mx-auto"
+        >
           <Text
             variant={TEXT_VARIANT.MICRO}
-            className="opacity-40 uppercase tracking-widest w-full mb-1"
+            colorTheme={TEXT_THEME.DIMMED}
+            className="uppercase tracking-widest w-full mb-1 text-center"
           >
             {COMPETITION_UI.DETAIL.SECTIONS.HEADER.MULTIPLIERS_SECTION_TITLE}
           </Text>
           {bonusDays.map((bd: BonusDay) => (
-            <div
+            <Row
               key={bd.id}
-              className="flex items-center rounded-md overflow-hidden border border-game-bonus/30 bg-game-bonus/20"
+              align="center"
+              fullWidth={false}
+              className="rounded-md overflow-hidden border border-bonus-border bg-bonus-soft"
             >
-              <span className="px-2 py-1 text-[10px] font-mono text-silver bg-black/40 uppercase">
+              <span className="px-2 py-1 text-[10px] font-mono text-silver bg-surface-base uppercase">
                 {formatLongDate(bd.date)}
               </span>
               <span className="px-2 py-1 text-xs font-black text-game-bonus-bright">
                 x{bd.multiplier}
               </span>
-            </div>
+            </Row>
           ))}
-        </div>
+        </Row>
       )}
-    </header>
+    </Stack>
   );
 };

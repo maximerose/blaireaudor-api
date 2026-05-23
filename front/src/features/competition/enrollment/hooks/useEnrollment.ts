@@ -76,18 +76,15 @@ export const useEnrollment = (
 
       return competitionService.addParticipation(competitionId, payload);
     },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
-
-      await refreshUser();
-
+    onSuccess: () => {
       if (onSuccess) {
         onSuccess();
       } else {
         navigate(ROUTES.NAV.DASHBOARD);
       }
-
       toast.success(SUCCESS.COMPETITION.PARTICIPANTS_UPDATED);
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
+      refreshUser();
     },
     onError: (apiError) => {
       toast.error(

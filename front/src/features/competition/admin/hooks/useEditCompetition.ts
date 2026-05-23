@@ -69,13 +69,9 @@ export const useEditCompetition = (
   >({
     mutationFn: (payload: CompetitionUpdatePayload) =>
       competitionService.update(competition.id, payload),
-    onSuccess: async (_, variables) => {
+    onSuccess: (_, variables) => {
       toast.success(SUCCESS.COMPETITION.UPDATED);
       setIsEditing(false);
-
-      await invalidateAll(competition.id, competition.join_code);
-
-      refresh();
 
       if (
         variables.join_code &&
@@ -85,6 +81,9 @@ export const useEditCompetition = (
           replace: true,
         });
       }
+
+      invalidateAll(competition.id, competition.join_code);
+      refresh();
     },
     onError: (apiError: ApiError) => {
       if (apiError.violations?.length) {

@@ -103,25 +103,25 @@ class Competition
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['competition:read', 'user:read', 'action:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read', 'action:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 25, unique: true)]
     #[Assert\Length(max: 25)]
-    #[Groups(['competition:read', 'user:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
     private ?string $joinCode = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Groups(['competition:read',  'user:read'])]
+    #[Groups(['competition:read', 'competition:write',  'user:read'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['competition:read',  'user:read'])]
+    #[Groups(['competition:read', 'competition:write',  'user:read'])]
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
-    #[Groups(['competition:read',  'user:read'])]
+    #[Groups(['competition:read', 'competition:write', 'user:read'])]
     #[ApiProperty(
         securityPostDenormalize: "
         object.getId() === null or 

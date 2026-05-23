@@ -10,7 +10,13 @@ export const createCompetitionSchema = z
     joinCode: z
       .string()
       .nullable()
-      .transform((val) => (val === '' ? null : val)),
+      .transform((val) => (val === '' ? null : val))
+      .refine(
+        (val) => val === null || val.length >= RULES.COMPETITION.MIN_JOIN_CODE,
+        {
+          error: ERRORS.COMPETITION.INVALID_JOIN_CODE,
+        },
+      ),
 
     startDate: z.string().min(1, { error: ERRORS.VALIDATION.REQUIRED }),
     startFullDay: z.boolean(),

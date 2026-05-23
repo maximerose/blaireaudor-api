@@ -1,4 +1,4 @@
-import { API, apiFetch } from '@/shared';
+import { API, apiFetch, ERRORS } from '@/shared';
 import type { Player } from '@/features/player/types';
 
 export const playerService = {
@@ -7,7 +7,7 @@ export const playerService = {
       signal,
     });
 
-    if (!response.ok) throw new Error('Erreur lors de la recherche');
+    if (!response.ok) throw new Error(ERRORS.PLAYER.SEARCH_FAILED);
 
     const data = await response.json();
     return Array.isArray(data)

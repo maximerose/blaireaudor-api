@@ -8,6 +8,8 @@ import {
   FORM,
   ICONS,
   BUTTONS,
+  Stack,
+  Row,
 } from '@/shared';
 import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
@@ -42,12 +44,13 @@ export const CompetitionRecruitmentStep = ({
 }: RecruitmentStepProps) => {
   const searchTerm = players.searchTerm || '';
   const currentPlayers = formMethods.watch('players');
+
   const results = (players.results || []).filter(
     (result) => !currentPlayers.some((p) => String(p.id) === String(result.id)),
   );
 
   return (
-    <div className="space-y-6 animate-slide-up">
+    <Stack gap="xl" className="animate-slide-up w-full">
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.TITLE}
         as="h1"
@@ -56,50 +59,56 @@ export const CompetitionRecruitmentStep = ({
         centered
       />
 
-      <div className="relative">
-        <Input
-          autoFocus
-          align="center"
-          placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
-          value={searchTerm}
-          onChange={(e) => players.setSearchTerm(e.target.value)}
-          icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
-        />
-
-        {searchTerm.length >= 1 && (
-          <PlayerSearchResultsDropdown
-            results={results}
-            searchTerm={searchTerm}
-            onSelect={(p) => {
-              players.add(p);
-              players.setSearchTerm('');
-            }}
-            onCreateNew={(name) => {
-              players.addNew(name);
-              players.setSearchTerm('');
-            }}
+      <Stack gap="sm" className="w-full">
+        <div className="relative w-full">
+          <Input
+            autoFocus
+            align="center"
+            placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
+            value={searchTerm}
+            onChange={(e) => players.setSearchTerm(e.target.value)}
+            icon={players.searching ? ICONS.LOADING : ICONS.SEARCH}
           />
-        )}
-      </div>
 
-      <SelectedPlayersList
-        participants={currentPlayers}
-        onRemove={(id) => players.remove(id)}
-      />
+          {searchTerm.length >= 1 && (
+            <PlayerSearchResultsDropdown
+              results={results}
+              searchTerm={searchTerm}
+              onSelect={(p) => {
+                players.add(p);
+                players.setSearchTerm('');
+              }}
+              onCreateNew={(name) => {
+                players.addNew(name);
+                players.setSearchTerm('');
+              }}
+            />
+          )}
+        </div>
 
-      <div className="flex gap-2">
+        <SelectedPlayersList
+          participants={currentPlayers}
+          onRemove={(id) => players.remove(id)}
+        />
+      </Stack>
+
+      <Row gap="sm" className="w-full pt-4">
         <Button
           variant={BUTTON_VARIANT.GHOST}
           onClick={onBack}
-          className="px-6"
           size={BUTTON_SIZE.MEDIUM}
         >
           {BUTTONS.PREVIOUS}
         </Button>
-        <Button onClick={onNext} size={BUTTON_SIZE.MEDIUM} className="flex-1">
+        <Button
+          onClick={onNext}
+          size={BUTTON_SIZE.MEDIUM}
+          fullWidth
+          className="flex-1"
+        >
           {BUTTONS.CONTINUE}
         </Button>
-      </div>
-    </div>
+      </Row>
+    </Stack>
   );
 };

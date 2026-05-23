@@ -4,7 +4,7 @@ import { useCompetitionContext } from '@/features/competition/context';
 import { UI } from '@/shared';
 
 export const useActionRow = (action: Action) => {
-  const { hidePoints, getMultiplier } = useCompetitionContext();
+  const { competition, isAdmin, getMultiplier } = useCompetitionContext();
   const { user } = useAuthContext();
 
   const playerName = action.player_name || UI.ANONYMOUS;
@@ -16,24 +16,28 @@ export const useActionRow = (action: Action) => {
   const isPositive = action.points >= 0;
   const multiplier = getMultiplier(action.date_action) ?? 1;
   const finalPoints = action.points * multiplier;
-  const pointsDisplay =
-    hidePoints && !creatorIsMe
-      ? '??'
-      : isPositive
-        ? `+${finalPoints}`
-        : finalPoints;
-  const pointsColorClass =
-    hidePoints && !creatorIsMe
-      ? 'text-white/20'
-      : isPositive
-        ? 'text-warning'
-        : 'text-success-bright';
-  const displayColor =
-    hidePoints && !creatorIsMe
-      ? 'text-white/20'
-      : multiplier > 1 && !hidePoints
-        ? 'text-game-bonus-bright drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]'
-        : pointsColorClass;
+
+  const canEdit =
+    !competition.is_finished && (isAdmin || (isPending && creatorIsMe));
+  const shouldHidePoints = competition.fog_of_war && !canEdit;
+
+  const pointsDisplay = shouldHidePoints
+    ? '??'
+    : isPositive
+      ? `+${finalPoints}`
+      : finalPoints;
+
+  const pointsColorClass = shouldHidePoints
+    ? 'text-text-dimmed'
+    : isPositive
+      ? 'text-warning'
+      : 'text-success-bright';
+
+  const displayColor = shouldHidePoints
+    ? 'text-text-dimmed'
+    : multiplier > 1
+      ? 'text-game-bonus-bright drop-shadow-[0_0_5px_var(--color-danger-bright)]'
+      : pointsColorClass;
 
   return {
     isPending,
@@ -43,5 +47,7 @@ export const useActionRow = (action: Action) => {
     multiplier,
     playerIsMe,
     creatorIsMe,
+    shouldHidePoints,
+    canEdit,
   };
 };

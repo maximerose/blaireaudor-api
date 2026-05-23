@@ -1,10 +1,17 @@
 import {
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
   BUTTONS,
   ICONS,
   cn,
   formatShortDate,
+  TextButton,
+  TEXT_BUTTON_THEME,
+  IconButton,
+  Grid,
+  Row,
+  Stack,
 } from '@/shared';
 import { ActionStatus, type Action } from '@/features/competition/types';
 import { useCompetitionContext } from '@/features/competition/context';
@@ -22,36 +29,52 @@ export const ActionRowDisplayMode = ({
   onEdit,
 }: ActionRowDisplayModeProps) => {
   const { handleActionStatus } = useCompetitionAdmin();
-  const { competition, isAdmin, hidePoints } = useCompetitionContext();
+  const { competition, isAdmin } = useCompetitionContext();
+
   const {
-    displayColor,
+    isPending,
     pointsDisplay,
+    displayColor,
+    playerName,
     multiplier,
     playerIsMe,
     creatorIsMe,
-    playerName,
-    isPending,
+    shouldHidePoints,
   } = useActionRow(action);
 
+  const canEdit =
+    !competition.is_finished && (isAdmin || (isPending && creatorIsMe));
+
   return (
-    <div
+    <Grid
+      cols={12}
+      gap="xs"
+      align="center"
       className={cn(
-        'grid grid-cols-12 gap-2 p-4 items-center transition-default group relative',
+        'p-4 transition-default group relative',
         playerIsMe
-          ? 'bg-player-me-bg hover:bg-player-me/7'
-          : 'hover:bg-white/2',
+          ? 'bg-player-me-bg hover:bg-surface-hover'
+          : 'hover:bg-surface-hover',
       )}
     >
-      {/* Date */}
       <div className="col-span-3 md:col-span-2">
-        <Text variant={TEXT_VARIANT.MONO} className="text-[10px] text-white/40">
+        <Text
+          variant={TEXT_VARIANT.MONO}
+          colorTheme={TEXT_THEME.DIMMED}
+          className="text-[10px]"
+        >
           {formatShortDate(action.date_action)}
         </Text>
       </div>
 
-      {/* Corps de l'action */}
-      <div className="col-span-6 md:col-span-8 flex flex-col md:grid md:grid-cols-8 items-center overflow-hidden">
-        <div className="md:col-span-3 flex items-center justify-center gap-2 overflow-hidden">
+      <Grid
+        cols={1}
+        md={8}
+        gap="xs"
+        align="center"
+        className="col-span-6 md:col-span-8 overflow-hidden"
+      >
+        <Row justify="center" className="md:col-span-3 overflow-hidden">
           <Text
             variant={TEXT_VARIANT.H3}
             className={cn(
@@ -61,26 +84,27 @@ export const ActionRowDisplayMode = ({
           >
             {playerName}
           </Text>
-        </div>
+        </Row>
 
-        <div className="md:col-span-5 flex flex-col">
+        <Stack gap="none" className="md:col-span-5">
           <Text
             variant={TEXT_VARIANT.BODY}
             className="text-[10px] md:text-xs text-info-bright"
           >
             {action.description}
           </Text>
+
           {action.creator_name && (
             <Text
               variant={TEXT_VARIANT.BODY}
-              className="text-[8px] md:text-[10px] text-silver"
+              colorTheme={TEXT_THEME.DIMMED}
+              className="text-[8px] md:text-[10px]"
             >
-              {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}
+              {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}{' '}
               <span
                 className={cn(
-                  'font-bold',
-                  'text-player-other',
-                  creatorIsMe && 'text-player-me',
+                  'font-bold text-player-other',
+                  creatorIsMe && 'text-player-me', // 🟢 Doublon de ligne supprimé ici
                 )}
               >
                 {action.creator_name}
@@ -88,65 +112,87 @@ export const ActionRowDisplayMode = ({
             </Text>
           )}
 
-          {/* Boutons de Modération */}
           {isPending && isAdmin && !competition.is_finished && (
-            <div className="mt-2 flex justify-center gap-4 animate-fade-in">
-              <button
+            <Row gap="md" justify="center" mt="xs" className="animate-fade-in">
+              <TextButton
+                theme={TEXT_BUTTON_THEME.SUCCESS}
+                icon={ICONS.CHECK}
                 onClick={() =>
                   handleActionStatus(action.id, ActionStatus.VALIDATED)
                 }
-                className="text-[10px] font-black text-success hover:underline uppercase tracking-widest"
               >
-                {BUTTONS.ACCEPT} {ICONS.CHECK}
-              </button>
-              <button
+                {BUTTONS.ACCEPT}
+              </TextButton>
+
+              <TextButton
+                theme={TEXT_BUTTON_THEME.DANGER}
+                icon={ICONS.CANCEL}
                 onClick={() =>
                   handleActionStatus(action.id, ActionStatus.REJECTED)
                 }
-                className="text-[10px] font-black text-danger hover:underline uppercase tracking-widest"
               >
-                {BUTTONS.REJECT} {ICONS.CANCEL}
-              </button>
-            </div>
+                {BUTTONS.REJECT}
+              </TextButton>
+            </Row>
           )}
-        </div>
-      </div>
+        </Stack>
+      </Grid>
 
-      {/* Points */}
-      <div className="col-span-3 md:col-span-2 text-right flex flex-col items-end">
-        {multiplier > 1 && !hidePoints && (
-          <div className="flex items-center gap-1">
+      <Stack
+        gap="none"
+        align="end"
+        className={cn(
+          'col-span-3 md:col-span-2 text-right transition-default',
+          canEdit && 'pr-8 md:pr-10',
+        )}
+      >
+        {multiplier > 1 && !shouldHidePoints && (
+          <Row gap="xs" align="center" justify="end">
             <Text
               variant={TEXT_VARIANT.MONO}
-              className="text-[9px] line-through opacity-40"
+              colorTheme={TEXT_THEME.DIMMED}
+              className="text-[10px] line-through"
             >
               {action.points}
             </Text>
-            <span className="text-[8px] font-black text-game-bonus-bright bg-game-bonus/20 px-1 rounded">
+            <span className="text-[9px] font-black text-game-bonus-bright bg-game-bonus/20 px-1 rounded">
               x{multiplier}
             </span>
-          </div>
+          </Row>
         )}
-        <Text
-          variant={TEXT_VARIANT.MONO}
-          className={cn('text-sm md:text-base font-black', displayColor)}
-        >
-          {pointsDisplay}{' '}
-          <span className="text-[8px] opacity-50">
-            {COMPETITION_UI.DETAIL.POINTS_SHORT}
-          </span>
-        </Text>
-      </div>
 
-      {/* Bouton Edit (Flottant) */}
-      {isAdmin && !competition.is_finished && (
-        <button
-          onClick={onEdit}
-          className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-default"
+        <span
+          className={cn(
+            'flex items-baseline justify-end gap-1 w-full',
+            displayColor,
+          )}
         >
-          {ICONS.EDIT}
-        </button>
+          <Text
+            variant={TEXT_VARIANT.MONO}
+            colorTheme={TEXT_THEME.INHERIT}
+            className="text-sm md:text-base font-black"
+          >
+            {pointsDisplay}
+          </Text>
+          <Text
+            variant={TEXT_VARIANT.MICRO}
+            colorTheme={TEXT_THEME.INHERIT}
+            className="opacity-50"
+            as="span"
+          >
+            {COMPETITION_UI.DETAIL.POINTS_SHORT}
+          </Text>
+        </span>
+      </Stack>
+
+      {canEdit && (
+        <IconButton
+          icon={ICONS.EDIT}
+          onClick={onEdit}
+          className="absolute right-2 top-1/2 -translate-y-1/2 md:top-2 md:translate-y-0 opacity-100 focus:opacity-100"
+          aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ARIA.UPDATE_ACTION}
+        />
       )}
-    </div>
+    </Grid>
   );
 };

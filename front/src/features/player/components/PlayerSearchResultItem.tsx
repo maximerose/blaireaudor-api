@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Badge, BADGE_VARIANT, Text, FORM, ICONS } from '@/shared';
+import { Badge, BADGE_VARIANT, Text, FORM, ICONS, Stack, Row } from '@/shared';
 import type { PlayerCompact } from '@/features/player/types';
 import { usePlayerSearchResultUI } from '@/features/player/hooks';
 
@@ -33,7 +33,7 @@ export const PlayerSearchResultItem = ({
       className={classes.container}
       {...props}
     >
-      <div className={classes.infoWrapper}>
+      <Stack gap="none" align="start" className={classes.infoWrapper}>
         <Text as="span" className={classes.name}>
           {name}
         </Text>
@@ -43,14 +43,14 @@ export const PlayerSearchResultItem = ({
         </Text>
 
         {lastComp ? (
-          <div className={classes.lastCompWrapper}>
+          <Row className={classes.lastCompWrapper}>
             <Text as="span" className={classes.lastCompLabel}>
               {FORM.ADMIN.ENROLLMENT.LAST_COMPETITION}
             </Text>
             <Text as="span" className={classes.lastCompValue}>
               {lastComp}
             </Text>
-          </div>
+          </Row>
         ) : (
           <Badge
             variant={BADGE_VARIANT.INFO}
@@ -60,7 +60,7 @@ export const PlayerSearchResultItem = ({
             <span aria-hidden="true">{ICONS.GUEST_NEW}</span>
           </Badge>
         )}
-      </div>
+      </Stack>
 
       <div className={classes.actionWrapper} aria-hidden="true">
         <span className={classes.actionIcon}>{actionIcon}</span>

@@ -1,16 +1,22 @@
+import { Link } from 'react-router-dom';
 import {
   Input,
   Button,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
   Alert,
   BUTTON_VARIANT,
   BUTTON_SIZE,
   WizardLayout,
   FORM,
   ROUTES,
+  WizardCard,
+  CARD_VARIANT,
+  Stack,
+  Row,
+  Divider,
 } from '@/shared';
-import { AuthCard } from '@/components/UI/AuthCard';
 import { useLogin } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
 import { PasswordField } from './fields/PasswordField';
@@ -27,68 +33,72 @@ export const LoginForm = () => {
 
   return (
     <WizardLayout title={AUTH_UI.LOGIN.TITLE}>
-      <AuthCard title={AUTH_UI.LOGIN.TITLE} onSubmit={handleSubmit}>
+      <WizardCard
+        as="form"
+        variant={CARD_VARIANT.GLASS}
+        title={AUTH_UI.LOGIN.TITLE}
+        onSubmit={handleSubmit}
+        noValidate
+      >
         {globalError && <Alert variant="danger">{globalError}</Alert>}
 
-        <div className="space-y-4">
-          <Input
-            label={FORM.AUTH.LABELS.USERNAME}
-            icon="@"
-            placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
-            autoComplete="username"
+        <Input
+          label={FORM.AUTH.LABELS.USERNAME}
+          icon="@"
+          placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
+          autoComplete="username"
+          disabled={isSubmitting}
+          align="center"
+          error={errors.username?.message}
+          {...register('username', { onChange: handleUsernameChange })}
+        />
+
+        <Stack gap="xs">
+          <PasswordField
+            label={FORM.AUTH.LABELS.PASSWORD}
+            autoComplete="current-password"
             disabled={isSubmitting}
             align="center"
-            error={errors.username?.message}
-            {...register('username', { onChange: handleUsernameChange })}
+            error={errors.password?.message}
+            {...register('password')}
           />
-          <div className="space-y-1">
-            <PasswordField
-              label={FORM.AUTH.LABELS.PASSWORD}
-              autoComplete="current-password"
-              disabled={isSubmitting}
-              align="center"
-              error={errors.password?.message}
-              {...register('password')}
-            />
-            <div className="flex justify-end px-1">
-              <Button
-                to={ROUTES.NAV.FORGOT_PASSWORD}
-                variant={BUTTON_VARIANT.GHOST}
-                size={BUTTON_SIZE.SMALL}
-                className="text-gold/40 hover:text-gold text-[9px] tracking-normal p-0 h-auto border-none bg-transparent"
+
+          <Row justify="end">
+            <Link
+              to={ROUTES.NAV.FORGOT_PASSWORD}
+              className="outline-none group"
+            >
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                colorTheme={TEXT_THEME.GOLD}
+                className="opacity-40 group-hover:opacity-100 group-focus-visible:underline transition-default tracking-normal"
               >
                 {AUTH_UI.FORGOT_PASSWORD.TITLE}
-              </Button>
-            </div>
-          </div>
-        </div>
+              </Text>
+            </Link>
+          </Row>
+        </Stack>
 
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          fullWidth
-          className="mt-4"
-        >
+        <Button type="submit" isLoading={isSubmitting} fullWidth>
           {AUTH_UI.LOGIN.SUBMIT}
         </Button>
 
-        <div className="text-center pt-4 border-t border-white/5 mt-4">
-          <Text variant={TEXT_VARIANT.MICRO} className="block mb-2">
+        <Divider spacing="sm" />
+
+        <Stack align="center" gap="sm">
+          <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.MUTED}>
             {AUTH_UI.LOGIN.NO_ACCOUNT}
           </Text>
+
           <Button
             to={ROUTES.NAV.REGISTER}
-            variant="ghost"
-            size="sm"
-            className="text-gold"
-            aria-label={AUTH_UI.LOGIN.REGISTER_LINK}
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
           >
             {AUTH_UI.LOGIN.REGISTER_LINK}
           </Button>
-        </div>
-      </AuthCard>
+        </Stack>
+      </WizardCard>
     </WizardLayout>
   );
 };
-
-export default LoginForm;

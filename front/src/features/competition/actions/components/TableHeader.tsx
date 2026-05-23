@@ -1,4 +1,4 @@
-import { Text, TEXT_VARIANT, cn } from '@/shared';
+import { Text, TEXT_VARIANT, TEXT_THEME, cn, Grid } from '@/shared';
 import { useActionTableContext } from '@/features/competition/context';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import type { ActionSortField } from '@/features/competition/types';
@@ -41,8 +41,15 @@ const TABLE_COLUMNS: Column[] = [
 
 export const TableHeader = () => {
   const { handleSort, getAriaSort, getSortIndicator } = useActionTableContext();
+
   return (
-    <div className="grid grid-cols-12 gap-2 px-6 py-2 bg-white/5 rounded-t-3xl border-x border-t border-white/10 mb-0">
+    <Grid
+      cols={12}
+      gap="xs"
+      align="center"
+      /* 🟢 border-white/10 remplacé par border-border-base pour respecter la charte */
+      className="px-4 py-2 bg-white/5 rounded-t-3xl border-x border-t border-border-base"
+    >
       <div role="row" className="contents">
         {TABLE_COLUMNS.map((col) => {
           const indicator = getSortIndicator(col.id);
@@ -55,8 +62,9 @@ export const TableHeader = () => {
             >
               {!col.noSort ? (
                 <button
+                  type="button"
                   className={cn(
-                    'w-full flex items-center group transition-default hover:text-gold',
+                    'w-full flex items-center group transition-default hover:text-gold cursor-pointer focus:outline-none',
                     col.align === 'text-center' && 'justify-center',
                     col.align === 'text-right' && 'justify-end',
                   )}
@@ -64,7 +72,8 @@ export const TableHeader = () => {
                 >
                   <Text
                     variant={TEXT_VARIANT.MICRO}
-                    className="text-inherit opacity-60 uppercase font-black tracking-widest"
+                    colorTheme={TEXT_THEME.DIMMED}
+                    className="text-inherit uppercase font-black tracking-widest"
                   >
                     {col.label}
                   </Text>
@@ -73,7 +82,8 @@ export const TableHeader = () => {
               ) : (
                 <Text
                   variant={TEXT_VARIANT.MICRO}
-                  className="opacity-60 uppercase font-black tracking-widest text-center"
+                  colorTheme={TEXT_THEME.DIMMED}
+                  className="uppercase font-black tracking-widest text-center"
                 >
                   {col.label}
                 </Text>
@@ -82,6 +92,6 @@ export const TableHeader = () => {
           );
         })}
       </div>
-    </div>
+    </Grid>
   );
 };

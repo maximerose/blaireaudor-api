@@ -2,13 +2,18 @@ import {
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
+  CARD_VARIANT,
   preventDefault,
   ROUTES,
   Text,
   TEXT_VARIANT,
+  TEXT_THEME,
+  WizardCard,
   WizardLayout,
+  Stack,
+  Row,
+  Divider,
 } from '@/shared';
-import { AuthCard } from '@/components/UI/AuthCard';
 import { useRegistration } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
 import { HistoricalPlayerSearch } from './HistoricalPlayerSearch';
@@ -26,18 +31,10 @@ export const RegistrationForm = () => {
     errors,
     watch,
     handleDisplayNameChange,
-    handleUsernameChange,
-    handleUsernameFocus,
-    handleUsernameBlur,
     handleDisplayNameBlur,
-    handleEmailBlur,
     globalMessage,
     isLoading,
     isSubmitting,
-    usernameStatus,
-    emailStatus,
-    usernameLoading,
-    emailLoading,
     displayStates,
     submitButtonText,
     isSubmitDisabled,
@@ -47,21 +44,25 @@ export const RegistrationForm = () => {
   } = useRegistration(ROUTES.NAV.DASHBOARD);
 
   const passwordValue = watch('plain_password') || '';
+  const isInputDisabled = isLoading || isSubmitting;
 
   return (
     <WizardLayout title={AUTH_UI.REGISTER.TITLE}>
-      <AuthCard
+      <WizardCard
+        as="form"
+        variant={CARD_VARIANT.GLASS}
         title={AUTH_UI.REGISTER.TITLE}
         onSubmit={preventDefault(handleSubmit)}
+        noValidate
       >
         <HistoricalPlayerSearch
           searchProps={playerSearch}
           selectedName={watch('display_name')}
         />
 
-        <div className="space-y-4">
+        <Stack gap="md" className="w-full">
           <DisplayNameField
-            disabled={isLoading || isSubmitting}
+            disabled={isInputDisabled}
             error={errors?.display_name?.message}
             {...register('display_name', {
               onChange: handleDisplayNameChange,
@@ -70,39 +71,34 @@ export const RegistrationForm = () => {
           />
 
           <EmailField
-            emailStatus={emailStatus}
-            emailLoading={emailLoading}
-            disabled={isLoading || isSubmitting}
-            error={errors?.email?.message}
-            {...register('email', { onBlur: handleEmailBlur })}
+            register={register}
+            watch={watch}
+            errors={errors}
+            disabled={isInputDisabled}
           />
 
-          <UsernameField
-            usernameStatus={usernameStatus}
-            usernameLoading={usernameLoading}
-            showHint={displayStates.shouldShowUsernameHint}
-            disabled={isLoading || isSubmitting}
-            error={errors?.username?.message}
-            {...register('username', {
-              onChange: handleUsernameChange,
-              onBlur: handleUsernameBlur,
-            })}
-            onFocus={handleUsernameFocus}
-          />
-        </div>
+          <Stack gap="xs" className="w-full">
+            <UsernameField
+              register={register}
+              watch={watch}
+              errors={errors}
+              showHint={displayStates.shouldShowUsernameHint}
+              disabled={isInputDisabled}
+            />
 
-        {displayStates.shouldShowGuestAlert && foundGuest && (
-          <GuestFoundAlert
-            foundGuest={foundGuest}
-            username={watch('username')}
-            onLink={linkFoundGuest}
-          />
-        )}
+            {/* Alerte profil invité trouvé */}
+            {displayStates.shouldShowGuestAlert && foundGuest && (
+              <GuestFoundAlert
+                foundGuest={foundGuest}
+                username={watch('username')}
+                onLink={linkFoundGuest}
+              />
+            )}
+          </Stack>
 
-        <div className="space-y-4">
           <PasswordField
             autoComplete="new-password"
-            disabled={isLoading || isSubmitting}
+            disabled={isInputDisabled}
             watchValue={passwordValue}
             error={errors?.plain_password?.message}
             {...register('plain_password')}
@@ -110,45 +106,47 @@ export const RegistrationForm = () => {
 
           <ConfirmPasswordField
             autoComplete="new-password"
-            disabled={isLoading || isSubmitting}
+            disabled={isInputDisabled}
             error={errors?.confirm_password?.message}
             {...register('confirm_password')}
           />
-        </div>
+        </Stack>
 
-        <Button
-          type="submit"
-          isLoading={isLoading || isSubmitting}
-          disabled={isSubmitDisabled}
-          fullWidth
-          className="mt-4"
-          aria-disabled={isSubmitDisabled}
-        >
-          {submitButtonText}
-        </Button>
-
-        {globalMessage && (
-          <Text
-            variant={TEXT_VARIANT.BODY}
-            className="mt-4 text-center text-danger-bright animate-fade-in"
+        <Stack gap="sm" className="w-full">
+          <Button
+            type="submit"
+            isLoading={isInputDisabled}
+            disabled={isSubmitDisabled}
+            fullWidth
+            className="cursor-pointer"
           >
-            {globalMessage}
-          </Text>
-        )}
+            {submitButtonText}
+          </Button>
 
-        <div className="flex justify-center mt-6 pt-4 border-t border-white/5">
+          {globalMessage && (
+            <Text
+              variant={TEXT_VARIANT.BODY}
+              colorTheme={TEXT_THEME.DANGER}
+              className="text-center animate-fade-in"
+            >
+              {globalMessage}
+            </Text>
+          )}
+        </Stack>
+
+        <Divider spacing="sm" />
+
+        <Row justify="center" className="w-full">
           <Button
             to={ROUTES.NAV.LOGIN}
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
-            className="transition-default"
+            className="cursor-pointer"
           >
             {AUTH_UI.REGISTER.ALREADY_ACCOUNT}
           </Button>
-        </div>
-      </AuthCard>
+        </Row>
+      </WizardCard>
     </WizardLayout>
   );
 };
-
-export default RegistrationForm;

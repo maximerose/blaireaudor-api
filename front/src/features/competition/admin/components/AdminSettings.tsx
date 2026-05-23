@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Badge,
   BADGE_VARIANT,
@@ -11,6 +12,9 @@ import {
   ICONS,
   Text,
   TEXT_VARIANT,
+  Stack,
+  Row,
+  Grid,
 } from '@/shared';
 import { BonusDayManagement } from './BonusDayManagement';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
@@ -24,7 +28,6 @@ import {
   AdminProvider,
 } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
-import { useState } from 'react';
 
 export const AdminSettings = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,28 +44,40 @@ export const AdminSettings = () => {
       <Card
         variant={CARD_VARIANT.DARK}
         className={cn(
-          'xl:mx-50',
-          'border-gold/30 bg-gold/5 mb-10 overflow-hidden transition-all duration-300',
+          'max-w-3xl mx-auto w-full border-gold/30 bg-gold/5 overflow-hidden transition-all duration-300',
           isExpanded
             ? 'p-4 sm:p-6 overflow-visible'
             : 'p-3 sm:p-4 overflow-hidden',
         )}
       >
-        {/* --- HEADER COMPACT (Toujours visible) --- */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <Row
+          justify="between"
+          align="center"
+          className="flex-col sm:flex-row gap-4"
+        >
+          <Row align="center" gap="md" className="sm:w-auto">
             <div className="p-2 bg-gold/10 rounded-lg text-gold hidden sm:block shrink-0">
               <span className="text-xl">{ICONS.SETTINGS}</span>
             </div>
-            <div className="min-w-0 flex-1">
+
+            <Stack
+              gap="none"
+              className="min-w-0 flex-1 text-center sm:text-left"
+            >
               <Text
                 variant={TEXT_VARIANT.CAPTION}
                 className="font-bold uppercase tracking-widest text-gold/80"
               >
                 {COMPETITION_UI.ADMIN.GENERAL.TITLE}
               </Text>
+
               {!isExpanded && (
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+                <Row
+                  wrap
+                  gap="xs"
+                  justify="center"
+                  className="sm:justify-start mt-1"
+                >
                   <Badge
                     variant={
                       isFogActive ? BADGE_VARIANT.INFO : BADGE_VARIANT.GHOST
@@ -82,22 +97,22 @@ export const AdminSettings = () => {
                       competition.referees?.length || 0,
                     )}
                   </Badge>
-                </div>
+                </Row>
               )}
-            </div>
-          </div>
+            </Stack>
+          </Row>
 
           <Button
             variant={BUTTON_VARIANT.GHOST}
             size={BUTTON_SIZE.SMALL}
             onClick={() => setIsExpanded(!isExpanded)}
-            className="hover:bg-gold/10 shrink-0"
+            className="hover:bg-gold/10 shrink-0 w-full sm:w-auto cursor-pointer"
           >
             {isExpanded
               ? BUTTONS.COLLAPSE
               : COMPETITION_UI.ADMIN.GENERAL.BUTTON_EXPAND}
           </Button>
-        </div>
+        </Row>
 
         {/* --- CONTENU DÉROULANT --- */}
         <div
@@ -108,46 +123,47 @@ export const AdminSettings = () => {
               : 'grid-rows-[0fr] opacity-0 overflow-hidden',
           )}
         >
-          <div
+          <Stack
+            gap="xl"
             className={cn(
-              'flex flex-col gap-8',
+              'min-h-0',
               isExpanded ? 'overflow-visible' : 'overflow-hidden',
             )}
           >
-            {/* Section 1 : Configuration (Moins massive) */}
+            {/* Section 1 : Configuration Générale */}
             {canEditSettings.allowed && (
-              <section className="space-y-3">
+              <Stack as="section" gap="sm">
                 <CompetitionGeneralSettings />
-              </section>
+              </Stack>
             )}
 
-            {/* Section 2 : Actions rapides (Horizontal Grid) */}
+            {/* Section 2 : Actions de jeu (Brouillard & Clôture) */}
             {canManageGame.allowed && (
-              <section
-                className={cn(
-                  'grid gap-4 items-center p-4 bg-white/5 rounded-2xl border border-white/5',
-                  competition.has_started
-                    ? 'grid-cols-1 md:grid-cols-2'
-                    : 'grid-cols-1',
-                )}
+              <Grid
+                as="section"
+                cols={1}
+                md={competition.has_started ? 2 : 1}
+                gap="md"
+                align="center"
+                className="p-4 bg-surface-base rounded-2xl border border-border-subtle"
               >
                 <FogOfWarToggle />
                 {competition.has_started && (
-                  <div className="md:border-l md:border-white/10 md:pl-6 flex justify-center">
+                  <div className="md:border-l md:border-border-base md:pl-6 flex justify-center w-full">
                     <CloseCompetitionAction />
                   </div>
                 )}
-              </section>
+              </Grid>
             )}
 
-            {/* Section 3 : Arbitrage */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Section 3 : Panels de gestion avancée */}
+            <Grid as="section" cols={1} lg={2} gap="xl" align="start">
               {canManageParticipants.allowed && <RefereeManagement />}
               {canManageGame.allowed && <BonusDayManagement />}
-            </section>
+            </Grid>
 
             <DeleteCompetitionAction />
-          </div>
+          </Stack>
         </div>
       </Card>
     </AdminProvider>

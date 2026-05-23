@@ -1,8 +1,11 @@
+// front/src/shared/components/UI/NotFoundState.tsx
+
 import { useNavigate } from 'react-router-dom';
 import { Button, BUTTON_VARIANT } from './Button';
 import { BUTTONS, ICONS, ROUTES, UI } from '@/shared/constants';
 import { useDocumentTitle } from '@/shared/hooks';
 import { EmptyState } from './EmptyState';
+import { Stack } from '../Layout/Stack';
 
 interface NotFoundStateProps {
   title?: string;
@@ -29,7 +32,11 @@ export const NotFoundState = ({
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[60vh] animate-fade-in">
+    <Stack
+      align="center"
+      justify="center"
+      className="min-h-[60vh] animate-fade-in"
+    >
       <EmptyState
         icon={ICONS.EMPTY}
         title={title}
@@ -45,6 +52,6 @@ export const NotFoundState = ({
           </Button>
         }
       />
-    </div>
+    </Stack>
   );
 };

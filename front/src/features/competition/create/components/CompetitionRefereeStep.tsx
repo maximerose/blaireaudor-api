@@ -6,6 +6,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZE,
   TEXT_VARIANT,
+  TEXT_THEME,
   CARD_VARIANT,
   SectionHeader,
   SECTION_HEADER_VARIANT,
@@ -13,6 +14,9 @@ import {
   cn,
   ICONS,
   BUTTONS,
+  Stack,
+  Row,
+  UI,
 } from '@/shared';
 import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
 import { useAuthContext } from '@/features/account';
@@ -69,7 +73,7 @@ export const CompetitionRefereeStep = ({
   );
 
   return (
-    <div className="space-y-6 animate-slide-up">
+    <Stack gap="xl" className="animate-slide-up w-full">
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.TITLE}
         as="h1"
@@ -78,168 +82,185 @@ export const CompetitionRefereeStep = ({
         centered
       />
 
-      <div className="relative z-10">
-        <Input
-          align="center"
-          placeholder={FORM.COMPETITION.PLACEHOLDERS.EXTERNAL_REFEREE}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          icon={searching ? ICONS.LOADING : ICONS.SEARCH}
-        />
-
-        {searchTerm.length >= 1 && (
-          <PlayerSearchResultsDropdown
-            results={filteredResults}
-            searchTerm={searchTerm}
-            onSelect={(p) => onToggleReferee(p)}
-            onCreateNew={(name) => {
-              const tempId = `new-ref-${Date.now()}`;
-              onToggleReferee({ id: tempId, display_name: name.trim() }, true);
-            }}
+      <Stack gap="md" className="w-full">
+        <div className="relative z-10 w-full">
+          <Input
+            align="center"
+            placeholder={FORM.COMPETITION.PLACEHOLDERS.EXTERNAL_REFEREE}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            icon={searching ? ICONS.LOADING : ICONS.SEARCH}
           />
-        )}
-      </div>
 
-      <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-        <div className="space-y-2">
-          <Text
-            variant={TEXT_VARIANT.MICRO}
-            className="text-gold uppercase tracking-widest pl-1"
-          >
-            {FORM.COMPETITION.LABELS.MAIN_REFEREE}
-          </Text>
-          <Card
-            variant={CARD_VARIANT.DARK}
-            onClick={() =>
-              setValue('isCreatorReferee', !isCreatorReferee, {
-                shouldValidate: true,
-              })
-            }
-            className={cn(
-              'flex items-center justify-between p-3 cursor-pointer transition-default border',
-              isCreatorReferee
-                ? 'border-gold bg-gold/10'
-                : 'border-white/5 hover:border-white/20',
-            )}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm">
-                {ICONS.CREATOR}
-              </div>
-              <Text
-                variant={TEXT_VARIANT.BODY}
-                className={
-                  isCreatorReferee ? 'text-gold font-bold' : 'text-white'
-                }
-              >
-                Moi ({user?.player?.display_name})
-              </Text>
-            </div>
-            <div
-              className={cn(
-                'w-5 h-5 rounded border flex items-center justify-center transition-default',
-                isCreatorReferee
-                  ? 'bg-gold border-gold text-dark'
-                  : 'border-white/20',
-              )}
-            >
-              {isCreatorReferee && (
-                <span className="text-xs font-black">{ICONS.CHECK}</span>
-              )}
-            </div>
-          </Card>
-        </div>
-
-        {externalReferees.length > 0 && (
-          <div className="space-y-2">
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className="text-white/50 uppercase tracking-widest pl-1"
-            >
-              {FORM.COMPETITION.LABELS.EXTERNAL_REFEREES}
-            </Text>
-            <SelectedPlayersList
-              participants={externalReferees}
-              onRemove={(id) => {
-                const person = externalReferees.find(
-                  (p: FormParticipant) => p.id === id,
+          {searchTerm.length >= 1 && (
+            <PlayerSearchResultsDropdown
+              results={filteredResults}
+              searchTerm={searchTerm}
+              onSelect={(p) => onToggleReferee(p)}
+              onCreateNew={(name) => {
+                const tempId = `new-ref-${Date.now()}`;
+                onToggleReferee(
+                  { id: tempId, display_name: name.trim() },
+                  true,
                 );
-                if (person) onToggleReferee(person);
               }}
             />
-          </div>
-        )}
+          )}
+        </div>
 
-        {players.length > 0 && (
-          <div className="space-y-2">
+        <Stack
+          gap="sm"
+          className="max-h-60 overflow-y-auto pr-2 custom-scrollbar w-full"
+        >
+          <Stack gap="xs" className="w-full">
             <Text
               variant={TEXT_VARIANT.MICRO}
-              className="text-white/50 uppercase tracking-widest pl-1"
+              colorTheme={TEXT_THEME.GOLD}
+              className="uppercase tracking-widest pl-1"
             >
-              {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
+              {FORM.COMPETITION.LABELS.MAIN_REFEREE}
             </Text>
-            {players.map((player: FormParticipant) => {
-              const isRef = referees.some(
-                (r: FormParticipant) => r.id === player.id,
-              );
-              return (
-                <Card
-                  key={player.id}
-                  variant={CARD_VARIANT.DARK}
-                  onClick={() => onToggleReferee(player)}
-                  className={cn(
-                    'flex items-center justify-between p-3 cursor-pointer transition-default border',
-                    isRef
-                      ? 'border-gold bg-gold/10'
-                      : 'border-white/5 hover:border-white/20',
-                  )}
+            <Card
+              variant={CARD_VARIANT.DARK}
+              onClick={() =>
+                setValue('isCreatorReferee', !isCreatorReferee, {
+                  shouldValidate: true,
+                })
+              }
+              className={cn(
+                'flex items-center justify-between p-3 cursor-pointer transition-default border',
+                isCreatorReferee
+                  ? 'border-gold bg-gold/10'
+                  : 'border-white/5 hover:border-white/20',
+              )}
+            >
+              <Row align="center" gap="sm">
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm shrink-0">
+                  {ICONS.CREATOR}
+                </div>
+                <Text
+                  variant={TEXT_VARIANT.BODY}
+                  colorTheme={
+                    isCreatorReferee ? TEXT_THEME.GOLD : TEXT_THEME.DEFAULT
+                  }
+                  className={isCreatorReferee ? 'font-bold' : ''}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm">
-                      {isRef ? ICONS.REFEREE : ICONS.PLAYER}
-                    </div>
-                    <Text
-                      variant={TEXT_VARIANT.BODY}
-                      className={isRef ? 'text-gold font-bold' : 'text-white'}
-                    >
-                      {player.display_name}
-                    </Text>
-                  </div>
-                  <div
+                  {UI.ME} ({user?.player?.display_name})
+                </Text>
+              </Row>
+              <div
+                className={cn(
+                  'w-5 h-5 rounded border flex items-center justify-center transition-default shrink-0',
+                  isCreatorReferee
+                    ? 'bg-gold border-gold text-dark'
+                    : 'border-white/20',
+                )}
+              >
+                {isCreatorReferee && (
+                  <span className="text-xs font-black">{ICONS.CHECK}</span>
+                )}
+              </div>
+            </Card>
+          </Stack>
+
+          {externalReferees.length > 0 && (
+            <Stack gap="xs" className="w-full">
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                colorTheme={TEXT_THEME.DIMMED}
+                className="uppercase tracking-widest pl-1"
+              >
+                {FORM.COMPETITION.LABELS.EXTERNAL_REFEREES}
+              </Text>
+              <SelectedPlayersList
+                participants={externalReferees}
+                onRemove={(id) => {
+                  const person = externalReferees.find(
+                    (p: FormParticipant) => p.id === id,
+                  );
+                  if (person) onToggleReferee(person);
+                }}
+              />
+            </Stack>
+          )}
+
+          {players.length > 0 && (
+            <Stack gap="xs" className="w-full">
+              <Text
+                variant={TEXT_VARIANT.MICRO}
+                colorTheme={TEXT_THEME.DIMMED}
+                className="uppercase tracking-widest pl-1"
+              >
+                {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
+              </Text>
+              {players.map((player: FormParticipant) => {
+                const isRef = referees.some(
+                  (r: FormParticipant) => r.id === player.id,
+                );
+                return (
+                  <Card
+                    key={player.id}
+                    variant={CARD_VARIANT.DARK}
+                    onClick={() => onToggleReferee(player)}
                     className={cn(
-                      'w-5 h-5 rounded border flex items-center justify-center transition-default',
+                      'flex items-center justify-between p-3 cursor-pointer transition-default border',
                       isRef
-                        ? 'bg-gold border-gold text-dark'
-                        : 'border-white/20',
+                        ? 'border-gold bg-gold/10'
+                        : 'border-white/5 hover:border-white/20',
                     )}
                   >
-                    {isRef && (
-                      <span className="text-xs font-black">{ICONS.CHECK}</span>
-                    )}
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+                    <Row align="center" gap="sm">
+                      <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm shrink-0">
+                        {isRef ? ICONS.REFEREE : ICONS.PLAYER}
+                      </div>
+                      <Text
+                        variant={TEXT_VARIANT.BODY}
+                        colorTheme={
+                          isRef ? TEXT_THEME.GOLD : TEXT_THEME.DEFAULT
+                        }
+                        className={isRef ? 'font-bold' : ''}
+                      >
+                        {player.display_name}
+                      </Text>
+                    </Row>
+                    <div
+                      className={cn(
+                        'w-5 h-5 rounded border flex items-center justify-center transition-default shrink-0',
+                        isRef
+                          ? 'bg-gold border-gold text-dark'
+                          : 'border-white/20',
+                      )}
+                    >
+                      {isRef && (
+                        <span className="text-xs font-black">
+                          {ICONS.CHECK}
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
+            </Stack>
+          )}
+        </Stack>
+
+        {(hasNoReferee || errors.referees) && (
+          <Text
+            variant={TEXT_VARIANT.CAPTION}
+            colorTheme={TEXT_THEME.DANGER}
+            className="text-center block mt-2 animate-fade-in font-bold"
+          >
+            {errors?.referees?.message || FORM.COMPETITION.HINTS.REFEREE}
+          </Text>
         )}
-      </div>
+      </Stack>
 
-      {(hasNoReferee || errors.referees) && (
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          className="text-danger-bright text-center block mt-2 animate-fade-in font-bold"
-        >
-          {errors?.referees?.message || FORM.COMPETITION.HINTS.REFEREE}
-        </Text>
-      )}
-
-      <div className="flex gap-2 pt-2">
+      <Row gap="sm" className="w-full pt-2">
         <Button
           type="button"
           variant={BUTTON_VARIANT.GHOST}
           onClick={onBack}
           disabled={loading}
-          className="px-6"
           size={BUTTON_SIZE.MEDIUM}
         >
           {BUTTONS.PREVIOUS}
@@ -248,12 +269,13 @@ export const CompetitionRefereeStep = ({
           type="submit"
           isLoading={loading}
           disabled={loading || hasNoReferee}
-          size="md"
+          size={BUTTON_SIZE.MEDIUM}
+          fullWidth
           className="flex-1"
         >
           {FORM.COMPETITION.BUTTONS.CREATE}
         </Button>
-      </div>
-    </div>
+      </Row>
+    </Stack>
   );
 };
