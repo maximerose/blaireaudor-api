@@ -45,14 +45,15 @@ class CompetitionTest extends KernelTestCase
 
         $admin = UserFactory::createOne(['player' => PlayerFactory::new()]);
 
-        $comp = new Competition();
-        $comp->setName('Test Manager');
-        $comp->setStartDate(new \DateTimeImmutable());
-        $comp->setCreatedBy($admin);
+        $payload = [
+            'name' => 'Test Manager',
+            'start_date' => '2026-05-01',
+            'is_creator_referee' => true,
+        ];
 
-        $manager->prepare($comp);
+        $result = $manager->handleCreation($payload, $admin);
 
-        $this->assertTrue($comp->getReferees()->contains($admin->getPlayer()));
+        $this->assertTrue($result['competition']->getReferees()->contains($admin->getPlayer()));
     }
 
     public function testCompetitionSetsDefaultRefereeFromCreatorOnPersist(): void

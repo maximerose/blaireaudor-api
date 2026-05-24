@@ -76,7 +76,7 @@ class BonusDay
 
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'bonusDays')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['bonus:read'])]
+    #[Groups(['bonus:read', 'bonus:write'])]
     private ?Competition $competition = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]

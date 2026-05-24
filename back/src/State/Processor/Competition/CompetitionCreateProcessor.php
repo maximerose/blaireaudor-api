@@ -6,6 +6,7 @@ namespace App\State\Processor\Competition;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use ApiPlatform\Symfony\Security\Exception\AccessDeniedException;
 use ApiPlatform\Validator\Exception\ValidationException;
 use App\DTO\Competition\CompetitionCreateInput;
 use App\Entity\Competition;
@@ -32,7 +33,7 @@ final readonly class CompetitionCreateProcessor implements ProcessorInterface
         $user = $this->security->getUser();
 
         if (!$user) {
-            throw new \RuntimeException('Vous devez être connecté.');
+            throw new AccessDeniedException('Vous devez être connecté.');
         }
 
         $payload = [

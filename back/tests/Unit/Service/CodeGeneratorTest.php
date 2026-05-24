@@ -15,7 +15,7 @@ class CodeGeneratorTest extends TestCase
     $length = 8;
     $code = $generator->generateRandomCode($length);
 
-    $this->assertEquals($length, strlen($code));
+    $this->assertEquals($length, \strlen($code));
   }
 
   public function testGenerateRandomCodeUsesSpecificAlphabet(): void

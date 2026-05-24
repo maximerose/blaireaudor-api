@@ -52,7 +52,7 @@ final class ActionControllerTest extends WebTestCase
             '/api/competitions/'.$competition->getId().'/actions',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/ld+json'],
             json_encode([
                 'description' => 'Chute à ski',
                 'points' => 10,
@@ -85,7 +85,7 @@ final class ActionControllerTest extends WebTestCase
             '/api/competitions/'.$competition->getId().'/actions',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/ld+json'],
             json_encode([
                 'description' => 'Troll',
                 'points' => 100,

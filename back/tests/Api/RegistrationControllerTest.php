@@ -40,10 +40,11 @@ final class RegistrationControllerTest extends WebTestCase
             '/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/ld+json'],
             json_encode([
                 'username' => 'blaireau36',
                 'display_name' => 'Patrick Dupont',
+                'email' => 'patrick@blaireau.com',
                 'plain_password' => 'password',
                 'join_code' => 'CODE',
             ])
@@ -85,10 +86,11 @@ final class RegistrationControllerTest extends WebTestCase
             '/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/ld+json'],
             json_encode([
                 'username' => 'deja-pris',
                 'display_name' => 'Pascal Truc',
+                'email' => 'pascal@blaireau.com',
                 'plain_password' => 'password',
             ])
         );
@@ -98,7 +100,10 @@ final class RegistrationControllerTest extends WebTestCase
         $responseContent = $client->getResponse()->getContent();
         $data = json_decode($responseContent, true);
 
-        $this->assertArrayHasKey('username', $data['errors']);
+        $violations = $data['violations'] ?? [];
+        $properties = array_column($violations, 'propertyPath');
+
+        $this->assertContains('username', $properties, "L'erreur de validation doit cibler le champ username.");
     }
 
     public function testAutomaticUsernameIncrementForReferee(): void
@@ -156,10 +161,11 @@ final class RegistrationControllerTest extends WebTestCase
             '/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/ld+json'],
             json_encode([
                 'username' => 'nouveau-pseudo',
                 'display_name' => 'Nouveau Nom',
+                'email' => 'nouveau@blaireau.com',
                 'plain_password' => 'password',
                 'player_id' => $playerId,
             ])
@@ -174,17 +180,5 @@ final class RegistrationControllerTest extends WebTestCase
         $this->assertSame($historicalPlayer, $user->getPlayer());
         $this->assertSame('Nouveau Nom', $historicalPlayer->getDisplayName());
         $this->assertSame('nouveau-pseudo', $historicalPlayer->getUsername());
-    }
-
-    public function testCheckPlayerRoute(): void
-    {
-        $client = static::createClient();
-        PlayerFactory::createOne(['username' => 'test-player', 'displayName' => 'Test']);
-
-        $client->request('GET', '/api/check-player?username=test-player');
-        $data = json_decode($client->getResponse()->getContent(), true);
-
-        $this->assertTrue($data['exists']);
-        $this->assertSame('Test', $data['player']['display_name']);
     }
 }

@@ -41,6 +41,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriVariables: [
                 'competitionId' => new Link(fromClass: Competition::class),
             ],
+            security: "is_granted('ROLE_USER')",
+            securityMessage: 'Vous devez être connecté.',
             input: ActionCreateInput::class,
             processor: ActionCreateProcessor::class,
             read: false,

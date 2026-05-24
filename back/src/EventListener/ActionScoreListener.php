@@ -24,24 +24,23 @@ class ActionScoreListener
 
     public function postPersist(Action $action, PostPersistEventArgs $event): void
     {
-        $this->syncScore($action, 'INSERT');
+        $this->syncScore($action);
     }
 
     public function postUpdate(Action $action, PostUpdateEventArgs $event): void
     {
-        $this->syncScore($action, 'UPDATE');
+        $this->syncScore($action);
     }
 
     public function postRemove(Action $action, PostRemoveEventArgs $event): void
     {
-        $this->syncScore($action, 'DELETE');
+        $this->syncScore($action);
     }
 
-    private function syncScore(Action $action, string $context): void
+    private function syncScore(Action $action): void
     {
         if ($action->getParticipation()) {
             $this->actionManager->updateScore($action);
-            error_log("$context: Score recalculé pour la participation {$action->getParticipation()->getId()}");
         }
     }
 }

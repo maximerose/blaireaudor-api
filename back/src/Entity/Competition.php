@@ -46,12 +46,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Post(
+            security: "is_granted('ROLE_USER')",
+            securityMessage: 'Vous devez être connecté.',
             input: CompetitionCreateInput::class,
             processor: CompetitionCreateProcessor::class,
         ),
         new Post(
             name: 'add_players',
             uriTemplate: '/competitions/{id}/add-players',
+            security: "is_granted('ROLE_USER')",
+            securityMessage: 'Vous devez être connecté.',
             input: CompetitionAddPlayersInput::class,
             processor: CompetitionAddPlayersProcessor::class,
             read: false,
@@ -63,6 +67,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             name: 'add_referee',
             uriTemplate: '/competitions/{id}/referees/add',
+            security: "is_granted('ROLE_USER')",
+            securityMessage: 'Vous devez être connecté.',
             input: CompetitionRefereeInput::class,
             processor: CompetitionAddRefereeProcessor::class,
             read: false,
@@ -74,6 +80,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             name: 'remove_referee',
             uriTemplate: '/competitions/{id}/referees/remove',
+            security: "is_granted('ROLE_USER', object)",
+            securityMessage: 'Vous devez être connecté.',
             input: CompetitionRefereeInput::class,
             processor: CompetitionRemoveRefereeProcessor::class,
             read: false,

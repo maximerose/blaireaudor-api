@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
@@ -17,8 +18,9 @@ final class UserFactory extends PersistentObjectFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
-    public function __construct()
-    {
+    public function __construct(
+        private UserPasswordHasherInterface $passwordHasher,
+    ) {
     }
 
     #[\Override]
@@ -50,7 +52,11 @@ final class UserFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(User $user): void {})
+            ->afterInstantiate(function (User $user): void {
+                if ($user->getPlainPassword()) {
+                    $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
+                }
+            })
         ;
     }
 

@@ -10,8 +10,10 @@ vendor/
 # IDE
 .idea/
 .vscode/
-modifs.txt
 
 .repomixignore
 repomix-output.xml
-modifs.diff
+
+# DEV tools
+*.diff
+*.log

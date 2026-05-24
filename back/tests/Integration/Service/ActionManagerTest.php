@@ -30,7 +30,7 @@ class ActionManagerTest extends KernelTestCase
         $author = UserFactory::new()->create();
 
         $fakeUuid = '018d3e16-0f5c-7120-b3b4-e2d1f4b5a6c7';
-        $data = ['player' => '/api/players/'.$fakeUuid, 'description' => 'Test', 'points' => 10, 'date_action' => '2025-05-08'];
+        $data = ['player' => (string) '/api/players/'.$fakeUuid, 'description' => 'Test', 'points' => 10, 'date_action' => '2025-05-08'];
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Le joueur ne participe pas à cette compétition.');
