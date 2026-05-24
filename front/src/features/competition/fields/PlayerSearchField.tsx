@@ -1,11 +1,12 @@
 import {
-  Input,
   Card,
   CARD_VARIANT,
   Text,
   TEXT_VARIANT,
   ICONS,
   FORM,
+  cn,
+  Input,
 } from '@/shared';
 import { PlayerSearchResultItem, type PlayerCompact } from '@/features/player';
 import { usePlayerSearchFieldUI } from './hooks.ts';
@@ -19,6 +20,7 @@ interface PlayerSearchFieldProps {
   onCreateNew?: (name: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  variant?: 'absolute' | 'inline';
 }
 
 export const PlayerSearchField = ({
@@ -30,6 +32,7 @@ export const PlayerSearchField = ({
   onCreateNew,
   placeholder,
   disabled = false,
+  variant = 'absolute',
 }: PlayerSearchFieldProps) => {
   const {
     showDropdown,
@@ -39,6 +42,7 @@ export const PlayerSearchField = ({
     handleSelect,
     handleCreateNew,
   } = usePlayerSearchFieldUI({ searchTerm, results, onSelect, onCreateNew });
+
   return (
     <div className="relative z-50 w-full" ref={containerRef}>
       <Input
@@ -61,7 +65,12 @@ export const PlayerSearchField = ({
           variant={CARD_VARIANT.DARK}
           padding="none"
           radius="lg"
-          className="absolute top-full left-0 right-0 mt-2 border-gold-border shadow-2xl bg-dark-lighter max-h-64 overflow-y-auto no-scrollbar animate-fade-in"
+          className={cn(
+            'border-gold-border shadow-2xl bg-dark-lighter max-h-64 overflow-y-auto animate-fade-in',
+            variant === 'absolute'
+              ? 'absolute top-full left-0 right-0 mt-2'
+              : 'relative mt-2 w-full',
+          )}
         >
           <div className="divide-y divide-border-subtle">
             {canCreate && (

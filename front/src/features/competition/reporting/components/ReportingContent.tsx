@@ -11,6 +11,7 @@ import {
   TEXT_THEME,
   Stack,
   Row,
+  cn,
 } from '@/shared';
 import {
   useCompetitionContext,
@@ -111,19 +112,40 @@ export const ReportingContent = () => {
         </Card>
       )}
 
-      {!isReporting ? (
-        <Button
-          variant={BUTTON_VARIANT.DANGER}
-          fullWidth
-          size={BUTTON_SIZE.LARGE}
-          className="group"
-          onClick={() => toggleReporting()}
+      {/* 🟢 Zone Unifiée à déploiement fluide */}
+      <div className="relative w-full">
+        {/* Wrapper du gros Bouton Rouge "Dénoncer" */}
+        <div
+          className={cn(
+            'transition-all duration-300 ease-in-out overflow-hidden',
+            isReporting
+              ? 'max-h-0 opacity-0 pointer-events-none mb-0'
+              : 'max-h-24 opacity-100 mb-2',
+          )}
         >
-          {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
-        </Button>
-      ) : (
-        <ReportActionForm />
-      )}
+          <Button
+            variant={BUTTON_VARIANT.DANGER}
+            fullWidth
+            size={BUTTON_SIZE.LARGE}
+            className="group"
+            onClick={() => toggleReporting()}
+          >
+            {COMPETITION_UI.DETAIL.SECTIONS.REPORTING.REPORT_BUTTON}
+          </Button>
+        </div>
+
+        {/* Wrapper du Formulaire de délation */}
+        <div
+          className={cn(
+            'transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)',
+            isReporting
+              ? 'max-h-162.5 opacity-100 overflow-visible scale-100 mt-2'
+              : 'max-h-0 opacity-0 pointer-events-none overflow-hidden scale-95 mt-0',
+          )}
+        >
+          <ReportActionForm />
+        </div>
+      </div>
     </Stack>
   );
 };
