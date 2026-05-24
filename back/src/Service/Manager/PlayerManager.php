@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Manager;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Entity\Player;
 use App\Entity\User;
@@ -57,7 +58,7 @@ class PlayerManager
             if (empty($trimmedName)) {
                 $results['errors'][] = [
                     'name' => '',
-                    'message' => 'Le nom du joueur ne peut pas être vide',
+                    'message' => ErrorMessages::MISSING_DISPLAY_NAME,
                 ];
 
                 continue;

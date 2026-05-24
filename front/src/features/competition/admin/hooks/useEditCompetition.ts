@@ -6,7 +6,6 @@ import {
   SUCCESS,
   getDatePart,
   getTimePart,
-  snakeToCamel,
   type ApiError,
 } from '@/shared';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +23,7 @@ import {
 } from '@/features/competition/validations';
 import { competitionService } from '@/features/competition/services';
 import { combineDateTime } from '@/features/competition/utils';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useEditCompetition = (
   competition: Competition,
@@ -85,19 +85,8 @@ export const useEditCompetition = (
       invalidateAll(competition.id, competition.join_code);
       refresh();
     },
-    onError: (apiError: ApiError) => {
-      if (apiError.violations?.length) {
-        apiError.violations.forEach((v) => {
-          const formKey = snakeToCamel(v.propertyPath);
-          setError(formKey as keyof EditCompetitionFormData, {
-            type: 'server',
-            message: v.message,
-          });
-        });
-      } else {
-        toast.error(apiError.message || ERRORS.COMPETITION.UPDATE_FAILED);
-      }
-    },
+    onError: (e) =>
+      handleApiError(e, setError, ERRORS.COMPETITION.UPDATE_FAILED),
   });
 
   const onSubmit = async (data: EditCompetitionFormData) => {

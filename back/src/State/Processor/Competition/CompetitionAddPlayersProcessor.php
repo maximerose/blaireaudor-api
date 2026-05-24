@@ -6,6 +6,7 @@ namespace App\State\Processor\Competition;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Constants\ErrorMessages;
 use App\DTO\Competition\CompetitionAddPlayersInput;
 use App\Entity\Competition;
 use App\Security\Voter\CompetitionVoter;
@@ -31,18 +32,18 @@ final readonly class CompetitionAddPlayersProcessor implements ProcessorInterfac
     {
         $user = $this->security->getUser();
         if (!$user) {
-            throw new AccessDeniedHttpException('Vous devez être connecté.');
+            throw new AccessDeniedHttpException(ErrorMessages::AUTH_REQUIRED);
         }
 
         $competitionId = $uriVariables['id'] ?? null;
         $competition = $this->entityManager->getRepository(Competition::class)->find($competitionId);
 
         if (!$competition) {
-            throw new NotFoundHttpException('Compétition introuvable.');
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
         }
 
         if (!$this->security->isGranted(CompetitionVoter::MANAGE, $competition)) {
-            throw new AccessDeniedHttpException('Seul un gestionnaire peut recruter des joueurs.');
+            throw new AccessDeniedHttpException(ErrorMessages::COMP_DENIED_ADD_PLAYERS);
         }
 
         $payload = [

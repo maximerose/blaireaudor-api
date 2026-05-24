@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Constants\ErrorMessages;
 use App\DTO\Action\ActionCreateInput;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
@@ -42,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'competitionId' => new Link(fromClass: Competition::class),
             ],
             security: "is_granted('ROLE_USER')",
-            securityMessage: 'Vous devez être connecté.',
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             input: ActionCreateInput::class,
             processor: ActionCreateProcessor::class,
             read: false,
@@ -55,13 +56,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new \ApiPlatform\Metadata\Patch(
             security: "is_granted('".ActionVoter::EDIT."', object)",
-            securityMessage: 'Vous n\'avez pas le droit de modifier cette action.',
+            securityMessage: ErrorMessages::ACTION_DENIED_EDIT,
             denormalizationContext: ['groups' => ['action:write']],
             normalizationContext: ['groups' => ['action:read']]
         ),
         new \ApiPlatform\Metadata\Delete(
             security: "is_granted('".ActionVoter::DELETE."', object)",
-            securityMessage: 'Vous n\'avez pas le droit de supprimer cette action.'
+            securityMessage: ErrorMessages::ACTION_DENIED_DELETE,
         ),
     ]
 )]

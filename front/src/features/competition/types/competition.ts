@@ -80,7 +80,7 @@ export interface CompetitionContextType {
   bonusDays: BonusDay[];
   isAdmin: boolean;
   hidePoints: boolean;
-  refresh: () => void;
+  refresh: () => Promise<void>;
   getMultiplier: (date: string | null) => number | undefined;
   getTodayBonus: () => BonusDay | undefined;
 }

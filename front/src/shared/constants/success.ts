@@ -16,7 +16,8 @@ export const SUCCESS = {
   ACTION: {
     REPORTED_ADMIN: 'Action enregistrée !',
     REPORTED_USER: "Dénonciation transmise à l'arbitre !",
-    STATUS_UPDATED: 'Action mise à jour !',
+    STATUS_UPDATED: "Statut de l'action mise à jour !",
+    UPDATED: 'Action modifiée !',
   },
 
   BONUS: {

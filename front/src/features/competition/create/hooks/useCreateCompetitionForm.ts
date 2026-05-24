@@ -12,13 +12,10 @@ import {
   cleanJoinCode,
   ERRORS,
   getLocalDayString,
-  LOG_MESSAGES,
   QUERY_KEYS,
-  snakeToCamel,
   type ApiError,
 } from '@/shared';
 import { useAuthContext } from '@/features/account';
-import toast from 'react-hot-toast';
 import type {
   Competition,
   CompetitionCreatePayload,
@@ -29,6 +26,7 @@ import {
 } from '@/features/competition/validations';
 import { formatToApiISO } from '@/features/competition/utils';
 import { competitionService } from '@/features/competition/services';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,
@@ -195,20 +193,11 @@ export const useCreateCompetitionForm = (
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
       onSuccess(competition);
     },
-    onError: (apiError: ApiError) => {
-      console.error(LOG_MESSAGES.COMPETITION.CREATE_FAILED, apiError);
+    onError: (e) => {
+      handleApiError(e, formMethods.setError, ERRORS.COMPETITION.CREATE_FAILED);
 
-      if (apiError.violations?.length) {
-        apiError.violations.forEach((v) => {
-          const formKey = snakeToCamel(v.propertyPath);
-          formMethods.setError(formKey as keyof CreateCompetitionFormData, {
-            type: 'server',
-            message: v.message,
-          });
-        });
+      if (e.violations?.length) {
         setStep(1);
-      } else {
-        toast.error(apiError.message || ERRORS.COMPETITION.CREATE_FAILED);
       }
     },
   });

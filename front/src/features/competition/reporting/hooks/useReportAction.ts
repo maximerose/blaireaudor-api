@@ -10,7 +10,6 @@ import {
   type ApiError,
   getLocalDayString,
   normalizeString,
-  snakeToCamel,
 } from '@/shared';
 import {
   getReportActionSchema,
@@ -29,6 +28,7 @@ import {
 } from '@/features/competition/types';
 import { actionService } from '@/features/competition/services';
 import { formatToApiISO } from '@/features/competition/utils';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useReportAction = (
   players: { id: string; display_name: string }[],
@@ -103,7 +103,7 @@ export const useReportAction = (
   }, []);
 
   const createMutation = useMutation<
-    { ok: boolean; data: Action },
+    Action,
     ApiError,
     ActionCreatePayload & { competition: string; status: ActionStatus }
   >({
@@ -130,22 +130,17 @@ export const useReportAction = (
       invalidateAll(competition.id, competition.join_code);
       refresh();
     },
-    onError: (apiError: ApiError) => {
-      if (apiError.violations?.length) {
-        apiError.violations.forEach((v) => {
-          let formKey = snakeToCamel(v.propertyPath);
+    onError: (e) => {
+      const mappedError: ApiError = {
+        ...e,
+        violations: e.violations?.map((v) => ({
+          ...v,
+          propertyPath:
+            v.propertyPath === 'player' ? 'target_player_id' : v.propertyPath,
+        })),
+      };
 
-          if (v.propertyPath === 'player') formKey = 'targetPlayerId';
-          if (v.propertyPath === 'date_action') formKey = 'dateAction';
-
-          setError(formKey as keyof ReportActionFormData, {
-            type: 'server',
-            message: v.message,
-          });
-        });
-      } else {
-        toast.error(apiError.message || ERRORS.ACTION.REPORT_FAILED);
-      }
+      handleApiError(mappedError, setError, ERRORS.ACTION.REPORT_FAILED);
     },
   });
 

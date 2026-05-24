@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-import { ERRORS } from '@/shared';
+import { ERRORS, type ApiError } from '@/shared';
 import { useInvalidateCompetition } from '@/features/competition/view';
 import { competitionService } from '@/features/competition/services';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useCompetitionReferees = (
   competitionId: string,
@@ -10,26 +10,24 @@ export const useCompetitionReferees = (
 ) => {
   const { invalidateAll } = useInvalidateCompetition();
 
-  const addMutation = useMutation({
+  const addMutation = useMutation<any, ApiError, string>({
     mutationFn: (playerId: string) =>
       competitionService.addReferee(competitionId, playerId),
     onSuccess: () => {
       invalidateAll(competitionId, joinCode);
     },
-    onError: () => {
-      toast.error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
-    },
+    onError: (e) =>
+      handleApiError(e, undefined, ERRORS.COMPETITION.REFEREE_ADD_FAILED),
   });
 
   const removeMutation = useMutation({
     mutationFn: (playerId: string) =>
       competitionService.removeReferee(competitionId, playerId),
     onSuccess: () => {
-      invalidateAll(competitionId, joinCode);
+      return invalidateAll(competitionId, joinCode);
     },
-    onError: () => {
-      toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
-    },
+    onError: (e) =>
+      handleApiError(e, undefined, ERRORS.COMPETITION.REFEREE_REMOVE_FAILED),
   });
 
   return {

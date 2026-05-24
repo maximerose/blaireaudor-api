@@ -81,13 +81,18 @@ export const useAccountValidation = <T extends FieldValues>({
     setValue(
       'username' as Path<T>,
       finalizeSlug(currentUsername) as PathValue<T, Path<T>>,
-      { shouldValidate: false, shouldDirty: true },
+      { shouldValidate: true, shouldDirty: true },
     );
     onUsernameBlur?.();
   };
 
   const handleEmailBlur = () => {
     trigger('email' as Path<T>);
+  };
+
+  const usernameRegistryOptions = {
+    onChange: handleUsernameChange,
+    onBlur: handleUsernameBlur,
   };
 
   return {
@@ -101,5 +106,6 @@ export const useAccountValidation = <T extends FieldValues>({
     handleUsernameChange,
     handleUsernameBlur,
     handleEmailBlur,
+    usernameRegistryOptions,
   };
 };

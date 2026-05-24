@@ -29,8 +29,8 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
       try {
         setIsLoading(true);
         await result;
-      } catch (error) {
-        console.error(ERRORS.MODAL.CONFIRM_ERROR, error);
+      } catch (e) {
+        console.error(ERRORS.MODAL.CONFIRM_ERROR, e);
       } finally {
         setIsLoading(false);
       }

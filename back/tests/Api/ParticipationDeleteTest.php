@@ -45,7 +45,6 @@ final class ParticipationDeleteTest extends WebTestCase
 
         $client->request('DELETE', '/api/participations/'.$participation->getId());
 
-        // todo Doit renvoyer une erreur 500 (LogicException transformée) ou 400 selon ta gestion d'erreur globale (à gérer)
         $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

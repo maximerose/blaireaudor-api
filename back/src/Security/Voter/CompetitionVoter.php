@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -29,8 +30,7 @@ final class CompetitionVoter extends Voter
         $user = $token->getUser();
 
         if (!$user instanceof User) {
-            error_log('!user instanceof User');
-            $vote?->addReason('Vous devez être connecté.');
+            $vote?->addReason(ErrorMessages::AUTH_REQUIRED);
 
             return false;
         }

@@ -64,7 +64,7 @@ final class CompetitionCreateTest extends WebTestCase
 
         $payload = [
             'existing_players_ids' => [$existingPlayer->getId()->toString()],
-            'new_players' => ['Nouveau Grimpeur'],
+            'new_players' => ['Nouveau Joueur'],
         ];
 
         $this->client->request('POST', \sprintf('/api/competitions/%s/add-players', $competition->getId()), [], [], ['CONTENT_TYPE' => 'application/ld+json'], json_encode($payload));

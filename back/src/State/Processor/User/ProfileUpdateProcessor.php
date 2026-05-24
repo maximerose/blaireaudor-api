@@ -7,6 +7,7 @@ namespace App\State\Processor\User;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\Validator\Exception\ValidationException;
+use App\Constants\ErrorMessages;
 use App\DTO\User\ProfileUpdateInput;
 use App\Entity\User;
 use App\Service\Manager\UserManager;
@@ -38,7 +39,7 @@ final readonly class ProfileUpdateProcessor implements ProcessorInterface
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            throw new AccessDeniedHttpException('Non autorisé.');
+            throw new AccessDeniedHttpException(ErrorMessages::AUTH_DENIED);
         }
 
         $payload = [

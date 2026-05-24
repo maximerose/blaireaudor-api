@@ -3,6 +3,7 @@ import { competitionService } from '@/features/competition/services';
 import { CONFIRMS, ERRORS, ROUTES, SUCCESS, useConfirmModal } from '@/shared';
 import toast from 'react-hot-toast';
 import { useAuthContext } from '@/features/account';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ export const useCompetitionDelete = () => {
             await refreshUser();
             closeModal();
           }
-        } catch {
+        } catch (e) {
           closeModal();
-          toast.error(ERRORS.COMPETITION.DELETE_FAILED);
+          handleApiError(e, undefined, ERRORS.COMPETITION.DELETE_FAILED);
         }
       },
     });

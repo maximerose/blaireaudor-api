@@ -7,6 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\Constants\ErrorMessages;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
@@ -28,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['displayName' => 'ipartial'])]
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PLAYER_USERNAME', fields: ['username'])]
-#[UniqueEntity(fields: ['username'], message: 'Ce nom d\'utiliateur est déjà utilisé.')]
+#[UniqueEntity(fields: ['username'], message: ErrorMessages::DUPLICATE_USERNAME)]
 #[ApiResource(
     normalizationContext: ['groups' => ['competition:read']],
     forceEager: true,
@@ -52,7 +53,7 @@ class Player
      * @var string|null Nom d'utilisateur unique utilisé pour le slug et l'identification.
      *                  * Est synchronisé avec le username de l'User associé s'il existe.
      */
-    #[Gedmo\Slug(fields: ['displayName'], unique: true)]
+    #[Gedmo\Slug(fields: ['displayName'], updatable: false, unique: true)]
     #[ORM\Column(length: 255)]
     #[Groups(['competition:read', 'action:read', 'user:read', 'player:read'])]
     private ?string $username = null;

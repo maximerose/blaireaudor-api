@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Command;
 
+use App\Command\CompetitionLiftFogCommand;
+use App\Command\RefreshScoresCommand;
 use App\Enum\ActionStatus;
 use App\Factory\ActionFactory;
 use App\Factory\CompetitionFactory;
@@ -40,7 +42,9 @@ final class AppCommandsTest extends KernelTestCase
         $commandTester->assertCommandIsSuccessful();
 
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('brouillard s\'est dissipé sur 1 compétition(s)', $output);
+
+        $expectedMessage = \sprintf(CompetitionLiftFogCommand::LIFT_FOG_SUCCESS, 1);
+        $this->assertStringContainsString($expectedMessage, $output);
 
         // On vérifie que l'entité a bien été mise à jour en base
         $this->assertFalse($competition->hasFogOfWar());
@@ -71,7 +75,8 @@ final class AppCommandsTest extends KernelTestCase
         $commandTester->assertCommandIsSuccessful();
 
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Tous les scores ont été synchronisés', $output);
+
+        $this->assertStringContainsString(RefreshScoresCommand::REFRESH_SUCCESS, $output);
 
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $em->refresh($participation);

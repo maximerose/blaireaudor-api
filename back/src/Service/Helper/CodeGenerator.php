@@ -11,7 +11,7 @@ namespace App\Service\Helper;
  */
 class CodeGenerator
 {
-    private const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    private const string ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
     /**
      * Génère un code alphanumérique lisible.
@@ -24,7 +24,7 @@ class CodeGenerator
     public function generateRandomCode(int $length = 6): string
     {
         $code = '';
-        $max = strlen(self::ALPHABET) - 1;
+        $max = \strlen(self::ALPHABET) - 1;
 
         for ($i = 0; $i < $length; ++$i) {
             $code .= self::ALPHABET[random_int(0, $max)];

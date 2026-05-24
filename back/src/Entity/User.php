@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Constants\ErrorMessages;
 use App\DTO\User\PlayerStatsOutput;
 use App\DTO\User\ProfileUpdateInput;
 use App\DTO\User\RegistrationInput;
@@ -37,8 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['username'], message: 'Ce nom d\'utiliateur est déjà utilisé.')]
-#[UniqueEntity(fields: ['email'], message: 'Cette adresse email est déjà utilisée.')]
+#[UniqueEntity(fields: ['username'], message: ErrorMessages::DUPLICATE_USERNAME)]
+#[UniqueEntity(fields: ['email'], message: ErrorMessages::DUPLICATE_EMAIL)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
@@ -58,6 +59,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             input: ProfileUpdateInput::class,
             processor: ProfileUpdateProcessor::class,
             read: false,
+            security: "is_granted('ROLE_USER')",
+            securityPostDenormalize: "is_granted('ROLE_USER')",
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             denormalizationContext: [],
             openapi: new OpenApiOperation(summary: "Met à jour le profil de l'utilisateur connecté")
         ),

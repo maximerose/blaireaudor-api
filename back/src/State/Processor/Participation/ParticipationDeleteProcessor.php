@@ -6,6 +6,7 @@ namespace App\State\Processor\Participation;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Constants\ErrorMessages;
 use App\Entity\Participation;
 use App\Entity\User;
 use App\Security\Voter\CompetitionVoter;
@@ -32,14 +33,14 @@ final readonly class ParticipationDeleteProcessor implements ProcessorInterface
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            throw new AccessDeniedHttpException('Vous devez être connecté.');
+            throw new AccessDeniedHttpException(ErrorMessages::AUTH_DENIED);
         }
 
         $isManager = $this->security->isGranted(CompetitionVoter::MANAGE, $competition);
         $isSelf = $user && $user->getPlayer() === $data->getPlayer();
 
         if (!$isManager && !$isSelf) {
-            throw new AccessDeniedHttpException("Vous n'avez pas l'autorisation de retirer cette participation.");
+            throw new AccessDeniedHttpException(ErrorMessages::PART_DENIED_DELETE);
         }
 
         $this->participationManager->removeParticipation($data);

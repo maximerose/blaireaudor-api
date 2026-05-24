@@ -18,6 +18,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CompetitionLiftFogCommand extends Command
 {
+    public const string TITLE = 'Vérification des arènes et dissipation du Brouillard de Guerre';
+    public const string NO_COMPETITION = 'Aucune arène terminée avec un brouillard de guerre actif à signaler.';
+    public const string LIFT_FOG_SUCCESS = "Le secret est levé ! Le brouillard s'est dissipé sur %d compétition(s) terminée(s). 🏁👻";
+
     public function __construct(
         private CompetitionRepository $competitionRepository,
         private EntityManagerInterface $entityManager,
@@ -32,7 +36,7 @@ class CompetitionLiftFogCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->title('Vérification des arènes et dissipation du Brouillard de Guerre');
+        $io->title(self::TITLE);
 
         $now = new \DateTimeImmutable();
 
@@ -46,7 +50,7 @@ class CompetitionLiftFogCommand extends Command
             ->getResult();
 
         if (empty($competitions)) {
-            $io->info('Aucune arène terminée avec un brouillard de guerre actif à signaler.');
+            $io->info(self::NO_COMPETITION);
 
             return Command::SUCCESS;
         }
@@ -62,8 +66,8 @@ class CompetitionLiftFogCommand extends Command
 
         $io->progressFinish();
 
-        $io->success(sprintf(
-            "Le secret est levé ! Le brouillard s'est dissipé sur %d compétition(s) terminée(s). 🏁👻",
+        $io->success(\sprintf(
+            self::LIFT_FOG_SUCCESS,
             \count($competitions)
         ));
 

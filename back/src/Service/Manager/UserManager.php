@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Manager;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Entity\User;
 use App\Repository\CompetitionRepository;
@@ -41,27 +42,31 @@ class UserManager
         $competition = null;
 
         if ($userRepository->count(['username' => $username]) > 0) {
-            return ['violations' => [['propertyPath' => 'username', 'message' => "Ce nom d'utilisateur est déjà utilisé"]]];
+            return ['violations' => [['propertyPath' => 'username', 'message' => ErrorMessages::DUPLICATE_USERNAME]]];
         }
 
         if ($userRepository->count(['email' => $email]) > 0) {
-            return ['violations' => [['propertyPath' => 'email', 'message' => 'Cette adresse email est déjà utilisée']]];
+            return ['violations' => [['propertyPath' => 'email', 'message' => ErrorMessages::DUPLICATE_EMAIL]]];
         }
 
         if ($joinCode) {
             $competition = $competitionRepository->findOneBy(['joinCode' => $joinCode]);
             if (null === $competition) {
-                return ['violations' => [['propertyPath' => 'join_code', 'message' => "La compétition n'existe pas."]]];
+                return ['violations' => [['propertyPath' => 'join_code', 'message' => ErrorMessages::COMP_NOT_FOUND]]];
+            }
+
+            if ($competition->getIsFinished()) {
+                return ['violations' => [['propertyPath' => 'join_code', 'message' => ErrorMessages::COMP_FINISHED]]];
             }
         }
 
         if ($playerId) {
             $playerToClaim = $this->playerRepository->find($playerId);
             if (!$playerToClaim) {
-                return ['violations' => [['propertyPath' => 'player_id', 'message' => "Le profil joueur demandé n'existe pas."]]];
+                return ['violations' => [['propertyPath' => 'player_id', 'message' => ErrorMessages::PLAYER_NOT_FOUND]]];
             }
             if (null !== $playerToClaim->getAssociatedUser()) {
-                return ['violations' => [['propertyPath' => 'player_id', 'message' => 'Ce profil joueur est déjà associé à un autre compte.']]];
+                return ['violations' => [['propertyPath' => 'player_id', 'message' => ErrorMessages::PLAYER_ALREADY_LINKED]]];
             }
         }
 
@@ -116,11 +121,10 @@ class UserManager
     public function updateProfile(User $user, array $data): array
     {
         $player = $user->getPlayer();
-        $violations = [];
 
         if (!empty($data['new_password'])) {
             if (empty($data['current_password']) || !$this->passwordHasher->isPasswordValid($user, $data['current_password'])) {
-                return [['propertyPath' => 'current_password', 'message' => 'Le mot de passe actuel est invalide.']];
+                return [['propertyPath' => 'current_password', 'message' => ErrorMessages::INVALID_CURRENT_PASSWORD]];
             }
             $this->updatePassword($user, $data['new_password']);
         }

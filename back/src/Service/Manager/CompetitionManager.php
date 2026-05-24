@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Manager;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Entity\User;
 use App\Repository\CompetitionRepository;
@@ -43,7 +44,7 @@ class CompetitionManager
             $startDate = new \DateTimeImmutable($data['start_date'] ?? 'now');
             $endDate = isset($data['end_date']) ? new \DateTimeImmutable($data['end_date']) : null;
         } catch (\Exception $e) {
-            return ['violations' => [['propertyPath' => 'start_date', 'message' => 'Format de date invalide']]];
+            return ['violations' => [['propertyPath' => 'start_date', 'message' => ErrorMessages::INVALID_DATE_FORMAT]]];
         }
 
         $competition = new Competition();
@@ -108,7 +109,7 @@ class CompetitionManager
             foreach ($existingPlayersIds as $id) {
                 $idStr = (string) $id;
                 if (!isset($playersById[$idStr])) {
-                    $errors[] = ['id' => $id, 'message' => 'Joueur introuvable'];
+                    $errors[] = ['id' => $id, 'message' => ErrorMessages::PLAYER_NOT_FOUND];
                     continue;
                 }
 
@@ -116,7 +117,7 @@ class CompetitionManager
                 $isAlreadyIn = $this->participationRepository->findOneBy(['competition' => $competition, 'player' => $currentPlayer]);
 
                 if ($isAlreadyIn) {
-                    $errors[] = ['id' => $id, 'name' => $currentPlayer->getDisplayName(), 'message' => 'Déjà inscrit'];
+                    $errors[] = ['id' => $id, 'name' => $currentPlayer->getDisplayName(), 'message' => ErrorMessages::COMP_ALREADY_IN];
                 } else {
                     $this->participationManager->joinCompetition($currentPlayer, $competition);
                     $successes[] = ['id' => $id, 'name' => $currentPlayer->getDisplayName()];
@@ -189,7 +190,7 @@ class CompetitionManager
         }
 
         if ($competition->getReferees()->count() <= 1) {
-            throw new \LogicException('Impossible de se retirer : vous êtes le dernier arbitre de cette arène.');
+            throw new \LogicException(ErrorMessages::COMP_LAST_REFEREE);
         }
 
         $competition->removeReferee($player);

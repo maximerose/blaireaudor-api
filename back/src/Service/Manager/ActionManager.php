@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Manager;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Action;
 use App\Entity\Competition;
 use App\Entity\Participation;
@@ -39,13 +40,13 @@ class ActionManager
     public function createActionFromPayload(Competition $competition, User $author, array $data): Action
     {
         if (!isset($data['player'], $data['description'], $data['points'], $data['date_action'])) {
-            throw new \InvalidArgumentException('Données incomplètes pour créer l\'action.');
+            throw new \InvalidArgumentException(ErrorMessages::MISSING_DATA);
         }
 
         $playerId = basename((string) $data['player']);
 
         if (!Uuid::isValid($playerId)) {
-            throw new \InvalidArgumentException('Le joueur ne participe pas à cette compétition.');
+            throw new \InvalidArgumentException(ErrorMessages::PLAYER_NOT_FOUND);
         }
 
         $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
@@ -54,7 +55,7 @@ class ActionManager
         ]);
 
         if (!$participation) {
-            throw new \InvalidArgumentException('Le joueur ne participe pas à cette compétition.');
+            throw new \InvalidArgumentException(ErrorMessages::ACTION_PLAYER_NOT_FOUND);
         }
 
         $action = new Action();
@@ -65,7 +66,7 @@ class ActionManager
         try {
             $action->setDateAction(new \DateTimeImmutable($data['date_action']));
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException('Format de date invalide.');
+            throw new \InvalidArgumentException(ErrorMessages::INVALID_DATE_FORMAT);
         }
 
         $canAutoValidate = $this->canAutoValidate($competition, $author);

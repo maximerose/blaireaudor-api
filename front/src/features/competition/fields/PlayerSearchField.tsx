@@ -8,6 +8,7 @@ import {
   FORM,
 } from '@/shared';
 import { PlayerSearchResultItem, type PlayerCompact } from '@/features/player';
+import { usePlayerSearchFieldUI } from './hooks.ts';
 
 interface PlayerSearchFieldProps {
   searchTerm: string;
@@ -30,23 +31,23 @@ export const PlayerSearchField = ({
   placeholder,
   disabled = false,
 }: PlayerSearchFieldProps) => {
-  const canCreate =
-    onCreateNew &&
-    searchTerm.trim().length >= 2 &&
-    !results.some(
-      (p) => p.display_name.toLowerCase() === searchTerm.trim().toLowerCase(),
-    );
-  const showDropdown =
-    searchTerm.length >= 1 && (results.length > 0 || canCreate);
-
+  const {
+    showDropdown,
+    containerRef,
+    canCreate,
+    openDropdown,
+    handleSelect,
+    handleCreateNew,
+  } = usePlayerSearchFieldUI({ searchTerm, results, onSelect, onCreateNew });
   return (
-    <div className="relative z-50 w-full">
+    <div className="relative z-50 w-full" ref={containerRef}>
       <Input
         align="center"
         placeholder={placeholder || FORM.PLAYER.PLACEHOLDERS.SEARCH_OR_CREATE}
         value={searchTerm}
         disabled={disabled}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onFocus={openDropdown}
         icon={isSearching ? ICONS.LOADING : ICONS.SEARCH}
         role="combobox"
         aria-autocomplete="list"
@@ -66,7 +67,7 @@ export const PlayerSearchField = ({
             {canCreate && (
               <button
                 type="button"
-                onClick={() => onCreateNew(searchTerm)}
+                onClick={() => handleCreateNew(searchTerm)}
                 className="w-full p-3 bg-gold/10 hover:bg-gold/20 cursor-pointer flex justify-between items-center group transition-default border-b border-border-subtle"
                 role="option"
               >
@@ -95,7 +96,7 @@ export const PlayerSearchField = ({
                 key={p.id}
                 player={p}
                 role="option"
-                onClick={() => onSelect(p)}
+                onClick={() => handleSelect(p)}
                 actionIcon={ICONS.ADD}
               />
             ))}

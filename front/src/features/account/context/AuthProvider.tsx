@@ -63,8 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const userData = await authService.me();
       if (userData) setUser(userData);
-    } catch (error) {
-      console.error(LOG_MESSAGES.AUTH.REFRESH_FAILED, error);
+    } catch (e) {
+      console.error(LOG_MESSAGES.AUTH.REFRESH_FAILED, e);
     }
   }, []);
 

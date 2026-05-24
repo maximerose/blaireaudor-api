@@ -1,13 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import {
-  AVAILABILITY,
-  ERRORS,
-  SUCCESS,
-  camelToSnake,
-  type ApiError,
-} from '@/shared';
+import { AVAILABILITY, ERRORS, SUCCESS } from '@/shared';
 import { useAuthContext } from '@/features/account/context';
 import {
   updatePasswordSchema,
@@ -17,13 +11,14 @@ import {
 } from '@/features/account/validations';
 import { userService } from '@/features/account/services';
 import { useAccountValidation } from './useAccountValidation';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
 
   const infoForm = useForm<UpdateProfileInfoData>({
     resolver: zodResolver(updateProfileInfoSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       display_name: user?.player?.display_name || '',
       username: user?.username || '',
@@ -65,19 +60,8 @@ export const useProfile = () => {
       await refreshUser();
       toast.success(SUCCESS.AUTH.INFO_UPDATED);
       infoForm.reset(data);
-    } catch (err) {
-      const apiError = err as ApiError;
-      if (apiError.violations) {
-        apiError.violations.forEach((v) => {
-          const formKey = camelToSnake(v.propertyPath);
-          infoForm.setError(formKey as keyof UpdateProfileInfoData, {
-            type: 'server',
-            message: v.message,
-          });
-        });
-      } else {
-        toast.error(ERRORS.AUTH.UPDATE_INFO_FAILED);
-      }
+    } catch (e) {
+      handleApiError(e, infoForm.setError, ERRORS.AUTH.UPDATE_INFO_FAILED);
     }
   };
 
@@ -86,19 +70,12 @@ export const useProfile = () => {
       await userService.updateProfile(data);
       toast.success(SUCCESS.AUTH.PASSWORD_UPDATED);
       passwordForm.reset();
-    } catch (err) {
-      const apiError = err as ApiError;
-      if (apiError.violations) {
-        apiError.violations.forEach((v) => {
-          const formKey = camelToSnake(v.propertyPath);
-          passwordForm.setError(formKey as keyof UpdatePasswordData, {
-            type: 'server',
-            message: v.message,
-          });
-        });
-      } else {
-        toast.error(ERRORS.AUTH.UPDATE_PASSWORD_FAILED);
-      }
+    } catch (e) {
+      handleApiError(
+        e,
+        passwordForm.setError,
+        ERRORS.AUTH.UPDATE_PASSWORD_FAILED,
+      );
     }
   };
 

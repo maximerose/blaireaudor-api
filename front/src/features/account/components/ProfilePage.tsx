@@ -22,8 +22,13 @@ import { PasswordField } from './fields/PasswordField';
 import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 
 export const ProfilePage = () => {
-  const { infoForm, passwordForm, onInfoSubmit, onPasswordSubmit } =
-    useProfile();
+  const {
+    infoForm,
+    passwordForm,
+    onInfoSubmit,
+    onPasswordSubmit,
+    usernameRegistryOptions,
+  } = useProfile();
 
   const passwordValue = passwordForm.watch('new_password') || '';
 
@@ -68,6 +73,7 @@ export const ProfilePage = () => {
                 watch={infoForm.watch}
                 errors={infoForm.formState.errors}
                 initialUsername={defaultUsername}
+                registerOptions={usernameRegistryOptions}
               />
 
               <EmailField

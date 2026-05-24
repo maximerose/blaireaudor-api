@@ -18,6 +18,7 @@ final class AppConstants
 
     // RÈGLES DES JOURS BONUS
     public const int BONUS_MIN_MULTIPLIER = 2;
+    public const int BONUS_DEFAULT_MULTIPLIER = 2;
 
     // RÈGLES DES COMPÉTITIONS
     public const int COMPETITION_MIN_NAME = 3;

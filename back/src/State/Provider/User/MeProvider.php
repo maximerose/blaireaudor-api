@@ -6,6 +6,7 @@ namespace App\State\Provider\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Constants\ErrorMessages;
 use App\DTO\User\PlayerRecordOutput;
 use App\DTO\User\PlayerStatsOutput;
 use App\Entity\User;
@@ -26,7 +27,7 @@ final readonly class MeProvider implements ProviderInterface
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            throw new UnauthorizedHttpException('Bearer', 'Vous devez être connecté pour accéder à votre profil.');
+            throw new UnauthorizedHttpException('Bearer', ErrorMessages::AUTH_REQUIRED);
         }
 
         $player = $user->getPlayer();
@@ -58,7 +59,7 @@ final readonly class MeProvider implements ProviderInterface
                 $recordDTO->points = (int) $raw['record']['points'];
                 $recordDTO->description = (string) $raw['record']['description'];
                 $recordDTO->competitionName = (string) $raw['record']['competition_name'];
-                $recordDTO->involvedPlayerName = (string) $raw['record']['involved_name']; // 🟢 Injection
+                $recordDTO->involvedPlayerName = (string) $raw['record']['involved_name'];
                 $statsDTO->record = $recordDTO;
             }
 
@@ -68,7 +69,7 @@ final readonly class MeProvider implements ProviderInterface
                 $stabDTO->points = (int) $raw['worstStab']['points'];
                 $stabDTO->description = (string) $raw['worstStab']['description'];
                 $stabDTO->competitionName = (string) $raw['worstStab']['competition_name'];
-                $stabDTO->involvedPlayerName = (string) $raw['worstStab']['involved_name']; // 🟢 Injection
+                $stabDTO->involvedPlayerName = (string) $raw['worstStab']['involved_name'];
                 $statsDTO->worstStab = $stabDTO;
             }
 

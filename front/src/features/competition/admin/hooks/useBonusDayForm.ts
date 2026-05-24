@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { toast } from 'react-hot-toast';
 import { getLocalDayString, sortByDate, ERRORS, RULES } from '@/shared';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,12 +25,13 @@ export const useBonusDayForm = () => {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isValid },
   } = useForm<BonusDayFormData>({
     resolver: zodResolver(getBonusDaySchema(minDate, maxDate)),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
-      newDate: '',
+      date: '',
       multiplier: RULES.BONUS.MIN_MULTIPLIER,
     },
   });
@@ -44,15 +44,18 @@ export const useBonusDayForm = () => {
   const onSubmit = (data: BonusDayFormData) => {
     const isDuplicate = (freshBonusDays || []).some(
       (bd: BonusDay) =>
-        getLocalDayString(bd.date) === getLocalDayString(data.newDate),
+        getLocalDayString(bd.date) === getLocalDayString(data.date),
     );
 
     if (isDuplicate) {
-      toast.error(ERRORS.BONUS.DUPLICATE_DATE);
+      setError('date', {
+        type: 'manual',
+        message: ERRORS.BONUS.DUPLICATE_DATE,
+      });
       return;
     }
 
-    addBonus({ date: data.newDate, multiplier: data.multiplier });
+    addBonus({ date: data.date, multiplier: data.multiplier });
     reset();
   };
 

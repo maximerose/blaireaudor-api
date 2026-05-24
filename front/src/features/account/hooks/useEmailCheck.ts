@@ -14,7 +14,7 @@ export const useEmailCheck = (email: string) => {
     return () => clearTimeout(timer);
   }, [email]);
 
-  const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(debouncedEmail);
+  const isValidFormat = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(debouncedEmail);
 
   const { data, isFetching: emailLoading } = useQuery({
     queryKey: QUERY_KEYS.auth.emailCheck(debouncedEmail),

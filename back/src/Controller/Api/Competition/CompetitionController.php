@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Competition;
 
+use App\Constants\ErrorMessages;
 use App\Entity\User;
 use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
@@ -13,6 +14,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -31,8 +35,9 @@ final class CompetitionController extends AbstractController
         EntityManagerInterface $entityManager,
     ): JsonResponse {
         $user = $this->getUser();
+
         if (!$user instanceof User || !$user->getPlayer()) {
-            return $this->json(['message' => 'Non autorisé'], Response::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedHttpException('Bearer', ErrorMessages::AUTH_REQUIRED);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -41,7 +46,11 @@ final class CompetitionController extends AbstractController
         $competition = $repository->findOneBy(['joinCode' => $joinCode]);
 
         if (!$competition) {
-            return $this->json(['message' => 'Code d\'accès invalide ou expiré.'], Response::HTTP_FORBIDDEN);
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
+        }
+
+        if ($competition->getIsFinished()) {
+            throw new BadRequestHttpException(ErrorMessages::COMP_FINISHED);
         }
 
         $participation = $participationManager->joinCompetition($user->getPlayer(), $competition);
@@ -56,7 +65,7 @@ final class CompetitionController extends AbstractController
         $competition = $repository->findOneBy(['joinCode' => $code]);
 
         if (!$competition) {
-            return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
         }
 
         $leaderboard = $partRepo->findLeaderboard($competition);
@@ -73,7 +82,7 @@ final class CompetitionController extends AbstractController
         $competition = $competitionRepository->find($id);
 
         if (!$competition) {
-            return $this->json(['message' => 'Compétition introuvable'], Response::HTTP_NOT_FOUND);
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
         }
 
         $leaderboard = $participationRepository->findLeaderboard($competition);

@@ -7,6 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\Constants\ErrorMessages;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\ParticipationRepository;
@@ -29,7 +30,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['player', 'competition'],
-    message: 'ALREADY_JOINED',
+    message: ErrorMessages::DUPLICATE_PARTICIPATION,
     errorPath: 'competition'
 )]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]

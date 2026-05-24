@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Constants\AppConstants;
+use App\Constants\ErrorMessages;
 use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
@@ -30,11 +32,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_COMPETITION_DATE', fields: ['competition', 'date'])]
 #[UniqueEntity(
     fields: ['competition', 'date'],
-    message: self::ERROR_DUPLICATE_BONUS
+    message: ErrorMessages::DUPLICATE_BONUS
 )]
 #[Assert\Expression(
     expression: 'this.getCompetition() == null or (this.getDate() >= this.getCompetition().getStartDate() and (this.getCompetition().getEndDate() == null or this.getDate() <= this.getCompetition().getEndDate()))',
-    message: self::ERROR_DATE_OUT_OF_RANGE
+    message: ErrorMessages::BONUS_DATE_OUT_OF_RANGE
 )]
 #[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
 #[ApiResource(
@@ -46,20 +48,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['bonus:read']]),
         new Post(
             securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
-            securityPostDenormalizeMessage: 'Seul un arbitre peut programmer un jour bonus.',
+            securityPostDenormalizeMessage: ErrorMessages::BONUS_DENIED_CREATE,
             denormalizationContext: ['groups' => ['bonus:write']],
             normalizationContext: ['groups' => ['bonus:read']]
         ),
         new Patch(
             security: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
-            securityMessage: 'Seul un arbitre peut modifier ce jour bonus.',
+            securityMessage: ErrorMessages::BONUS_DENIED_MANAGE,
             denormalizationContext: ['groups' => ['bonus:write']],
             normalizationContext: ['groups' => ['bonus:read']]
         ),
         new Delete(
             security: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
-            securityMessage: 'Seul un arbitre peut supprimer ce jour bonus.'
+            securityMessage: ErrorMessages::BONUS_DENIED_DELETE
         ),
     ],
 )]
@@ -69,10 +71,6 @@ class BonusDay
     use UuidTrait;
     use TimestampableTrait;
     use BlameableTrait;
-
-    public const int DEFAULT_MULTIPLIER = 2;
-    public const string ERROR_DATE_OUT_OF_RANGE = 'La date du jour bonus doit être comprise dans les dates de la compétition.';
-    public const string ERROR_DUPLICATE_BONUS = 'Un bonus est déjà programmé pour cette arène à cette date.';
 
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'bonusDays')]
     #[ORM\JoinColumn(nullable: false)]
@@ -87,11 +85,11 @@ class BonusDay
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\NotBlank]
     #[Assert\GreaterThanOrEqual(
-        value: self::DEFAULT_MULTIPLIER,
-        message: "Le multiplicateur doit être d'au moins {{ value }}."
+        value: AppConstants::BONUS_DEFAULT_MULTIPLIER,
+        message: ErrorMessages::BONUS_MIN_VALUE
     )]
     #[Groups(['bonus:read', 'bonus:write', 'competition:read'])]
-    private ?int $multiplier = self::DEFAULT_MULTIPLIER;
+    private ?int $multiplier = AppConstants::BONUS_DEFAULT_MULTIPLIER;
 
     public function getCompetition(): ?Competition
     {

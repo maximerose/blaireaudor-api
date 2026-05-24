@@ -1,13 +1,13 @@
 import { getApiError } from '@/shared/types';
-import { API } from '../constants';
+import { API, ERRORS, HTTP_STATUS } from '../constants';
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value?: unknown) => void;
-  reject: (reason?: any) => void;
+  resolve: (token?: string | null) => void;
+  reject: (reason?: unknown) => void;
 }> = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) prom.reject(error);
     else prom.resolve(token);
@@ -41,7 +41,7 @@ export const apiFetch = async (
   let response = await fetch(`${API.BASE_URL}${endpoint}`, fetchOptions);
 
   if (
-    response.status === 401 &&
+    response.status === HTTP_STATUS.UNAUTHORIZED &&
     endpoint !== API.ENDPOINTS.AUTH.LOGIN &&
     endpoint !== API.ENDPOINTS.AUTH.REFRESH
   ) {
@@ -69,7 +69,8 @@ export const apiFetch = async (
         },
       );
 
-      if (!refreshResponse.ok) throw new Error();
+      if (!refreshResponse.ok)
+        throw new Error(ERRORS.AUTH.INVALID_REFRESH_TOKEN);
 
       const data = await refreshResponse.json();
       localStorage.setItem('token', data.token);
@@ -81,7 +82,7 @@ export const apiFetch = async (
         headers,
       });
     } catch {
-      processQueue(new Error(), null);
+      processQueue(new Error(ERRORS.AUTH.REFRESH_FAILED), null);
       localStorage.removeItem('token');
       window.location.href = '/login';
       return response;

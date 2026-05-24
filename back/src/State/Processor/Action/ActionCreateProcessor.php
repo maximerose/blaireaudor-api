@@ -6,6 +6,7 @@ namespace App\State\Processor\Action;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Constants\ErrorMessages;
 use App\DTO\Action\ActionCreateInput;
 use App\Entity\Action;
 use App\Entity\Competition;
@@ -32,18 +33,18 @@ final readonly class ActionCreateProcessor implements ProcessorInterface
     {
         $user = $this->security->getUser();
         if (!$user) {
-            throw new AccessDeniedHttpException('Vous devez être connecté.');
+            throw new AccessDeniedHttpException(ErrorMessages::AUTH_REQUIRED);
         }
 
         $competitionId = $uriVariables['competitionId'] ?? null;
         $competition = $this->entityManager->getRepository(Competition::class)->find($competitionId);
 
         if (!$competition) {
-            throw new NotFoundHttpException('Compétition introuvable.');
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
         }
 
         if (!$this->security->isGranted(CompetitionVoter::PLAYER, $competition)) {
-            throw new AccessDeniedHttpException('Vous devez participer à cette compétition pour déclarer une action.');
+            throw new AccessDeniedHttpException(ErrorMessages::COMP_MUST_PARTICIPATE);
         }
 
         $payload = [

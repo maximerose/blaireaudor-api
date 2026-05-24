@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Competition;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Repository\ActionRepository;
 use App\Security\Voter\CompetitionVoter;
@@ -15,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/competitions/{id}', name: 'api.competition.action.')]
+#[IsGranted('ROLE_USER', message: ErrorMessages::AUTH_REQUIRED)]
 final class CompetitionActionController extends AbstractController
 {
     public function __construct(

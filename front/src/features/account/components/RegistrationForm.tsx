@@ -5,15 +5,14 @@ import {
   CARD_VARIANT,
   preventDefault,
   ROUTES,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
   WizardCard,
   WizardLayout,
   Stack,
   Row,
   Divider,
   Alert,
+  UI,
+  ERRORS,
 } from '@/shared';
 import { useRegistration } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
@@ -25,10 +24,14 @@ import { UsernameField } from './fields/UsernameField';
 import { PasswordField } from './fields/PasswordField';
 import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 import { useSearchParams } from 'react-router-dom';
+import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const RegistrationForm = () => {
   const [searchParams] = useSearchParams();
   const joinCode = searchParams.get('code');
+  const { data: compData, isLoading: isCompLoading } =
+    useJoinCodeQuery(joinCode);
+  const isFinished = compData?.competition?.is_finished;
 
   const {
     register,
@@ -37,7 +40,6 @@ export const RegistrationForm = () => {
     watch,
     handleDisplayNameChange,
     handleDisplayNameBlur,
-    globalMessage,
     isLoading,
     isSubmitting,
     displayStates,
@@ -45,6 +47,7 @@ export const RegistrationForm = () => {
     playerSearch,
     foundGuest,
     linkFoundGuest,
+    usernameRegistryOptions,
   } = useRegistration(ROUTES.NAV.DASHBOARD);
 
   const passwordValue = watch('plain_password') || '';
@@ -67,9 +70,17 @@ export const RegistrationForm = () => {
           <Alert variant="info" className="mb-4">
             {AUTH_UI.REGISTER.QR_JOIN_REGISTER(
               <span className="font-mono font-black text-gold tracking-widest px-1">
-                {joinCode}
+                {isCompLoading
+                  ? UI.LOADING_DEFAULT
+                  : compData?.competition?.name || joinCode}
               </span>,
             )}
+          </Alert>
+        )}
+
+        {joinCode && isFinished && (
+          <Alert variant="danger" className="mb-4">
+            {ERRORS.COMPETITION.COMPETITION_FINISHED}
           </Alert>
         )}
         <HistoricalPlayerSearch
@@ -102,6 +113,7 @@ export const RegistrationForm = () => {
               currentPlayerId={watch('player_id')}
               showHint={displayStates.shouldShowUsernameHint}
               disabled={isInputDisabled}
+              registerOptions={usernameRegistryOptions}
             />
 
             {displayStates.shouldShowGuestAlert && foundGuest && (
@@ -139,16 +151,6 @@ export const RegistrationForm = () => {
           >
             {AUTH_UI.REGISTER.SUBMIT}
           </Button>
-
-          {globalMessage && (
-            <Text
-              variant={TEXT_VARIANT.BODY}
-              colorTheme={TEXT_THEME.DANGER}
-              className="text-center animate-fade-in"
-            >
-              {globalMessage}
-            </Text>
-          )}
         </Stack>
 
         <Divider spacing="sm" />

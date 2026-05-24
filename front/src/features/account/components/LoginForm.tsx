@@ -16,10 +16,13 @@ import {
   Stack,
   Row,
   Divider,
+  UI,
+  ERRORS,
 } from '@/shared';
 import { useLogin } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
 import { PasswordField } from './fields/PasswordField';
+import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const LoginForm = () => {
   const [searchParams] = useSearchParams();
@@ -27,15 +30,12 @@ export const LoginForm = () => {
   const registerUrl = joinCode
     ? ROUTES.NAV.REGISTER_WITH_JOIN_CODE(joinCode)
     : ROUTES.NAV.REGISTER;
+  const { data: compData, isLoading: isCompLoading } =
+    useJoinCodeQuery(joinCode);
+  const isFinished = compData?.competition?.is_finished;
 
-  const {
-    register,
-    handleSubmit,
-    handleUsernameChange,
-    globalError,
-    isSubmitting,
-    errors,
-  } = useLogin();
+  const { register, handleSubmit, handleUsernameChange, isSubmitting, errors } =
+    useLogin();
 
   return (
     <WizardLayout title={AUTH_UI.LOGIN.TITLE}>
@@ -46,14 +46,25 @@ export const LoginForm = () => {
         onSubmit={handleSubmit}
         noValidate
       >
-        {globalError && <Alert variant="danger">{globalError}</Alert>}
-        {joinCode && (
+        {errors.root?.serverError?.message && (
+          <Alert variant="danger">{errors.root.serverError.message}</Alert>
+        )}
+
+        {joinCode && !isFinished && (
           <Alert variant="info" className="mb-4">
             {AUTH_UI.LOGIN.QR_JOIN_LOGIN(
               <span className="font-mono font-black text-gold tracking-widest px-1">
-                {joinCode}
+                {isCompLoading
+                  ? UI.LOADING_DEFAULT
+                  : compData?.competition?.name || joinCode}
               </span>,
             )}
+          </Alert>
+        )}
+
+        {joinCode && isFinished && (
+          <Alert variant="danger" className="mb-4">
+            {ERRORS.COMPETITION.COMPETITION_FINISHED}
           </Alert>
         )}
 

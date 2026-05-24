@@ -28,11 +28,13 @@ export const ERRORS = {
     INVALID_CREDENTIALS: 'Identifiants invalides.',
     SESSION_EXPIRED: 'Ta session a expiré, merci de te reconnecter.',
     UNAUTHORIZED: "Tu n'as pas les droits pour accéder à cette compétition.",
+    INVALID_REFRESH_TOKEN: 'Refresh token expiré ou invalide.',
+    REFRESH_FAILED: 'Échec du rafraîchissement.',
     REGISTRATION_FAILED: "L'inscription a échoué. Vérifie tes informations.",
     FORBIDDEN: "Action interdite : tu n'es pas administrateur.",
     UPDATE_INFO_FAILED: 'Erreur lors de la mise à jour des informations.',
     UPDATE_PASSWORD_FAILED: 'Erreur lors de la mise à jour du mot de passe.',
-    INVALID_TOKEN: 'Token invalide.',
+    INVALID_PASSWORD_TOKEN: 'Token invalide.',
     RESET_PASSWORD_FAILED:
       'Erreur lors de la réinitialisation du mot de passe.',
   },
@@ -59,6 +61,7 @@ export const ERRORS = {
       `Impossible de clôturer ! Il reste ${count} ${pluralize(count, 'signalement')} à trancher.`,
 
     // Participants et Arbitres
+    JOIN_FAILED: 'Impossible de rejoindre la compétition.',
     PARTICIPATION_ADD_FAILED:
       "Une erreur est survenue lors de l'ajout des participants.",
     PARTICIPATION_REMOVE_FAILED:

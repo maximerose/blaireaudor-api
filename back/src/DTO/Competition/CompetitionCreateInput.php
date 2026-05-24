@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace App\DTO\Competition;
 
+use App\Constants\AppConstants;
+use App\Constants\ErrorMessages;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Assert\Expression(
     'this.endDate == null or this.endDate >= this.startDate',
-    message: 'La date de fin doit être postérieure ou égale à la date de début.'
+    message: ErrorMessages::END_DATE_BEFORE_START_DATE
 )]
 final class CompetitionCreateInput
 {
-    #[Assert\NotBlank(message: 'Le nom de la compétition est obligatoire.')]
+    #[Assert\NotBlank(message: ErrorMessages::MISSING_COMP_NAME)]
     public string $name = '';
 
-    #[Assert\NotBlank(message: 'La date de début est obligatoire.')]
+    #[Assert\NotBlank(message: ErrorMessages::MISSING_COMP_START_DATE)]
     public string $startDate = '';
 
     public ?string $endDate = null;
 
     #[Assert\Length(
-        min: 3,
-        minMessage: 'Le code d\'accès doit contenir au moins 3 caractères.'
+        min: AppConstants::COMPETITION_MIN_JOIN_CODE,
+        minMessage: ErrorMessages::COMP_MIN_JOIN_CODE
     )]
     public ?string $joinCode = null;
 

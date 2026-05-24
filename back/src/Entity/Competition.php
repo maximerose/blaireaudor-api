@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Constants\ErrorMessages;
 use App\DTO\Competition\CompetitionAddPlayersInput;
 use App\DTO\Competition\CompetitionCreateInput;
 use App\DTO\Competition\CompetitionRefereeInput;
@@ -38,16 +39,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * les participations des joueurs ainsi que les actions de jeu.
  */
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
-#[UniqueEntity(fields: ['joinCode'], message: "Ce code d'accès est déjà utilisé pour une autre compétition.")]
+#[UniqueEntity(fields: ['joinCode'], message: ErrorMessages::DUPLICATE_JOIN_CODE)]
 #[Assert\Expression(
     'this.getEndDate() === null || this.getEndDate() >= this.getStartDate()',
-    message: 'La date de fin doit être postérieure à la date de début'
+    message: ErrorMessages::END_DATE_BEFORE_START_DATE
 )]
 #[ApiResource(
     operations: [
         new Post(
             security: "is_granted('ROLE_USER')",
-            securityMessage: 'Vous devez être connecté.',
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             input: CompetitionCreateInput::class,
             processor: CompetitionCreateProcessor::class,
         ),
@@ -55,7 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'add_players',
             uriTemplate: '/competitions/{id}/add-players',
             security: "is_granted('ROLE_USER')",
-            securityMessage: 'Vous devez être connecté.',
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             input: CompetitionAddPlayersInput::class,
             processor: CompetitionAddPlayersProcessor::class,
             read: false,
@@ -68,7 +69,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'add_referee',
             uriTemplate: '/competitions/{id}/referees/add',
             security: "is_granted('ROLE_USER')",
-            securityMessage: 'Vous devez être connecté.',
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             input: CompetitionRefereeInput::class,
             processor: CompetitionAddRefereeProcessor::class,
             read: false,
@@ -81,7 +82,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'remove_referee',
             uriTemplate: '/competitions/{id}/referees/remove',
             security: "is_granted('ROLE_USER', object)",
-            securityMessage: 'Vous devez être connecté.',
+            securityMessage: ErrorMessages::AUTH_REQUIRED,
             input: CompetitionRefereeInput::class,
             processor: CompetitionRemoveRefereeProcessor::class,
             read: false,
@@ -93,7 +94,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(normalizationContext: ['groups' => 'competition:read']),
         new Patch(
             security: "is_granted('".CompetitionVoter::MANAGE."', object)",
-            securityMessage: 'Seul un gestionnaire peut modifier la compétition.',
+            securityMessage: ErrorMessages::COMP_DENIED_MANAGE,
             processor: CompetitionUpdateProcessor::class,
             denormalizationContext: ['groups' => ['competition:write']],
             normalizationContext: ['groups' => ['competition:read']]
@@ -101,7 +102,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => 'competition:read']),
         new Delete(
             security: "is_granted('".CompetitionVoter::CREATOR."', object)",
-            securityMessage: 'Seul le créateur peut supprimer cette compétition.'
+            securityMessage: ErrorMessages::COMP_DENIED_DELETE
         ),
     ]
 )]
@@ -136,7 +137,7 @@ class Competition
     #[ApiProperty(
         securityPostDenormalize: "
         object.getId() === null or 
-        is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::REFEREE'), object)
+        is_granted('".CompetitionVoter::REFEREE."', object)
     "
     )]
     private ?bool $fogOfWar = true;

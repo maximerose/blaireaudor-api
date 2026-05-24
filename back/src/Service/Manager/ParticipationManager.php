@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Manager;
 
+use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Entity\Participation;
 use App\Entity\Player;
@@ -55,7 +56,7 @@ class ParticipationManager
     public function removeParticipation(Participation $participation): void
     {
         if ($participation->getActions()->count() > 0) {
-            throw new \LogicException('Impossible de retirer ce joueur : il a déjà des actions enregistrées.');
+            throw new \LogicException(ErrorMessages::PART_HAS_ACTIONS);
         }
 
         $this->entityManager->remove($participation);

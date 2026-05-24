@@ -18,6 +18,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RefreshScoresCommand extends Command
 {
+    public const string REFRESH_SUCCESS = 'Tous les scores ont été synchronisés avec succès.';
+
     public function __construct(
         private CompetitionRepository $competitionRepository,
         private ActionRepository $actionRepository,
@@ -30,7 +32,7 @@ class RefreshScoresCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $competitions = $this->competitionRepository->findAll();
 
-        $io->progressStart(count($competitions));
+        $io->progressStart(\count($competitions));
 
         foreach ($competitions as $competition) {
             $this->actionRepository->updateAllScoresForCompetition($competition);
@@ -38,7 +40,7 @@ class RefreshScoresCommand extends Command
         }
 
         $io->progressFinish();
-        $io->success('Tous les scores ont été synchronisés avec succès (Timezone Europe/Paris appliquée).');
+        $io->success(self::REFRESH_SUCCESS);
 
         return Command::SUCCESS;
     }

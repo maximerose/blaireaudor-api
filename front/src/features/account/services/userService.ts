@@ -13,10 +13,6 @@ export const userService = {
 
     const result = await response.json();
 
-    if (!response.ok) {
-      throw result;
-    }
-
     if (result.token) {
       localStorage.setItem('token', result.token);
     }

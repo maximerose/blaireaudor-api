@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,11 +10,12 @@ import {
   type FormParticipant,
   type PlayerCompact,
 } from '@/features/player';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useEnrollment = (
   competitionId: string,
   initialParticipants: FormParticipant[],
-  onSuccess?: () => void,
+  onSuccess?: () => void | Promise<void>,
 ) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -22,6 +23,14 @@ export const useEnrollment = (
 
   const [participants, setParticipants] =
     useState<FormParticipant[]>(initialParticipants);
+
+  useEffect(() => {
+    setParticipants((prev) =>
+      prev.filter(
+        (p) => p.isNew || initialParticipants.some((ip) => ip.id === p.id),
+      ),
+    );
+  }, [initialParticipants]);
 
   const {
     searchTerm,
@@ -76,21 +85,22 @@ export const useEnrollment = (
 
       return competitionService.addParticipation(competitionId, payload);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.competition.all,
+      });
+      await refreshUser();
+
       if (onSuccess) {
-        onSuccess();
+        await onSuccess();
       } else {
         navigate(ROUTES.NAV.DASHBOARD);
       }
+
       toast.success(SUCCESS.COMPETITION.PARTICIPANTS_UPDATED);
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.competition.all });
-      refreshUser();
     },
-    onError: (apiError) => {
-      toast.error(
-        apiError.message || ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED,
-      );
-    },
+    onError: (e) =>
+      handleApiError(e, undefined, ERRORS.COMPETITION.PARTICIPATION_ADD_FAILED),
   });
 
   return {

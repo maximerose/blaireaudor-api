@@ -58,7 +58,7 @@ export const EmailField = ({
         })}
       />
 
-      {isEmailChanged && (
+      {isEmailChanged && !error && (
         <Row justify="center" className="h-4" aria-live="polite">
           {emailLoading ? (
             <Text

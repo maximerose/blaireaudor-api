@@ -27,7 +27,7 @@ final readonly class ResetPasswordRequestProcessor implements ProcessorInterface
     }
 
     /**
-     * @param ResetPasswordRequestInput $data
+     * @param \App\DTO\User\ResetPasswordRequestInput $data
      */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ResetPasswordResponse
     {

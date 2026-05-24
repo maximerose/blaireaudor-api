@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\User;
 
+use App\Constants\ErrorMessages;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -27,8 +29,8 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/token/refresh', name: 'refresh', methods: ['POST'])]
-    public function refresh(): JsonResponse
+    public function refresh(): void
     {
-        return $this->json(['message' => 'Token de rafraîchissement invalide ou manquant.'], Response::HTTP_UNAUTHORIZED);
+        throw new UnauthorizedHttpException('Bearer', ErrorMessages::INVALID_REFRESH_TOKEN);
     }
 }

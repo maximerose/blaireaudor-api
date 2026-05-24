@@ -14,7 +14,7 @@ final class ParticipationNormalizer implements NormalizerInterface, NormalizerAw
 {
     use NormalizerAwareTrait;
 
-    private const ALREADY_CALLED = 'PARTICIPATION_NORMALIZER_ALREADY_CALLED';
+    private const string ALREADY_CALLED = 'PARTICIPATION_NORMALIZER_ALREADY_CALLED';
 
     public function __construct(
         private readonly ParticipationRepository $repository,

@@ -7,10 +7,8 @@ import {
   slugify,
   finalizeSlug,
   type ApiError,
-  LOG_MESSAGES,
   AVAILABILITY,
   FORM,
-  ICONS,
   ERRORS,
   ROUTES,
 } from '@/shared';
@@ -28,12 +26,12 @@ import type { AuthResponseData } from '@/features/account/types';
 import { authService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
 import { useAccountValidation } from './useAccountValidation';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [globalMessage, setGlobalMessage] = useState('');
 
   const joinCode = searchParams.get('code');
 
@@ -150,22 +148,8 @@ export const useRegistration = (redirectUrl: string) => {
         navigate(redirectUrl);
       }
     },
-    onError: (apiError: ApiError) => {
-      console.error(LOG_MESSAGES.AUTH.REGISTRATION_FAILED, apiError);
-      if (apiError.violations && apiError.violations.length > 0) {
-        apiError.violations.forEach((violation) => {
-          setError(violation.propertyPath as keyof RegisterFormData, {
-            type: 'server',
-            message: violation.message,
-          });
-        });
-      } else {
-        setGlobalMessage(
-          apiError.message ||
-            `${ICONS.FAILURE} ${ERRORS.AUTH.REGISTRATION_FAILED}`,
-        );
-      }
-    },
+    onError: (e) =>
+      handleApiError(e, setError, ERRORS.AUTH.REGISTRATION_FAILED),
   });
 
   const onSubmit = (data: RegisterFormData) => {
@@ -176,7 +160,6 @@ export const useRegistration = (redirectUrl: string) => {
       validation.emailStatus === AVAILABILITY.TAKEN
     )
       return;
-    setGlobalMessage('');
     registerMutation.mutate(data);
   };
 
@@ -199,7 +182,6 @@ export const useRegistration = (redirectUrl: string) => {
     handleDisplayNameChange,
     handleDisplayNameBlur,
     handleUsernameFocus: () => setShowUsernameHint(true),
-    globalMessage,
     isLoading: registerMutation.isPending,
     isSubmitting,
     displayStates: {

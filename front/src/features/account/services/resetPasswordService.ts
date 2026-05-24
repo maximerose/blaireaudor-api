@@ -1,4 +1,4 @@
-import { API, apiFetch, ERRORS } from '@/shared';
+import { API, apiFetch } from '@/shared';
 
 export const resetPasswordService = {
   /**
@@ -16,11 +16,10 @@ export const resetPasswordService = {
    * Étape 2 : Valide si le jeton du lien reçu par mail est encore valide
    */
   validateToken: async (token: string) => {
-    const response = await apiFetch(
-      API.ENDPOINTS.AUTH.RESET_PASSWORD_VALIDATE(token),
-      { method: 'GET' },
-    );
-    if (!response.ok) throw new Error(ERRORS.AUTH.INVALID_TOKEN);
+    await apiFetch(API.ENDPOINTS.AUTH.RESET_PASSWORD_VALIDATE(token), {
+      method: 'GET',
+    });
+
     return true;
   },
 
@@ -35,11 +34,6 @@ export const resetPasswordService = {
         body: JSON.stringify({ plain_password: plainPassword }),
       },
     );
-
-    if (!response.ok) {
-      const err = await response.json();
-      throw err;
-    }
 
     return response.json();
   },

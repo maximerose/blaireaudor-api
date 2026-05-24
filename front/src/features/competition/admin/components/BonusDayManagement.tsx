@@ -13,6 +13,7 @@ import {
   Row,
   Stack,
   Grid,
+  RULES,
 } from '@/shared';
 import { useBonusDayForm } from '@/features/competition/admin/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -77,14 +78,15 @@ export const BonusDayManagement = () => {
                 label={FORM.SHARED.LABELS.DATE}
                 min={minDate}
                 max={maxDate}
-                error={errors?.newDate?.message}
-                {...register('newDate')}
+                error={errors?.date?.message}
+                {...register('date')}
               />
             </div>
 
             <div className="sm:col-span-5">
               <Input
                 type="number"
+                min={RULES.BONUS.MIN_MULTIPLIER}
                 label={FORM.BONUS_DAY.LABELS.MULTIPLIER}
                 error={errors?.multiplier?.message}
                 {...register('multiplier', { valueAsNumber: true })}

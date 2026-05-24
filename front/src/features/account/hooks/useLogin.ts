@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ROUTES, ERRORS, slugify, type ApiError, HTTP_STATUS } from '@/shared';
 import { useForm } from 'react-hook-form';
@@ -9,10 +9,9 @@ import {
   type LoginFormData,
 } from '@/features/account/validations';
 import { competitionService } from '@/features/competition/services';
-import toast from 'react-hot-toast';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useLogin = () => {
-  const [globalError, setGlobalError] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login, logout } = useAuthContext();
@@ -23,6 +22,7 @@ export const useLogin = () => {
     register,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -38,8 +38,6 @@ export const useLogin = () => {
   }, [logout]);
 
   const onSubmit = async (data: LoginFormData) => {
-    setGlobalError('');
-
     try {
       await login(data);
 
@@ -47,25 +45,23 @@ export const useLogin = () => {
         try {
           await competitionService.join(joinCode);
           navigate(ROUTES.NAV.COMPETITION_DETAIL(joinCode), { replace: true });
-        } catch (e: unknown) {
-          const apiError = e as ApiError;
-          toast.error(
-            apiError.message || ERRORS.COMPETITION.NOT_FOUND(joinCode),
-          );
+        } catch (e) {
+          handleApiError(e, undefined, ERRORS.COMPETITION.NOT_FOUND(joinCode));
           navigate(ROUTES.NAV.DASHBOARD, { replace: true });
         }
       } else {
         navigate(ROUTES.NAV.DASHBOARD, { replace: true });
       }
-    } catch (e: unknown) {
+    } catch (e) {
       const apiError = e as ApiError;
-
-      const errorMessage =
-        apiError.status === HTTP_STATUS.UNAUTHORIZED
-          ? ERRORS.AUTH.INVALID_CREDENTIALS
-          : apiError.message || ERRORS.NETWORK.SERVER;
-
-      setGlobalError(errorMessage);
+      if (apiError.status === HTTP_STATUS.UNAUTHORIZED) {
+        setError('root.serverError', {
+          type: 'server',
+          message: ERRORS.AUTH.INVALID_CREDENTIALS,
+        });
+      } else {
+        handleApiError(e);
+      }
     }
   };
 
@@ -79,7 +75,6 @@ export const useLogin = () => {
     handleUsernameChange,
     setValue,
     errors,
-    globalError,
     isSubmitting,
   };
 };

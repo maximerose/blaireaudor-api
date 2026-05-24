@@ -25,6 +25,7 @@ interface UsernameFieldProps {
   fieldName?: string;
   showHint?: boolean;
   disabled?: boolean;
+  registerOptions?: Record<string, any>;
 }
 
 export const UsernameField = ({
@@ -36,6 +37,7 @@ export const UsernameField = ({
   fieldName = 'username',
   showHint = false,
   disabled = false,
+  registerOptions = {},
 }: UsernameFieldProps) => {
   const currentUsername = watch(fieldName);
 
@@ -54,11 +56,7 @@ export const UsernameField = ({
         disabled={disabled}
         autoComplete="username"
         error={error}
-        {...register(fieldName, {
-          onChange: (e) => {
-            e.target.value = e.target.value.toLowerCase().trim();
-          },
-        })}
+        {...register('username', registerOptions)}
       />
 
       {showHint && !error && (

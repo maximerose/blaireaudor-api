@@ -6,6 +6,7 @@ namespace App\State\Processor\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Constants\ErrorMessages;
 use App\DTO\User\ResetPasswordResetInput;
 use App\DTO\User\ResetPasswordResponse;
 use App\Service\Manager\UserManager;
@@ -33,7 +34,7 @@ final readonly class ResetPasswordResetProcessor implements ProcessorInterface
         try {
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface) {
-            throw new BadRequestHttpException('Le lien de réinitialisation est invalide ou a expiré.');
+            throw new BadRequestHttpException(ErrorMessages::INVALID_RESET_PASSWORD_TOKEN);
         }
 
         $this->resetPasswordHelper->removeResetRequest($token);

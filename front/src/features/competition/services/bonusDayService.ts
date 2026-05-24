@@ -2,7 +2,14 @@ import type { BonusDay } from '@/features/competition/types';
 import { API, apiFetch } from '@/shared';
 
 export const bonusDayService = {
-  create: async (competitionId: string, date: string, multiplier: number) => {
+  /**
+   * Crée un nouveau jour bonus pour une compétition
+   */
+  create: async (
+    competitionId: string,
+    date: string,
+    multiplier: number,
+  ): Promise<BonusDay> => {
     const response = await apiFetch(API.ENDPOINTS.BONUS.BASE, {
       method: 'POST',
       body: JSON.stringify({
@@ -12,18 +19,21 @@ export const bonusDayService = {
       }),
     });
 
-    if (!response.ok) throw new Error('Erreur lors de la création du bonus');
     return response.json();
   },
 
-  delete: async (bonusDayId: string) => {
-    const response = await apiFetch(API.ENDPOINTS.BONUS.DETAIL(bonusDayId), {
+  /**
+   * Supprime un jour bonus
+   */
+  delete: async (bonusDayId: string): Promise<void> => {
+    await apiFetch(API.ENDPOINTS.BONUS.DETAIL(bonusDayId), {
       method: 'DELETE',
     });
-
-    if (!response.ok) throw new Error('Erreur lors de la suppression du bonus');
   },
 
+  /**
+   * Récupère tous les jours bonus d'une compétition
+   */
   getByCompetition: async (
     competitionId: string,
     signal?: AbortSignal,
@@ -32,10 +42,6 @@ export const bonusDayService = {
       API.ENDPOINTS.BONUS.BY_COMPETITION(competitionId),
       { signal },
     );
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des jours bonus');
-    }
 
     const data = await response.json();
 

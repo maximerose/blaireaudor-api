@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { CONFIRMS, ERRORS, SUCCESS, useConfirmModal } from '@/shared';
+import { CONFIRMS, SUCCESS, useConfirmModal } from '@/shared';
 import {
   usePlayerSearch,
   type Player,
@@ -17,7 +17,7 @@ export const useRefereeManagementUI = (competition: Competition) => {
     competition.join_code,
   );
 
-  const { openModal } = useConfirmModal();
+  const { openModal, closeModal } = useConfirmModal();
 
   const referees = useMemo(
     () => getCompetitionReferees(competition),
@@ -40,12 +40,12 @@ export const useRefereeManagementUI = (competition: Competition) => {
   }, [rawSearchResults, referees]);
 
   const handleAdd = async (player: PlayerCompact) => {
-    const success = await addReferee(player.id);
-    if (success) {
+    try {
+      await addReferee(player.id);
       setSearchQuery('');
       toast.success(SUCCESS.REFEREE.ADDED(player.display_name));
-    } else {
-      toast.error(ERRORS.COMPETITION.REFEREE_ADD_FAILED);
+    } catch {
+      // L'erreur API a déjà été traitée et affichée par handleApiError.
     }
   };
 
@@ -60,13 +60,14 @@ export const useRefereeManagementUI = (competition: Competition) => {
       onConfirm: async () => {
         if (!ref.id) return;
 
-        const success = await removeReferee(ref.id);
-        if (success) {
+        try {
+          await removeReferee(ref.id);
           toast.success(
             isMe ? SUCCESS.REFEREE.RESIGNED : SUCCESS.REFEREE.REVOKED(ref.name),
           );
-        } else {
-          toast.error(ERRORS.COMPETITION.REFEREE_REMOVE_FAILED);
+          closeModal();
+        } catch {
+          // L'erreur API est gérée en amont par handleApiError.
         }
       },
     });

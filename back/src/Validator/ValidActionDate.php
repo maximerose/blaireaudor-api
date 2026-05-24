@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use App\Constants\ErrorMessages;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -13,7 +14,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class ValidActionDate extends Constraint
 {
-    public string $message = "L'action doit obligatoirement se dérouler pendant la période active de la compétition.";
+    public string $message = ErrorMessages::ACTION_DATE_OUT_OF_RANGE;
 
     public function getTargets(): string|array
     {

@@ -44,9 +44,9 @@ export const useInlineEnrollmentUI = () => {
   const enrollment = useEnrollment(
     competition?.id || '',
     existingPlayers,
-    () => {
+    async () => {
+      await refresh();
       setIsOpen(false);
-      refresh();
     },
   );
 

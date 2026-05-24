@@ -3,7 +3,7 @@ import z from 'zod';
 
 export const getBonusDaySchema = (minDate: string, maxDate: string) =>
   z.object({
-    newDate: z
+    date: z
       .string()
       .min(1, { error: ERRORS.VALIDATION.REQUIRED })
       .refine((date) => date >= minDate, { error: ERRORS.BONUS.INVALID_DATES })

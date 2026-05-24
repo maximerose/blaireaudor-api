@@ -6,6 +6,7 @@ namespace App\State\Processor\Competition;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\Constants\ErrorMessages;
 use App\DTO\Competition\CompetitionRefereeInput;
 use App\Entity\Competition;
 use App\Repository\PlayerRepository;
@@ -32,24 +33,24 @@ final readonly class CompetitionAddRefereeProcessor implements ProcessorInterfac
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Competition
     {
         if (!$this->security->getUser()) {
-            throw new AccessDeniedHttpException('Vous devez être connecté.');
+            throw new AccessDeniedHttpException(ErrorMessages::AUTH_REQUIRED);
         }
 
         $competitionId = $uriVariables['id'] ?? null;
         $competition = $this->entityManager->getRepository(Competition::class)->find($competitionId);
 
         if (!$competition) {
-            throw new NotFoundHttpException('Compétition introuvable.');
+            throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
         }
 
         if (!$this->security->isGranted(CompetitionVoter::MANAGE, $competition)) {
-            throw new AccessDeniedHttpException('Seul un gestionnaire peut modifier les arbitres.');
+            throw new AccessDeniedHttpException(ErrorMessages::COMP_DENIED_EDIT_REFEREES);
         }
 
         $player = $this->playerRepository->find($data->playerId);
 
         if (!$player) {
-            throw new NotFoundHttpException('Joueur introuvable');
+            throw new NotFoundHttpException(ErrorMessages::PLAYER_NOT_FOUND);
         }
 
         $this->competitionManager->addReferee($competition, $player);

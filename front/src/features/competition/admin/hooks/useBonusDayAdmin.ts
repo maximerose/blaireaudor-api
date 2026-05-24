@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
 import type { BonusDay } from '@/features/competition/types';
 import { bonusDayService } from '@/features/competition/services';
+import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useBonusDayAdmin = (
   competitionId: string,
@@ -33,8 +34,7 @@ export const useBonusDayAdmin = (
       invalidateCompetition();
       toast.success(SUCCESS.BONUS.ADDED);
     },
-    onError: (apiError: ApiError) =>
-      toast.error(apiError.message || ERRORS.BONUS.CREATE_FAILED),
+    onError: (e) => handleApiError(e, undefined, ERRORS.BONUS.CREATE_FAILED),
   });
 
   const deleteMutation = useMutation<void, ApiError, string>({
@@ -43,8 +43,7 @@ export const useBonusDayAdmin = (
       invalidateCompetition();
       toast.success(SUCCESS.BONUS.DELETED);
     },
-    onError: (apiError: ApiError) =>
-      toast.error(apiError.message || ERRORS.BONUS.DELETE_FAILED),
+    onError: (e) => handleApiError(e, undefined, ERRORS.BONUS.DELETE_FAILED),
   });
 
   return {
