@@ -11,7 +11,6 @@ use App\Entity\Trait\UuidTrait;
 use App\Repository\PushSubscriptionRepository;
 use App\State\Processor\Notification\PushSubscriptionProcessor;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PushSubscriptionRepository::class)]
@@ -45,10 +44,6 @@ class PushSubscription
     #[ORM\Column(length: 255)]
     #[Groups(['push:write', 'push:read'])]
     private ?string $auth = null;
-
-    #[Gedmo\Timestampable(on: 'create')]
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
 
     public function getUser(): ?User
     {
