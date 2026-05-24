@@ -297,7 +297,7 @@ class ActionRepository extends ServiceEntityRepository
         // 7. Pire Record Absolu (Méfait unique le plus lourd subi)
         $sqlRecord = '
             SELECT a.points, a.description, c.name as competition_name,
-                   COALESCE(cp.display_name, u.username, \'Anonyme\') as involved_name
+                   COALESCE(cp.display_name, u.username) as involved_name
             FROM action a
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id

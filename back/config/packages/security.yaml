@@ -50,13 +50,13 @@ security:
     - { path: ^/api/login, roles: PUBLIC_ACCESS }
     - { path: ^/api/register, roles: PUBLIC_ACCESS }
     - { path: ^/api/reset-password, roles: PUBLIC_ACCESS }
-    - { path: ^/api/check-, roles: PUBLIC_ACCESS } # Autorise /check-username et /check-email pour ton formulaire d'inscription
-    - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Garde la doc API Platform accessible (optionnel)
+    - { path: ^/api/check-, roles: PUBLIC_ACCESS }
+    - { path: ^/api/docs, roles: PUBLIC_ACCESS }
     - { path: ^/api/competitions/by-code, roles: PUBLIC_ACCESS }
     - { path: ^/api/competitions/check/join-code, roles: PUBLIC_ACCESS }
+    - { path: ^/api/players/search, roles: PUBLIC_ACCESS }
     
     # 2. Le verrouillage global
-    # Si la route commence par /api mais n'a pas matché les règles au-dessus -> ROLE_USER obligatoire
     - { path: ^/api, roles: ROLE_USER }
 
 when@test:

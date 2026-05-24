@@ -75,7 +75,7 @@ export const DASHBOARD_UI = {
   },
   STATS_PANEL: {
     TITLE: 'Statistiques de carrière',
-    RECORD_EMPTY: 'Aucun méfait enregistré',
+    RECORD_EMPTY: 'Aucune dénonciation envoyée',
 
     POINTS: {
       TITLE: '🎯 Section des Points',

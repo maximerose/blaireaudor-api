@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Player;
 
-use App\Constants\ErrorMessages;
 use App\Repository\PlayerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/players', name: 'api.players.')]
-#[IsGranted('ROLE_USER', message: ErrorMessages::AUTH_REQUIRED)]
 final class PlayerController extends AbstractController
 {
     public function __construct(

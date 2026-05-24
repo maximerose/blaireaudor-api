@@ -78,7 +78,7 @@ export const DashboardFocusCard = ({
               <Text
                 variant={TEXT_VARIANT.CAPTION}
                 colorTheme={config.textTheme}
-                className="font-black text-[8px] tracking-widest whitespace-nowrap"
+                className="font-black text-[10px] tracking-normal whitespace-nowrap"
               >
                 {title}
               </Text>
@@ -96,27 +96,28 @@ export const DashboardFocusCard = ({
                     colorTheme={TEXT_THEME.DIMMED}
                     className="text-[8px] tracking-normal truncate block mt-0.5"
                   >
-                    {config.prefix}
-                    <span
-                      className={cn(
-                        'font-bold',
-                        isMe ? 'text-player-me' : config.defaultColor,
-                      )}
-                    >
-                      {isMe ? UI.ME : data.involved_player_name || UI.ANONYMOUS}
-                    </span>
-                    <span className="opacity-40">
-                      {' '}
-                      •{' '}
-                      <span className="text-gold">{data.competition_name}</span>
-                    </span>
+                    {data.involved_player_name ? (
+                      <>
+                        {config.prefix}
+                        <span
+                          className={cn(
+                            'font-bold mr-1',
+                            isMe ? 'text-player-me' : config.defaultColor,
+                          )}
+                        >
+                          {isMe ? UI.ME : data.involved_player_name}
+                        </span>
+                        <span className="opacity-40">• </span>
+                      </>
+                    ) : null}
+                    <span className="text-gold">{data.competition_name}</span>
                   </Text>
                 </Stack>
               ) : (
                 <Text
                   variant={TEXT_VARIANT.MICRO}
                   colorTheme={TEXT_THEME.DIMMED}
-                  className="italic text-[10px] block mt-0.5"
+                  className="italic text-[10px] tracking-normal mt-0.5"
                 >
                   {DASHBOARD_UI.STATS_PANEL.RECORD_EMPTY}
                 </Text>
