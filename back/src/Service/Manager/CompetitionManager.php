@@ -208,4 +208,32 @@ class CompetitionManager
 
         return $code;
     }
+
+    /**
+     * Applique les règles de gestion temporelles (Brouillard de guerre et Jours Bonus)
+     * à appeler avant de sauvegarder une modification de la compétition.
+     */
+    public function enforceDateRules(Competition $competition): void
+    {
+        // 1. Si la compétition est terminée, on lève obligatoirement le brouillard
+        if ($competition->getIsFinished()) {
+            $competition->setFogOfWar(false);
+        }
+
+        // 2. Nettoyage des jours bonus hors limites
+        $startStr = $competition->getStartDate()?->format('Y-m-d');
+        $endStr = $competition->getEndDate()?->format('Y-m-d');
+
+        foreach ($competition->getBonusDays() as $bonusDay) {
+            $bonusDateStr = $bonusDay->getDate()->format('Y-m-d');
+
+            $isBeforeStart = null !== $startStr && $bonusDateStr < $startStr;
+            $isAfterEnd = null !== $endStr && $bonusDateStr > $endStr;
+
+            if ($isBeforeStart || $isAfterEnd) {
+                $competition->removeBonusDay($bonusDay);
+                $this->entityManager->remove($bonusDay);
+            }
+        }
+    }
 }

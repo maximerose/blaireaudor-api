@@ -19,10 +19,12 @@ use App\Entity\Trait\BlameableTrait;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
 use App\Repository\CompetitionRepository;
+use App\Security\Voter\CompetitionVoter;
 use App\State\Processor\Competition\CompetitionAddPlayersProcessor;
 use App\State\Processor\Competition\CompetitionAddRefereeProcessor;
 use App\State\Processor\Competition\CompetitionCreateProcessor;
 use App\State\Processor\Competition\CompetitionRemoveRefereeProcessor;
+use App\State\Processor\Competition\CompetitionUpdateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -82,14 +84,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Get(normalizationContext: ['groups' => 'competition:read']),
         new Patch(
-            security: "is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::MANAGE'), object)",
+            security: "is_granted('".CompetitionVoter::MANAGE."', object)",
             securityMessage: 'Seul un gestionnaire peut modifier la compétition.',
+            processor: CompetitionUpdateProcessor::class,
             denormalizationContext: ['groups' => ['competition:write']],
             normalizationContext: ['groups' => ['competition:read']]
         ),
         new GetCollection(normalizationContext: ['groups' => 'competition:read']),
         new Delete(
-            security: "is_granted(constant('App\\\Security\\\Voter\\\CompetitionVoter::CREATOR'), object)",
+            security: "is_granted('".CompetitionVoter::CREATOR."', object)",
             securityMessage: 'Seul le créateur peut supprimer cette compétition.'
         ),
     ]
