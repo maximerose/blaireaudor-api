@@ -25,7 +25,7 @@ trait UuidTrait
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['competition:read', 'action:read', 'player:read', 'user:read', 'bonus:read'])]
+    #[Groups(['competition:read', 'action:read', 'player:read', 'user:read', 'bonus:read', 'notification:read', 'push:read'])]
     private ?Uuid $id = null;
 
     public function getId(): ?Uuid

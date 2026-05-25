@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAuthContext } from '@/features/account';
-import { pushService } from '../services/pushService';
+import { pushService } from '@/features/notification/services';
 
 /**
  * Utilitaire natif Web Push : Convertit la clé VAPID Base64 en Uint8Array

@@ -45,7 +45,7 @@ final class NotificationTriggerListener
         $oldStatusRaw = isset($changeSet['status']) ? $changeSet['status'][0] : null;
         $oldStatus = $oldStatusRaw instanceof ActionStatus
             ? $oldStatusRaw
-            : (is_string($oldStatusRaw) ? ActionStatus::tryFrom($oldStatusRaw) : null);
+            : (\is_string($oldStatusRaw) ? ActionStatus::tryFrom($oldStatusRaw) : null);
 
         $this->handleActionLifecycle($action, $oldStatus);
     }
@@ -127,14 +127,10 @@ final class NotificationTriggerListener
         $currentUser = $this->security->getUser();
         $notifications = [];
 
-        if ($currentUser && $player->getAssociatedUser() === $currentUser) {
-            foreach ($competition->getParticipations() as $p) {
-                $otherUser = $p->getPlayer()?->getAssociatedUser();
-                if ($otherUser && $p->getPlayer() !== $player) {
-                    $notifications[] = $this->buildPlayerJoinedNotification($otherUser, $player->getDisplayName(), $competition);
-                }
-            }
-        } else {
+        $isSelfJoin = $currentUser instanceof User && $player->getAssociatedUser() && $player->getAssociatedUser()->getUserIdentifier() === $currentUser->getUserIdentifier();
+
+        // 1. Si ajouté par un arbitre, on prévient la cible
+        if (!$isSelfJoin) {
             $recipient = $player->getAssociatedUser();
             if ($recipient) {
                 $refereeName = $currentUser instanceof User && $currentUser->getPlayer()
@@ -142,6 +138,19 @@ final class NotificationTriggerListener
                     : 'Un arbitre';
 
                 $notifications[] = $this->buildPlayerAddedByRefereeNotification($recipient, $refereeName, $competition);
+            }
+        }
+
+        // 2. Dans TOUS les cas, on prévient les autres joueurs que quelqu'un est entré
+        foreach ($competition->getParticipations() as $p) {
+            $otherUser = $p->getPlayer()?->getAssociatedUser();
+
+            // On ne notifie pas le nouveau joueur, ni l'arbitre qui l'a fait rentrer
+            if ($otherUser && $p->getPlayer() !== $player) {
+                if ($currentUser instanceof User && $otherUser->getUserIdentifier() === $currentUser->getUserIdentifier()) {
+                    continue;
+                }
+                $notifications[] = $this->buildPlayerJoinedNotification($otherUser, $player->getDisplayName(), $competition);
             }
         }
 
@@ -200,6 +209,8 @@ final class NotificationTriggerListener
         foreach ($competition->getReferees() as $refereePlayer) {
             $recipient = $refereePlayer->getAssociatedUser();
             if ($recipient) {
+                $isTarget = $action->getParticipation()?->getPlayer() === $refereePlayer;
+                $targetName = $isTarget ? 'TOI' : ($action->getParticipation()?->getPlayer()?->getDisplayName() ?? 'Un joueur');
                 $notifications[] = $this->buildNewSubmissionNotification($recipient, $targetName, $competition);
             }
         }
@@ -212,15 +223,29 @@ final class NotificationTriggerListener
         $notifications = [];
         $targetPlayer = $action->getParticipation()?->getPlayer();
         $targetUser = $targetPlayer?->getAssociatedUser();
+        $currentUser = $this->security->getUser();
 
         if ($competition->hasFogOfWar()) {
-            if ($targetUser) {
-                $notifications[] = $this->buildActionValidatedFogNotification($targetUser, $action->getDescription(), $competition);
+            foreach ($competition->getParticipations() as $participation) {
+                $otherUser = $participation->getPlayer()?->getAssociatedUser();
+                if (!$otherUser) {
+                    continue;
+                }
+
+                if ($otherUser === $targetUser) {
+                    $notifications[] = $this->buildActionValidatedFogTargetNotification($otherUser, $action->getDescription(), $competition);
+                } else {
+                    if ($currentUser instanceof User && $otherUser->getUserIdentifier() === $currentUser->getUserIdentifier()) {
+                        continue;
+                    }
+                    $notifications[] = $this->buildActionValidatedFogOthersNotification($otherUser, $targetPlayer?->getDisplayName() ?? 'Un joueur', $competition);
+                }
             }
 
             return $notifications;
         }
 
+        // --- CLASSIQUE ---
         if ($targetUser) {
             $notifications[] = $this->buildActionValidatedTargetNotification($targetUser, $action->getPoints(), $action->getDescription(), $competition);
         }
@@ -233,6 +258,10 @@ final class NotificationTriggerListener
 
             $otherUser = $otherPlayer?->getAssociatedUser();
             if ($otherUser) {
+                if ($currentUser instanceof User && $otherUser->getUserIdentifier() === $currentUser->getUserIdentifier()) {
+                    continue;
+                }
+
                 $notifications[] = $this->buildActionValidatedOthersNotification($otherUser, $targetPlayer->getDisplayName(), $action->getPoints(), $action->getDescription(), $competition);
             }
         }
@@ -252,15 +281,19 @@ final class NotificationTriggerListener
         return $this->buildActionRejectedNotification($recipient, $targetName, $competition);
     }
 
-    /**
-     * Helper de groupe pour arroser toute l'arène.
-     */
     public function notifyAllParticipants(Competition $competition, string $title, string $message, string $type): array
     {
         $notifications = [];
+        $currentUser = $this->security->getUser();
+
         foreach ($competition->getParticipations() as $participation) {
             $recipient = $participation->getPlayer()?->getAssociatedUser();
+
             if ($recipient) {
+                if ($currentUser instanceof User && $recipient->getUserIdentifier() === $currentUser->getUserIdentifier()) {
+                    continue;
+                }
+
                 $notifications[] = $this->buildNotification($recipient, $title, $message, $type, $competition);
             }
         }
@@ -282,6 +315,28 @@ final class NotificationTriggerListener
 
     // ─── USINES SÉMANTIQUES (NAMED FACTORIES) ───────────────────────────────
 
+    private function buildActionValidatedFogTargetNotification(User $recipient, string $description, Competition $competition): Notification
+    {
+        return $this->buildNotification(
+            $recipient,
+            NotificationConstants::TITLE_ACTION_VALIDATED,
+            \sprintf(NotificationConstants::MSG_ACTION_VALIDATED_FOG_TARGET, $description),
+            NotificationConstants::TYPE_ACTION_VALIDATED,
+            $competition
+        );
+    }
+
+    private function buildActionValidatedFogOthersNotification(User $recipient, string $targetName, Competition $competition): Notification
+    {
+        return $this->buildNotification(
+            $recipient,
+            NotificationConstants::TITLE_ACTION_VALIDATED,
+            \sprintf(NotificationConstants::MSG_ACTION_VALIDATED_FOG_OTHERS, $targetName),
+            NotificationConstants::TYPE_ACTION_VALIDATED,
+            $competition
+        );
+    }
+
     private function buildNewSubmissionNotification(User $recipient, string $targetName, Competition $competition): Notification
     {
         return $this->buildNotification(
@@ -289,17 +344,6 @@ final class NotificationTriggerListener
             NotificationConstants::TITLE_NEW_SUBMISSION,
             \sprintf(NotificationConstants::MSG_NEW_SUBMISSION, $targetName),
             NotificationConstants::TYPE_NEW_SUBMISSION,
-            $competition
-        );
-    }
-
-    private function buildActionValidatedFogNotification(User $recipient, string $description, Competition $competition): Notification
-    {
-        return $this->buildNotification(
-            $recipient,
-            NotificationConstants::TITLE_ACTION_VALIDATED,
-            \sprintf(NotificationConstants::MSG_ACTION_VALIDATED_FOG, $description),
-            NotificationConstants::TYPE_ACTION_VALIDATED,
             $competition
         );
     }
@@ -359,9 +403,6 @@ final class NotificationTriggerListener
         );
     }
 
-    /**
-     * 👑 Passage en PUBLIC pour servir d'usine à la commande console.
-     */
     public function buildNotification(User $recipient, string $title, string $message, string $type, Competition $competition): Notification
     {
         $notification = new Notification();

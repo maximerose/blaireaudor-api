@@ -7,6 +7,7 @@ import { SECTION_HEADER_VARIANT, SectionHeader } from './SectionHeader';
 import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { Button, BUTTON_VARIANT, BUTTON_SIZE } from './Button';
 import { Row, Stack } from '../Layout';
+import { NotificationBell } from '@/features/notification';
 
 interface NavbarProps {
   subtitle?: string;
@@ -65,28 +66,30 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
             {subtitle}
           </Text>
         </Link>
-
-        <Button
-          variant={BUTTON_VARIANT.GHOST_NEUTRAL}
-          onClick={() => setIsMenuOpen(true)}
-          aria-label={NAV.ARIA.OPEN_MENU}
-          aria-expanded={isMenuOpen}
-          className="px-2"
-        >
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <Row align="center" gap="sm" fullWidth={false}>
+          <NotificationBell />
+          <Button
+            variant={BUTTON_VARIANT.GHOST_NEUTRAL}
+            onClick={() => setIsMenuOpen(true)}
+            aria-label={NAV.ARIA.OPEN_MENU}
+            aria-expanded={isMenuOpen}
+            className="px-2"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </Button>
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </Button>
+        </Row>
       </nav>
 
       <div

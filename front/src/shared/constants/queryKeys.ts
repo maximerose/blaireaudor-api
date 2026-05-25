@@ -32,4 +32,7 @@ export const QUERY_KEYS = {
   player: {
     search: (term: string) => ['players', 'search', term] as const,
   },
+  notifications: {
+    all: ['notifications', 'all'] as const,
+  },
 } as const;

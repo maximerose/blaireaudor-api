@@ -27,7 +27,8 @@ final class NotificationConstants
 
     // 🚨 ACTION_VALIDATED
     public const string TITLE_ACTION_VALIDATED = '🚨 Sentence confirmée !';
-    public const string MSG_ACTION_VALIDATED_FOG = 'L\'arbitre a validé : %s.';
+    public const string MSG_ACTION_VALIDATED_FOG_TARGET = 'Tu as pris des points ! (%s)';
+    public const string MSG_ACTION_VALIDATED_FOG_OTHERS = '%s a pris des points !';
     public const string MSG_ACTION_VALIDATED_TARGET = 'Tu as pris %d points ! (%s)';
     public const string MSG_ACTION_VALIDATED_OTHERS = '%s a pris %d points ! (%s)';
 

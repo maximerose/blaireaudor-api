@@ -48,7 +48,9 @@ final readonly class MercureNotificationListener
             $payload,
             true
         );
-
-        $this->hub->publish($update);
+        try {
+            $this->hub->publish($update);
+        } catch (\Throwable) {
+        }
     }
 }

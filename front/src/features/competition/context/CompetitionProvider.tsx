@@ -13,7 +13,7 @@ interface ProviderProps {
   children: ReactNode;
   competition: Competition;
   leaderboard: Participation[];
-  refresh: () => void;
+  refresh: () => Promise<void>;
 }
 
 export const CompetitionProvider = ({

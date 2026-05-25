@@ -14,6 +14,7 @@ use Doctrine\ORM\Event\PostPersistEventArgs;
 use Minishlink\WebPush\WebPush;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 #[AllowMockObjectsWithoutExpectations]
 final class WebPushNotificationListenerTest extends TestCase
@@ -22,9 +23,10 @@ final class WebPushNotificationListenerTest extends TestCase
     {
         $webPushMock = $this->createMock(WebPush::class);
         $repoMock = $this->createMock(PushSubscriptionRepository::class);
+        $loggerMock = $this->createMock(LoggerInterface::class);
 
         $user = $this->createMock(User::class);
-        
+
         $notification = new Notification();
         $notification->setRecipient($user);
         $notification->setTitle('🚨 Alerte Blaireau');
@@ -46,12 +48,13 @@ final class WebPushNotificationListenerTest extends TestCase
         $webPushMock->expects($this->once())
             ->method('queueNotification')
             ->with(
-                $this->callback(fn ($sub) => $sub->getEndpoint() === 'https://browser.push.com/abc'),
+                $this->callback(fn ($sub) => 'https://browser.push.com/abc' === $sub->getEndpoint()),
                 $this->callback(function ($payload) {
                     $data = json_decode($payload, true);
-                    return $data['title'] === '🚨 Alerte Blaireau' 
-                        && $data['message'] === 'Ceci est un test de Web Push.'
-                        && $data['targetUrl'] === '/competitions/TEST';
+
+                    return '🚨 Alerte Blaireau' === $data['title']
+                        && 'Ceci est un test de Web Push.' === $data['message']
+                        && '/competitions/TEST' === $data['targetUrl'];
                 })
             );
 
@@ -62,7 +65,7 @@ final class WebPushNotificationListenerTest extends TestCase
         $entityManagerMock = $this->createMock(EntityManagerInterface::class);
         $eventArgs = new PostPersistEventArgs($notification, $entityManagerMock);
 
-        $listener = new WebPushNotificationListener($repoMock, $webPushMock);
+        $listener = new WebPushNotificationListener($repoMock, $webPushMock, $loggerMock);
         $listener->postPersist($notification, $eventArgs);
     }
 }

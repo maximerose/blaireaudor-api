@@ -21,6 +21,7 @@ const BASES = {
   PLAYERS: '/players',
   API_PREFIX: '/api',
   RESET_PASSWORD: '/reset-password',
+  NOTIFICATIONS: '/notifications',
   PUSH_SUBSCRIPTIONS: '/push_subscriptions',
 } as const;
 
@@ -95,6 +96,8 @@ export const API = {
     },
 
     NOTIFICATIONS: {
+      BASE: BASES.NOTIFICATIONS,
+      DETAIL: (id: string) => `${BASES.NOTIFICATIONS}/${id}`,
       PUSH_SUBSCRIBE: BASES.PUSH_SUBSCRIPTIONS,
     },
   },

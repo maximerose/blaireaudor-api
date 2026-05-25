@@ -62,7 +62,7 @@ export interface ActionFormData {
 export type OnActionUpdate = (
   id: string,
   data: ActionUpdatePayload,
-) => Promise<{ ok: boolean; data: Action }>;
+) => Promise<Action>;
 export type OnActionStatusChange = (id: string, status: ActionStatus) => void;
 
 export interface ActionRowProps {

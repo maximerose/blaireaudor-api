@@ -47,7 +47,7 @@ export const getApiError = async (response: Response): Promise<ApiError> => {
 
     return {
       status: response.status,
-      message: data.message || data.error || fallbackMessage,
+      message: data.message || data.detail || data.error || fallbackMessage,
       violations: [],
     };
   } catch {

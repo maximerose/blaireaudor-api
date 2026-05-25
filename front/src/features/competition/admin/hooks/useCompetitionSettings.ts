@@ -12,7 +12,7 @@ interface UseCompetitionProps {
   leaderboard: EnrichedLeaderboardItem[];
   isAdmin: boolean;
   hidePoints: boolean;
-  refresh: () => void;
+  refresh: () => Promise<void>;
 }
 
 export const useCompetitionSettings = ({

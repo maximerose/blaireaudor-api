@@ -11,6 +11,7 @@ use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Events;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
+use Psr\Log\LoggerInterface;
 
 #[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Notification::class)]
 final readonly class WebPushNotificationListener
@@ -18,6 +19,7 @@ final readonly class WebPushNotificationListener
     public function __construct(
         private PushSubscriptionRepository $pushSubscriptionRepository,
         private WebPush $webPush,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -35,6 +37,8 @@ final readonly class WebPushNotificationListener
         $subscriptions = $this->pushSubscriptionRepository->findBy(['user' => $recipient]);
 
         if (empty($subscriptions)) {
+            $this->logger->info('WebPush: Aucun appareil enregistré pour cet utilisateur.');
+
             return;
         }
 
@@ -57,7 +61,16 @@ final readonly class WebPushNotificationListener
             $this->webPush->queueNotification($pushSubscription, $payload);
         }
 
-        // Envoi groupé vers les serveurs de Google, Apple et Mozilla
-        $this->webPush->flush();
+        $reports = $this->webPush->flush();
+
+        if (is_iterable($reports)) {
+            foreach ($reports as $report) {
+                if (!$report->isSuccess()) {
+                    $this->logger->error('WebPush ❌ ÉCHEC : '.$report->getReason());
+                } else {
+                    $this->logger->info('WebPush ✅ SUCCÈS : Notification envoyée !');
+                }
+            }
+        }
     }
 }
