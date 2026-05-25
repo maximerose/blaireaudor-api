@@ -3,6 +3,7 @@ import { useDocumentTitle } from '@/shared/hooks';
 import { Navbar } from '@/shared/components/UI';
 import { Stack } from './Stack';
 import { cn } from '@/shared/utils';
+import { usePushSubscription } from '@/features/notification';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export const MainLayout = ({
   isFluid = false,
 }: MainLayoutProps) => {
   useDocumentTitle(title);
+  usePushSubscription();
 
   return (
     <Stack gap="none" className="min-h-screen">

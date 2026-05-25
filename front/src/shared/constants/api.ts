@@ -21,12 +21,12 @@ const BASES = {
   PLAYERS: '/players',
   API_PREFIX: '/api',
   RESET_PASSWORD: '/reset-password',
+  PUSH_SUBSCRIPTIONS: '/push_subscriptions',
 } as const;
 
 export const API = {
   BASE_URL: import.meta.env.VITE_API_BASE_URL,
   ENDPOINTS: {
-    // AUTH & IDENTITÉ (Lié au compte utilisateur)
     AUTH: {
       LOGIN: '/login',
       LOGOUT: '/logout',
@@ -41,7 +41,6 @@ export const API = {
       REFRESH: '/token/refresh',
     },
 
-    // USER (Gestion du compte et sécurité)
     USER: {
       DETAIL: (id: string) => `${BASES.USERS}/${id}`,
       CHECK_USERNAME: (username: string) =>
@@ -50,14 +49,12 @@ export const API = {
         `/check-email?email=${encodeURIComponent(email)}`,
     },
 
-    // PLAYER (Le profil métier, les scores, la recherche)
     PLAYER: {
       LIST: BASES.PLAYERS,
       SEARCH: (query: string) =>
         `${BASES.PLAYERS}/search?displayName=${encodeURIComponent(query)}`,
     },
 
-    // COMPETITIONS (Les Arènes)
     COMPETITIONS: {
       BASE: BASES.COMPETITIONS,
       ADD_PARTICIPANTS: (id: string) =>
@@ -77,7 +74,6 @@ export const API = {
         `${BASES.COMPETITIONS}/${id}/pending-count`,
     },
 
-    // ACTIONS & PARTICIPATIONS
     ACTIONS: {
       BASE: BASES.ACTIONS,
       DETAIL: (id: string) => `${BASES.ACTIONS}/${id}`,
@@ -87,17 +83,19 @@ export const API = {
       DETAIL: (id: string) => `${BASES.PARTICIPATIONS}/${id}`,
     },
 
-    // ARBITRAGE
     REFEREE: {
       PENDING_GLOBAL: `${BASES.REFEREE}/pending-actions`,
     },
 
-    // BONUS
     BONUS: {
       BASE: BASES.BONUS,
       DETAIL: (id: string) => `${BASES.BONUS}/${id}`,
       BY_COMPETITION: (competitionId: string) =>
         `${BASES.BONUS}?competition=${competitionId}`,
+    },
+
+    NOTIFICATIONS: {
+      PUSH_SUBSCRIBE: BASES.PUSH_SUBSCRIPTIONS,
     },
   },
 

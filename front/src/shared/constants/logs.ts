@@ -24,4 +24,10 @@ export const LOG_MESSAGES = {
   UTILS: {
     DATE_PARSING_FAILED: '[UTILS] Échec du parsing de la date :',
   },
+  SUBSCRIPTION: {
+    MISSING_KEY:
+      '[PUSH_SUBSCRIPTION_SERVICE] VITE_VAPID_PUBLIC_KEY manquante dans .env.local',
+    FAILED:
+      '[PUSH_SUBSCRIPTION_SERVICE] Erreur lors de la souscription Web Push:',
+  },
 } as const;
