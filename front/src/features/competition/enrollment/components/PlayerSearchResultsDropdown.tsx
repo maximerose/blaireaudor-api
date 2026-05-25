@@ -18,7 +18,7 @@ export const PlayerSearchResultsDropdown = ({
     id="enrollment-search-results"
     role="listbox"
     variant={CARD_VARIANT.DARK}
-    className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden border-gold/30 bg-black/95 backdrop-blur-xl shadow-2xl max-h-64 overflow-y-auto no-scrollbar"
+    className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden border-gold/30 bg-black/95 backdrop-blur-xl shadow-2xl max-h-64 overflow-y-auto"
   >
     <div className="divide-y divide-white/5">
       {searchTerm && searchTerm.length >= 1 && onCreateNew && (

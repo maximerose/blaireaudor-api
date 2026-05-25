@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -27,6 +27,7 @@ import { authService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
 import { useAccountValidation } from './useAccountValidation';
 import { handleApiError } from '@/shared/utils/errorHandler';
+import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();
@@ -34,6 +35,8 @@ export const useRegistration = (redirectUrl: string) => {
   const [searchParams] = useSearchParams();
 
   const joinCode = searchParams.get('code');
+  const { data: compData, isLoading: isCompLoading } =
+    useJoinCodeQuery(joinCode);
 
   const {
     register,
@@ -64,6 +67,13 @@ export const useRegistration = (redirectUrl: string) => {
   const currentPlayerId = watch('player_id');
   const currentDisplayName = watch('display_name');
 
+  const localCompetitionGuests = useMemo(() => {
+    if (!compData?.leaderboard) return [];
+    return compData.leaderboard
+      .filter((p) => !p.player.has_account)
+      .map((p) => p.player);
+  }, [compData?.leaderboard]);
+
   const validation = useAccountValidation<RegisterFormData>({
     currentUsername,
     currentEmail,
@@ -81,6 +91,7 @@ export const useRegistration = (redirectUrl: string) => {
     searching,
     clearSearch,
   } = usePlayerSearch();
+
   const filteredResults = rawSearchResults.filter(
     (p: Player) => p.has_account === false,
   );
@@ -216,6 +227,9 @@ export const useRegistration = (redirectUrl: string) => {
       onClear: unlinkPlayer,
       isLinked: !!currentPlayerId,
       hasResults: filteredResults.length > 0,
+      localGuests: localCompetitionGuests,
+      isCompLoading,
+      hasJoinCode: !!joinCode,
     },
     linkFoundGuest: () =>
       validation.foundGuest && linkPlayer(validation.foundGuest),

@@ -41,6 +41,10 @@ export const AUTH_UI = {
     LABEL: 'Déjà participé ?',
     ACTION_SELECT: "C'EST MOI",
     CLOSE_SEARCH: 'Je ne suis pas dans cette liste',
+    ONBOARDING_LABEL: "Sélectionne ton profil dans l'arène 🎯",
+    ONBOARDING_PLACEHOLDER: 'Ou tape ici pour chercher ton nom...',
+    ONBOARDING_GUESTS_TITLE:
+      "Des profils sans comptes t'attendent dans cette arène :",
   },
 
   LINKED_CARD: {

@@ -12,6 +12,7 @@ import {
 import {
   PlayerSearchResultItem,
   type Player,
+  type PlayerCompact,
   type PlayerSearchLogic,
 } from '@/features/player';
 import { useHistoricalSearchUI } from '@/features/account/hooks';
@@ -19,11 +20,14 @@ import { LinkedProfileCard } from './LinkedProfileCard';
 import { AUTH_UI } from '@/features/account/constants';
 
 export interface HistoricalSearchUIProps extends PlayerSearchLogic {
-  onSelect: (player: Player) => void;
+  onSelect: (player: Player | PlayerCompact) => void;
   onClear: () => void;
   onCloseSearch: () => void;
   isLinked: boolean;
   hasResults?: boolean;
+  localGuests?: PlayerCompact[];
+  isCompLoading?: boolean;
+  hasJoinCode?: boolean;
 }
 
 interface HistoricalPlayerSearchProps {
@@ -44,6 +48,8 @@ export const HistoricalPlayerSearch = ({
     onClear,
     onCloseSearch,
     isLinked,
+    localGuests = [],
+    hasJoinCode = false,
   } = searchProps;
 
   const { searchContainerRef } = useHistoricalSearchUI(
@@ -55,19 +61,59 @@ export const HistoricalPlayerSearch = ({
     return <LinkedProfileCard name={selectedName} onClear={onClear} />;
   }
 
+  const showLocalGuests =
+    hasJoinCode && searchTerm.trim().length === 0 && localGuests.length > 0;
+
   return (
     <div className="relative" ref={searchContainerRef}>
       <Input
-        label={AUTH_UI.HISTORICAL.LABEL}
-        placeholder={FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER}
+        label={
+          showLocalGuests
+            ? AUTH_UI.HISTORICAL.ONBOARDING_LABEL
+            : AUTH_UI.HISTORICAL.LABEL
+        }
+        placeholder={
+          showLocalGuests
+            ? AUTH_UI.HISTORICAL.ONBOARDING_PLACEHOLDER
+            : FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER
+        }
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         align="center"
         role="combobox"
-        aria-expanded={results.length > 0}
+        aria-expanded={results.length > 0 || showLocalGuests}
         aria-controls="historical-search-results"
       />
+
+      {showLocalGuests && (
+        <Card
+          variant={CARD_VARIANT.DARK}
+          padding="none"
+          className="mt-2 border-gold shadow-2xl bg-dark animate-fade-in relative z-30"
+        >
+          <div className="p-2 bg-gold/10 text-center border-b border-gold-border">
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              colorTheme={TEXT_THEME.GOLD}
+              className="font-bold"
+            >
+              {AUTH_UI.HISTORICAL.ONBOARDING_GUESTS_TITLE}
+            </Text>
+          </div>
+          <List className="max-h-60 overflow-y-auto">
+            {localGuests.map((player) => (
+              <PlayerSearchResultItem
+                key={player.id}
+                player={player}
+                role="option"
+                onClick={() => onSelect(player)}
+                actionIcon={AUTH_UI.HISTORICAL.ACTION_SELECT}
+              />
+            ))}
+          </List>
+        </Card>
+      )}
 
       {results.length > 0 && (
         <Card
@@ -77,7 +123,7 @@ export const HistoricalPlayerSearch = ({
           padding="none"
           className="absolute z-50 w-full mt-2 border-gold-border shadow-2xl bg-dark animate-slide-up"
         >
-          <List className="max-h-72 overflow-y-auto no-scrollbar">
+          <List className="max-h-72 overflow-y-auto">
             {results.map((player) => (
               <PlayerSearchResultItem
                 key={player.id}

@@ -27,7 +27,7 @@ export const PlayerDropdownList = ({
     variant={CARD_VARIANT.DARK}
     className={cn(
       'absolute top-full left-0 right-0 mt-1 z-50 border-gold-border',
-      'max-h-56 overflow-y-auto shadow-2xl bg-dark no-scrollbar',
+      'max-h-56 overflow-y-auto shadow-2xl bg-dark',
       'animate-fade-in',
     )}
   >

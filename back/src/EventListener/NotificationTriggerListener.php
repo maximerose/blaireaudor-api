@@ -127,7 +127,7 @@ final class NotificationTriggerListener
         $currentUser = $this->security->getUser();
         $notifications = [];
 
-        $isSelfJoin = $currentUser instanceof User && $player->getAssociatedUser() && $player->getAssociatedUser()->getUserIdentifier() === $currentUser->getUserIdentifier();
+        $currentUser instanceof User ? $isSelfJoin = $player->getAssociatedUser() && $player->getAssociatedUser()->getUserIdentifier() === $currentUser->getUserIdentifier() : $isSelfJoin = true;
 
         // 1. Si ajouté par un arbitre, on prévient la cible
         if (!$isSelfJoin) {
