@@ -6,12 +6,15 @@ import {
   SECTION_HEADER_VARIANT,
   SectionHeader,
   BUTTONS,
-  FORM,
-  ICONS,
   BUTTON_VARIANT,
   SECTION_HEADER_THEME,
   Stack,
   Grid,
+  Text,
+  TEXT_VARIANT,
+  TEXT_THEME,
+  ICONS,
+  FORM,
 } from '@/shared';
 import { useProfile } from '@/features/account/hooks';
 import { PROFILE_UI } from '@/features/account/constants';
@@ -23,17 +26,17 @@ import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 
 export const ProfilePage = () => {
   const {
+    defaultUsername,
+    defaultEmail,
+    passwordValue,
     infoForm,
     passwordForm,
     onInfoSubmit,
     onPasswordSubmit,
     usernameRegistryOptions,
+    activeHint,
+    setActiveHint,
   } = useProfile();
-
-  const passwordValue = passwordForm.watch('new_password') || '';
-
-  const defaultUsername = infoForm.formState.defaultValues?.username || '';
-  const defaultEmail = infoForm.formState.defaultValues?.email || '';
 
   return (
     <MainLayout title={PROFILE_UI.TITLE} subtitle={PROFILE_UI.TITLE}>
@@ -91,7 +94,6 @@ export const ProfilePage = () => {
                 !infoForm.formState.isDirty || !infoForm.formState.isValid
               }
               fullWidth
-              className="cursor-pointer"
             >
               {BUTTONS.SAVE}
             </Button>
@@ -149,13 +151,57 @@ export const ProfilePage = () => {
                 !passwordForm.formState.isValid
               }
               fullWidth
-              className="cursor-pointer"
             >
               {FORM.AUTH.BUTTONS.CHANGE_PASSWORD}
             </Button>
           </Card.Body>
         </Card>
       </Stack>
+
+      {/* 🟢 LA MODALE INTERACTIVE UNIFIÉE (Même design que sur le Dashboard !) */}
+      {activeHint && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay backdrop-blur-md animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setActiveHint(null)}
+        >
+          <div
+            className="w-full max-w-sm animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Card
+              variant={CARD_VARIANT.DARK}
+              className="shadow-modal-gold border-gold/20"
+            >
+              <Card.Body p="lg" gap="md" align="center">
+                <Text
+                  variant={TEXT_VARIANT.H2}
+                  colorTheme={TEXT_THEME.GOLD}
+                  className="italic text-center"
+                >
+                  {activeHint.title}
+                </Text>
+                <Text
+                  variant={TEXT_VARIANT.BODY}
+                  colorTheme={TEXT_THEME.MUTED}
+                  className="text-center text-xs leading-relaxed"
+                >
+                  {activeHint.description}
+                </Text>
+                <Button
+                  fullWidth
+                  variant={BUTTON_VARIANT.SECONDARY}
+                  onClick={() => setActiveHint(null)}
+                  className="mt-2"
+                >
+                  {BUTTONS.CLOSE}
+                </Button>
+              </Card.Body>
+            </Card>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 };

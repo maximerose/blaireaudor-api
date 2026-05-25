@@ -7,7 +7,7 @@ import {
   ICONS,
   cn,
 } from '@/shared';
-import type { MetricItem } from '../hooks/useDashboardStats';
+import type { MetricItem } from '../hooks/useStats';
 
 interface StatCardProps {
   metric: MetricItem;
@@ -51,7 +51,7 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
         <Text
           variant={TEXT_VARIANT.MICRO}
           colorTheme={TEXT_THEME.DIMMED}
-          className="mt-1 leading-tight text-[7px] tracking-wider block truncate w-full"
+          className="mt-1 leading-tight text-[7px] tracking-wider block w-full"
         >
           {metric.label}
         </Text>

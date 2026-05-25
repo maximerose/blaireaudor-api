@@ -43,43 +43,55 @@ export const DashboardHeader = () => {
         </Text>
       </div>
 
-      <Row
-        wrap
-        gap="sm"
-        justify="center"
+      <Stack
+        gap="xs"
+        align="center"
+        className="w-full"
         role="list"
         aria-label={DASHBOARD_UI.HEADER.ARIA.SUMMARY}
-        className="w-full"
       >
-        {statItems.map((s) => (
-          <Stack
-            key={s.label}
-            gap="none"
-            align="center"
-            role="listitem"
-            className="w-auto shrink-0 min-w-20"
-          >
-            <span
-              className={`text-lg sm:text-xl font-black leading-none ${s.color}`}
-              aria-hidden="true"
+        <Row wrap gap="md" justify="center" className="w-full">
+          {statItems.slice(0, 3).map((s) => (
+            <Stack
+              key={s.label}
+              gap="none"
+              align="center"
+              role="listitem"
+              className="w-auto shrink-0 min-w-20"
             >
-              {s.val}
-            </span>
+              <span
+                className={`text-base sm:text-lg font-black leading-none ${s.color}`}
+              >
+                {s.val}
+              </span>
+              <Text variant={TEXT_VARIANT.MICRO} className="mt-1">
+                {s.label}
+              </Text>
+            </Stack>
+          ))}
+        </Row>
 
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              className="mt-0.5"
-              aria-hidden="true"
+        <Row wrap gap="md" justify="center" className="w-full mt-1 sm:mt-0">
+          {statItems.slice(3).map((s) => (
+            <Stack
+              key={s.label}
+              gap="none"
+              align="center"
+              role="listitem"
+              className="w-auto shrink-0 min-w-20"
             >
-              {s.label}
-            </Text>
-
-            <span className="sr-only">
-              {DASHBOARD_UI.HEADER.ARIA.STAT_DETAIL(s.val, s.label)}
-            </span>
-          </Stack>
-        ))}
-      </Row>
+              <span
+                className={`text-base sm:text-lg font-black leading-none ${s.color}`}
+              >
+                {s.val}
+              </span>
+              <Text variant={TEXT_VARIANT.MICRO} className="mt-1">
+                {s.label}
+              </Text>
+            </Stack>
+          ))}
+        </Row>
+      </Stack>
     </Stack>
   );
 };

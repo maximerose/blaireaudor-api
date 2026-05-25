@@ -20,6 +20,8 @@ export interface PlayerStats {
   karma_index: number;
   record: PlayerRecord | null;
   worst_stab: PlayerRecord | null;
+  best_rank: number | null;
+  worst_rank: number | null;
 }
 
 export interface User {

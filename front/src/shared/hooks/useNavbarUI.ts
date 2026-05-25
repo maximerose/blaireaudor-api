@@ -39,6 +39,12 @@ export const useNavbarUI = () => {
       icon: ICONS.PLAYER,
       isActive: location.pathname === ROUTES.NAV.PROFILE,
     },
+    {
+      label: 'Mes Stats',
+      to: ROUTES.NAV.STATS,
+      icon: ICONS.POINTS,
+      isActive: location.pathname === ROUTES.NAV.STATS,
+    },
   ];
   return {
     displayName: user?.player?.display_name || user?.username,

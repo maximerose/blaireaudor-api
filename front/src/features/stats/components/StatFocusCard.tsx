@@ -9,11 +9,11 @@ import {
   cn,
   UI,
 } from '@/shared';
-import { DASHBOARD_UI } from '../constants';
 import type { PlayerRecord } from '@/features/account/types';
 import { useAuthContext } from '@/features/account';
+import { STATS_UI } from '@/features/stats/constants';
 
-interface DashboardFocusCardProps {
+interface StatFocusCardProps {
   title: string;
   data: PlayerRecord | null;
   icon: string | React.ReactNode;
@@ -27,7 +27,7 @@ const THEME_CONFIG = {
     textTheme: TEXT_THEME.DANGER,
     glowClass: 'drop-shadow-[0_0_6px_rgba(248,113,113,0.4)]',
     defaultColor: 'text-danger-bright',
-    prefix: DASHBOARD_UI.STATS_PANEL.FOCUS.STAB_DENOUNCER,
+    prefix: STATS_UI.FOCUS.STAB_DENOUNCER,
   },
   info: {
     cardClass: 'border-info-border/30 bg-info-soft/5',
@@ -35,16 +35,16 @@ const THEME_CONFIG = {
     textTheme: TEXT_THEME.INFO,
     glowClass: 'drop-shadow-[0_0_6px_rgba(96,165,250,0.4)]',
     defaultColor: 'text-info-bright',
-    prefix: DASHBOARD_UI.STATS_PANEL.FOCUS.STAB_VICTIM,
+    prefix: STATS_UI.FOCUS.STAB_VICTIM,
   },
 };
 
-export const DashboardFocusCard = ({
+export const StatFocusCard = ({
   title,
   data,
   icon,
   variant,
-}: DashboardFocusCardProps) => {
+}: StatFocusCardProps) => {
   const config = THEME_CONFIG[variant];
   const { user } = useAuthContext();
   const isMe = data?.involved_player_name === user?.player?.display_name;
@@ -119,7 +119,7 @@ export const DashboardFocusCard = ({
                   colorTheme={TEXT_THEME.DIMMED}
                   className="italic text-[10px] tracking-normal mt-0.5"
                 >
-                  {DASHBOARD_UI.STATS_PANEL.RECORD_EMPTY}
+                  {STATS_UI.FOCUS.RECORD_EMPTY}
                 </Text>
               )}
             </Stack>

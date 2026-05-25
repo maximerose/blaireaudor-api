@@ -15,8 +15,8 @@ import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useDashboardUI } from '@/features/dashboard/hooks';
 import { DashboardHeader } from './DashboardHeader';
 import { CompetitionListSection } from './CompetitionListSection';
-import { DashboardStats } from './DashboardStats';
-import { DashboardPalmares } from './DashboardPalmares';
+import { DashboardStats } from '@/features/stats';
+import { CareerPalmares } from '@/features/stats/components';
 
 export const Dashboard = () => {
   const {
@@ -99,7 +99,7 @@ export const Dashboard = () => {
 
             <DashboardStats />
 
-            <DashboardPalmares />
+            <CareerPalmares />
           </Stack>
         )}
       </Stack>

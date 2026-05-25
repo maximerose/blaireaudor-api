@@ -11,9 +11,14 @@ import {
 } from '@/features/account/validations';
 import { userService } from '@/features/account/services';
 import { useAccountValidation } from './useAccountValidation';
+import { useState } from 'react';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
+  const [activeHint, setActiveHint] = useState<{
+    title: string;
+    description: string;
+  } | null>(null);
 
   const infoForm = useForm<UpdateProfileInfoData>({
     resolver: zodResolver(updateProfileInfoSchema),
@@ -79,10 +84,16 @@ export const useProfile = () => {
   };
 
   return {
+    stats: user?.stats || null,
+    defaultUsername: infoForm.formState.defaultValues?.username || '',
+    defaultEmail: infoForm.formState.defaultValues?.email || '',
+    passwordValue: passwordForm.watch('new_password') || '',
     infoForm,
     passwordForm,
     onInfoSubmit: infoForm.handleSubmit(onInfoSubmit),
     onPasswordSubmit: passwordForm.handleSubmit(onPasswordSubmit),
+    activeHint,
+    setActiveHint,
     ...validation,
   };
 };

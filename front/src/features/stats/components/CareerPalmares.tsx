@@ -7,26 +7,25 @@ import {
   Stack,
   Grid,
   Badge,
-  BADGE_VARIANT,
+  SectionHeader,
+  SECTION_HEADER_VARIANT,
+  SECTION_HEADER_THEME,
   cn,
 } from '@/shared';
-import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
-import { useDashboardPalmares } from '../hooks';
+import { useCareerPalmares } from '@/features/stats/hooks';
+import { STATS_UI } from '@/features/stats/constants';
 
-export const DashboardPalmares = () => {
-  const { palmares } = useDashboardPalmares();
+export const CareerPalmares = () => {
+  const { palmares } = useCareerPalmares();
 
   if (palmares.length === 0) {
     return (
       <Stack gap="sm" className="w-full animate-fade-in mt-2">
-        <Text
-          variant={TEXT_VARIANT.CAPTION}
-          colorTheme={TEXT_THEME.GOLD}
-          className="pl-1 font-black"
-        >
-          {DASHBOARD_UI.PALMARES_PANEL.TITLE}
-        </Text>
+        <SectionHeader
+          variant={SECTION_HEADER_VARIANT.DIVIDER}
+          title={STATS_UI.PALMARES.TITLE}
+        />
         <Card
           variant={CARD_VARIANT.DARK}
           className="w-full border-border-subtle bg-surface-base/10"
@@ -37,7 +36,7 @@ export const DashboardPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="italic text-center text-xs"
             >
-              {DASHBOARD_UI.PALMARES_PANEL.EMPTY}
+              {STATS_UI.PALMARES.EMPTY}
             </Text>
           </Card.Body>
         </Card>
@@ -47,14 +46,11 @@ export const DashboardPalmares = () => {
 
   return (
     <Stack gap="sm" className="w-full animate-fade-in mt-2">
-      <Text
-        variant={TEXT_VARIANT.CAPTION}
-        colorTheme={TEXT_THEME.GOLD}
-        className="pl-1 font-black"
-      >
-        {DASHBOARD_UI.PALMARES_PANEL.TITLE}
-      </Text>
-
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.DIVIDER}
+        colorTheme={SECTION_HEADER_THEME.GOLD}
+        title={STATS_UI.PALMARES.TITLE}
+      />
       <Card
         variant={CARD_VARIANT.DARK}
         padding="none"
@@ -63,7 +59,7 @@ export const DashboardPalmares = () => {
         <Grid
           cols={12}
           gap="sm"
-          className="bg-white/5 px-4 py-2 border-b border-border-subtle"
+          className="bg-white/5 px-4 py-2 border-b border-b-border-subtle"
         >
           <div className="col-span-6 text-left">
             <Text
@@ -71,7 +67,7 @@ export const DashboardPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_COMPETITION}
+              {STATS_UI.PALMARES.TABLE.TH_COMPETITION}
             </Text>
           </div>
           <div className="col-span-3 flex justify-center">
@@ -80,7 +76,7 @@ export const DashboardPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_RANK}
+              {STATS_UI.PALMARES.TABLE.TH_RANK}
             </Text>
           </div>
           <div className="col-span-3 flex justify-end">
@@ -89,7 +85,7 @@ export const DashboardPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {DASHBOARD_UI.PALMARES_PANEL.TABLE.TH_SCORE}
+              {STATS_UI.PALMARES.TABLE.TH_SCORE}
             </Text>
           </div>
         </Grid>
@@ -129,10 +125,10 @@ export const DashboardPalmares = () => {
                     <RankBadge rank={p.rank} />
                   ) : (
                     <Badge
-                      variant={BADGE_VARIANT.GHOST}
+                      variant="ghost"
                       className="font-mono text-xs font-bold px-2.5 py-0.5"
                     >
-                      {p.rank}ème
+                      {STATS_UI.FORMAT.RANK(p.rank)}
                     </Badge>
                   )}
                 </div>

@@ -15,9 +15,9 @@ export const ROUTES = {
     DASHBOARD: '/dashboard',
     COMPETITIONS_LIST: '/competitions',
     ADMIN_DASHBOARD: '/admin',
-    ADMIN_CREATE_COMPETITION: '/admin/competition',
+    ADMIN_CREATE_COMPETITION: '/competition/new',
     PROFILE: '/profile',
-    ARBITRAGE: '/arbitrage',
+    STATS: '/stats',
     ADMIN_BASE: import.meta.env.VITE_ADMIN_URL || '/admin',
 
     // Routes dynamiques

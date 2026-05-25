@@ -40,4 +40,9 @@ final class PlayerStatsOutput
 
     #[Groups(['user:read'])]
     public ?PlayerRecordOutput $worstStab = null;
+    #[Groups(['user:read'])]
+    public ?int $bestRank = null;
+
+    #[Groups(['user:read'])]
+    public ?int $worstRank = null;
 }

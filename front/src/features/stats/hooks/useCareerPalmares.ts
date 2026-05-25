@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAuthContext } from '@/features/account';
 
-export const useDashboardPalmares = () => {
+export const useCareerPalmares = () => {
   const { user } = useAuthContext();
   const participations = user?.player?.participations || [];
 

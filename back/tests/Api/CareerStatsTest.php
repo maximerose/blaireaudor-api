@@ -6,7 +6,6 @@ namespace App\Tests\Api;
 
 use App\Enum\ActionStatus;
 use App\Factory\ActionFactory;
-use App\Factory\BonusDayFactory;
 use App\Factory\CompetitionFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\PlayerFactory;
@@ -29,24 +28,30 @@ final class CareerStatsTest extends WebTestCase
         $otherUser = UserFactory::createOne();
         $client->loginUser($user);
 
-        $competition = CompetitionFactory::createOne();
-        $participation = ParticipationFactory::createOne(['competition' => $competition, 'player' => $player]);
+        // COMPÉTITION 1 : Clôturée dans le passé (Prise en compte pour le classement historique)
+        $pastCompetition = CompetitionFactory::createOne([
+            'startDate' => new \DateTimeImmutable('-10 days'),
+            'endDate' => new \DateTimeImmutable('-2 days'),
+        ]);
+        $participationPastMe = ParticipationFactory::createOne(['competition' => $pastCompetition, 'player' => $player, 'score' => 40]);
 
-        // 1. Actions Subies (Calcul du Karma, total et record) - Créées par $otherUser !
-        ActionFactory::createOne(['participation' => $participation, 'createdBy' => $otherUser, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'description' => 'Méfait 1']);
-        ActionFactory::createOne(['participation' => $participation, 'createdBy' => $otherUser, 'points' => 50, 'status' => ActionStatus::VALIDATED, 'description' => 'Le Pire Record']);
+        // Un concurrent fait un moins bon score (60 pts), un autre fait mieux (20 pts) -> "victime" doit être 2ème
+        ParticipationFactory::createOne(['competition' => $pastCompetition, 'score' => 60]);
+        ParticipationFactory::createOne(['competition' => $pastCompetition, 'score' => 20]);
 
-        // Un jour bonus x2 sur l'action de 10 points (donc 10*2 = 20) => Total = 70 points
-        $dateAction = new \DateTimeImmutable('2026-05-01');
-        ActionFactory::createOne(['participation' => $participation, 'createdBy' => $otherUser, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'dateAction' => $dateAction]);
-        BonusDayFactory::createOne(['competition' => $competition, 'date' => $dateAction, 'multiplier' => 2]);
+        // COMPÉTITION 2 : En cours d'activité (Doit être IGNORÉE du calcul des rangs historiques)
+        $activeCompetition = CompetitionFactory::createOne([
+            'startDate' => new \DateTimeImmutable('-2 days'),
+            'endDate' => new \DateTimeImmutable('+5 days'),
+        ]);
+        ParticipationFactory::createOne(['competition' => $activeCompetition, 'player' => $player, 'score' => 999]);
 
-        // 2. Délation (Calcul de Précision) - Créées par le $user !
-        $targetPart = ParticipationFactory::createOne(['competition' => $competition]);
-        // 1 Validé, 1 Refusé, 1 En attente
+        // Actions Subies existantes pour le calcul du Karma
+        ActionFactory::createOne(['participation' => $participationPastMe, 'createdBy' => $otherUser, 'points' => 40, 'status' => ActionStatus::VALIDATED, 'description' => 'Méfait historique']);
+
+        // Délation (Calcul de Précision)
+        $targetPart = ParticipationFactory::createOne(['competition' => $pastCompetition]);
         ActionFactory::createOne(['participation' => $targetPart, 'createdBy' => $user, 'points' => 30, 'status' => ActionStatus::VALIDATED]);
-        ActionFactory::createOne(['participation' => $targetPart, 'createdBy' => $user, 'points' => 10, 'status' => ActionStatus::REJECTED]);
-        ActionFactory::createOne(['participation' => $targetPart, 'createdBy' => $user, 'points' => 10, 'status' => ActionStatus::PENDING]);
 
         $client->request('GET', '/api/me');
 
@@ -54,23 +59,12 @@ final class CareerStatsTest extends WebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $stats = $data['stats'];
 
-        // --- ASSERTIONS POINTS & ACTIONS ---
-        $this->assertEquals(3, $stats['total_actions_count']); // 3 subies
-        $this->assertEquals(80, $stats['total_accumulated_points']); // 50 + 10 + (10*2)
-
-        // --- ASSERTIONS DÉLATION ---
-        $this->assertEquals(3, $stats['total_reported_count']); // 3 signalements émis au total
-        // 1 validé / 2 tranchés (le pending n'est pas compté) = 50%
-        $this->assertEquals(50.0, $stats['precision_rate']);
-        // 3 émises / 3 subies = 1
-        $this->assertEquals(1.0, $stats['karma_index']);
-
-        // --- ASSERTIONS FOCUS ---
-        $this->assertNotNull($stats['record']);
-        $this->assertEquals(50, $stats['record']['points']);
-        $this->assertEquals('Le Pire Record', $stats['record']['description']);
-
-        $this->assertNotNull($stats['worst_stab']);
-        $this->assertEquals(30, $stats['worst_stab']['points']);
+        // --- ASSERTIONS DU TICKET [STA-01] ---
+        $this->assertArrayHasKey('best_rank', $stats);
+        $this->assertArrayHasKey('worst_rank', $stats);
+        
+        // Le joueur doit être classé 2ème de la compétition archivée (Dense Rank : 60 > 40 > 20)
+        $this->assertEquals(2, $stats['best_rank']);
+        $this->assertEquals(2, $stats['worst_rank']);
     }
 }

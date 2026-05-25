@@ -29,6 +29,7 @@ import {
   CreateCompetitionPage,
   QRJoinPage,
 } from '@/features/competition';
+import { StatsPage } from '@/features/stats';
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,16 @@ function App() {
                 element={
                   user ? (
                     <Dashboard />
+                  ) : (
+                    <Navigate to={ROUTES.NAV.LOGIN} replace />
+                  )
+                }
+              />
+              <Route
+                path={ROUTES.NAV.STATS}
+                element={
+                  user ? (
+                    <StatsPage />
                   ) : (
                     <Navigate to={ROUTES.NAV.LOGIN} replace />
                   )

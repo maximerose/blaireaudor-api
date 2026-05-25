@@ -41,41 +41,37 @@ final readonly class MeProvider implements ProviderInterface
             $statsDTO->totalAccumulatedPoints = $raw['totalAccumulatedPoints'];
             $statsDTO->maxSeasonScore = $raw['maxSeasonScore'];
             $statsDTO->totalReportedCount = $raw['totalReportedCount'];
-
-            // Calculs des moyennes par compétition
             $statsDTO->averagePoints = $totalComps > 0 ? round($raw['totalAccumulatedPoints'] / $totalComps, 1) : 0.0;
             $statsDTO->recidivismRatio = $totalComps > 0 ? round($raw['totalActionsCount'] / $totalComps, 1) : 0.0;
-
             $statsDTO->precisionRate = $raw['totalReportedJudged'] > 0
             ? round(($raw['totalReportedValid'] / $raw['totalReportedJudged']) * 100, 1)
             : null;
-
             $statsDTO->karmaIndex = $raw['totalActionsCount'] > 0
                 ? round($raw['totalReportedCount'] / $raw['totalActionsCount'], 2)
                 : (float) $raw['totalReportedCount'];
-
-            if ($raw['record']) {
-                $recordDTO = new PlayerRecordOutput();
-                $recordDTO->points = (int) $raw['record']['points'];
-                $recordDTO->description = (string) $raw['record']['description'];
-                $recordDTO->competitionName = (string) $raw['record']['competition_name'];
-                $recordDTO->involvedPlayerName = (string) $raw['record']['involved_name'];
-                $statsDTO->record = $recordDTO;
-            }
-
-            // Reconstruction du Focus 2 (Envoyé)
-            if ($raw['worstStab']) {
-                $stabDTO = new PlayerRecordOutput();
-                $stabDTO->points = (int) $raw['worstStab']['points'];
-                $stabDTO->description = (string) $raw['worstStab']['description'];
-                $stabDTO->competitionName = (string) $raw['worstStab']['competition_name'];
-                $stabDTO->involvedPlayerName = (string) $raw['worstStab']['involved_name'];
-                $statsDTO->worstStab = $stabDTO;
-            }
+            $statsDTO->bestRank = $raw['ranks']['best_rank'] ?? null;
+            $statsDTO->worstRank = $raw['ranks']['worst_rank'] ?? null;
+            $statsDTO->record = $this->mapRecordOutput($raw['record']);
+            $statsDTO->worstStab = $this->mapRecordOutput($raw['worstStab']);
 
             $user->stats = $statsDTO;
         }
 
         return $user;
+    }
+
+    private function mapRecordOutput(?array $data): ?PlayerRecordOutput
+    {
+        if (!$data) {
+            return null;
+        }
+
+        $dto = new PlayerRecordOutput();
+        $dto->points = (int) $data['points'];
+        $dto->description = (string) $data['description'];
+        $dto->competitionName = (string) $data['competition_name'];
+        $dto->involvedPlayerName = $data['involved_name'] ? (string) $data['involved_name'] : null;
+
+        return $dto;
     }
 }
