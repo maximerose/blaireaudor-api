@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAuthContext } from '@/features/account';
 import { useQuery } from '@tanstack/react-query';
-import { getIdFromData, QUERY_KEYS } from '@/shared';
+import { getIdFromData, QUERY_KEYS, ROUTES } from '@/shared';
 import type { Player, PlayerCompact } from '@/features/player';
 import type { Competition, Participation } from '@/features/competition/types';
 import {
@@ -10,12 +10,14 @@ import {
   getDisplayDateText,
 } from '@/features/competition/utils';
 import { competitionService } from '@/features/competition/services';
+import { useNavigate } from 'react-router-dom';
 
 export const useCompetitionCard = (
   competition: Competition,
   participation?: Participation,
 ) => {
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const currentUserId = user?.id?.toString();
   const currentPlayerId = user?.player?.id?.toString();
@@ -68,6 +70,9 @@ export const useCompetitionCard = (
     enabled: isReferee && !competition.is_finished,
   });
 
+  const handleCardClick = () =>
+    navigate(ROUTES.NAV.COMPETITION_DETAIL(competition.join_code));
+
   return {
     isCreator,
     isReferee,
@@ -81,5 +86,6 @@ export const useCompetitionCard = (
     hasNoParticipants: (competition.participants_count ?? 0) === 0,
     hasVisibleResults,
     pendingCount,
+    handleCardClick,
   };
 };

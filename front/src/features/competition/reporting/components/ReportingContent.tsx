@@ -112,9 +112,7 @@ export const ReportingContent = () => {
         </Card>
       )}
 
-      {/* 🟢 Zone Unifiée à déploiement fluide */}
       <div className="relative w-full">
-        {/* Wrapper du gros Bouton Rouge "Dénoncer" */}
         <div
           className={cn(
             'transition-all duration-300 ease-in-out overflow-hidden',
@@ -134,7 +132,6 @@ export const ReportingContent = () => {
           </Button>
         </div>
 
-        {/* Wrapper du Formulaire de délation */}
         <div
           className={cn(
             'transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)',

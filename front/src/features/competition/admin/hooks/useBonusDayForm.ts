@@ -31,7 +31,7 @@ export const useBonusDayForm = () => {
     resolver: zodResolver(getBonusDaySchema(minDate, maxDate)),
     mode: 'onChange',
     defaultValues: {
-      date: '',
+      date: getLocalDayString(new Date()),
       multiplier: RULES.BONUS.MIN_MULTIPLIER,
     },
   });

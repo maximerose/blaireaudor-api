@@ -1,6 +1,5 @@
 import {
   Card,
-  ROUTES,
   Button,
   Text,
   BUTTON_SIZE,
@@ -43,6 +42,7 @@ export const CompetitionCard = ({
     hasNoParticipants,
     hasVisibleResults,
     pendingCount,
+    handleCardClick,
   } = useCompetitionCard(competition, participation);
 
   return (
@@ -51,6 +51,7 @@ export const CompetitionCard = ({
       isHoverable
       as="article"
       aria-labelledby={`title-${competition.join_code}`}
+      onClick={handleCardClick}
       className="h-full border-border-subtle hover:border-gold-border transition-slow"
     >
       <Card.Body p="lg">
@@ -132,7 +133,7 @@ export const CompetitionCard = ({
             </Stack>
           </Row>
 
-          {pendingCount > 0 && (
+          {isReferee && pendingCount > 0 && (
             <Row
               justify="center"
               align="center"
@@ -222,7 +223,6 @@ export const CompetitionCard = ({
             </Stack>
 
             <Button
-              to={ROUTES.NAV.COMPETITION_DETAIL(competition.join_code)}
               variant={
                 competition.is_finished || isManager ? 'primary' : 'secondary'
               }
