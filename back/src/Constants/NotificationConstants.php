@@ -6,6 +6,9 @@ namespace App\Constants;
 
 final class NotificationConstants
 {
+    // Format du canal temps réel Mercure (URN)
+    public const string TOPIC_USER_NOTIFICATIONS = 'urn:blaireau:user:%s:notifications';
+
     // Types de Notifications
     public const string TYPE_NEW_SUBMISSION = 'NEW_SUBMISSION';
     public const string TYPE_ACTION_VALIDATED = 'ACTION_VALIDATED';
