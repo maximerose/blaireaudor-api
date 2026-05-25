@@ -48,6 +48,8 @@ export const API = {
         `/check-username?username=${encodeURIComponent(username)}`,
       CHECK_EMAIL: (email: string) =>
         `/check-email?email=${encodeURIComponent(email)}`,
+      SEARCH_USERS: (query: string) =>
+        `/users/search?q=${encodeURIComponent(query)}`,
     },
 
     PLAYER: {
@@ -73,6 +75,8 @@ export const API = {
       ACTIONS_DATES: (id: string) => `${BASES.COMPETITIONS}/${id}/action-dates`,
       PENDING_COUNT: (id: string) =>
         `${BASES.COMPETITIONS}/${id}/pending-count`,
+      MERGE_PLAYERS: (id: string) =>
+        `${BASES.COMPETITIONS}/${id}/merge-players`,
     },
 
     ACTIONS: {

@@ -1,9 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
-import { ERRORS, SUCCESS, type ApiError } from '@/shared';
+import { ERRORS, SUCCESS, type ApiError, handleApiError } from '@/shared';
 import { useAuthContext } from '@/features/account';
 import toast from 'react-hot-toast';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useJoinByCode = (
   onSuccess: (code: string) => void,

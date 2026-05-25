@@ -3,14 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ROUTES, ERRORS, type ApiError } from '@/shared';
+import { ROUTES, ERRORS, type ApiError, handleApiError } from '@/shared';
 import {
   resetPasswordSchema,
   type ResetPasswordFormData,
 } from '@/features/account/validations';
 import { resetPasswordService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useResetPassword = (token: string | undefined) => {
   const navigate = useNavigate();

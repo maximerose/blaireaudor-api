@@ -1,10 +1,16 @@
-import { CONFIRMS, ERRORS, ROUTES, SUCCESS, useConfirmModal } from '@/shared';
+import {
+  CONFIRMS,
+  ERRORS,
+  ROUTES,
+  SUCCESS,
+  useConfirmModal,
+  handleApiError,
+} from '@/shared';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/features/account';
 import type { Participation } from '@/features/competition/types';
 import { competitionService } from '@/features/competition/services';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useParticipationDelete = (
   onSuccess: () => void | Promise<void>,

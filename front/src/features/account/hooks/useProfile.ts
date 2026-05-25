@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { AVAILABILITY, ERRORS, SUCCESS } from '@/shared';
+import { AVAILABILITY, ERRORS, SUCCESS, handleApiError } from '@/shared';
 import { useAuthContext } from '@/features/account/context';
 import {
   updatePasswordSchema,
@@ -11,7 +11,6 @@ import {
 } from '@/features/account/validations';
 import { userService } from '@/features/account/services';
 import { useAccountValidation } from './useAccountValidation';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();

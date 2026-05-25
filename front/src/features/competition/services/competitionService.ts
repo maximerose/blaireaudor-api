@@ -178,4 +178,22 @@ export const competitionService = {
     });
     return true;
   },
+
+  mergePlayers: async (
+    competitionId: string,
+    guestPlayerId: string,
+    realUserId: string,
+  ): Promise<void> => {
+    await apiFetch(API.ENDPOINTS.COMPETITIONS.MERGE_PLAYERS(competitionId), {
+      method: 'POST',
+      body: JSON.stringify({ guestPlayerId, realUserId }),
+    });
+  },
+
+  searchUsers: async (query: string, signal?: AbortSignal): Promise<any[]> => {
+    const response = await apiFetch(API.ENDPOINTS.USER.SEARCH_USERS(query), {
+      signal,
+    });
+    return response.json();
+  },
 };

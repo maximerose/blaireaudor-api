@@ -7,6 +7,7 @@ import {
   getDatePart,
   getTimePart,
   type ApiError,
+  handleApiError,
 } from '@/shared';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
@@ -23,7 +24,6 @@ import {
 } from '@/features/competition/validations';
 import { competitionService } from '@/features/competition/services';
 import { combineDateTime } from '@/features/competition/utils';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useEditCompetition = (
   competition: Competition,

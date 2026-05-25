@@ -42,6 +42,11 @@ final class ErrorMessages
     // RESET PASSWORD
     public const string INVALID_RESET_PASSWORD_TOKEN = 'Le lien de réinitialisation est invalide ou a expiré.';
 
+    // ACCES DIRECT
+    public const string GUEST_PART_NOT_FOUND = 'Participation invité introuvable dans cette compétition.';
+    public const string REAL_PLAYER_NOT_FOUND = "L'utilisateur réel ne possède pas de profil joueur actif.";
+    public const string REAL_USER_NOT_FOUND = 'Utilisateur cible introuvable.';
+
     // ASSERT
     public const string MISSING_DATA = 'Données incomplètes.';
     public const string MISSING_ACTION_POINTS = "Les points de l'action sont obligatoires.";

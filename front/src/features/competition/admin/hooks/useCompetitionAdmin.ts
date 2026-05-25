@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { ERRORS, SUCCESS, type ApiError } from '@/shared';
+import { ERRORS, SUCCESS, type ApiError, handleApiError } from '@/shared';
 import { useCompetitionContext } from '@/features/competition/context';
 import { useInvalidateCompetition } from '@/features/competition/view';
 import type {
@@ -14,7 +14,6 @@ import {
   actionService,
   competitionService,
 } from '@/features/competition/services';
-import { handleApiError } from '@/shared/utils/errorHandler';
 import toast from 'react-hot-toast';
 
 export const useCompetitionAdmin = () => {

@@ -10,6 +10,7 @@ import {
   type ApiError,
   getLocalDayString,
   normalizeString,
+  handleApiError,
 } from '@/shared';
 import {
   getReportActionSchema,
@@ -28,7 +29,6 @@ import {
 } from '@/features/competition/types';
 import { actionService } from '@/features/competition/services';
 import { formatToApiISO } from '@/features/competition/utils';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useReportAction = (
   players: { id: string; display_name: string }[],

@@ -8,12 +8,15 @@ import {
   isCreator,
   isReferee,
 } from '@/features/competition/utils';
+import { useState } from 'react';
 
 export const useLeaderboardRow = (
   participation: EnrichedLeaderboardItem,
   isAdmin: boolean,
   competition: Competition,
 ) => {
+  const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
+
   const medal = getRankMedal(participation.rank);
   const playerName = participation.player?.display_name || 'Anonyme';
 
@@ -32,5 +35,7 @@ export const useLeaderboardRow = (
     hasAccount: participation.player?.has_account ?? false,
     isReferee: isReferee(competition, playerId),
     isCreator: isCreator(competition, participation.player),
+    isMergeModalOpen,
+    setIsMergeModalOpen,
   };
 };

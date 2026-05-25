@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ROUTES, ERRORS, slugify, type ApiError, HTTP_STATUS } from '@/shared';
+import {
+  ROUTES,
+  ERRORS,
+  slugify,
+  type ApiError,
+  HTTP_STATUS,
+  handleApiError,
+} from '@/shared';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthContext } from '@/features/account/context';
@@ -9,7 +16,6 @@ import {
   type LoginFormData,
 } from '@/features/account/validations';
 import { competitionService } from '@/features/competition/services';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useLogin = () => {
   const navigate = useNavigate();

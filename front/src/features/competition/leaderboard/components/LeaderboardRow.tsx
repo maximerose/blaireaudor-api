@@ -22,6 +22,7 @@ import type {
 import { getMedalStyle } from '@/features/competition/utils';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { RankedScore } from './RankedScore';
+import { MergePlayersModal } from '@/features/competition/admin/components';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   participation: EnrichedLeaderboardItem;
@@ -48,6 +49,8 @@ export const LeaderboardRow = ({
     hasAccount,
     isReferee,
     isCreator,
+    isMergeModalOpen,
+    setIsMergeModalOpen,
   } = useLeaderboardRow(participation, isAdmin, competition);
   const showRealStats = !isFogActive || isAdmin;
 
@@ -155,6 +158,22 @@ export const LeaderboardRow = ({
             <span aria-hidden="true">{ICONS.CANCEL}</span>
           </Button>
         )}
+        {isAdmin && !hasAccount && !competition.is_finished && (
+          <Button
+            variant={BUTTON_VARIANT.GHOST}
+            size={BUTTON_SIZE.SMALL}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMergeModalOpen(true);
+            }}
+            className="text-info hover:text-info-bright hover:bg-info-soft px-2"
+            title={COMPETITION_UI.ADMIN.MERGE.ROW_TOOLTIP}
+          >
+            <span aria-hidden="true">
+              {COMPETITION_UI.ADMIN.MERGE.ROW_ICON}
+            </span>
+          </Button>
+        )}
       </Row>
 
       <div
@@ -170,6 +189,18 @@ export const LeaderboardRow = ({
           shouldHidePoints={!showRealStats && !participation.isMe}
         />
       </div>
+      {isMergeModalOpen && (
+        <MergePlayersModal
+          competitionId={competition.id}
+          competitionCode={competition.join_code}
+          guestPlayer={{
+            id: participation.player.id,
+            display_name: playerName,
+            actions_count: participation.has_actions ? 1 : 0,
+          }}
+          onClose={() => setIsMergeModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

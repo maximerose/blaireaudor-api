@@ -2,9 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/features/account';
 import { competitionService } from '@/features/competition/services';
-import { ROUTES, ERRORS } from '@/shared';
+import { ROUTES, ERRORS, handleApiError } from '@/shared';
 import toast from 'react-hot-toast';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useQRJoin = () => {
   const { code: rawCode } = useParams<{ code: string }>();

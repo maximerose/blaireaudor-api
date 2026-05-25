@@ -14,6 +14,7 @@ import {
   getLocalDayString,
   QUERY_KEYS,
   type ApiError,
+  handleApiError,
 } from '@/shared';
 import { useAuthContext } from '@/features/account';
 import type {
@@ -26,7 +27,6 @@ import {
 } from '@/features/competition/validations';
 import { formatToApiISO } from '@/features/competition/utils';
 import { competitionService } from '@/features/competition/services';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useCreateCompetitionForm = (
   onSuccess: (comp: Competition) => void,

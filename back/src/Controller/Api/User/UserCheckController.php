@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\User;
 
+use App\Constants\AppConstants;
 use App\Repository\PlayerRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api', name: 'api.check.')]
@@ -56,5 +58,23 @@ final class UserCheckController extends AbstractController
         return $this->json([
             'available' => !$userExists,
         ]);
+    }
+
+    #[Route('/users/search', name: 'search_users', methods: ['GET'])]
+    public function searchUsers(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $query = $request->query->get('q', '');
+        if (\strlen(trim($query)) < AppConstants::AUTH_MIN_USERNAME) {
+            return $this->json([]);
+        }
+
+        $users = $userRepository->createQueryBuilder('u')
+            ->where('u.username LIKE :q OR u.email LIKE :q')
+            ->setParameter('q', (string) '%'.$query.'%')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        return $this->json($users, Response::HTTP_OK, [], ['groups' => ['user:read']]);
     }
 }

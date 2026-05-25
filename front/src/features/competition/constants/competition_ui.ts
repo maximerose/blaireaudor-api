@@ -51,6 +51,19 @@ export const COMPETITION_UI = {
       COMPETITION_NOT_STARTED:
         'La compétition doit avoir débuté pour être clôturée.',
     },
+    MERGE: {
+      ROW_TOOLTIP: 'Raccorder ce profil à un compte inscrit',
+      ROW_ICON: '🔄',
+      TITLE: '🔄 Raccorder un profil',
+      SUBTITLE: (name: string) => `Bakend-link profil pour ${name}`,
+      ALERT_WARNING: (count: number) =>
+        `Cette action va transférer définitivement les ${count} ${pluralize(count, 'action')} et l'historique des points associés vers le compte sélectionné. Le profil invité sera détruit.`,
+      INPUT_LABEL: 'Rechercher le compte réel cible',
+      INPUT_PLACEHOLDER: 'Pseudo ou adresse email...',
+      SUCCESS_TOAST: 'Fusion et réattribution opérées avec succès !',
+      ERROR_TOAST: 'Échec de la fusion.',
+      SUBMIT_BUTTON: 'Confirmer la Fusion',
+    },
   },
   DETAIL: {
     LOADING: 'Récupération de la compétition',

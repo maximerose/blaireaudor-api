@@ -8,5 +8,6 @@ export * from './useCompetitionForm';
 export * from './useCompetitionReferees';
 export * from './useCompetitionSettings';
 export * from './useEditCompetition';
+export * from './useMergePlayers';
 export * from './useParticipationDelete';
 export * from './useRefereeManagementUI';

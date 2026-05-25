@@ -1,6 +1,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES, ERRORS, QUERY_KEYS, SUCCESS, type ApiError } from '@/shared';
+import {
+  ROUTES,
+  ERRORS,
+  QUERY_KEYS,
+  SUCCESS,
+  type ApiError,
+  handleApiError,
+} from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
 import toast from 'react-hot-toast';
@@ -10,7 +17,6 @@ import {
   type FormParticipant,
   type PlayerCompact,
 } from '@/features/player';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useEnrollment = (
   competitionId: string,

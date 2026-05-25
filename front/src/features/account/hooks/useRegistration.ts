@@ -11,6 +11,7 @@ import {
   FORM,
   ERRORS,
   ROUTES,
+  handleApiError,
 } from '@/shared';
 import {
   usePlayerSearch,
@@ -26,7 +27,6 @@ import type { AuthResponseData } from '@/features/account/types';
 import { authService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
 import { useAccountValidation } from './useAccountValidation';
-import { handleApiError } from '@/shared/utils/errorHandler';
 import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const useRegistration = (redirectUrl: string) => {

@@ -1,8 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
-import { ERRORS, type ApiError } from '@/shared';
+import { ERRORS, type ApiError, handleApiError } from '@/shared';
 import { useInvalidateCompetition } from '@/features/competition/view';
 import { competitionService } from '@/features/competition/services';
-import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useCompetitionReferees = (
   competitionId: string,
