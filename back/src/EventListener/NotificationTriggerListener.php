@@ -129,7 +129,7 @@ final class NotificationTriggerListener
 
         $currentUser instanceof User ? $isSelfJoin = $player->getAssociatedUser() && $player->getAssociatedUser()->getUserIdentifier() === $currentUser->getUserIdentifier() : $isSelfJoin = true;
 
-        // 1. Si ajouté par un arbitre, on prévient la cible
+        // 1. Si ajouté par un arbitre, on prévient UNIQUEMENT la cible
         if (!$isSelfJoin) {
             $recipient = $player->getAssociatedUser();
             if ($recipient) {
@@ -139,18 +139,18 @@ final class NotificationTriggerListener
 
                 $notifications[] = $this->buildPlayerAddedByRefereeNotification($recipient, $refereeName, $competition);
             }
-        }
+        } else {
+            // 2. S'il a rejoint lui-même (via QR code), on prévient les autres joueurs
+            foreach ($competition->getParticipations() as $p) {
+                $otherUser = $p->getPlayer()?->getAssociatedUser();
 
-        // 2. Dans TOUS les cas, on prévient les autres joueurs que quelqu'un est entré
-        foreach ($competition->getParticipations() as $p) {
-            $otherUser = $p->getPlayer()?->getAssociatedUser();
-
-            // On ne notifie pas le nouveau joueur, ni l'arbitre qui l'a fait rentrer
-            if ($otherUser && $p->getPlayer() !== $player) {
-                if ($currentUser instanceof User && $otherUser->getUserIdentifier() === $currentUser->getUserIdentifier()) {
-                    continue;
+                // On ne notifie pas le nouveau joueur, ni l'arbitre qui l'a fait rentrer
+                if ($otherUser && $p->getPlayer() !== $player) {
+                    if ($currentUser instanceof User && $otherUser->getUserIdentifier() === $currentUser->getUserIdentifier()) {
+                        continue;
+                    }
+                    $notifications[] = $this->buildPlayerJoinedNotification($otherUser, $player->getDisplayName(), $competition);
                 }
-                $notifications[] = $this->buildPlayerJoinedNotification($otherUser, $player->getDisplayName(), $competition);
             }
         }
 

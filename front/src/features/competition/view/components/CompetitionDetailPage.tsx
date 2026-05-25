@@ -6,7 +6,8 @@ import { CompetitionDetailContent } from './CompetitionDetailContent';
 import { useCompetitionData } from '@/features/competition/view/hooks';
 
 export const CompetitionDetailPage = () => {
-  const { code } = useParams<{ code: string }>();
+  const { code: rawCode } = useParams<{ code: string }>();
+  const code = rawCode?.toUpperCase();
   const { isLoading, isError, competition, leaderboard, refresh } =
     useCompetitionData(code || '');
 

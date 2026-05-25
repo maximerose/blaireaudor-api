@@ -26,7 +26,7 @@ import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const LoginForm = () => {
   const [searchParams] = useSearchParams();
-  const joinCode = searchParams.get('code');
+  const joinCode = searchParams.get('code')?.toUpperCase() || null;
   const registerUrl = joinCode
     ? ROUTES.NAV.REGISTER_WITH_JOIN_CODE(joinCode)
     : ROUTES.NAV.REGISTER;

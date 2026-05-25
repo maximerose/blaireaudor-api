@@ -62,7 +62,8 @@ final class CompetitionController extends AbstractController
     #[Route('/by-code/{code}', name: 'by_code', methods: ['GET'])]
     public function getByCode(string $code, CompetitionRepository $repository, ParticipationRepository $partRepo): JsonResponse
     {
-        $competition = $repository->findOneBy(['joinCode' => $code]);
+        $cleanCode = strtoupper(trim($code));
+        $competition = $repository->findOneBy(['joinCode' => $cleanCode]);
 
         if (!$competition) {
             throw new NotFoundHttpException(ErrorMessages::COMP_NOT_FOUND);
@@ -93,7 +94,7 @@ final class CompetitionController extends AbstractController
     #[Route('/check/join-code', name: 'check_join_code', methods: ['GET'])]
     public function checkJoinCode(Request $request, CompetitionRepository $repository): JsonResponse
     {
-        $code = $request->query->get('code');
+        $code = strtoupper(trim($request->query->get('code', '')));
         if (empty($code)) {
             return $this->json(['available' => true]);
         }

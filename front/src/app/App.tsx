@@ -51,7 +51,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ConfirmModalProvider>
         <Router>
-          <Toaster position="bottom-right" reverseOrder={false} />
+          <Toaster position="bottom-center" reverseOrder={false} />
           <ScrollToTop />
           <div className="min-h-screen w-full bg-dark">
             <Routes>

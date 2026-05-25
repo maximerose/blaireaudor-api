@@ -1,6 +1,4 @@
-// front/src/features/competition/join/hooks/useQRJoin.ts
-
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/features/account';
 import { competitionService } from '@/features/competition/services';
@@ -9,9 +7,11 @@ import toast from 'react-hot-toast';
 import { handleApiError } from '@/shared/utils/errorHandler';
 
 export const useQRJoin = () => {
-  const { code } = useParams<{ code: string }>();
+  const { code: rawCode } = useParams<{ code: string }>();
+  const code = rawCode?.toUpperCase();
   const { user, loading } = useAuthContext();
   const navigate = useNavigate();
+  const hasAttempted = useRef(false);
 
   useEffect(() => {
     if (loading) return;
@@ -20,6 +20,9 @@ export const useQRJoin = () => {
       navigate(ROUTES.NAV.DASHBOARD, { replace: true });
       return;
     }
+
+    if (hasAttempted.current) return;
+    hasAttempted.current = true;
 
     const processQR = async () => {
       try {

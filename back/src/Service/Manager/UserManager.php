@@ -50,7 +50,8 @@ class UserManager
         }
 
         if ($joinCode) {
-            $competition = $competitionRepository->findOneBy(['joinCode' => $joinCode]);
+            $cleanJoinCode = strtoupper(trim($joinCode));
+            $competition = $competitionRepository->findOneBy(['joinCode' => $cleanJoinCode]);
             if (null === $competition) {
                 return ['violations' => [['propertyPath' => 'join_code', 'message' => ErrorMessages::COMP_NOT_FOUND]]];
             }

@@ -28,7 +28,7 @@ import { useJoinCodeQuery } from '@/features/competition/join';
 
 export const RegistrationForm = () => {
   const [searchParams] = useSearchParams();
-  const joinCode = searchParams.get('code');
+  const joinCode = searchParams.get('code')?.toUpperCase() || null;
   const { data: compData, isLoading: isCompLoading } =
     useJoinCodeQuery(joinCode);
   const isFinished = compData?.competition?.is_finished;
