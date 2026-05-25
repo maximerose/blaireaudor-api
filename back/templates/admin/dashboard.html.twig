@@ -1,0 +1,91 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block main %}
+    <div class="mb-4">
+        <p class="text-muted">{{ constant('App\\Constants\\AdminConstants::DASHBOARD_WELCOME') }}</p>
+    </div>
+
+    {# LIGNE 1 : VOLUMES (Utilisation native de l'objet labels) #}
+    <div class="row mt-4">
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.PENDING_ACTIONS, value: count_pending_actions, icon: 'fas fa-gavel', color: 'warning' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.ACTIVE_COMPETITIONS, value: count_competitions, icon: 'fas fa-trophy', color: 'info' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_USERS, value: count_users, icon: 'fas fa-user-shield', color: 'success' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_PLAYERS, value: count_players, icon: 'fas fa-users', color: 'secondary' } %}
+        </div>
+    </div>
+
+    {# LIGNE 2 : ACTIVITÉ GLOBALE & STRATEGIE #}
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_ACTIONS, value: count_total_actions, icon: 'fas fa-paper-plane', color: 'light' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.VALIDATED_ACTIONS, value: count_validated_actions, icon: 'fas fa-check-circle', color: 'success' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_POINTS, value: total_points_distributed|number_format(0, ',', ' '), icon: 'fas fa-bullseye', color: 'gold', suffix: 'pts' } %}
+        </div>
+        <div class="col-md-3 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.AUBAINE, value: effet_aubaine, icon: 'fas fa-clock', color: 'warning', suffix: '%' } %}
+        </div>
+    </div>
+
+    {# LIGNE 3 : LE LIVRE DES RECORDS INDIVIDUELS #}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.GRAND_RECIDIVIST, value: recidivist.value, subtext: recidivist.subtext, icon: 'fas fa-bolt', color: 'danger' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.GOLDEN_BALANCE, value: balance_or.value, subtext: balance_or.subtext, icon: 'fas fa-eye', color: 'warning' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.ANGEL_ARENA, value: angel.value, subtext: angel.subtext, icon: 'fas fa-cloud', color: 'success' } %}
+        </div>
+    </div>
+
+    {# LIGNE 4 : LES SURPRISES CHIRURGICALES (SNIPER, CALOMNIATEUR, PARIA) #}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.SNIPER, value: sniper.value, subtext: sniper.subtext, icon: 'fas fa-crosshairs', color: 'success' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.CALOMNIATEUR, value: calomniateur.value, subtext: calomniateur.subtext, icon: 'fas fa-comment-slash', color: 'danger' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.PARIA, value: paria.value, subtext: paria.subtext, icon: 'fas fa-heart-broken', color: 'info' } %}
+        </div>
+    </div>
+
+    {# LIGNE 5 : L'ÉQUIPE DU TRIBUNAL (ARBITRES & SEVERITÉ) #}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.IRON_REFEREE, value: iron_referee.value, subtext: iron_referee.subtext, icon: 'fas fa-balance-scale-right', color: 'danger' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.ANGEL_REFEREE, value: angel_referee.value, subtext: angel_referee.subtext, icon: 'fas fa-feather-alt', color: 'success' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.AVG_SEVERITY, value: avg_severity, icon: 'fas fa-calculator', color: 'info', suffix: 'pts / action' } %}
+        </div>
+    </div>
+
+    {# LIGNE 6 : LES GRANDS CONTEXTES HISTORIQUES #}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.HELL_ARENA, value: hell_arena.value, subtext: hell_arena.subtext, icon: 'fas fa-fire-alt', color: 'gold' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.RIVALRY, value: rivalry.value, subtext: rivalry.subtext, icon: 'fas fa-handshake-slash', color: 'info' } %}
+        </div>
+        <div class="col-md-4 mb-4">
+            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.CASSE_SIECLE, value: casse_siecle.value, subtext: casse_siecle.subtext, icon: 'fas fa-gem', color: 'gold' } %}
+        </div>
+    </div>
+{% endblock %}

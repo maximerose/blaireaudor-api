@@ -83,11 +83,21 @@ class Participation
     private ?int $rank = null;
 
     #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
+    #[ORM\OrderBy(['dateAction' => 'DESC'])]
     private Collection $actions;
 
     public function __construct()
     {
         $this->actions = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return \sprintf(
+            '%s (%s)',
+            $this->getPlayer()?->getDisplayName() ?? 'Joueur inconnu',
+            $this->getCompetition()?->getName()
+        );
     }
 
     public function getCompetition(): ?Competition

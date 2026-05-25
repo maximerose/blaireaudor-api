@@ -18,6 +18,7 @@ export const ROUTES = {
     ADMIN_CREATE_COMPETITION: '/admin/competition',
     PROFILE: '/profile',
     ARBITRAGE: '/arbitrage',
+    ADMIN_BASE: import.meta.env.VITE_ADMIN_URL || '/admin',
 
     // Routes dynamiques
     RESET_PASSWORD: (token: string) => `/reset-password/${token}`,

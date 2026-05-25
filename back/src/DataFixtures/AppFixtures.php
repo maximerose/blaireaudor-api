@@ -28,11 +28,12 @@ class AppFixtures extends Fixture
         // --- 1. Création du compte technique pour l'import ---
         $io->section('Création du compte administrateur');
         $admin = UserFactory::createOne([
-            'username' => 'admin',
+            'username' => 'maxime',
+            'email' => 'maxime@blaireaudor.com',
             'plainPassword' => 'password',
-            'roles' => ['ROLE_ADMIN'],
+            'roles' => ['ROLE_SUPER_ADMIN'],
         ]);
-        $io->success('Admin créé');
+        $io->success('Admin Maxime créé');
 
         // --- 2. Création de tous les joueurs ---
         $io->section('Initialisation des profils joueurs');
@@ -58,22 +59,24 @@ class AppFixtures extends Fixture
 
         $io->progressStart(count($allUniqueNames));
         foreach ($allUniqueNames as $name) {
+            $isMaxime = 'Maxime' === $name;
             $players[$name] = PlayerFactory::createOne([
                 'displayName' => $name,
-                'username' => strtolower(str_replace(' ', '.', $name)),
+                'username' => $isMaxime ? 'maxime' : strtolower(str_replace(' ', '.', $name)),
                 'createdBy' => $admin,
+                'associatedUser' => $isMaxime ? $admin : null,
             ]);
             $io->progressAdvance();
         }
         $io->progressFinish();
-        $io->note(sprintf('%d joueurs créés', count($players)));
+        $io->note(\sprintf('%d joueurs créés', \count($players)));
 
         // --- 3. Création des compétitions ---
         $io->section('Configuration des compétitions');
         $comp2025 = CompetitionFactory::createOne([
             'name' => "Blaireau d'or 2025",
-            'startDate' => new \DateTimeImmutable('2025-02-15'),
-            'endDate' => new \DateTimeImmutable('2025-02-22'),
+            'startDate' => new \DateTimeImmutable('2025-02-15 00:00:00'),
+            'endDate' => new \DateTimeImmutable('2025-02-22 23:59:59'),
             'joinCode' => 'BLAIREAU25',
             'fogOfWar' => false,
             'createdBy' => $admin,
@@ -82,8 +85,8 @@ class AppFixtures extends Fixture
 
         $comp2026 = CompetitionFactory::createOne([
             'name' => "Blaireau d'or 2026",
-            'startDate' => new \DateTimeImmutable('2026-02-21'),
-            'endDate' => new \DateTimeImmutable('2026-02-28'),
+            'startDate' => new \DateTimeImmutable('2026-02-21 00:00:00'),
+            'endDate' => new \DateTimeImmutable('2026-02-28 23:59:59'),
             'joinCode' => 'BLAIREAU26',
             'fogOfWar' => false,
             'createdBy' => $admin,
@@ -98,13 +101,13 @@ class AppFixtures extends Fixture
 
         foreach ($players as $name => $player) {
             // Inscription sélective 2025
-            if (in_array($name, $list2025)) {
+            if (\in_array($name, $list2025)) {
                 $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2025]);
                 $participationsMap[(string) $comp2025->getId()][$name] = $p;
             }
 
             // Inscription sélective 2026
-            if (in_array($name, $list2026)) {
+            if (\in_array($name, $list2026)) {
                 $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2026]);
                 $participationsMap[(string) $comp2026->getId()][$name] = $p;
             }
@@ -834,7 +837,7 @@ class AppFixtures extends Fixture
             ['Andréa', 10, 'Cognage au portique', '2026-02-26'],
         ];
 
-        $io->progressStart(count($actions2025) + count($actions2026));
+        $io->progressStart(\count($actions2025) + \count($actions2026));
 
         $this->importActions($io, $actions2025, $comp2025, $participationsMap);
         $this->importActions($io, $actions2026, $comp2026, $participationsMap);
@@ -868,7 +871,7 @@ class AppFixtures extends Fixture
 
         foreach ($participationsMap as $competitionId => $playersMap) {
             foreach ($playersMap as $playerName => $participation) {
-                $io->text(sprintf(
+                $io->text(\sprintf(
                     '-> %s : Calcul du score de %s...',
                     $participation->getCompetition()->getName(),
                     $participation->getPlayer()->getDisplayName()
@@ -899,7 +902,7 @@ class AppFixtures extends Fixture
             ActionFactory::createOne([
                 'participation' => $participation,
                 'points' => $data[1],
-                'description' => $data[2],
+                'description' => trim($data[2]),
                 'dateAction' => new \DateTimeImmutable($data[3]),
                 'status' => ActionStatus::VALIDATED,
             ]);

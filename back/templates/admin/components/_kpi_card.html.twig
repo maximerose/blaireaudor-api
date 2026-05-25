@@ -1,0 +1,38 @@
+{# back/templates/admin/components/_kpi_card.html.twig #}
+
+{% set is_gold = color == 'gold' %}
+{% set text_class = is_gold ? '' : 'text-' ~ color %}
+{% set inline_style = is_gold ? 'color: #d4af37 !important;' : '' %}
+{% set border_style = is_gold ? 'border-color: #d4af37 !important;' : '' %}
+
+<div class="card border-start border-3 shadow-sm h-100" 
+     style="background: rgba(255,255,255,0.02); border-radius: 8px; {{ border_style }}">
+    <div class="card-body d-flex align-items-center justify-content-between py-3">
+        <div class="w-100 overflow-hidden">
+            {# Titre de la tuile #}
+            <h6 class="text-muted text-uppercase small mb-1" style="{{ inline_style }}">{{ title }}</h6>
+            
+            {# Valeur principale #}
+            <h2 class="fw-bold mb-0 {{ text_class }}" style="{{ inline_style }}">
+                {{ value }}
+                {% if suffix is defined and suffix is not empty %}
+                    <span class="small fs-6 font-normal {{ is_gold ? '' : 'text-muted' }}" style="{{ inline_style }}">
+                        {{ suffix }}
+                    </span>
+                {% endif %}
+            </h2>
+
+            {# Sous-texte d'ambiance / contexte #}
+            {% if subtext is defined and subtext is not empty %}
+                <div class="small text-muted mt-1" style="font-size: 0.8rem; {{ is_gold ? 'opacity: 0.8;' : '' }}">
+                    {{ subtext|raw }}
+                </div>
+            {% endif %}
+        </div>
+        
+        {# Icône #}
+        <div class="fs-2 opacity-50 {{ text_class }} ms-2" style="{{ inline_style }}">
+            <i class="{{ icon }}"></i>
+        </div>
+    </div>
+</div>

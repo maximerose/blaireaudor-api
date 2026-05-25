@@ -1,0 +1,90 @@
+{% set C = field.customOptions.get('admin_constants') %}
+{% set urlGenerator = field.customOptions.get('url_generator') %}
+
+<div class="field-collection">
+    {% if field.value is empty %}
+        <span class="badge badge-secondary">{{ constant(C ~ '::NO_PARTICIPANT') }}</span>
+    {% else %}
+        <div class="accordion" id="competitionLeaderboardAccordion">
+            {% for participation in field.value|sort((a, b) => a.player.displayName|lower <=> b.player.displayName|lower) %}
+                {% set collapseId = "collapse-player-" ~ loop.index %}
+                
+                <div class="accordion-item card border-dark mb-2" style="background: transparent;">
+                    
+                    <div class="card-header bg-dark d-flex justify-content-between align-items-center collapsed"
+                         id="heading-{{ loop.index }}"
+                         style="cursor: pointer; border-bottom: none;"
+                         data-bs-toggle="collapse"
+                         data-bs-target="#{{ collapseId }}"
+                         aria-expanded="false"
+                         aria-controls="{{ collapseId }}">
+                         
+                        <strong class="text-silver">👤 {{ participation.player.displayName }}</strong>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-primary px-2.5 py-1.5 font-weight-bold">{{ participation.score }} pts</span>
+                            {# Petit compteur sémantique pour savoir s'il y a du contenu avant d'ouvrir #}
+                            <span class="text-muted small font-italic">
+                                ({{ participation.actions|length }} {{ constant(C ~ '::SUFFIX_ACTIONS_COUNT') }})
+                            </span>
+                            <i class="fas fa-chevron-down text-muted small transition-default"></i>
+                        </div>
+                    </div>
+
+                    <div id="{{ collapseId }}" 
+                         class="accordion-collapse collapse" 
+                         aria-labelledby="heading-{{ loop.index }}"
+                         data-bs-parent="#competitionLeaderboardAccordion">
+                         
+                        <div class="card-body p-0 border-top border-border-subtle">
+                            {% if participation.actions is empty %}
+                                <p class="text-muted p-3 m-0 italic text-small">{{ constant(C ~ '::NO_ACTION') }}</p>
+                            {% else %}
+                                <table class="table table-sm table-hover m-0">
+                                    <thead>
+                                        <tr class="table-secondary text-muted text-small">
+                                            <th style="width: 15%">{{ constant(C ~ '::TH_DATE') }}</th>
+                                            <th style="width: 50%">{{ constant(C ~ '::TH_DESCRIPTION') }}</th>
+                                            <th style="width: 15%">{{ constant(C ~ '::TH_POINTS') }}</th>
+                                            <th style="width: 20%">{{ constant(C ~ '::TH_STATUS') }}</th>
+                                            <th style="width: 10%; text-align: center;">⚙️</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for action in participation.actions %}
+                                            {% set editUrl = urlGenerator
+                                                .setController('App\\Controller\\Admin\\ActionCrudController')
+                                                .setAction('edit')
+                                                .setEntityId(action.id)
+                                                .generateUrl() 
+                                            %}
+                                            <tr>
+                                                <td><small class="text-mono text-muted">{{ action.dateAction|date('d/m/Y') }}</small></td>
+                                                <td><strong>{{ action.description }}</strong></td>
+                                                <td><span class="text-danger">+{{ action.points }}</span></td>
+                                                <td>
+                                                    {% if action.status.value == 'validated' %}
+                                                        <span class="badge bg-success">{{ constant(C ~ '::STATUS_VALIDATED') }}</span>
+                                                    {% elseif action.status.value == 'pending' %}
+                                                        <span class="badge bg-warning text-dark">{{ constant(C ~ '::STATUS_PENDING') }}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">{{ constant(C ~ '::STATUS_REJECTED') }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="{{ editUrl }}" class="btn btn-sm btn-link text-warning p-0">
+                                                        <i class="fas fa-pencil-alt"></i> {{ constant(C ~ '::ACTION_EDIT_LINK') }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

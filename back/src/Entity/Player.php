@@ -82,6 +82,11 @@ class Player
         $this->refereedCompetitions = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->displayName;
+    }
+
     public function getDisplayName(): ?string
     {
         return $this->displayName;

@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
 import { useNavbarUI } from '@/shared/hooks';
 import { ICONS, NAV } from '@/shared/constants';
@@ -17,14 +17,15 @@ const LOGO_LINK =
   'flex flex-col group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:outline-none rounded-lg p-1';
 
 export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
-  const { displayName, isScrolled, isMenuOpen, setIsMenuOpen } = useNavbarUI();
-  const location = useLocation();
-
-  const navLinks = [
-    { label: NAV.LINK.DASHBOARD, to: ROUTES.NAV.DASHBOARD, icon: ICONS.HOME },
-    { label: NAV.LINK.PROFILE, to: ROUTES.NAV.PROFILE, icon: ICONS.PLAYER },
-  ];
-
+  const {
+    displayName,
+    isScrolled,
+    isMenuOpen,
+    setIsMenuOpen,
+    isSuperAdmin,
+    adminUrl,
+    navLinks,
+  } = useNavbarUI();
   return (
     <>
       <nav
@@ -166,6 +167,24 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
                 </Link>
               );
             })}
+
+            {isSuperAdmin && (
+              <a
+                href={adminUrl}
+                className="flex items-center gap-4 px-6 py-4 mt-2 transition-all duration-200 border-l-2 border-transparent text-role-creator-bright hover:bg-surface-base hover:text-white border-t border-t-border-subtle"
+              >
+                <span className="text-xl" aria-hidden="true">
+                  {ICONS.SETTINGS}
+                </span>
+                <Text
+                  variant={TEXT_VARIANT.BODY}
+                  colorTheme={TEXT_THEME.INHERIT}
+                  className="font-bold tracking-wide"
+                >
+                  {NAV.LINK.SUPER_ADMIN}
+                </Text>
+              </a>
+            )}
           </div>
 
           <div className="p-6 border-t border-border-subtle">
