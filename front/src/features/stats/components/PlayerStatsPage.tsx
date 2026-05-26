@@ -13,28 +13,35 @@ import {
   cn,
 } from '@/shared';
 import { usePlayerStats } from '@/features/stats/hooks';
-import { PLAYER_STATS_UI } from '@/features/stats/constants';
+import { PLAYER_STATS_GENERAL } from '@/features/stats/constants';
 import { StatFocusCard } from './StatFocusCard';
 import { StatCard } from './StatCard';
 import { CareerPalmares } from './CareerPalmares';
 
 export const PlayerStatsPage = () => {
-  const { stats, categories, activeHint, setActiveHint } = usePlayerStats();
+  const {
+    stats,
+    categories,
+    focusReceived,
+    focusReported,
+    activeHint,
+    setActiveHint,
+  } = usePlayerStats();
 
   if (!stats) return null;
 
   return (
     <MainLayout
-      title={PLAYER_STATS_UI.GENERAL.TITLE}
-      subtitle={PLAYER_STATS_UI.GENERAL.SUBTITLE_PAGE}
+      title={PLAYER_STATS_GENERAL.TITLE}
+      subtitle={PLAYER_STATS_GENERAL.SUBTITLE_PAGE}
     >
       <Stack gap="xl" className="max-w-4xl mx-auto w-full px-1">
         {/* En-tête Principal de Carrière */}
         <SectionHeader
           variant={SECTION_HEADER_VARIANT.TITLE}
           colorTheme={SECTION_HEADER_THEME.GOLD}
-          title={PLAYER_STATS_UI.GENERAL.TITLE}
-          subtitle={PLAYER_STATS_UI.GENERAL.SUBTITLE}
+          title={PLAYER_STATS_GENERAL.TITLE}
+          subtitle={PLAYER_STATS_GENERAL.SUBTITLE}
           centered
         />
 
@@ -88,19 +95,19 @@ export const PlayerStatsPage = () => {
             colorTheme={TEXT_THEME.DIMMED}
             className="pl-2 font-black italic tracking-widest uppercase mb-1"
           >
-            {PLAYER_STATS_UI.FOCUS.SECTION_TITLE}
+            {PLAYER_STATS_GENERAL.FOCUS.TITLE}
           </Text>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full items-stretch">
             <StatFocusCard
-              title={PLAYER_STATS_UI.FOCUS.RECORD}
-              data={stats.max_points_single_action_received}
+              title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
+              data={focusReceived}
               icon={ICONS.FIRE}
               variant="danger"
             />
             <StatFocusCard
-              title={PLAYER_STATS_UI.FOCUS.WORST_STAB}
-              data={stats.max_points_single_action_reported}
+              title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
+              data={focusReported}
               icon={ICONS.STAB}
               variant="info"
             />

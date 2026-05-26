@@ -33,6 +33,7 @@ final class RegistrationControllerTest extends WebTestCase
         $competition = CompetitionFactory::createOne([
             'name' => 'Compétition à code',
             'joinCode' => 'CODE',
+            'endDate' => new \DateTimeImmutable('+1 year'),
         ]);
 
         $client->request(

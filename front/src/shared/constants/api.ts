@@ -77,6 +77,9 @@ export const API = {
         `${BASES.COMPETITIONS}/${id}/pending-count`,
       MERGE_PLAYERS: (id: string) =>
         `${BASES.COMPETITIONS}/${id}/merge-players`,
+      STATS: (id: string) => `${BASES.COMPETITIONS}/${id}/stats`,
+      DAILY_EVOLUTION: (id: string) =>
+        `${BASES.COMPETITIONS}/${id}/daily-evolution`,
     },
 
     ACTIONS: {

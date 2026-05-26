@@ -79,7 +79,7 @@ final class NotificationTriggerListenerTest extends KernelTestCase
         ]);
     }
 
-    public function testValidatedActionWithFogOfWarTrueOnlyNotifiesTargetWithoutPoints(): void
+    public function testValidatedActionWithFogOfWarTrueNotifiesEveryoneWithoutPoints(): void
     {
         self::bootKernel();
         $container = static::getContainer();
@@ -107,12 +107,17 @@ final class NotificationTriggerListenerTest extends KernelTestCase
             'recipient' => $targetUser,
             'type' => NotificationConstants::TYPE_ACTION_VALIDATED,
             'title' => NotificationConstants::TITLE_ACTION_VALIDATED,
-            'message' => \sprintf(NotificationConstants::MSG_ACTION_VALIDATED_FOG, 'A repeint le gîte au vin rouge'),
+            'message' => \sprintf(NotificationConstants::MSG_ACTION_VALIDATED_FOG_TARGET, 'A repeint le gîte au vin rouge'),
         ]);
 
-        NotificationFactory::assert()->count(0, [
+        NotificationFactory::assert()->count(1, [
             'recipient' => $otherUser,
             'type' => NotificationConstants::TYPE_ACTION_VALIDATED,
+            'title' => NotificationConstants::TITLE_ACTION_VALIDATED,
+            'message' => \sprintf(
+                NotificationConstants::MSG_ACTION_VALIDATED_FOG_OTHERS,
+                $targetUser->getPlayer()->getDisplayName()
+            ),
         ]);
     }
 

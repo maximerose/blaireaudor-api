@@ -196,4 +196,22 @@ export const competitionService = {
     });
     return response.json();
   },
+
+  getStats: async (id: string, signal?: AbortSignal): Promise<any> => {
+    const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.STATS(id), {
+      signal,
+    });
+    return response.json();
+  },
+
+  getDailyEvolution: async (
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<any[]> => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.DAILY_EVOLUTION(id),
+      { signal },
+    );
+    return response.json();
+  },
 };

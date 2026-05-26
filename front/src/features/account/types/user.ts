@@ -6,6 +6,7 @@ export interface PlayerRecord {
   description: string;
   competition_name: string;
   involved_player_name: string | null;
+  date?: string | null;
 }
 
 export interface PlayerStats {
@@ -23,11 +24,13 @@ export interface PlayerStats {
   min_rank: number | null;
   max_rank: number | null;
   bonus_actions_ratio: number;
-  max_reports_from_single_actor: { value: string; subtext: string } | null;
-  max_reports_to_single_receiver: { value: string; subtext: string } | null;
+  max_reports_from_single_actor: { player_name: string; count: number } | null;
+  max_reports_to_single_receiver: { player_name: string; count: number } | null;
   max_reciprocal_reports_with_single_peer: {
-    value: string;
-    subtext: string;
+    player_name: string;
+    reciprocal_score: number;
+    total_sent: number;
+    total_received: number;
   } | null;
 }
 

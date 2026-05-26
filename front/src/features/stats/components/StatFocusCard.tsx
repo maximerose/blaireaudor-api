@@ -8,36 +8,13 @@ import {
   Stack,
   cn,
   UI,
+  formatShortDate,
 } from '@/shared';
-import type { PlayerRecord } from '@/features/account/types';
-import { useAuthContext } from '@/features/account';
-import { PLAYER_STATS_UI } from '@/features/stats/constants';
-
-interface StatFocusCardProps {
-  title: string;
-  data: PlayerRecord | null;
-  icon: string | React.ReactNode;
-  variant: 'danger' | 'info';
-}
-
-const THEME_CONFIG = {
-  danger: {
-    cardClass: 'border-danger-border/40 bg-danger-soft/5',
-    iconClass: 'bg-danger/20 text-danger-bright',
-    textTheme: TEXT_THEME.DANGER,
-    glowClass: 'drop-shadow-[0_0_6px_rgba(248,113,113,0.4)]',
-    defaultColor: 'text-danger-bright',
-    prefix: PLAYER_STATS_UI.FOCUS.STAB_DENOUNCER,
-  },
-  info: {
-    cardClass: 'border-info-border/30 bg-info-soft/5',
-    iconClass: 'bg-info/20 text-info-bright',
-    textTheme: TEXT_THEME.INFO,
-    glowClass: 'drop-shadow-[0_0_6px_rgba(96,165,250,0.4)]',
-    defaultColor: 'text-info-bright',
-    prefix: PLAYER_STATS_UI.FOCUS.STAB_VICTIM,
-  },
-};
+import {
+  PLAYER_STATS_GENERAL,
+  FOCUS_THEME_CONFIG,
+} from '@/features/stats/constants';
+import type { StatFocusCardProps } from '@/features/stats/types';
 
 export const StatFocusCard = ({
   title,
@@ -45,9 +22,8 @@ export const StatFocusCard = ({
   icon,
   variant,
 }: StatFocusCardProps) => {
-  const config = THEME_CONFIG[variant];
-  const { user } = useAuthContext();
-  const isMe = data?.involved_player_name === user?.player?.display_name;
+  const config = FOCUS_THEME_CONFIG[variant];
+  const finalPrefix = data?.prefixOverride || config.prefix;
 
   return (
     <Card variant={CARD_VARIANT.DARK} className={config.cardClass}>
@@ -91,35 +67,49 @@ export const StatFocusCard = ({
                   >
                     {data.description}
                   </Text>
+
                   <Text
                     variant={TEXT_VARIANT.MICRO}
                     colorTheme={TEXT_THEME.DIMMED}
-                    className="text-[8px] tracking-normal truncate block mt-0.5"
+                    className="text-[8px] tracking-normal truncate mt-0.5 flex flex-wrap items-center gap-1"
                   >
-                    {data.involved_player_name ? (
-                      <>
-                        {config.prefix}
+                    {data.involvedName && (
+                      <span className="flex items-center normal-case">
+                        {finalPrefix}
                         <span
                           className={cn(
-                            'font-bold mr-1',
-                            isMe ? 'text-player-me' : config.defaultColor,
+                            'font-bold ml-1',
+                            data.isMe ? 'text-player-me' : config.defaultColor,
                           )}
                         >
-                          {isMe ? UI.ME : data.involved_player_name}
+                          {data.isMe ? UI.ME : data.involvedName}
                         </span>
-                        <span className="opacity-40">• </span>
-                      </>
+                      </span>
+                    )}
+
+                    {(data.date || data.competitionName) &&
+                      data.involvedName && (
+                        <span className="opacity-40 mx-0.5">•</span>
+                      )}
+
+                    {data.date ? (
+                      <span className="text-silver italic font-mono text-[9px]">
+                        {formatShortDate(data.date)}
+                      </span>
+                    ) : data.competitionName ? (
+                      <span className="text-gold truncate">
+                        {data.competitionName}
+                      </span>
                     ) : null}
-                    <span className="text-gold">{data.competition_name}</span>
                   </Text>
                 </Stack>
               ) : (
                 <Text
                   variant={TEXT_VARIANT.MICRO}
                   colorTheme={TEXT_THEME.DIMMED}
-                  className="italic text-[10px] tracking-normal mt-0.5"
+                  className="italic text-[10px] tracking-normal mt-0.5 normal-case"
                 >
-                  {PLAYER_STATS_UI.FOCUS.RECORD_EMPTY}
+                  {PLAYER_STATS_GENERAL.FOCUS.RECORD_EMPTY}
                 </Text>
               )}
             </Stack>

@@ -13,7 +13,7 @@ import {
   ICONS,
 } from '@/shared';
 import { StatCard } from './StatCard';
-import { PLAYER_STATS_UI } from '@/features/stats/constants';
+import { PLAYER_STATS_GENERAL } from '@/features/stats/constants';
 import { useDashboardStats } from '@/features/stats/hooks';
 import { StatFocusCard } from './StatFocusCard';
 
@@ -34,7 +34,7 @@ export const DashboardStats = () => {
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.DIVIDER}
         colorTheme={SECTION_HEADER_THEME.GOLD}
-        title={PLAYER_STATS_UI.GENERAL.TITLE}
+        title={PLAYER_STATS_GENERAL.TITLE}
       />
 
       <Grid cols={1} lg={12} gap="sm" className="w-full items-center">
@@ -56,13 +56,13 @@ export const DashboardStats = () => {
         {/* Partie Droite : Les deux Trophées de Faits d'armes (Records d'infractions) */}
         <Stack gap="xs" className="lg:col-span-5 h-full justify-start">
           <StatFocusCard
-            title={PLAYER_STATS_UI.FOCUS.RECORD}
+            title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
             data={maxReceived}
             icon={ICONS.FIRE}
             variant="danger"
           />
           <StatFocusCard
-            title={PLAYER_STATS_UI.FOCUS.WORST_STAB}
+            title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
             data={maxReported}
             icon={ICONS.STAB}
             variant="info"
@@ -77,7 +77,7 @@ export const DashboardStats = () => {
           size={BUTTON_SIZE.SMALL}
           className="text-[11px] text-info-bright hover:underline cursor-pointer"
         >
-          {PLAYER_STATS_UI.GENERAL.LINK_ALL}
+          {PLAYER_STATS_GENERAL.LINK_ALL}
         </Button>
       </Row>
 

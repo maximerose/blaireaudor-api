@@ -44,4 +44,5 @@ export const ICONS = {
   QR: '📱',
   STAB: '⚔️',
   NOTIFICATION: '🔔',
+  CALCULATOR: '🧮',
 } as const;

@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Constants\ErrorMessages;
 use App\Entity\Trait\TimestampableTrait;
 use App\Entity\Trait\UuidTrait;
+use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
 use App\State\Processor\Participation\ParticipationDeleteProcessor;
 use App\Validator\IsNotFinished;
@@ -157,5 +158,18 @@ class Participation
     public function getHasActions(): bool
     {
         return !$this->actions->isEmpty();
+    }
+
+    #[Groups(['competition:read', 'user:read'])]
+    public function getValidatedActionsCount(): int
+    {
+        $count = 0;
+        foreach ($this->actions as $action) {
+            if (ActionStatus::VALIDATED === $action->getStatus()) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 }

@@ -104,31 +104,40 @@ final readonly class PlayerStatsService
 
     private function fetchMaxPointsSingleActionReceived(Connection $conn, string $playerId): ?array
     {
-        $res = $conn->fetchAssociative('
-            SELECT a.points, a.description, c.name as competition_name, COALESCE(cp.display_name, u.username) as involved_name
+        $res = $conn->fetchAssociative('SELECT (a.points * COALESCE(b.multiplier, 1)) as points, a.description, c.name as competition_name, COALESCE(cp.display_name, u.username) as involved_name
             FROM action a
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id
+            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
             LEFT JOIN "user" u ON a.created_by_id = u.id
             LEFT JOIN player cp ON cp.associated_user_id = u.id
             WHERE p.player_id = :player_id AND a.status = :status 
-            ORDER BY a.points DESC, a.created_at DESC LIMIT 1
-        ', ['player_id' => $playerId, 'status' => ActionStatus::VALIDATED->value]);
+            ORDER BY points DESC, a.created_at DESC LIMIT 1
+        ', [
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+            'tz' => AppConstants::TIMEZONE,
+        ]);
 
         return $res ?: null;
     }
 
     private function fetchMaxPointsSingleActionReported(Connection $conn, string $playerId, string $userId): ?array
     {
-        $res = $conn->fetchAssociative('
-            SELECT a.points, a.description, c.name as competition_name, tp.display_name as involved_name
+        $res = $conn->fetchAssociative('SELECT (a.points * COALESCE(b.multiplier, 1)) as points, a.description, c.name as competition_name, tp.display_name as involved_name
             FROM action a
             JOIN participation p ON a.participation_id = p.id 
             JOIN player tp ON p.player_id = tp.id
             JOIN competition c ON p.competition_id = c.id
+            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
             WHERE a.created_by_id = :user_id AND a.status = :status AND p.player_id != :player_id
-            ORDER BY a.points DESC, a.created_at DESC LIMIT 1
-        ', ['user_id' => $userId, 'player_id' => $playerId, 'status' => ActionStatus::VALIDATED->value]);
+            ORDER BY points DESC, a.created_at DESC LIMIT 1
+        ', [
+            'user_id' => $userId,
+            'player_id' => $playerId,
+            'status' => ActionStatus::VALIDATED->value,
+            'tz' => AppConstants::TIMEZONE,
+        ]);
 
         return $res ?: null;
     }
@@ -163,9 +172,8 @@ final readonly class PlayerStatsService
         return $data && $data['total'] > 0 ? round(($data['bonus_actions'] / $data['total']) * 100, 1) : 0.0;
     }
 
-    private function fetchMaxReportsFromSingleActor(Connection $conn, string $playerId): array
+    private function fetchMaxReportsFromSingleActor(Connection $conn, string $playerId): ?array
     {
-        // Qui m'a le plus dénoncé ?
         $data = $conn->fetchAssociative("
             SELECT r.display_name, COUNT(a.id) as cnt
             FROM action a
@@ -177,12 +185,11 @@ final readonly class PlayerStatsService
             ORDER BY cnt DESC LIMIT 1
         ", ['player_id' => $playerId]);
 
-        return $data ? ['value' => $data['display_name'], 'subtext' => \sprintf('%d alignements subis', $data['cnt'])] : ['value' => 'Aucun', 'subtext' => ''];
+        return $data ? ['player_name' => $data['display_name'], 'count' => (int) $data['cnt']] : null;
     }
 
-    private function fetchMaxReportsToSingleReceiver(Connection $conn, string $playerId, string $userId): array
+    private function fetchMaxReportsToSingleReceiver(Connection $conn, string $playerId, string $userId): ?array
     {
-        // Qui ai-je le plus dénoncé ? (Mon souffre-douleur)
         $data = $conn->fetchAssociative("
             SELECT pl.display_name, COUNT(a.id) as cnt
             FROM action a
@@ -193,12 +200,11 @@ final readonly class PlayerStatsService
             ORDER BY cnt DESC LIMIT 1
         ", ['user_id' => $userId, 'player_id' => $playerId]);
 
-        return $data ? ['value' => $data['display_name'], 'subtext' => \sprintf('%d dossiers envoyés', $data['cnt'])] : ['value' => 'Aucun', 'subtext' => ''];
+        return $data ? ['player_name' => $data['display_name'], 'count' => (int) $data['cnt']] : null;
     }
 
-    private function fetchMaxReciprocalReportsWithSinglePeer(Connection $conn, string $playerId, string $userId): array
+    private function fetchMaxReciprocalReportsWithSinglePeer(Connection $conn, string $playerId, string $userId): ?array
     {
-        // La Vendetta Réelle Symétrique -> MAX(MIN(A->B, B->A))
         $sql = "
             WITH sent_counts AS (
                 SELECT p.player_id as other_id, COUNT(a.id) as sent_cnt
@@ -235,14 +241,10 @@ final readonly class PlayerStatsService
         ]);
 
         return $data ? [
-            'value' => $data['display_name'],
-            'subtext' => \sprintf('%d coup%s rendu%s (%d émis / %d subis)',
-                $data['reciprocal_score'],
-                $data['reciprocal_score'] > 1 ? 's' : '',
-                $data['reciprocal_score'] > 1 ? 's' : '',
-                $data['total_sent'],
-                $data['total_received']
-            ),
-        ] : ['value' => 'Aucune', 'subtext' => '0 coup échangé'];
+            'player_name' => $data['display_name'],
+            'reciprocal_score' => (int) $data['reciprocal_score'],
+            'total_sent' => (int) $data['total_sent'],
+            'total_received' => (int) $data['total_received'],
+        ] : null;
     }
 }

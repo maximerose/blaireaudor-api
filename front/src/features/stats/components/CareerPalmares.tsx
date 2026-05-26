@@ -14,7 +14,7 @@ import {
 } from '@/shared';
 import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
 import { useCareerPalmares } from '@/features/stats/hooks';
-import { PLAYER_STATS_UI } from '@/features/stats/constants';
+import { PLAYER_STATS_PALMARES } from '@/features/stats/constants';
 
 export const CareerPalmares = () => {
   const { palmares } = useCareerPalmares();
@@ -24,7 +24,7 @@ export const CareerPalmares = () => {
       <Stack gap="sm" className="w-full animate-fade-in mt-2">
         <SectionHeader
           variant={SECTION_HEADER_VARIANT.DIVIDER}
-          title={PLAYER_STATS_UI.PALMARES.TITLE}
+          title={PLAYER_STATS_PALMARES.TITLE}
         />
         <Card
           variant={CARD_VARIANT.DARK}
@@ -36,7 +36,7 @@ export const CareerPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="italic text-center text-xs"
             >
-              {PLAYER_STATS_UI.PALMARES.EMPTY}
+              {PLAYER_STATS_PALMARES.EMPTY}
             </Text>
           </Card.Body>
         </Card>
@@ -49,7 +49,7 @@ export const CareerPalmares = () => {
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.DIVIDER}
         colorTheme={SECTION_HEADER_THEME.GOLD}
-        title={PLAYER_STATS_UI.PALMARES.TITLE}
+        title={PLAYER_STATS_PALMARES.TITLE}
       />
       <Card
         variant={CARD_VARIANT.DARK}
@@ -67,7 +67,7 @@ export const CareerPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {PLAYER_STATS_UI.PALMARES.TABLE.TH_COMPETITION}
+              {PLAYER_STATS_PALMARES.TH_COMPETITION}
             </Text>
           </div>
           <div className="col-span-3 flex justify-center">
@@ -76,7 +76,7 @@ export const CareerPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {PLAYER_STATS_UI.PALMARES.TABLE.TH_RANK}
+              {PLAYER_STATS_PALMARES.TH_RANK}
             </Text>
           </div>
           <div className="col-span-3 flex justify-end">
@@ -85,7 +85,7 @@ export const CareerPalmares = () => {
               colorTheme={TEXT_THEME.DIMMED}
               className="font-black tracking-widest"
             >
-              {PLAYER_STATS_UI.PALMARES.TABLE.TH_SCORE}
+              {PLAYER_STATS_PALMARES.TH_SCORE}
             </Text>
           </div>
         </Grid>
@@ -128,7 +128,7 @@ export const CareerPalmares = () => {
                       variant="ghost"
                       className="font-mono text-xs font-bold px-2.5 py-0.5"
                     >
-                      {PLAYER_STATS_UI.FORMAT.RANK(p.rank)}
+                      {PLAYER_STATS_PALMARES.RANK(p.rank)}
                     </Badge>
                   )}
                 </div>

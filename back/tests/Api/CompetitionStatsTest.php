@@ -71,16 +71,21 @@ final class CompetitionStatsTest extends WebTestCase
             'total_players',
             'total_actions',
             'total_points',
-            'bonus_actions_ratio',             // Ex Effet d'aubaine
-            'max_actions_received',            // Ex Grand récidiviste
-            'max_actions_reported',            // Ex Balance d'or
-            'min_actions_received',            // Ex Ange de l'arène
-            'max_approval_ratio',              // Ex Sniper
-            'max_rejected_reports',            // Ex Calomniateur
-            'max_distinct_informers_received', // Ex Paria
-            'average_points_per_action',       // Ex Sévérité moyenne
-            'most_frequent_target_pair',       // Ex Pire rivalité
-            'max_points_single_action',        // Ex Casse du siècle
+            'bonus_actions_ratio',
+            'max_actions_received',
+            'max_actions_reported',
+            'min_actions_received',
+            'min_actions_reported',
+            'max_approval_ratio',
+            'max_rejected_reports',
+            'max_distinct_informers_received',
+            'average_points_per_action',
+            'max_reciprocal_target_pair',
+            'max_unique_targets_reported',
+            'max_points_reported',
+            'max_avg_points_received',
+            'min_avg_points_received',
+            'max_points_single_action',
         ];
 
         foreach ($expectedKeys as $key) {

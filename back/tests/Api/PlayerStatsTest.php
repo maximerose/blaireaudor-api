@@ -94,10 +94,10 @@ final class PlayerStatsTest extends WebTestCase
         $stats = $data['stats'];
 
         // --- ASSERTIONS DES SÉCURITÉS RELATIONNELLES ---
-        $this->assertEquals('Mon Bourreau', $stats['max_reports_from_single_actor']['value']);
-        $this->assertEquals('Mon Souffre Douleur', $stats['max_reports_to_single_receiver']['value']);
-        $this->assertEquals('Mon Grand Rival', $stats['max_reciprocal_reports_with_single_peer']['value']);
-        $this->assertEquals('3 coups rendus (3 émis / 3 subis)', $stats['max_reciprocal_reports_with_single_peer']['subtext']);
+        $this->assertEquals('Mon Bourreau', $stats['max_reports_from_single_actor']['player_name']);
+        $this->assertEquals('Mon Souffre Douleur', $stats['max_reports_to_single_receiver']['player_name']);
+        $this->assertEquals('Mon Grand Rival', $stats['max_reciprocal_reports_with_single_peer']['player_name']);
+        $this->assertEquals(3, $stats['max_reciprocal_reports_with_single_peer']['reciprocal_score']);
 
         // --- ASSERTIONS VOLUMÉTRIE & EFFET D'AUBAINE ---
         $this->assertEquals(8, $stats['total_actions_received']); // 5 Bourreau + 3 Rival

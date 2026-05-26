@@ -6,6 +6,7 @@ namespace App\Tests\Api;
 
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Test\Factories;
@@ -21,7 +22,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class SecurityControllerTest extends WebTestCase
 {
-    use ResetDatabase, Factories;
+    use ResetDatabase;
+    use Factories;
 
     public function testLoginSuccess(): void
     {
@@ -75,16 +77,20 @@ final class SecurityControllerTest extends WebTestCase
     public function testLogout(): void
     {
         $client = static::createClient();
-        
+        $tokenManager = static::getContainer()->get(JWTTokenManagerInterface::class);
+
+        $user = UserFactory::createOne();
+        $client->setServerParameter('HTTP_AUTHORIZATION', 'Bearer '.$tokenManager->create($user));
+
         $client->request('GET', '/api/logout');
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT); 
+        $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 
     public function testGetMe(): void
     {
         $client = static::createClient();
-        
+
         $user = UserFactory::createOne([
             'username' => 'martin',
             'plainPassword' => 'test',

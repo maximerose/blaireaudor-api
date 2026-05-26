@@ -43,8 +43,10 @@ final class AppCommandsTest extends KernelTestCase
 
         $output = $commandTester->getDisplay();
 
-        $expectedMessage = \sprintf(CompetitionLiftFogCommand::LIFT_FOG_SUCCESS, 1);
-        $this->assertStringContainsString($expectedMessage, $output);
+        $outputCleaned = preg_replace('/\s+/', ' ', $output);
+        $expectedMessage = preg_replace('/\s+/', ' ', \sprintf(CompetitionLiftFogCommand::LIFT_FOG_SUCCESS, 1));
+
+        $this->assertStringContainsString($expectedMessage, $outputCleaned);
 
         // On vérifie que l'entité a bien été mise à jour en base
         $this->assertFalse($competition->hasFogOfWar());
@@ -76,7 +78,10 @@ final class AppCommandsTest extends KernelTestCase
 
         $output = $commandTester->getDisplay();
 
-        $this->assertStringContainsString(RefreshScoresCommand::REFRESH_SUCCESS, $output);
+        $outputCleaned = preg_replace('/\s+/', ' ', $output);
+        $expectedMessage = preg_replace('/\s+/', ' ', RefreshScoresCommand::REFRESH_SUCCESS);
+
+        $this->assertStringContainsString($expectedMessage, $outputCleaned);
 
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $em->refresh($participation);
