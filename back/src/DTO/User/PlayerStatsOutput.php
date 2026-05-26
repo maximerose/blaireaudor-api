@@ -9,40 +9,41 @@ use Symfony\Component\Serializer\Attribute\Groups;
 final class PlayerStatsOutput
 {
     #[Groups(['user:read'])]
-    public int $totalActionsCount = 0;
+    public int $totalActionsReceived = 0;
 
     #[Groups(['user:read'])]
-    public int $maxSeasonActions = 0;
+    public int $maxCompetitionActionsReceived = 0;
 
     #[Groups(['user:read'])]
-    public int $totalAccumulatedPoints = 0;
+    public int $totalPointsReceived = 0;
 
     #[Groups(['user:read'])]
-    public int $maxSeasonScore = 0;
+    public int $maxCompetitionScore = 0;
 
     #[Groups(['user:read'])]
-    public float $averagePoints = 0.0;
+    public float $averagePointsPerCompetition = 0.0;
 
     #[Groups(['user:read'])]
-    public float $recidivismRatio = 0.0;
+    public float $averageActionsReceivedPerCompetition = 0.0;
 
     #[Groups(['user:read'])]
-    public int $totalReportedCount = 0;
+    public int $totalActionsReported = 0;
 
     #[Groups(['user:read'])]
-    public ?float $precisionRate = null;
+    public ?float $reportApprovalRatio = null;
 
     #[Groups(['user:read'])]
-    public float $karmaIndex = 0.0;
+    public float $reportToReceivedRatio = 0.0;
 
     #[Groups(['user:read'])]
-    public ?PlayerRecordOutput $record = null;
+    public ?PlayerRecordOutput $maxPointsSingleActionReceived = null;
 
     #[Groups(['user:read'])]
-    public ?PlayerRecordOutput $worstStab = null;
-    #[Groups(['user:read'])]
-    public ?int $bestRank = null;
+    public ?PlayerRecordOutput $maxPointsSingleActionReported = null;
 
     #[Groups(['user:read'])]
-    public ?int $worstRank = null;
+    public ?int $minRank = null;
+
+    #[Groups(['user:read'])]
+    public ?int $maxRank = null;
 }

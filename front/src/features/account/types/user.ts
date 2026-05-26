@@ -9,19 +9,19 @@ export interface PlayerRecord {
 }
 
 export interface PlayerStats {
-  total_actions_count: number;
-  max_season_actions: number;
-  total_accumulated_points: number;
-  max_season_score: number;
-  average_points: number;
-  recidivism_ratio: number;
-  total_reported_count: number;
-  precision_rate: number | null;
-  karma_index: number;
-  record: PlayerRecord | null;
-  worst_stab: PlayerRecord | null;
-  best_rank: number | null;
-  worst_rank: number | null;
+  total_actions_received: number;
+  max_competition_actions_received: number;
+  total_points_received: number;
+  max_competition_score: number;
+  average_points_per_competition: number;
+  average_actions_received_per_competition: number;
+  total_actions_reported: number;
+  report_approval_ratio: number | null;
+  report_to_received_ratio: number;
+  max_points_single_action_received: PlayerRecord | null;
+  max_points_single_action_reported: PlayerRecord | null;
+  min_rank: number | null;
+  max_rank: number | null;
 }
 
 export interface User {

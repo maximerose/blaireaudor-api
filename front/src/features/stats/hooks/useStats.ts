@@ -34,13 +34,11 @@ export const useStats = () => {
         metrics: [
           {
             ...STATS_UI.RANKS.BEST,
-            val: stats.best_rank ? STATS_UI.FORMAT.RANK(stats.best_rank) : '-',
+            val: stats.min_rank ? STATS_UI.FORMAT.RANK(stats.min_rank) : '-',
           },
           {
             ...STATS_UI.RANKS.WORST,
-            val: stats.worst_rank
-              ? STATS_UI.FORMAT.RANK(stats.worst_rank)
-              : '-',
+            val: stats.max_rank ? STATS_UI.FORMAT.RANK(stats.max_rank) : '-',
           },
         ],
       },
@@ -49,15 +47,15 @@ export const useStats = () => {
         metrics: [
           {
             ...STATS_UI.POINTS.TOTAL,
-            val: STATS_UI.FORMAT.POINTS(stats.total_accumulated_points),
+            val: STATS_UI.FORMAT.POINTS(stats.total_points_received),
           },
           {
             ...STATS_UI.POINTS.AVG,
-            val: STATS_UI.FORMAT.POINTS(stats.average_points),
+            val: STATS_UI.FORMAT.POINTS(stats.average_points_per_competition),
           },
           {
             ...STATS_UI.POINTS.MAX,
-            val: STATS_UI.FORMAT.POINTS(stats.max_season_score),
+            val: STATS_UI.FORMAT.POINTS(stats.max_competition_score),
           },
         ],
       },
@@ -66,15 +64,19 @@ export const useStats = () => {
         metrics: [
           {
             ...STATS_UI.ACTIONS.TOTAL,
-            val: STATS_UI.FORMAT.ACTIONS(stats.total_actions_count),
+            val: STATS_UI.FORMAT.ACTIONS(stats.total_actions_received),
           },
           {
             ...STATS_UI.ACTIONS.AVG,
-            val: STATS_UI.FORMAT.ACTIONS(stats.recidivism_ratio),
+            val: STATS_UI.FORMAT.ACTIONS(
+              stats.average_actions_received_per_competition,
+            ),
           },
           {
             ...STATS_UI.ACTIONS.MAX,
-            val: STATS_UI.FORMAT.ACTIONS(stats.max_season_actions),
+            val: STATS_UI.FORMAT.ACTIONS(
+              stats.max_competition_actions_received,
+            ),
           },
         ],
       },
@@ -83,37 +85,36 @@ export const useStats = () => {
         metrics: [
           {
             ...STATS_UI.DELATION.TOTAL,
-            val: STATS_UI.FORMAT.ACTIONS(stats.total_reported_count),
+            val: STATS_UI.FORMAT.ACTIONS(stats.total_actions_reported),
           },
           {
             ...STATS_UI.DELATION.PRECISION,
-            val: STATS_UI.FORMAT.PERCENT(stats.precision_rate),
+            val: STATS_UI.FORMAT.PERCENT(stats.report_approval_ratio),
           },
           {
             ...STATS_UI.DELATION.KARMA,
-            val: stats.karma_index,
+            val: stats.report_to_received_ratio,
           },
         ],
       },
     ];
   }, [stats]);
 
-  // 2. Triplette de tête pour le teaser de la page d'accueil (Dashboard principal)
   const teaserMetrics = useMemo((): MetricItem[] => {
     if (!stats) return [];
 
     return [
       {
         ...STATS_UI.RANKS.BEST,
-        val: stats.best_rank ? STATS_UI.FORMAT.RANK(stats.best_rank) : '-',
+        val: stats.min_rank ? STATS_UI.FORMAT.RANK(stats.min_rank) : '-',
       },
       {
         ...STATS_UI.POINTS.TOTAL,
-        val: STATS_UI.FORMAT.POINTS(stats.total_accumulated_points),
+        val: STATS_UI.FORMAT.POINTS(stats.total_points_received),
       },
       {
         ...STATS_UI.RANKS.WORST,
-        val: stats.worst_rank ? STATS_UI.FORMAT.RANK(stats.worst_rank) : '-',
+        val: stats.max_rank ? STATS_UI.FORMAT.RANK(stats.max_rank) : '-',
       },
     ];
   }, [stats]);

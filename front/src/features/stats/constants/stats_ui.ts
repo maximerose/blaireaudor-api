@@ -8,7 +8,7 @@ export const STATS_UI = {
     LINK_ALL: 'Voir mes analyses complètes →',
   },
   RANKS: {
-    TITLE: '👑 Rangs Historiques (Saisons Closes)',
+    TITLE: '👑 Rangs Historiques (Compétitions Closes)',
     BEST: {
       label: 'Meilleur classement',
       hint: {
@@ -24,7 +24,7 @@ export const STATS_UI = {
       hint: {
         title: 'Pire classement',
         description:
-          'Le fond du trou : ton classement le plus bas enregistré lors des saisons passées.',
+          'Le fond du trou : ton classement le plus bas enregistré lors des compétitions passées.',
       },
       icon: ICONS.FLAG,
       color: 'text-danger-bright',
@@ -61,7 +61,7 @@ export const STATS_UI = {
       color: 'text-info-bright',
     },
     MAX: {
-      label: 'Pire saison (Max)',
+      label: 'Pire compétition (Max)',
       icon: ICONS.EMPTY,
       color: 'text-danger-bright',
     },
@@ -103,8 +103,8 @@ export const STATS_UI = {
     STAB_VICTIM: 'Victime : ',
   },
   PALMARES: {
-    TITLE: '🏆 Palmarès historique de tes saisons',
-    EMPTY: 'Aucune saison archivée dans ton tableau de chasse.',
+    TITLE: '🏆 Palmarès historique de tes compétitions',
+    EMPTY: 'Aucune compétition archivée dans ton tableau de chasse.',
     TABLE: {
       TH_COMPETITION: 'Compétition',
       TH_RANK: 'Classement',

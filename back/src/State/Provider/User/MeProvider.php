@@ -10,7 +10,7 @@ use App\Constants\ErrorMessages;
 use App\DTO\User\PlayerRecordOutput;
 use App\DTO\User\PlayerStatsOutput;
 use App\Entity\User;
-use App\Repository\ActionRepository;
+use App\Service\Stats\PlayerStatsService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -18,7 +18,7 @@ final readonly class MeProvider implements ProviderInterface
 {
     public function __construct(
         private Security $security,
-        private ActionRepository $actionRepository,
+        private PlayerStatsService $playerStatsService,
     ) {
     }
 
@@ -32,27 +32,32 @@ final readonly class MeProvider implements ProviderInterface
 
         $player = $user->getPlayer();
         if ($player) {
-            $raw = $this->actionRepository->getCareerStatsData($player, $user);
+            $raw = $this->playerStatsService->getCareerStatsData($player, $user);
             $totalComps = $raw['totalCompetitions'];
 
             $statsDTO = new PlayerStatsOutput();
-            $statsDTO->totalActionsCount = $raw['totalActionsCount'];
-            $statsDTO->maxSeasonActions = $raw['maxSeasonActions'];
-            $statsDTO->totalAccumulatedPoints = $raw['totalAccumulatedPoints'];
-            $statsDTO->maxSeasonScore = $raw['maxSeasonScore'];
-            $statsDTO->totalReportedCount = $raw['totalReportedCount'];
-            $statsDTO->averagePoints = $totalComps > 0 ? round($raw['totalAccumulatedPoints'] / $totalComps, 1) : 0.0;
-            $statsDTO->recidivismRatio = $totalComps > 0 ? round($raw['totalActionsCount'] / $totalComps, 1) : 0.0;
-            $statsDTO->precisionRate = $raw['totalReportedJudged'] > 0
-            ? round(($raw['totalReportedValid'] / $raw['totalReportedJudged']) * 100, 1)
-            : null;
-            $statsDTO->karmaIndex = $raw['totalActionsCount'] > 0
-                ? round($raw['totalReportedCount'] / $raw['totalActionsCount'], 2)
-                : (float) $raw['totalReportedCount'];
-            $statsDTO->bestRank = $raw['ranks']['best_rank'] ?? null;
-            $statsDTO->worstRank = $raw['ranks']['worst_rank'] ?? null;
-            $statsDTO->record = $this->mapRecordOutput($raw['record']);
-            $statsDTO->worstStab = $this->mapRecordOutput($raw['worstStab']);
+            $statsDTO->totalActionsReceived = $raw['totalActionsReceived'];
+            $statsDTO->maxCompetitionActionsReceived = $raw['maxCompetitionActionsReceived'];
+            $statsDTO->totalPointsReceived = $raw['totalPointsReceived'];
+            $statsDTO->maxCompetitionScore = $raw['maxCompetitionScore'];
+            $statsDTO->totalActionsReported = $raw['totalActionsReported'];
+
+            $statsDTO->averagePointsPerCompetition = $totalComps > 0 ? round($raw['totalPointsReceived'] / $totalComps, 1) : 0.0;
+            $statsDTO->averageActionsReceivedPerCompetition = $totalComps > 0 ? round($raw['totalActionsReceived'] / $totalComps, 1) : 0.0;
+
+            $statsDTO->reportApprovalRatio = $raw['totalActionsReportedJudged'] > 0
+                ? round(($raw['totalActionsReportedValid'] / $raw['totalActionsReportedJudged']) * 100, 1)
+                : null;
+
+            $statsDTO->reportToReceivedRatio = $raw['totalActionsReceived'] > 0
+                ? round($raw['totalActionsReported'] / $raw['totalActionsReceived'], 2)
+                : (float) $raw['totalActionsReported'];
+
+            $statsDTO->minRank = $raw['ranks']['min_rank'] ?? null;
+            $statsDTO->maxRank = $raw['ranks']['max_rank'] ?? null;
+
+            $statsDTO->maxPointsSingleActionReceived = $this->mapRecordOutput($raw['maxPointsSingleActionReceived']);
+            $statsDTO->maxPointsSingleActionReported = $this->mapRecordOutput($raw['maxPointsSingleActionReported']);
 
             $user->stats = $statsDTO;
         }

@@ -78,14 +78,14 @@ export const StatsPage = () => {
             </Text>
             <StatFocusCard
               title={STATS_UI.FOCUS.RECORD}
-              data={stats.record}
+              data={stats.max_points_single_action_received}
               icon={ICONS.FIRE}
               variant="danger"
             />
             <div className="mt-1" />
             <StatFocusCard
               title={STATS_UI.FOCUS.WORST_STAB}
-              data={stats.worst_stab}
+              data={stats.max_points_single_action_reported}
               icon={ICONS.STAB}
               variant="info"
             />
