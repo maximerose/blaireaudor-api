@@ -1,92 +1,54 @@
-{# back/templates/admin/dashboard.html.twig #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% macro fmtNames(names) %}
+    {% if names is empty %}Aucun
+    {% elseif names|length == 1 %}{{ names|first }}
+    {% elseif names|length == 2 %}{{ names[0] }} et {{ names[1] }}
+    {% else %}{{ names|length }} ex-aequo
+    {% endif %}
+{% endmacro %}
+
 {% block main %}
+    {% import _self as macros %}
+
     <div class="mb-4">
         <p class="text-muted">{{ constant('App\\Constants\\AdminConstants::DASHBOARD_WELCOME') }}</p>
     </div>
 
-    {# LIGNE 1 : VOLUMES #}
-    <div class="row mt-4">
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.PENDING_ACTIONS, value: count_pending_actions, icon: 'fas fa-gavel', color: 'warning' } %}
+    {% for section in sections %}
+        {% if section.title %}
+            <h5 class="text-gold fw-bold mt-5 mb-3" style="font-style: italic; font-size: 1.05rem; letter-spacing: 0.5px;">
+                {{ section.title }}
+            </h5>
+        {% endif %}
+        
+        {% set count = section.metrics|length %}
+        {% set col_class = 'col-12 col-md-6' %}
+        
+        {% if count == 4 %}
+            {% set col_class = 'col-12 col-md-6 col-xl-3' %}
+        {% elseif count == 3 %}
+            {% set col_class = 'col-12 col-lg-4' %}
+        {% endif %}
+        
+        <div class="row">
+            {% for metric in section.metrics %}
+                {% set display_value = metric.names is not empty ? macros.fmtNames(metric.names) : metric.value %}
+                
+                <div class="{{ col_class }} mb-4">
+                    {% include 'admin/components/_kpi_card.html.twig' with {
+                        id: metric.id,
+                        title: metric.title,
+                        hint: metric.hint,
+                        value: display_value,
+                        names: metric.names,
+                        suffix: metric.suffix,
+                        subtext: metric.subtext,
+                        icon: metric.icon,
+                        color: metric.color
+                    } %}
+                </div>
+            {% endfor %}
         </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.ACTIVE_COMPETITIONS, value: count_competitions, icon: 'fas fa-trophy', color: 'info' } %}
-        </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_USERS, value: count_users, icon: 'fas fa-user-shield', color: 'success' } %}
-        </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_PLAYERS, value: count_players, icon: 'fas fa-users', color: 'secondary' } %}
-        </div>
-    </div>
-
-    {# LIGNE 2 : ACTIVITÉ GLOBALE & STRATEGIE #}
-    <div class="row">
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_ACTIONS, value: count_total_actions, icon: 'fas fa-paper-plane', color: 'light' } %}
-        </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.VALIDATED_ACTIONS, value: count_validated_actions, icon: 'fas fa-check-circle', color: 'success' } %}
-        </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.TOTAL_POINTS, value: total_points_distributed|number_format(0, ',', ' '), icon: 'fas fa-bullseye', color: 'gold', suffix: 'pts' } %}
-        </div>
-        <div class="col-md-3 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.BONUS_ACTIONS_RATIO, value: bonus_actions_ratio, icon: 'fas fa-clock', color: 'warning', suffix: '%' } %}
-        </div>
-    </div>
-
-    {# LIGNE 3 : LE LIVRE DES RECORDS INDIVIDUELS #}
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_ACTIONS_RECEIVED, value: max_actions_received.value, subtext: max_actions_received.subtext, icon: 'fas fa-bolt', color: 'danger' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_ACTIONS_REPORTED, value: max_actions_reported.value, subtext: max_actions_reported.subtext, icon: 'fas fa-eye', color: 'warning' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MIN_ACTIONS_RECEIVED, value: min_actions_received.value, subtext: min_actions_received.subtext, icon: 'fas fa-cloud', color: 'success' } %}
-        </div>
-    </div>
-
-    {# LIGNE 4 : LES SURPRISES CHIRURGICALES #}
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_APPROVAL_RATIO, value: max_approval_ratio.value, subtext: max_approval_ratio.subtext, icon: 'fas fa-crosshairs', color: 'success' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_REJECTED_REPORTS, value: max_rejected_reports.value, subtext: max_rejected_reports.subtext, icon: 'fas fa-comment-slash', color: 'danger' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_DISTINCT_INFORMERS_RECEIVED, value: max_distinct_informers_received.value, subtext: max_distinct_informers_received.subtext, icon: 'fas fa-heart-broken', color: 'info' } %}
-        </div>
-    </div>
-
-    {# LIGNE 5 : L'ÉQUIPE DU TRIBUNAL #}
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_ACTIONS_VALIDATED_BY_REFEREE, value: max_actions_validated_by_referee.value, subtext: max_actions_validated_by_referee.subtext, icon: 'fas fa-balance-scale-right', color: 'danger' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_ACTIONS_REJECTED_BY_REFEREE, value: max_actions_rejected_by_referee.value, subtext: max_actions_rejected_by_referee.subtext, icon: 'fas fa-feather-alt', color: 'success' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.AVERAGE_SEVERITY, value: average_points_per_action, icon: 'fas fa-calculator', color: 'info', suffix: 'pts / action' } %}
-        </div>
-    </div>
-
-    {# LIGNE 6 : LES GRANDS CONTEXTES HISTORIQUES #}
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_POINTS_COMPETITION, value: max_points_competition.value, subtext: max_points_competition.subtext, icon: 'fas fa-fire-alt', color: 'gold' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MOST_FREQUENT_TARGET_PAIR, value: most_frequent_target_pair.value, subtext: most_frequent_target_pair.subtext, icon: 'fas fa-handshake-slash', color: 'info' } %}
-        </div>
-        <div class="col-md-4 mb-4">
-            {% include 'admin/components/_kpi_card.html.twig' with { title: labels.MAX_POINTS_SINGLE_ACTION, value: max_points_single_action.value, subtext: max_points_single_action.subtext, icon: 'fas fa-gem', color: 'gold' } %}
-        </div>
-    </div>
+    {% endfor %}
 {% endblock %}

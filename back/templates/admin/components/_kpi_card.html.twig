@@ -1,18 +1,26 @@
-{# back/templates/admin/components/_kpi_card.html.twig #}
-
 {% set is_gold = color == 'gold' %}
 {% set text_class = is_gold ? '' : 'text-' ~ color %}
 {% set inline_style = is_gold ? 'color: #d4af37 !important;' : '' %}
 {% set border_style = is_gold ? 'border-color: #d4af37 !important;' : '' %}
 
-<div class="card border-start border-3 shadow-sm h-100" 
+<div class="card border-start border-3 shadow-sm h-100 position-relative" 
      style="background: rgba(255,255,255,0.02); border-radius: 8px; {{ border_style }}">
+     
+    {% if hint is defined and hint is not empty and id is defined %}
+        <button type="button" 
+                class="btn btn-link p-0 text-muted border-0 opacity-50 position-absolute top-0 end-0 mt-1 me-1 z-2" 
+                style="font-size: 0.85rem; box-shadow: none; align-items: start;"
+                data-bs-toggle="modal" 
+                data-bs-target="#modal-hint-{{ id }}"
+                title="Afficher les détails">
+            <i class="fas fa-info-circle" style="{{ inline_style }}"></i>
+        </button>
+    {% endif %}
+
     <div class="card-body d-flex align-items-center justify-content-between py-3">
-        <div class="w-100 overflow-hidden">
-            {# Titre de la tuile #}
-            <h6 class="text-muted text-uppercase small mb-1" style="{{ inline_style }}">{{ title }}</h6>
+        <div class="w-100 overflow-hidden pe-3">
+            <h6 class="text-muted text-uppercase small mb-2" style="{{ inline_style }}">{{ title }}</h6>
             
-            {# Valeur principale #}
             <h2 class="fw-bold mb-0 {{ text_class }}" style="{{ inline_style }}">
                 {{ value }}
                 {% if suffix is defined and suffix is not empty %}
@@ -22,7 +30,6 @@
                 {% endif %}
             </h2>
 
-            {# Sous-texte d'ambiance / contexte #}
             {% if subtext is defined and subtext is not empty %}
                 <div class="small text-muted mt-1" style="font-size: 0.8rem; {{ is_gold ? 'opacity: 0.8;' : '' }}">
                     {{ subtext|raw }}
@@ -30,9 +37,42 @@
             {% endif %}
         </div>
         
-        {# Icône #}
         <div class="fs-2 opacity-50 {{ text_class }} ms-2" style="{{ inline_style }}">
             <i class="{{ icon }}"></i>
         </div>
     </div>
 </div>
+
+{% if hint is defined and hint is not empty and id is defined %}
+    <div class="modal fade" id="modal-hint-{{ id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="background: #1a1a1a; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 16px;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <h5 class="modal-title text-gold fw-bold" style="font-size: 1rem; font-style: italic;">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i> Métrique : {{ title }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                
+                <div class="modal-body text-silver" style="font-size: 0.85rem; line-height: 1.6; color: #a8a8a8 !important;">
+                    <p class="mb-0">{{ hint|raw }}</p>
+                    
+                    {% if names is defined and names is iterable and names|length > 2 %}
+                        <div class="mt-3 pt-3" style="border-top: 1px dashed rgba(255,255,255,0.1);">
+                            <strong class="text-gold d-block mb-2">👥 Liste des {{ names|length }} ex-aequo :</strong>
+                            <ul class="text-muted mb-0 ps-3" style="list-style-type: circle;">
+                                {% for name in names %}
+                                    <li>{{ name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.05); padding: 0.75rem 1rem;">
+                    <button type="button" class="btn btn-sm btn-secondary px-3" style="border-radius: 8px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
