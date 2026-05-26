@@ -22,6 +22,13 @@ export interface PlayerStats {
   max_points_single_action_reported: PlayerRecord | null;
   min_rank: number | null;
   max_rank: number | null;
+  bonus_actions_ratio: number;
+  max_reports_from_single_actor: { value: string; subtext: string } | null;
+  max_reports_to_single_receiver: { value: string; subtext: string } | null;
+  max_reciprocal_reports_with_single_peer: {
+    value: string;
+    subtext: string;
+  } | null;
 }
 
 export interface User {

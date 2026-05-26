@@ -1,1 +1,1 @@
-export * from './stats_ui';
+export * from './player_stats_ui';

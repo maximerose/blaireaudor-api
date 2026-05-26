@@ -46,4 +46,16 @@ final class PlayerStatsOutput
 
     #[Groups(['user:read'])]
     public ?int $maxRank = null;
+
+    #[Groups(['user:read'])]
+    public float $bonusActionsRatio = 0.0;
+
+    #[Groups(['user:read'])]
+    public ?array $maxReportsFromSingleActor = null;
+
+    #[Groups(['user:read'])]
+    public ?array $maxReportsToSingleReceiver = null;
+
+    #[Groups(['user:read'])]
+    public ?array $maxReciprocalReportsWithSinglePeer = null;
 }

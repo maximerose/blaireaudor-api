@@ -59,6 +59,12 @@ final readonly class MeProvider implements ProviderInterface
             $statsDTO->maxPointsSingleActionReceived = $this->mapRecordOutput($raw['maxPointsSingleActionReceived']);
             $statsDTO->maxPointsSingleActionReported = $this->mapRecordOutput($raw['maxPointsSingleActionReported']);
 
+            $statsDTO->bonusActionsRatio = $raw['bonusActionsRatio'];
+
+            $statsDTO->maxReportsFromSingleActor = $raw['maxReportsFromSingleActor'];
+            $statsDTO->maxReportsToSingleReceiver = $raw['maxReportsToSingleReceiver'];
+            $statsDTO->maxReciprocalReportsWithSinglePeer = $raw['maxReciprocalReportsWithSinglePeer'];
+
             $user->stats = $statsDTO;
         }
 

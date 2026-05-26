@@ -7,7 +7,7 @@ import {
   ICONS,
   cn,
 } from '@/shared';
-import type { MetricItem } from '../hooks/useStats';
+import type { MetricItem } from '../hooks/usePlayerStats';
 
 interface StatCardProps {
   metric: MetricItem;

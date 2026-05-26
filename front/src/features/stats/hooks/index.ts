@@ -1,2 +1,3 @@
 export * from './useCareerPalmares';
-export * from './useStats';
+export * from './useDashboardStats';
+export * from './usePlayerStats';

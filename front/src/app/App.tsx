@@ -29,7 +29,7 @@ import {
   CreateCompetitionPage,
   QRJoinPage,
 } from '@/features/competition';
-import { StatsPage } from '@/features/stats';
+import { PlayerStatsPage } from '@/features/stats';
 
 const queryClient = new QueryClient();
 
@@ -85,7 +85,7 @@ function App() {
                 path={ROUTES.NAV.STATS}
                 element={
                   user ? (
-                    <StatsPage />
+                    <PlayerStatsPage />
                   ) : (
                     <Navigate to={ROUTES.NAV.LOGIN} replace />
                   )

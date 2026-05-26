@@ -44,6 +44,11 @@ final readonly class PlayerStatsService
             'maxPointsSingleActionReceived' => $this->fetchMaxPointsSingleActionReceived($conn, $playerId),
             'maxPointsSingleActionReported' => $this->fetchMaxPointsSingleActionReported($conn, $playerId, $userId),
             'ranks' => $this->fetchHistoricalRanks($conn, $playerId),
+            'bonusActionsRatio' => $this->fetchBonusActionsRatio($conn, $userId),
+
+            'maxReportsFromSingleActor' => $this->fetchMaxReportsFromSingleActor($conn, $playerId),
+            'maxReportsToSingleReceiver' => $this->fetchMaxReportsToSingleReceiver($conn, $playerId, $userId),
+            'maxReciprocalReportsWithSinglePeer' => $this->fetchMaxReciprocalReportsWithSinglePeer($conn, $playerId, $userId),
         ];
     }
 
@@ -142,5 +147,102 @@ final readonly class PlayerStatsService
         ', ['player_id' => $playerId, 'now' => $nowStr]);
 
         return $res ?: ['min_rank' => null, 'max_rank' => null];
+    }
+
+    private function fetchBonusActionsRatio(Connection $conn, string $userId): float
+    {
+        // % d'actions émises par le joueur lors des jours bonus
+        $data = $conn->fetchAssociative("
+            SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id
+            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+            WHERE a.created_by_id = :user_id AND a.status = 'validated'
+        ", ['user_id' => $userId, 'tz' => AppConstants::TIMEZONE]);
+
+        return $data && $data['total'] > 0 ? round(($data['bonus_actions'] / $data['total']) * 100, 1) : 0.0;
+    }
+
+    private function fetchMaxReportsFromSingleActor(Connection $conn, string $playerId): array
+    {
+        // Qui m'a le plus dénoncé ?
+        $data = $conn->fetchAssociative("
+            SELECT r.display_name, COUNT(a.id) as cnt
+            FROM action a
+            JOIN \"user\" u ON a.created_by_id = u.id
+            JOIN player r ON r.associated_user_id = u.id
+            JOIN participation p ON a.participation_id = p.id
+            WHERE p.player_id = :player_id AND r.id != :player_id AND a.status = 'validated'
+            GROUP BY r.id, r.display_name
+            ORDER BY cnt DESC LIMIT 1
+        ", ['player_id' => $playerId]);
+
+        return $data ? ['value' => $data['display_name'], 'subtext' => \sprintf('%d alignements subis', $data['cnt'])] : ['value' => 'Aucun', 'subtext' => ''];
+    }
+
+    private function fetchMaxReportsToSingleReceiver(Connection $conn, string $playerId, string $userId): array
+    {
+        // Qui ai-je le plus dénoncé ? (Mon souffre-douleur)
+        $data = $conn->fetchAssociative("
+            SELECT pl.display_name, COUNT(a.id) as cnt
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id
+            JOIN player pl ON p.player_id = pl.id
+            WHERE a.created_by_id = :user_id AND pl.id != :player_id AND a.status = 'validated'
+            GROUP BY pl.id, pl.display_name
+            ORDER BY cnt DESC LIMIT 1
+        ", ['user_id' => $userId, 'player_id' => $playerId]);
+
+        return $data ? ['value' => $data['display_name'], 'subtext' => \sprintf('%d dossiers envoyés', $data['cnt'])] : ['value' => 'Aucun', 'subtext' => ''];
+    }
+
+    private function fetchMaxReciprocalReportsWithSinglePeer(Connection $conn, string $playerId, string $userId): array
+    {
+        // La Vendetta Réelle Symétrique -> MAX(MIN(A->B, B->A))
+        $sql = "
+            WITH sent_counts AS (
+                SELECT p.player_id as other_id, COUNT(a.id) as sent_cnt
+                FROM action a
+                JOIN participation p ON a.participation_id = p.id
+                WHERE a.created_by_id = :user_id AND a.status = 'validated'
+                GROUP BY p.player_id
+            ),
+            received_counts AS (
+                SELECT r.id as other_id, COUNT(a.id) as received_cnt
+                FROM action a
+                JOIN participation p ON a.participation_id = p.id
+                JOIN \"user\" u ON a.created_by_id = u.id
+                JOIN player r ON r.associated_user_id = u.id
+                WHERE p.player_id = :player_id AND a.status = 'validated' AND r.id != :player_id
+                GROUP BY r.id
+            )
+            SELECT 
+                pl.display_name,
+                LEAST(COALESCE(s.sent_cnt, 0), COALESCE(r.received_cnt, 0)) as reciprocal_score,
+                COALESCE(s.sent_cnt, 0) as total_sent,
+                COALESCE(r.received_cnt, 0) as total_received
+            FROM player pl
+            LEFT JOIN sent_counts s ON pl.id = s.other_id
+            LEFT JOIN received_counts r ON pl.id = r.other_id
+            WHERE pl.id != :player_id AND LEAST(COALESCE(s.sent_cnt, 0), COALESCE(r.received_cnt, 0)) > 0
+            ORDER BY reciprocal_score DESC, (COALESCE(s.sent_cnt, 0) + COALESCE(r.received_cnt, 0)) DESC
+            LIMIT 1
+        ";
+
+        $data = $conn->fetchAssociative($sql, [
+            'player_id' => $playerId,
+            'user_id' => $userId,
+        ]);
+
+        return $data ? [
+            'value' => $data['display_name'],
+            'subtext' => \sprintf('%d coup%s rendu%s (%d émis / %d subis)',
+                $data['reciprocal_score'],
+                $data['reciprocal_score'] > 1 ? 's' : '',
+                $data['reciprocal_score'] > 1 ? 's' : '',
+                $data['total_sent'],
+                $data['total_received']
+            ),
+        ] : ['value' => 'Aucune', 'subtext' => '0 coup échangé'];
     }
 }

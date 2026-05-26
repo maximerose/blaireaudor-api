@@ -10,13 +10,22 @@ import {
   SectionHeader,
   SECTION_HEADER_VARIANT,
   SECTION_HEADER_THEME,
+  ICONS,
 } from '@/shared';
 import { StatCard } from './StatCard';
-import { STATS_UI } from '@/features/stats/constants';
-import { useStats } from '@/features/stats/hooks';
+import { PLAYER_STATS_UI } from '@/features/stats/constants';
+import { useDashboardStats } from '@/features/stats/hooks';
+import { StatFocusCard } from './StatFocusCard';
 
 export const DashboardStats = () => {
-  const { stats, teaserMetrics, activeHint, setActiveHint } = useStats();
+  const {
+    stats,
+    teaserMetrics,
+    maxReceived,
+    maxReported,
+    activeHint,
+    setActiveHint,
+  } = useDashboardStats();
 
   if (!stats || teaserMetrics.length === 0) return null;
 
@@ -25,17 +34,40 @@ export const DashboardStats = () => {
       <SectionHeader
         variant={SECTION_HEADER_VARIANT.DIVIDER}
         colorTheme={SECTION_HEADER_THEME.GOLD}
-        title={STATS_UI.GENERAL.TITLE}
+        title={PLAYER_STATS_UI.GENERAL.TITLE}
       />
 
-      <Grid cols={3} gap="xs" className="w-full">
-        {teaserMetrics.map((m) => (
-          <StatCard
-            key={m.label}
-            metric={m}
-            onClick={m.hint ? () => setActiveHint(m.hint || null) : undefined}
+      <Grid cols={1} lg={12} gap="sm" className="w-full items-center">
+        {/* Partie Gauche : La triplette de cartes Flash de carrière */}
+        <div className="lg:col-span-7 w-full">
+          <Grid cols={3} gap="xs" className="w-full h-full content-start">
+            {teaserMetrics.map((m) => (
+              <StatCard
+                key={m.label}
+                metric={m}
+                onClick={
+                  m.hint ? () => setActiveHint(m.hint || null) : undefined
+                }
+              />
+            ))}
+          </Grid>
+        </div>
+
+        {/* Partie Droite : Les deux Trophées de Faits d'armes (Records d'infractions) */}
+        <Stack gap="xs" className="lg:col-span-5 h-full justify-start">
+          <StatFocusCard
+            title={PLAYER_STATS_UI.FOCUS.RECORD}
+            data={maxReceived}
+            icon={ICONS.FIRE}
+            variant="danger"
           />
-        ))}
+          <StatFocusCard
+            title={PLAYER_STATS_UI.FOCUS.WORST_STAB}
+            data={maxReported}
+            icon={ICONS.STAB}
+            variant="info"
+          />
+        </Stack>
       </Grid>
 
       <Row justify="center" mt="sm">
@@ -45,7 +77,7 @@ export const DashboardStats = () => {
           size={BUTTON_SIZE.SMALL}
           className="text-[11px] text-info-bright hover:underline cursor-pointer"
         >
-          {STATS_UI.GENERAL.LINK_ALL}
+          {PLAYER_STATS_UI.GENERAL.LINK_ALL}
         </Button>
       </Row>
 

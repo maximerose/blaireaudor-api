@@ -1,6 +1,6 @@
 import { ICONS } from '@/shared/constants/icons';
 
-export const STATS_UI = {
+export const PLAYER_STATS_UI = {
   GENERAL: {
     TITLE: 'Statistiques de carrière',
     SUBTITLE: 'Tes records, moyennes et infamies historiques cumulés.',
@@ -83,14 +83,57 @@ export const STATS_UI = {
           "Pourcentage de tes dénonciations validées avec succès par l'équipe d'arbitrage. Un taux élevé prouve la légitimité de tes dossiers.",
       },
     },
+    OPPORTUNISM: {
+      label: "Effet d'aubaine",
+      icon: ICONS.FIRE,
+      color: 'text-warning-bright',
+      hint: {
+        title: "Effet d'aubaine",
+        description:
+          'Pourcentage de tes méfaits validés commis spécifiquement lors des Jours Bonus de compétitions.',
+      },
+    },
     KARMA: {
-      label: 'Karma Index',
-      icon: ICONS.REFEREE,
-      color: 'text-danger-bright',
+      PREDATEUR: 'Karma Index (Prédateur)',
+      MARTYR: 'Karma Index (Martyr)',
+      NEUTRAL: 'Karma Index',
       hint: {
         title: 'Karma Index',
         description:
           'Ratio entre dénonciations envoyées et reçues. Supérieur à 1 : tu es un Prédateur. Inférieur à 1 : tu es un Martyr ciblé par la bande.',
+      },
+    },
+  },
+  RELATIONAL: {
+    TITLE: '👥 Écosystème Relationnel & Rivalités',
+    MAIN_ENEMY: {
+      label: 'Pire bourreau de carrière',
+      icon: ICONS.STAB,
+      color: 'text-danger-bright',
+      hint: {
+        title: 'Pire bourreau de carrière',
+        description:
+          "Le joueur qui t'a le plus souvent aligné et envoyé au piquet tout au long de ta carrière.",
+      },
+    },
+    FAVORITE_VICTIM: {
+      label: 'Mon souffre-douleur à vie',
+      icon: ICONS.BADGER,
+      color: 'text-warning-bright',
+      hint: {
+        title: 'Mon souffre-douleur à vie',
+        description:
+          'Ta cible favorite. Le joueur sur lequel tu as le plus fréquemment balancé de gros dossiers de méfaits.',
+      },
+    },
+    VENDETTA: {
+      label: 'Ma vendetta éternelle',
+      icon: ICONS.FLAG,
+      color: 'text-info-bright',
+      hint: {
+        title: 'Ma vendetta éternelle',
+        description:
+          "Récidive symétrique pure : la personne avec qui tu as le plus haut score d'échange réciproque (donner et recevoir coup pour coup).",
       },
     },
   },
@@ -114,8 +157,8 @@ export const STATS_UI = {
   FORMAT: {
     RANK: (rank: number) => `${rank}${rank === 1 ? 'er' : 'ème'}`,
     POINTS: (count: number) => `${count} pts`,
-    ACTIONS: (count: number) => `${count} action${count > 1 ? 's' : ''}`,
+    ACTIONS: (count: number) => `${count} action${count > 1 ? 's' : ''} `,
     PERCENT: (count: number | null) =>
-      `${typeof count === 'number' ? count : '-'}%`,
+      `${typeof count === 'number' ? count : '-'}% `,
   },
 } as const;
