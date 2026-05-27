@@ -32,7 +32,7 @@ export const useAdminSettings = ({ competition }: UseAdminSettingsProps) => {
 
     openModal({
       title: CONFIRMS.COMPETITION.CLOSE_TITLE,
-      message: CONFIRMS.COMPETITION.CLOSE_MESSAGE,
+      message: CONFIRMS.COMPETITION.CLOSE_MESSAGE(competition.fog_of_war),
       onConfirm: () => {
         updateCompetition({ end_date: new Date().toISOString() });
       },

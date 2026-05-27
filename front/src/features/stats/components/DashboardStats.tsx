@@ -58,13 +58,13 @@ export const DashboardStats = () => {
           <StatFocusCard
             title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
             data={maxReceived}
-            icon={ICONS.FIRE}
+            icon={ICONS.MAX_RECEIVED}
             variant="danger"
           />
           <StatFocusCard
             title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
             data={maxReported}
-            icon={ICONS.STAB}
+            icon={ICONS.MAX_REPORTED}
             variant="info"
           />
         </Stack>

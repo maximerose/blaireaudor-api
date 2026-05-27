@@ -34,9 +34,13 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
             {ICONS.HINT}
           </span>
         )}
-        <span className="text-lg mb-2 opacity-30" aria-hidden="true">
+        <Text
+          colorTheme={TEXT_THEME.MUTED}
+          className="text-md"
+          aria-hidden="true"
+        >
           {metric.icon}
-        </span>
+        </Text>
 
         <div className="flex flex-col items-center justify-center flex-1 w-full">
           <Text
@@ -51,7 +55,7 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
           {metric.subtext && (
             <Text
               variant={TEXT_VARIANT.MICRO}
-              colorTheme={TEXT_THEME.DIMMED}
+              colorTheme={TEXT_THEME.MUTED}
               className="mt-2 font-medium normal-case italic"
             >
               {metric.subtext}

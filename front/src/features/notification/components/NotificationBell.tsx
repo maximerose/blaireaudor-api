@@ -25,20 +25,24 @@ export const NotificationBell = () => {
 
   return (
     <div className="relative" ref={containerRef}>
-      {/* BOUTON CLOCHE */}
       <button
         type="button"
         onClick={toggleBell}
         className="relative p-2 rounded-full hover:bg-surface-base transition-default focus:outline-none focus:ring-2 focus:ring-gold-border cursor-pointer"
         aria-label={`Notifications, ${unreadCount} non lues`}
       >
-        <span className="text-xl" aria-hidden="true">
-          {ICONS.NOTIFICATION}
+        <span
+          className={cn(
+            'text-xl block',
+            unreadCount > 0 ? 'text-danger-bright' : 'text-text-base',
+          )}
+          aria-hidden="true"
+        >
+          {unreadCount > 0 ? ICONS.NOTIFICATION_ON : ICONS.NOTIFICATION}
         </span>
 
-        {/* Pastille Rouge dynamique */}
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-danger-bright text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-dark animate-pulse-subtle">
+          <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-danger-bright text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-dark animate-pulse-subtle">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}

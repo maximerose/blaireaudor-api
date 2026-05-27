@@ -308,23 +308,16 @@ export const CompetitionAnalyticChart = ({
             {COMPETITION_STATS_GENERAL.CHART.TOGGLE_POINTS}
           </button>
         </div>
-        <div className="absolute top-2 right-2 z-10 hidden sm:block">
+        <div className="absolute top-2 right-2 z-10">
           <Button
             variant={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZE.SMALL}
             onClick={onOpenFullscreen}
           >
-            {COMPETITION_STATS_GENERAL.CHART.BTN_AGRANDIR}
-          </Button>
-        </div>
-        <div className="sm:hidden absolute top-4 left-1/2 -translate-x-1/2 z-10 w-3/4">
-          <Button
-            variant={BUTTON_VARIANT.SECONDARY}
-            size={BUTTON_SIZE.SMALL}
-            fullWidth
-            onClick={onOpenFullscreen}
-          >
-            {COMPETITION_STATS_GENERAL.CHART.BTN_OUVRIR}
+            <span className="sm:hidden">{ICONS.MAXIMIZE}</span>
+            <span className="hidden sm:block">
+              {COMPETITION_STATS_GENERAL.CHART.BTN_MAXIMIZE}
+            </span>
           </Button>
         </div>
 
@@ -362,7 +355,7 @@ export const CompetitionAnalyticChart = ({
               size={BUTTON_SIZE.SMALL}
               onClick={onCloseFullscreen}
             >
-              {COMPETITION_STATS_GENERAL.CHART.BTN_FERMER} {ICONS.CANCEL}
+              {COMPETITION_STATS_GENERAL.CHART.BTN_CLOSE}
             </Button>
           </Row>
           <div className="p-2 sm:p-6 flex-1 min-h-0 w-full overflow-y-auto flex flex-col">

@@ -50,3 +50,9 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.font-bold svg,
+.font-semibold svg,
+.font-black svg {
+  stroke-width: 3px;
+}

@@ -84,7 +84,7 @@ export const CompetitionProgressBanner = ({
             className="text-center h-full flex flex-col justify-between"
           >
             <span className="text-lg mb-2 opacity-30" aria-hidden="true">
-              {ICONS.FIRE}
+              {ICONS.GAP}
             </span>
             <Text
               variant={TEXT_VARIANT.H3}
@@ -123,6 +123,9 @@ export const CompetitionProgressBanner = ({
             justify="center"
             className="text-center h-full flex flex-col justify-between"
           >
+            <span className="text-lg mb-2 opacity-30" aria-hidden="true">
+              {ICONS.RANKING}
+            </span>
             <div className="flex-1 flex items-center justify-center w-full">
               <RankBadge
                 rank={myParticipation.rank}
@@ -151,7 +154,7 @@ export const CompetitionProgressBanner = ({
             className="text-center h-full flex flex-col justify-between"
           >
             <span className="text-lg mb-2 opacity-30" aria-hidden="true">
-              {ICONS.BADGER}
+              {ICONS.ACTION}
             </span>
             <Text
               variant={TEXT_VARIANT.H3}
@@ -164,7 +167,7 @@ export const CompetitionProgressBanner = ({
               colorTheme={TEXT_THEME.DIMMED}
               className="mt-3 block w-full"
             >
-              {COMPETITION_STATS_GENERAL.PROGRESS_BANNER.ACTIONS}
+              {COMPETITION_STATS_GENERAL.PROGRESS_BANNER.ACTIONS(actionsCount)}
             </Text>
           </Card.Body>
         </Card>

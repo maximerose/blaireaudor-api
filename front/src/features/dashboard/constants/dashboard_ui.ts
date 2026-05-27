@@ -1,4 +1,4 @@
-import { pluralize, ICONS } from '@/shared';
+import { pluralize, ICONS, withIconPrefix } from '@/shared';
 
 export const STATS_VAL = {
   POINTS: (count: number) => `${count} pts`,
@@ -34,7 +34,7 @@ export const DASHBOARD_UI = {
       STAT_DETAIL: (val: number, label: string) =>
         `${val} ${pluralize(val, 'compétition')} ${label.toLowerCase()}`,
     },
-    ADMIN_ACCESS: `${ICONS.REFEREE} Espace d'arbitrage`,
+    ADMIN_ACCESS: withIconPrefix(ICONS.REFEREE, "Espace d'arbitrage"),
   },
   NB_COMPETITIONS: (count: number) =>
     `${count} ${pluralize(count, 'compétition')}`,
@@ -70,7 +70,7 @@ export const DASHBOARD_UI = {
     },
     EMPTY: {
       TITLE: 'Aucune compétition',
-      MESSAGE: 'Rejoins une compétition !',
+      MESSAGE: 'Crée ou rejoins une compétition !',
     },
   },
   PALMARES_PANEL: {

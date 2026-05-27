@@ -46,7 +46,7 @@ export const PlayerStatsPage = () => {
 
         {/* SECTION 1 : TOUTES LES GRILLES DE COMPTEURS ET DE RIVALITÉS */}
         <Stack gap="lg" className="w-full">
-          {categories.map((cat) => {
+          {categories.map((cat, index) => {
             // Détermination dynamique de la parité du bloc
             const isEven = cat.metrics.length % 2 === 0;
             let gridClass = isEven ? 'grid-cols-2' : 'grid-cols-3';
@@ -55,11 +55,10 @@ export const PlayerStatsPage = () => {
             else if (isEven) gridClass += ' md:grid-cols-2';
 
             return (
-              <Stack key={cat.title} gap="xs" className="w-full">
+              <Stack key={index} gap="xs" className="w-full">
                 <Text
                   variant={TEXT_VARIANT.MICRO}
                   colorTheme={TEXT_THEME.MUTED}
-                  className="pl-2 font-black italic tracking-widest uppercase opacity-80"
                 >
                   {cat.title}
                 </Text>
@@ -81,13 +80,9 @@ export const PlayerStatsPage = () => {
           })}
         </Stack>
 
-        {/* SECTION 2 : 💥 FAITS D'ARMES (Positionnée en pleine largeur en bas de page) */}
+        {/* SECTION 2 : FAITS D'ARMES (Positionnée en pleine largeur en bas de page) */}
         <Stack gap="xs" className="w-full border-t border-border-subtle pt-6">
-          <Text
-            variant={TEXT_VARIANT.MICRO}
-            colorTheme={TEXT_THEME.DIMMED}
-            className="pl-2 font-black italic tracking-widest uppercase mb-1"
-          >
+          <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.MUTED}>
             {PLAYER_STATS_GENERAL.FOCUS.TITLE}
           </Text>
 
@@ -95,13 +90,13 @@ export const PlayerStatsPage = () => {
             <StatFocusCard
               title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
               data={focusReceived}
-              icon={ICONS.FIRE}
+              icon={ICONS.MAX_RECEIVED}
               variant="danger"
             />
             <StatFocusCard
               title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
               data={focusReported}
-              icon={ICONS.STAB}
+              icon={ICONS.MAX_REPORTED}
               variant="info"
             />
           </div>

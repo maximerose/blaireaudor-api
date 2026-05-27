@@ -1,9 +1,13 @@
-import { ICONS } from './icons';
+import { ICONS, withIconPrefix } from './icons';
 
 export const CONFIRMS = {
   COMPETITION: {
-    CLOSE_TITLE: `${ICONS.FLAG} Terminer la compétition maintenant ?`,
-    CLOSE_MESSAGE: `Le classement sera gelé et plus aucun signalement ne sera possible.`,
+    CLOSE_TITLE: withIconPrefix(
+      ICONS.FINISHED,
+      'Terminer la compétition maintenant ?',
+    ),
+    CLOSE_MESSAGE: (fogOfWar: boolean) =>
+      `Le classement sera gelé et plus aucun signalement ne sera possible.${fogOfWar ? ' Le brouillard de guerre sera désactivé, tous les joueurs pourront voir les scores !' : ''}`,
     DELETE_TITLE: 'Supprimer la compétition',
     DELETE_MESSAGE: (name: string) => `Supprimer définitivement "${name}" ?`,
   },

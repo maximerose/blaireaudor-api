@@ -1,4 +1,4 @@
-import { ICONS } from './icons';
+import { ICONS, withIconPrefix, withIconSuffix } from './icons';
 
 export const FORM = {
   /**
@@ -68,7 +68,7 @@ export const FORM = {
    */
   COMPETITION: {
     BUTTONS: {
-      CREATE: `Créer la compétition ${ICONS.STARS}`,
+      CREATE: withIconSuffix('Créer la compétition', ICONS.STARS),
     },
     STEPS: {
       CONFIG: {
@@ -103,14 +103,17 @@ export const FORM = {
       EXTERNAL_REFEREE: 'Chercher un arbitre externe...',
     },
     HINTS: {
-      JOIN_CODE: `Vide = génération automatique ${ICONS.STARS}`,
+      JOIN_CODE: withIconSuffix('Vide = génération automatique', ICONS.STARS),
       JOIN_CODE_CHECK: 'Vérification du code...',
       JOIN_CODE_AVAILABLE: "Code d'accès disponible !",
       JOIN_CODE_TAKEN: "Code d'accès déjà utilisé.",
       FOG_OF_WAR: 'Scores cachés pendant le tournoi',
       PARTICIPATE: 'Participer au tournoi en tant que joueur',
       ALREADY_STARTED: 'Déjà lancée',
-      REFEREE: `${ICONS.DANGER} Tu dois désigner au moins un arbitre.`,
+      REFEREE: withIconPrefix(
+        ICONS.DANGER,
+        'Tu dois désigner au moins un arbitre.',
+      ),
     },
   },
 
@@ -157,7 +160,7 @@ export const FORM = {
    */
   ADMIN: {
     BONUS: {
-      TITLE: `${ICONS.FIRE} Multiplicateurs`,
+      TITLE: withIconPrefix(ICONS.BONUS, 'Multiplicateurs'),
       SUBTITLE: 'Multiplier les points de la journée.',
       EMPTY: 'Aucun multiplicateur programmé.',
     },

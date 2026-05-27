@@ -102,7 +102,7 @@ export const CompetitionStatsTab = () => {
         <StatFocusCard
           title={COMPETITION_STATS_GENERAL.FOCUS.RECORD}
           data={maxSingleActionMapped}
-          icon={ICONS.FIRE}
+          icon={ICONS.MAX_RECEIVED}
           variant="danger"
         />
       </Stack>

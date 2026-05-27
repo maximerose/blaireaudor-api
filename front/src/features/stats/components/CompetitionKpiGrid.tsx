@@ -8,16 +8,12 @@ export const CompetitionKpiGrid = ({
 }: KpiGridProps) => {
   return (
     <Stack gap="lg" className="w-full mt-4">
-      {categories.map((cat) => {
+      {categories.map((cat, index) => {
         const isEven = cat.metrics.length % 2 === 0;
 
         return (
-          <Stack key={cat.title} gap="xs" className="w-full">
-            <Text
-              variant={TEXT_VARIANT.MICRO}
-              colorTheme={TEXT_THEME.DIMMED}
-              className="pl-2 font-black italic tracking-widest uppercase opacity-80"
-            >
+          <Stack key={index} gap="xs" className="w-full">
+            <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.MUTED}>
               {cat.title}
             </Text>
             <div
@@ -33,7 +29,7 @@ export const CompetitionKpiGrid = ({
             >
               {cat.metrics.map((m) => (
                 <StatCard
-                  key={m.id}
+                  key={m.label}
                   metric={m}
                   onClick={m.hint ? () => onCardClick(m.hint!) : undefined}
                 />

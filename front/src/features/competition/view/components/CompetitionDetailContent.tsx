@@ -44,9 +44,9 @@ export const CompetitionDetailContent = () => {
           onClick={() => setActiveTab('leaderboard')}
           className="flex-1 rounded-lg"
           size="sm"
-          icon={ICONS.FLAG}
+          icon={ICONS.RANKING}
         >
-          Classement
+          {COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
         </Button>
         <Button
           variant={
@@ -57,9 +57,9 @@ export const CompetitionDetailContent = () => {
           onClick={() => setActiveTab('stats')}
           className="flex-1 rounded-lg"
           size="sm"
-          icon={ICONS.POINTS}
+          icon={ICONS.STATS}
         >
-          Analyses
+          {COMPETITION_UI.DETAIL.SECTIONS.STATS.TITLE}
         </Button>
       </Row>
 

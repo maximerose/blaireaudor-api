@@ -42,7 +42,7 @@ export const useNavbarUI = () => {
     {
       label: 'Mes Stats',
       to: ROUTES.NAV.STATS,
-      icon: ICONS.POINTS,
+      icon: ICONS.STATS,
       isActive: location.pathname === ROUTES.NAV.STATS,
     },
   ];

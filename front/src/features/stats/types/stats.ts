@@ -1,6 +1,7 @@
 import type React from 'react';
 import type { PlayerStats } from '@/features/account/types';
 import type { EnrichedLeaderboardItem } from '@/features/competition/types';
+import type { ReactNode } from 'react';
 
 // --- TYPES DE BASE (MODALES & KPIs) ---
 export interface HintModalData {
@@ -19,7 +20,7 @@ export interface MetricItem {
 }
 
 export interface CategoryItem {
-  title: string;
+  title: string | React.ReactNode;
   metrics: MetricItem[];
 }
 
@@ -50,7 +51,7 @@ export type CompStatConfig = {
 };
 
 export type CompCategoryConfig = {
-  title: string;
+  title: string | ReactNode;
   metrics: CompStatConfig[];
 };
 

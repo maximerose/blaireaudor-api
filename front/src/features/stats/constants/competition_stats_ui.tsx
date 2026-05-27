@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ICONS, pluralize } from '@/shared';
+import { ICONS, pluralize, withIconPrefix, withIconSuffix } from '@/shared';
 import type { CompCategoryConfig } from '@/features/stats/types';
 
 // ---------------------------------------------------------
@@ -11,13 +11,17 @@ export const COMPETITION_STATS_GENERAL = {
     EMPTY: "L'arène est trop calme, aucune donnée à analyser.",
     FOG_WARNING:
       "Les statistiques et l'évolution temporelle sont masquées jusqu'à la levée du brouillard de guerre par l'arbitre.",
-    HELP_HINT:
-      '💡 Astuce : Clique sur les noms dans la légende ci-dessous pour masquer/afficher leurs courbes.',
-    FULLSCREEN_HELP:
-      '📱 Plein écran activé. Tournez votre appareil en mode paysage pour une meilleure lecture.',
-    BTN_AGRANDIR: '🔍 Agrandir',
-    BTN_OUVRIR: '🔍 Ouvrir le graphique',
-    BTN_FERMER: 'Fermer',
+    HELP_HINT: withIconPrefix(
+      ICONS.HINT,
+      'Astuce : Clique sur les noms dans la légende ci-dessous pour masquer/afficher leurs courbes.',
+    ),
+    FULLSCREEN_HELP: withIconPrefix(
+      ICONS.ROTATE,
+      'Plein écran activé. Tournez votre appareil en mode paysage pour une meilleure lecture.',
+    ),
+    BTN_MAXIMIZE: withIconPrefix(ICONS.MAXIMIZE, 'Agrandir'),
+    BTN_OPEN: '🔍 Ouvrir le graphique',
+    BTN_CLOSE: withIconSuffix('Fermer', ICONS.CANCEL),
     TOGGLE_RANKS: 'Évolution des rangs',
     TOGGLE_POINTS: 'Évolution des points',
   },
@@ -29,15 +33,16 @@ export const COMPETITION_STATS_GENERAL = {
     ALL: (count: number) => `Tous (${count})`,
   },
   PROGRESS_BANNER: {
-    TITLE: '🎯 Mon Bilan Actuel',
+    TITLE: 'Mon Bilan Actuel',
     SCORE: 'Mon Score',
     RANK: 'Mon Classement',
-    ACTIONS: 'Actions réalisées',
+    ACTIONS: (count: number) =>
+      pluralize(count, 'Action réalisée', 'Actions réalisées'),
     GAP: 'Écart avec le 1er',
     BOSS_LABEL: "Tu es le blaireau d'or",
   },
   FOCUS: {
-    SECTION_TITLE: "💥 L'Action du Siècle",
+    SECTION_TITLE: "L'Action du Siècle",
     RECORD: 'Le Casse du Siècle (Bonus Inclus)',
     PREFIX_OVERRIDE: 'Victime : ',
   },
@@ -85,12 +90,12 @@ const fmtNames = (names?: string[]) => {
 
 export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
   {
-    title: '📊 Volumes & Sévérité',
+    title: 'Volumes & Sévérité',
     metrics: [
       {
         id: 'total_players',
         getLabel: () => 'Joueurs engagés',
-        icon: ICONS.PLAYER,
+        icon: ICONS.PLAYERS,
         getColor: () => 'text-silver',
         getValue: (s) => s.total_players,
       },
@@ -104,14 +109,14 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'total_actions',
         getLabel: () => 'Actions validées',
-        icon: ICONS.BADGER,
+        icon: ICONS.ACTION,
         getColor: () => 'text-info-bright',
         getValue: (s) => s.total_actions,
       },
       {
         id: 'avg_severity',
         getLabel: () => 'Sévérité moyenne',
-        icon: ICONS.CALCULATOR,
+        icon: ICONS.AVERAGE,
         getColor: () => 'text-danger-bright',
         getValue: (s) => fmtPointsPerAction(s.average_points_per_action),
         hint: {
@@ -123,12 +128,12 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
     ],
   },
   {
-    title: '🏆 Le Livre des Records',
+    title: 'Le Livre des Records',
     metrics: [
       {
         id: 'grand_recidivist',
         getLabel: () => 'Grand Récidiviste',
-        icon: ICONS.ALARM,
+        icon: ICONS.CROWN,
         getColor: () => 'text-danger-bright',
         getValue: (s) => fmtNames(s.max_actions_received?.player_names),
         getSubtext: (s) =>
@@ -145,7 +150,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'angel_arena',
         getLabel: () => "Ange de l'Arène",
-        icon: ICONS.HOME,
+        icon: ICONS.GHOST,
         getColor: () => 'text-success-bright',
         getValue: (s) => fmtNames(s.min_actions_received?.player_names),
         getSubtext: (s) =>
@@ -161,7 +166,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'golden_balance',
         getLabel: () => "Balance d'Or",
-        icon: ICONS.GUEST_EYE,
+        icon: ICONS.REPORTS,
         getColor: () => 'text-warning-bright',
         getValue: (s) => fmtNames(s.max_actions_reported?.player_names),
         getSubtext: (s) =>
@@ -177,7 +182,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'max_points_reported',
         getLabel: () => 'Dénonciateur de Choc',
-        icon: ICONS.POINTS,
+        icon: ICONS.ZAP,
         getColor: () => 'text-gold',
         getValue: (s) => fmtNames(s.max_points_reported?.player_names),
         getSubtext: (s) =>
@@ -193,7 +198,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'min_avg_points_received',
         getLabel: () => 'Meilleure moyenne subie',
-        icon: ICONS.CALCULATOR,
+        icon: ICONS.TRENDING_UP,
         getColor: () => 'text-danger-bright',
         getValue: (s) => fmtNames(s.min_avg_points_received?.player_names),
         getSubtext: (s) =>
@@ -209,7 +214,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'max_avg_points_received',
         getLabel: () => 'Pire moyenne subie',
-        icon: ICONS.CALCULATOR,
+        icon: ICONS.TRENDING_DOWN,
         getColor: () => 'text-success-bright',
         getValue: (s) => fmtNames(s.max_avg_points_received?.player_names),
         getSubtext: (s) =>
@@ -225,7 +230,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'paria',
         getLabel: () => 'Le Paria',
-        icon: ICONS.STAB,
+        icon: ICONS.TARGET,
         getColor: () => 'text-info-bright',
         getValue: (s) =>
           fmtNames(s.max_distinct_informers_received?.player_names),
@@ -258,12 +263,12 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
     ],
   },
   {
-    title: '🎯 Précision & Stratégie',
+    title: 'Précision & Stratégie',
     metrics: [
       {
         id: 'opportunism',
         getLabel: () => "Effet d'aubaine",
-        icon: ICONS.FIRE,
+        icon: ICONS.BONUS,
         getColor: () => 'text-warning-bright',
         getValue: (s) => fmtPercent(s.bonus_actions_ratio),
         hint: {
@@ -275,7 +280,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'sniper',
         getLabel: () => 'Le Sniper',
-        icon: ICONS.CHECK,
+        icon: ICONS.PRECISION,
         getColor: () => 'text-success-bright',
         getValue: (s) => fmtNames(s.max_approval_ratio?.player_names),
         getSubtext: (s) =>
@@ -308,7 +313,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
   },
 
   {
-    title: '👥 Écosystème Relationnel',
+    title: 'Écosystème Relationnel',
     metrics: [
       {
         id: 'max_reciprocal_target_pair',
@@ -329,7 +334,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'max_unique_targets_reported',
         getLabel: () => "L'Œil de Moscou",
-        icon: '👁️‍🗨️',
+        icon: ICONS.EYE,
         getColor: () => 'text-warning-bright',
         getValue: (s) => fmtNames(s.max_unique_targets_reported?.player_names),
         getSubtext: (s) =>

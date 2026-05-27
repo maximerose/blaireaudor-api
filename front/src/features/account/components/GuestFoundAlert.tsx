@@ -39,7 +39,7 @@ export const GuestFoundAlert = ({
         className="text-center"
       >
         <span className="mr-1" aria-hidden="true">
-          {ICONS.GUEST_EYE}
+          {ICONS.EYE}
         </span>{' '}
         {AUTH_UI.GUEST_ALERT.TITLE}
       </Text>

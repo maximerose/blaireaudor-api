@@ -1,8 +1,6 @@
-import { ICONS } from './icons';
-
 export const BUTTONS = {
   // ACtions CRUD & Formulaires
-  SAVE: `Enregistrer ${ICONS.SAVE}`,
+  SAVE: 'Enregistrer',
   CANCEL: 'Annuler',
   ADD: 'Ajouter',
   MODIFY: 'Modifier',

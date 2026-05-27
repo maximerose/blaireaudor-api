@@ -142,10 +142,12 @@ export const HistoricalPlayerSearch = ({
             aria-label={AUTH_UI.HISTORICAL.CLOSE_SEARCH}
           >
             <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.GOLD}>
-              <span className="mr-1" aria-hidden="true">
-                {ICONS.CANCEL}
-              </span>{' '}
-              {AUTH_UI.HISTORICAL.CLOSE_SEARCH}
+              <span className="inline-flex items-center gap-1.5">
+                <span aria-hidden="true" className="flex items-center">
+                  {ICONS.CANCEL}
+                </span>
+                <span>{AUTH_UI.HISTORICAL.CLOSE_SEARCH}</span>
+              </span>
             </Text>
           </button>
         </Card>

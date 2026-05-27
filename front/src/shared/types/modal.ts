@@ -1,8 +1,10 @@
 import type { ButtonVariant } from '@/shared/components/UI';
+import type { ReactNode } from 'react';
+import type React from 'react';
 
 export interface ModalOptions {
-  title: string;
-  message: string;
+  title: string | ReactNode;
+  message: string | React.ReactNode;
   confirmLabel?: string;
   variant?: ButtonVariant;
   onConfirm: () => void | Promise<void>;
