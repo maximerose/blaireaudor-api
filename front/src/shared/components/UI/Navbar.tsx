@@ -8,14 +8,14 @@ import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { Button, BUTTON_VARIANT, BUTTON_SIZE } from './Button';
 import { Row, Stack } from '../Layout';
 import { NotificationBell } from '@/features/notification';
+import { BadgerLogo } from '@/shared/logo';
 
 interface NavbarProps {
   subtitle?: string;
 }
 
 const LOGO_LINK =
-  'flex flex-col group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:outline-none rounded-lg p-1';
-
+  'flex flex-row items-center gap-3 group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:outline-none rounded-lg p-1';
 export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
   const {
     displayName,
@@ -42,30 +42,23 @@ export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
           className={LOGO_LINK}
           aria-label={NAV.ARIA.HOME}
         >
-          <div
-            className={cn(
-              'transition-all duration-300',
-              isScrolled
-                ? 'h-0 overflow-hidden opacity-0'
-                : 'h-auto opacity-100',
-            )}
-          >
+          <BadgerLogo isIcon className="w-10 h-10 md:w-12 md:h-12" />
+          <Stack gap="xs" align="start">
             <SectionHeader
               id="navbar-link-title"
               variant={SECTION_HEADER_VARIANT.BLOCK}
               title={NAV.TITLE}
-              centered
-              className="mb-0"
+              className="mb-0 leading-noe"
             />
-          </div>
 
-          <Text
-            variant={TEXT_VARIANT.MICRO}
-            colorTheme={TEXT_THEME.MUTED}
-            className={isScrolled ? 'text-center' : ''}
-          >
-            {subtitle}
-          </Text>
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              colorTheme={TEXT_THEME.MUTED}
+              className={isScrolled ? 'text-center' : ''}
+            >
+              {subtitle}
+            </Text>
+          </Stack>
         </Link>
         <Row align="center" gap="sm" fullWidth={false}>
           <NotificationBell />

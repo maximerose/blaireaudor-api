@@ -46,11 +46,6 @@ export const WizardCard = <T extends React.ElementType = 'div'>({
       )}
       {...(props as any)}
     >
-      <div
-        className="absolute -top-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-3xl pointer-events-none"
-        aria-hidden="true"
-      />
-
       <Card.Body p="lg" gap="lg" className="relative z-10 w-full">
         {title && (
           <SectionHeader

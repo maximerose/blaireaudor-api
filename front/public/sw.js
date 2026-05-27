@@ -9,8 +9,8 @@ self.addEventListener('push', function (event) {
 
   const options = {
     body: data.message || "Il y a du mouvement dans l'arène !",
-    icon: '/vite.svg', // Tu pourras remplacer par un beau logo de Blaireau plus tard
-    badge: '/vite.svg', // Petite icône monochrome pour la barre de statut Android
+    icon: '/favicon.svg',
+    badge: '/badge.svg',
     data: {
       url: data.targetUrl || '/'
     },

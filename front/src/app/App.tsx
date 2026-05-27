@@ -30,6 +30,7 @@ import {
   QRJoinPage,
 } from '@/features/competition';
 import { PlayerStatsPage } from '@/features/stats';
+import { SplashScreen } from '@/shared/components/UI/SplashScreen';
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ConfirmModalProvider>
+        <SplashScreen />
         <Router>
           <Toaster position="bottom-center" reverseOrder={false} />
           <ScrollToTop />

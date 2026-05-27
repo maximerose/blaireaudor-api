@@ -3,6 +3,7 @@ import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { cn } from '@/shared/utils';
 import { UI } from '@/shared/constants';
 import { Stack } from '../Layout/Stack';
+import { BadgerLogo } from '@/shared/logo';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -35,6 +36,7 @@ export const LoadingScreen = ({
       {...props}
     >
       <Stack align="center" gap="xl">
+        <BadgerLogo className="w-40 h-40 md:w-60 md:h-60" />
         <div className={SPINNER_BASE} aria-hidden="true">
           <div className="w-16 h-16 border-2 border-gold-soft rounded-full" />
           <div className="absolute w-16 h-16 border-2 border-transparent border-t-gold rounded-full animate-spin motion-reduce:animate-none" />
