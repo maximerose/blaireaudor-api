@@ -1,4 +1,5 @@
-import { ICONS, withIconPrefix, withIconSuffix } from './icons';
+import { withIconPrefix, withIconSuffix } from '@/shared/utils';
+import { ICONS } from './icons';
 
 export const FORM = {
   /**

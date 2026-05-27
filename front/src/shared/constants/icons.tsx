@@ -137,20 +137,3 @@ export const ICONS = {
   UPCOMING: <Clock size="1em" />,
   ZAP: <Zap size="1em" />,
 } as const;
-
-/**
- * Aligne proprement une icône avec un texte en mode inline-flex
- */
-export const withIconPrefix = (icon: React.ReactNode, text: string) => (
-  <span className="inline-flex items-center gap-2">
-    {icon}
-    <span>{text}</span>
-  </span>
-);
-
-export const withIconSuffix = (text: string, icon: React.ReactNode) => (
-  <span className="inline-flex items-center gap-2">
-    <span>{text}</span>
-    {icon}
-  </span>
-);
