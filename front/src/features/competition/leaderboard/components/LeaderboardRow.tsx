@@ -106,7 +106,7 @@ export const LeaderboardRow = ({
               variant={TEXT_VARIANT.H3}
               as="span"
               colorTheme={isMe ? TEXT_THEME.GOLD : TEXT_THEME.DEFAULT}
-              className="truncate normal-case italic max-w-30 sm:max-w-none"
+              className="truncate normal-case italic max-w-none"
             >
               {playerName}
             </Text>
@@ -129,51 +129,67 @@ export const LeaderboardRow = ({
           )}
         </Stack>
 
-        {canDelete && (
-          <Button
-            variant={BUTTON_VARIANT.GHOST}
-            size={BUTTON_SIZE.SMALL}
-            onClick={onDelete}
-            className={cn(
-              isMe
-                ? 'text-warning hover:text-warning-bright hover:bg-warning-soft'
-                : 'text-danger hover:text-danger-bright hover:bg-danger-soft',
-            )}
-            aria-label={
-              isMe
-                ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
-                    .ARIA_LEAVE_COMPETITION
-                : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
-                    playerName,
-                  )
-            }
-            title={
-              isMe
-                ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
-                    .ARIA_LEAVE_COMPETITION
-                : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
-                    .DELETE_PARTICIPATION
-            }
-          >
-            <span aria-hidden="true">{ICONS.CANCEL}</span>
-          </Button>
-        )}
-        {isAdmin && !hasAccount && !competition.is_finished && (
-          <Button
-            variant={BUTTON_VARIANT.GHOST}
-            size={BUTTON_SIZE.SMALL}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsMergeModalOpen(true);
-            }}
-            className="text-info hover:text-info-bright hover:bg-info-soft px-2"
-            title={COMPETITION_UI.ADMIN.MERGE.ROW_TOOLTIP}
-          >
-            <span aria-hidden="true">
-              {COMPETITION_UI.ADMIN.MERGE.ROW_ICON}
-            </span>
-          </Button>
-        )}
+        <Row
+          gap="xs"
+          align="center"
+          justify="end"
+          className="shrink-0"
+          fullWidth={false}
+        >
+          {isAdmin && !hasAccount && !competition.is_finished && (
+            <Button
+              variant={BUTTON_VARIANT.GHOST}
+              size={BUTTON_SIZE.SMALL}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMergeModalOpen(true);
+              }}
+              className="min-h-10 min-w-10 flex items-center justify-center p-0 text-info hover:text-info-bright hover:bg-info-soft"
+              title={COMPETITION_UI.ADMIN.MERGE.ROW_TOOLTIP}
+              aria-label={COMPETITION_UI.ADMIN.MERGE.ROW_TOOLTIP}
+            >
+              <span aria-hidden="true" className="text-xl">
+                {ICONS.LINK_PROFILE}
+              </span>
+            </Button>
+          )}
+
+          {canDelete && (
+            <Button
+              variant={BUTTON_VARIANT.GHOST}
+              size={BUTTON_SIZE.SMALL}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className={cn(
+                'min-h-10 min-w-10 flex items-center justify-center p-0',
+                isMe
+                  ? 'text-warning hover:text-warning-bright hover:bg-warning-soft'
+                  : 'text-danger hover:text-danger-bright hover:bg-danger-soft',
+              )}
+              aria-label={
+                isMe
+                  ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                      .ARIA_LEAVE_COMPETITION
+                  : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
+                      playerName,
+                    )
+              }
+              title={
+                isMe
+                  ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                      .ARIA_LEAVE_COMPETITION
+                  : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
+                      .DELETE_PARTICIPATION
+              }
+            >
+              <span aria-hidden="true" className="text-xl">
+                {ICONS.REMOVE_PLAYER}
+              </span>
+            </Button>
+          )}
+        </Row>
       </Row>
 
       <div
@@ -189,6 +205,7 @@ export const LeaderboardRow = ({
           shouldHidePoints={!showRealStats && !participation.isMe}
         />
       </div>
+
       {isMergeModalOpen && (
         <MergePlayersModal
           competitionId={competition.id}

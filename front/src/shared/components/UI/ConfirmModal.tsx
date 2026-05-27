@@ -6,7 +6,7 @@ import {
   type ButtonVariant,
 } from './Button';
 import { Card, CARD_VARIANT } from './Card';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { Text, TEXT_VARIANT, TEXT_THEME, type TextTheme } from './Text';
 import { Stack } from '../Layout/Stack';
 import { cn } from '@/shared/utils';
 
@@ -19,6 +19,7 @@ interface ConfirmModalProps {
   onClose: () => void;
   confirmLabel?: string;
   variant?: ButtonVariant;
+  textTheme?: TextTheme;
 }
 
 const MODAL_BORDER_COLOR: Record<ButtonVariant, string> = {
@@ -38,6 +39,7 @@ export const ConfirmModal = ({
   onClose,
   confirmLabel = BUTTONS.CONFIRM,
   variant = BUTTON_VARIANT.DANGER,
+  textTheme = TEXT_THEME.DANGER,
 }: ConfirmModalProps) => {
   if (!isOpen) return null;
 
@@ -61,7 +63,7 @@ export const ConfirmModal = ({
               <Text
                 variant={TEXT_VARIANT.H2}
                 id="confirm-modal-title"
-                colorTheme={TEXT_THEME.DEFAULT}
+                colorTheme={textTheme}
                 className="italic text-center"
               >
                 {title}

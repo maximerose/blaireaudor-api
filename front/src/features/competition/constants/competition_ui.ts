@@ -59,9 +59,8 @@ export const COMPETITION_UI = {
     },
     MERGE: {
       ROW_TOOLTIP: 'Raccorder ce profil à un compte inscrit',
-      ROW_ICON: '🔄',
-      TITLE: '🔄 Raccorder un profil',
-      SUBTITLE: (name: string) => `Bakend-link profil pour ${name}`,
+      TITLE: 'Raccorder un profil',
+      SUBTITLE: (name: string) => `Lier le profil pour ${name}`,
       ALERT_WARNING: (count: number) =>
         `Cette action va transférer définitivement les ${count} ${pluralize(count, 'action')} et l'historique des points associés vers le compte sélectionné. Le profil invité sera détruit.`,
       INPUT_LABEL: 'Rechercher le compte réel cible',
