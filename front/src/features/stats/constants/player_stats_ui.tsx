@@ -9,6 +9,7 @@ export const PLAYER_STATS_GENERAL = {
   TITLE: 'Statistiques de carrière',
   SUBTITLE: 'Tes records, moyennes et infamies historiques cumulés.',
   SUBTITLE_PAGE: 'Tes analyses de performance',
+  COMPETITIONS_SECTION_TITLE: 'Mes compétitions',
   LINK_ALL: 'Voir mes analyses complètes →',
   FOCUS: {
     TITLE: "💥 Faits d'armes",
@@ -80,7 +81,54 @@ export type CategoryConfig = {
   metrics: StatConfig[];
 };
 
+export const PLAYER_COMPETITIONS_STATS_CATEGORIES = [] as const;
+
 export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
+  {
+    title: 'Compétitions',
+    metrics: [
+      {
+        id: 'ongoing_competitions',
+        getLabel: () => 'En cours',
+        icon: ICONS.ONGOING,
+        getColor: () => 'text-success-bright',
+        getValue: (s) => s.ongoing_competitions,
+      },
+      {
+        id: 'upcoming_competitions',
+        getLabel: () => 'À venir',
+        icon: ICONS.UPCOMING,
+        getColor: () => 'text-info-bright',
+        getValue: (s) => s.upcoming_competitions,
+      },
+      {
+        id: 'finished_competitions',
+        getLabel: (s) => pluralize(s.finished_competitions, 'Terminée'),
+        icon: ICONS.FINISHED,
+        getColor: () => 'text-danger-bright',
+        getValue: (s) => s.finished_competitions,
+      },
+    ],
+  },
+  {
+    title: 'Responsabilités & Rôles',
+    metrics: [
+      {
+        id: 'created_competitions',
+        getLabel: (s) => pluralize(s.created_competitions, 'Créée'),
+        icon: ICONS.CREATOR,
+        getColor: () => 'text-role-creator-bright',
+        getValue: (s) => s.created_competitions,
+      },
+      {
+        id: 'refereed_competitions',
+        getLabel: (s) => pluralize(s.refereed_competitions, 'Arbitrée'),
+        icon: ICONS.REFEREE,
+        getColor: () => 'text-role-referee-bright',
+        getValue: (s) => s.refereed_competitions,
+      },
+    ],
+  },
   {
     title: '👑 Rangs Historiques (Compétitions Closes)',
     metrics: [

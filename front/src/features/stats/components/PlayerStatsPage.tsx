@@ -1,4 +1,3 @@
-// front/src/features/stats/components/PlayerStatsPage.tsx
 import {
   MainLayout,
   Text,
@@ -50,29 +49,23 @@ export const PlayerStatsPage = () => {
           {categories.map((cat) => {
             // Détermination dynamique de la parité du bloc
             const isEven = cat.metrics.length % 2 === 0;
+            let gridClass = isEven ? 'grid-cols-2' : 'grid-cols-3';
+            if (isEven && cat.metrics.length === 4)
+              gridClass += ' md:grid-cols-4';
+            else if (isEven) gridClass += ' md:grid-cols-2';
 
             return (
               <Stack key={cat.title} gap="xs" className="w-full">
                 <Text
                   variant={TEXT_VARIANT.MICRO}
-                  colorTheme={TEXT_THEME.DIMMED}
+                  colorTheme={TEXT_THEME.MUTED}
                   className="pl-2 font-black italic tracking-widest uppercase opacity-80"
                 >
                   {cat.title}
                 </Text>
 
                 {/* Algorithme de Grille Dynamique selon la règle de Parité */}
-                <div
-                  className={cn(
-                    'grid gap-2 w-full',
-                    isEven ? 'grid-cols-2' : 'grid-cols-3',
-                    isEven && cat.metrics.length === 4
-                      ? 'md:grid-cols-4'
-                      : isEven
-                        ? 'md:grid-cols-2'
-                        : '',
-                  )}
-                >
+                <div className={cn('grid gap-2 w-full', gridClass)}>
                   {cat.metrics.map((m) => (
                     <StatCard
                       key={m.label}

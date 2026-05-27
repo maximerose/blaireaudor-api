@@ -10,7 +10,8 @@ import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useDashboardHeader } from '@/features/dashboard/hooks';
 
 export const DashboardHeader = () => {
-  const { displayName, totalParticipations, statItems } = useDashboardHeader();
+  const { displayName, totalParticipations, compsStatsItems, rolesStatsItems } =
+    useDashboardHeader();
 
   const greetingTitle = (
     <>
@@ -51,7 +52,7 @@ export const DashboardHeader = () => {
         aria-label={DASHBOARD_UI.HEADER.ARIA.SUMMARY}
       >
         <Row wrap gap="md" justify="center" className="w-full">
-          {statItems.slice(0, 3).map((s) => (
+          {compsStatsItems.map((s) => (
             <Stack
               key={s.label}
               gap="none"
@@ -71,26 +72,28 @@ export const DashboardHeader = () => {
           ))}
         </Row>
 
-        <Row wrap gap="md" justify="center" className="w-full mt-1 sm:mt-0">
-          {statItems.slice(3).map((s) => (
-            <Stack
-              key={s.label}
-              gap="none"
-              align="center"
-              role="listitem"
-              className="w-auto shrink-0 min-w-20"
-            >
-              <span
-                className={`text-base sm:text-lg font-black leading-none ${s.color}`}
+        {rolesStatsItems.length > 0 && (
+          <Row wrap gap="md" justify="center" className="w-full mt-1 sm:mt-0">
+            {rolesStatsItems.map((s) => (
+              <Stack
+                key={s.label}
+                gap="none"
+                align="center"
+                role="listitem"
+                className="w-auto shrink-0 min-w-20"
               >
-                {s.val}
-              </span>
-              <Text variant={TEXT_VARIANT.MICRO} className="mt-1">
-                {s.label}
-              </Text>
-            </Stack>
-          ))}
-        </Row>
+                <span
+                  className={`text-base sm:text-lg font-black leading-none ${s.color}`}
+                >
+                  {s.val}
+                </span>
+                <Text variant={TEXT_VARIANT.MICRO} className="mt-1">
+                  {s.label}
+                </Text>
+              </Stack>
+            ))}
+          </Row>
+        )}
       </Stack>
     </Stack>
   );

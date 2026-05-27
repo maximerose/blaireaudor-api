@@ -1,71 +1,59 @@
-import { useMemo } from 'react';
-import {
-  getCompetitionStatus,
-  CompetitionStatus,
-} from '@/features/competition';
 import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useAuthContext } from '@/features/account';
 
 export const useDashboardHeader = () => {
   const { user } = useAuthContext();
   const participations = user?.player?.participations || [];
+  const stats = user?.stats;
 
-  const stats = useMemo(() => {
-    const initialStats = {
-      active: 0,
-      upcoming: 0,
-      finished: 0,
-      created: user?.created_competitions?.length || 0,
-      refereed: user?.player?.refereed_competitions?.length || 0,
-    };
-
-    return participations.reduce((acc, p) => {
-      const status = getCompetitionStatus(
-        p.competition.start_date,
-        p.competition.end_date,
-      );
-      if (status === CompetitionStatus.ACTIVE) acc.active++;
-      else if (status === CompetitionStatus.FINISHED) acc.finished++;
-      else if (status === CompetitionStatus.UPCOMING) acc.upcoming++;
-      return acc;
-    }, initialStats);
-  }, [
-    participations,
-    user?.created_competitions,
-    user?.player?.refereed_competitions,
-  ]);
-
-  const statItems = [
+  const compsStatsItems = [
     {
+      id: 'ongoing',
       label: DASHBOARD_UI.HEADER.STATS.ACTIVE,
-      val: stats.active,
+      val: stats?.ongoing_competitions || 0,
       color: 'text-success-bright',
     },
     {
+      id: 'upcoming',
       label: DASHBOARD_UI.HEADER.STATS.UPCOMING,
-      val: stats.upcoming,
+      val: stats?.upcoming_competitions || 0,
       color: 'text-info-bright',
     },
     {
-      label: DASHBOARD_UI.HEADER.STATS.FINISHED(stats.finished),
-      val: stats.finished,
+      id: 'finished',
+      label: DASHBOARD_UI.HEADER.STATS.FINISHED(
+        stats?.finished_competitions || 0,
+      ),
+      val: stats?.finished_competitions || 0,
       color: 'text-danger-bright',
     },
+  ];
+
+  const rolesStatsItems = [
     {
-      label: DASHBOARD_UI.HEADER.STATS.CREATED(stats.created),
-      val: stats.created,
+      id: 'created',
+      label: DASHBOARD_UI.HEADER.STATS.CREATED(
+        stats?.created_competitions || 0,
+      ),
+      val: stats?.created_competitions || 0,
       color: 'text-role-creator-bright',
     },
     {
-      label: DASHBOARD_UI.HEADER.STATS.REFEREED(stats.refereed),
-      val: stats.refereed,
+      id: 'refereed',
+      label: DASHBOARD_UI.HEADER.STATS.REFEREED(
+        stats?.refereed_competitions || 0,
+      ),
+      val: stats?.refereed_competitions || 0,
       color: 'text-role-referee-bright',
     },
   ];
 
+  const hasRoles = rolesStatsItems.some((item) => item.val > 0);
+
   return {
     displayName: user?.player?.display_name,
     totalParticipations: participations.length,
-    statItems,
+    compsStatsItems,
+    rolesStatsItems: hasRoles ? rolesStatsItems : [],
   };
 };

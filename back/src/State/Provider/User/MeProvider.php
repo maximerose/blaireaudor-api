@@ -35,7 +35,28 @@ final readonly class MeProvider implements ProviderInterface
             $raw = $this->playerStatsService->getCareerStatsData($player, $user);
             $totalComps = $raw['totalCompetitions'];
 
+            $ongoingComps = 0;
+            $upcomingComps = 0;
+            $finishedComps = 0;
+            $now = new \DateTimeImmutable();
+
+            foreach ($player->getParticipations() as $p) {
+                $comp = $p->getCompetition();
+                if ($comp->getIsFinished()) {
+                    ++$finishedComps;
+                } elseif ($comp->getStartDate() > $now) {
+                    ++$upcomingComps;
+                } else {
+                    ++$ongoingComps;
+                }
+            }
+
             $statsDTO = new PlayerStatsOutput();
+            $statsDTO->ongoingCompetitions = $ongoingComps;
+            $statsDTO->upcomingCompetitions = $upcomingComps;
+            $statsDTO->finishedCompetitions = $finishedComps;
+            $statsDTO->createdCompetitions = $user->getCreatedCompetitions()->count();
+            $statsDTO->refereedCompetitions = $player->getRefereedCompetitions()->count();
             $statsDTO->totalActionsReceived = $raw['totalActionsReceived'];
             $statsDTO->maxCompetitionActionsReceived = $raw['maxCompetitionActionsReceived'];
             $statsDTO->totalPointsReceived = $raw['totalPointsReceived'];

@@ -252,7 +252,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
         hint: {
           title: "L'Omertà",
           description:
-            "Le joueur le plus silencieux. Celui qui a fait preuve d'une loyauté aveugle en envoyant le moins de signalements.",
+            "Le joueur le plus silencieux. Celui qui a fait preuve d'une loyauté aveugle en envoyant le moins de signalements. (Réservé aux joueurs connectés)",
         },
       },
     ],

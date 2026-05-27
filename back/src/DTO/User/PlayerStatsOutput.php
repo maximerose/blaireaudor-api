@@ -9,6 +9,21 @@ use Symfony\Component\Serializer\Attribute\Groups;
 final class PlayerStatsOutput
 {
     #[Groups(['user:read'])]
+    public int $ongoingCompetitions = 0;
+
+    #[Groups(['user:read'])]
+    public int $upcomingCompetitions = 0;
+
+    #[Groups(['user:read'])]
+    public int $finishedCompetitions = 0;
+
+    #[Groups(['user:read'])]
+    public int $createdCompetitions = 0;
+
+    #[Groups(['user:read'])]
+    public int $refereedCompetitions = 0;
+
+    #[Groups(['user:read'])]
     public int $totalActionsReceived = 0;
 
     #[Groups(['user:read'])]

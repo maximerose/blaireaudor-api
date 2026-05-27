@@ -10,6 +10,11 @@ export interface PlayerRecord {
 }
 
 export interface PlayerStats {
+  ongoing_competitions: number;
+  upcoming_competitions: number;
+  finished_competitions: number;
+  created_competitions: number;
+  refereed_competitions: number;
   total_actions_received: number;
   max_competition_actions_received: number;
   total_points_received: number;
