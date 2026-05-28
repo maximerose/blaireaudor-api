@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { ERRORS, RULES } from '@/shared';
+import { z } from 'zod';
 
 export const updateProfileInfoSchema = z.object({
   display_name: z.string().min(RULES.AUTH.MIN_DISPLAY_NAME, {
@@ -29,3 +29,9 @@ export const updatePasswordSchema = z
   });
 
 export type UpdatePasswordData = z.infer<typeof updatePasswordSchema>;
+
+export const updatePreferencesSchema = z.object({
+  notification_preferences: z.record(z.string(), z.boolean()),
+});
+
+export type UpdatePreferencesData = z.infer<typeof updatePreferencesSchema>;

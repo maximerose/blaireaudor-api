@@ -12,6 +12,7 @@ use App\Repository\ParticipationRepository;
 use App\Repository\PlayerRepository;
 use App\Service\Helper\CodeGenerator;
 use App\Service\Helper\ValidationHelper;
+use App\Service\Notification\RefereeNotifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -32,6 +33,7 @@ class CompetitionManager
         private ValidatorInterface $validator,
         private ValidationHelper $validationHelper,
         private EntityManagerInterface $entityManager,
+        private RefereeNotifier $refereeNotifier,
     ) {
     }
 
@@ -180,6 +182,9 @@ class CompetitionManager
     {
         if (!$competition->getReferees()->contains($player)) {
             $competition->addReferee($player);
+            if ($competition->getId()) {
+                $this->refereeNotifier->notifyRoleChanged($competition, $player, true);
+            }
         }
     }
 
@@ -194,6 +199,7 @@ class CompetitionManager
         }
 
         $competition->removeReferee($player);
+        $this->refereeNotifier->notifyRoleChanged($competition, $player, false);
     }
 
     private function generateSafeJoinCode(): string

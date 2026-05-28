@@ -47,4 +47,5 @@ export interface User {
   player?: Player;
   created_competitions: Competition[];
   stats?: PlayerStats;
+  notification_preferences?: Record<string, boolean>;
 }

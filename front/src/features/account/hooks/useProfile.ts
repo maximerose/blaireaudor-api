@@ -1,17 +1,19 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { AVAILABILITY, ERRORS, SUCCESS, handleApiError } from '@/shared';
 import { useAuthContext } from '@/features/account/context/AuthContext';
+import { userService } from '@/features/account/services';
 import {
   updatePasswordSchema,
+  updatePreferencesSchema,
   updateProfileInfoSchema,
   type UpdatePasswordData,
+  type UpdatePreferencesData,
   type UpdateProfileInfoData,
 } from '@/features/account/validations';
-import { userService } from '@/features/account/services';
-import { useAccountValidation } from './useAccountValidation';
+import { AVAILABILITY, ERRORS, SUCCESS, handleApiError } from '@/shared';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { useAccountValidation } from './useAccountValidation';
 
 export const useProfile = () => {
   const { user, refreshUser } = useAuthContext();
@@ -37,6 +39,14 @@ export const useProfile = () => {
       current_password: '',
       new_password: '',
       confirm_password: '',
+    },
+  });
+
+  const prefsForm = useForm<UpdatePreferencesData>({
+    resolver: zodResolver(updatePreferencesSchema),
+    defaultValues: {
+      // Par défaut, si la BDD renvoie vide, on part du principe que tout est "true" (actif)
+      notification_preferences: user?.notification_preferences || {},
     },
   });
 
@@ -83,6 +93,17 @@ export const useProfile = () => {
     }
   };
 
+  const onPrefsSubmit = async (data: UpdatePreferencesData) => {
+    try {
+      await userService.updateProfile(data);
+      await refreshUser();
+      toast.success(SUCCESS.AUTH.INFO_UPDATED);
+      prefsForm.reset(data);
+    } catch (e) {
+      handleApiError(e, undefined, ERRORS.AUTH.UPDATE_INFO_FAILED);
+    }
+  };
+
   return {
     stats: user?.stats || null,
     defaultUsername: infoForm.formState.defaultValues?.username || '',
@@ -90,8 +111,10 @@ export const useProfile = () => {
     passwordValue: passwordForm.watch('new_password') || '',
     infoForm,
     passwordForm,
+    prefsForm,
     onInfoSubmit: infoForm.handleSubmit(onInfoSubmit),
     onPasswordSubmit: passwordForm.handleSubmit(onPasswordSubmit),
+    onPrefsSubmit: prefsForm.handleSubmit(onPrefsSubmit),
     activeHint,
     setActiveHint,
     ...validation,

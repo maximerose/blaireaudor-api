@@ -137,6 +137,7 @@ export const ICONS = {
   SETTINGS: <Settings2 size="1em" />,
   STAB: <Swords size="1em" />,
   STARS: <Sparkles size="1em" />,
+  START: <DoorOpen size="1em" />,
   STATS: <LineChart size="1em" />,
   SKULL: <Skull size="1em" />,
   SUCCESS: <Check size="1em" />,

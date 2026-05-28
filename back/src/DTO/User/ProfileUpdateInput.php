@@ -11,4 +11,5 @@ final class ProfileUpdateInput
     public ?string $email = null;
     public ?string $currentPassword = null;
     public ?string $newPassword = null;
+    public ?array $notificationPreferences = null;
 }

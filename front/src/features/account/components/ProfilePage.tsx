@@ -1,28 +1,29 @@
+import { PROFILE_UI } from '@/features/account/constants';
+import { useProfile } from '@/features/account/hooks';
 import {
-  MainLayout,
   Button,
+  BUTTON_VARIANT,
+  BUTTONS,
   Card,
   CARD_VARIANT,
+  FORM,
+  Grid,
+  ICONS,
+  MainLayout,
+  SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-  BUTTONS,
-  BUTTON_VARIANT,
-  SECTION_HEADER_THEME,
   Stack,
-  Grid,
   Text,
-  TEXT_VARIANT,
   TEXT_THEME,
-  ICONS,
-  FORM,
+  TEXT_VARIANT,
 } from '@/shared';
-import { useProfile } from '@/features/account/hooks';
-import { PROFILE_UI } from '@/features/account/constants';
+import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 import { DisplayNameField } from './fields/DisplayNameField';
-import { UsernameField } from './fields/UsernameField';
 import { EmailField } from './fields/EmailField';
 import { PasswordField } from './fields/PasswordField';
-import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
+import { UsernameField } from './fields/UsernameField';
+import { NotificationSettingsForm } from './NotificationSettingsForm';
 
 export const ProfilePage = () => {
   const {
@@ -36,6 +37,8 @@ export const ProfilePage = () => {
     usernameRegistryOptions,
     activeHint,
     setActiveHint,
+    prefsForm,
+    onPrefsSubmit,
   } = useProfile();
 
   return (
@@ -156,6 +159,8 @@ export const ProfilePage = () => {
             </Button>
           </Card.Body>
         </Card>
+
+        <NotificationSettingsForm form={prefsForm} onSubmit={onPrefsSubmit} />
       </Stack>
 
       {/* 🟢 LA MODALE INTERACTIVE UNIFIÉE (Même design que sur le Dashboard !) */}

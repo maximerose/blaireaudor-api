@@ -111,6 +111,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private Collection $createdCompetitions;
 
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
+    #[Groups(['user:read'])]
+    private array $notificationPreferences = [];
+
     /**
      * @var PlayerStatsOutput|null Statistiques de carrière injectées à la volée
      */
@@ -258,5 +262,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreatedCompetitions(): Collection
     {
         return $this->createdCompetitions;
+    }
+
+    public function getNotificationPreferences(): array
+    {
+        return $this->notificationPreferences;
+    }
+
+    public function setNotificationPreferences(array $notificationPreferences): static
+    {
+        $this->notificationPreferences = $notificationPreferences;
+
+        return $this;
     }
 }

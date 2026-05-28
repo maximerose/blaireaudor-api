@@ -6,8 +6,8 @@ namespace App\Command;
 
 use App\Constants\NotificationConstants;
 use App\Entity\Notification;
-use App\EventListener\NotificationTriggerListener;
 use App\Repository\CompetitionRepository;
+use App\Service\Notification\NotificationBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +23,7 @@ class CompetitionStartCommand extends Command
 {
     public function __construct(
         private CompetitionRepository $competitionRepository,
-        private NotificationTriggerListener $triggerListener,
+        private NotificationBuilder $notificationBuilder,
         private EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -45,6 +45,7 @@ class CompetitionStartCommand extends Command
             ->getResult();
 
         $notificationsGeneratedCount = 0;
+        $content = NotificationConstants::CONTENT[NotificationConstants::TYPE_COMPETITION_STARTED];
 
         foreach ($competitions as $competition) {
             foreach ($competition->getParticipations() as $participation) {
@@ -64,15 +65,13 @@ class CompetitionStartCommand extends Command
                 ]) > 0;
 
                 if (!$alreadyNotified) {
-                    $notification = $this->triggerListener->buildNotification(
+                    $this->notificationBuilder->createAndPersist(
                         $recipient,
-                        NotificationConstants::TITLE_COMPETITION_STARTED,
-                        \sprintf(NotificationConstants::MSG_COMPETITION_STARTED, $competition->getName()),
+                        $content['title'],
+                        \sprintf($content['msg'], $competition->getName()),
                         NotificationConstants::TYPE_COMPETITION_STARTED,
                         $competition
                     );
-
-                    $this->entityManager->persist($notification);
                     ++$notificationsGeneratedCount;
                 }
             }

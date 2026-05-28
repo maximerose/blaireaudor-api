@@ -4,7 +4,7 @@ export const userService = {
   /**
    * Modifie les informations ou le mot de passe du profil connecté
    */
-  updateProfile: async (data: Record<string, string>) => {
+  updateProfile: async <T extends Record<string, unknown>>(data: T) => {
     const response = await apiFetch(API.ENDPOINTS.AUTH.UPDATE_PROFILE, {
       method: 'PATCH',
       headers: { 'Content-Type': API.GROUPS.MERGE_PATCH },

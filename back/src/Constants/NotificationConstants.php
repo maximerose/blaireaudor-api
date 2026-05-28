@@ -6,10 +6,9 @@ namespace App\Constants;
 
 final class NotificationConstants
 {
-    // Format du canal temps réel Mercure (URN)
     public const string TOPIC_USER_NOTIFICATIONS = 'urn:blaireau:user:%s:notifications';
 
-    // Types de Notifications
+    // 1. LES CLÉS UNIQUES (TYPES)
     public const string TYPE_NEW_SUBMISSION = 'NEW_SUBMISSION';
     public const string TYPE_ACTION_VALIDATED = 'ACTION_VALIDATED';
     public const string TYPE_ACTION_REJECTED = 'ACTION_REJECTED';
@@ -20,47 +19,81 @@ final class NotificationConstants
     public const string TYPE_FOG_DISABLED = 'FOG_DISABLED';
     public const string TYPE_FOG_ENABLED = 'FOG_ENABLED';
     public const string TYPE_ADDED_BY_REFEREE = 'ADDED_BY_REFEREE';
+    public const string TYPE_REFEREE_PROMOTED = 'REFEREE_PROMOTED';
+    public const string TYPE_REFEREE_REVOKED = 'REFEREE_REVOKED';
+    public const string TYPE_GUEST_CLAIMED = 'GUEST_CLAIMED';
 
-    // ⚖️ NEW_SUBMISSION (Arbitres)
-    public const string TITLE_NEW_SUBMISSION = '⚖️ Arbitrage requis';
-    public const string MSG_NEW_SUBMISSION = 'Une action sur %s attend ton verdict.';
-
-    // 🚨 ACTION_VALIDATED
-    public const string TITLE_ACTION_VALIDATED = '🚨 Sentence confirmée !';
-    public const string MSG_ACTION_VALIDATED_FOG_TARGET = 'Tu as pris des points ! (%s)';
-    public const string MSG_ACTION_VALIDATED_FOG_OTHERS = '%s a pris des points !';
-    public const string MSG_ACTION_VALIDATED_TARGET = 'Tu as pris %d points ! (%s)';
-    public const string MSG_ACTION_VALIDATED_OTHERS = '%s a pris %d points ! (%s)';
-
-    // ✕ ACTION_REJECTED (Dénonciateur)
-    public const string TITLE_ACTION_REJECTED = '✕ Signalement refusé';
-    public const string MSG_ACTION_REJECTED = 'Ton signalement sur %s a été classé sans suite.';
-
-    // 🔥 BONUS_TRIGGERED
-    public const string TITLE_BONUS_TRIGGERED = '🔥 Multiplicateur activé !';
-    public const string MSG_BONUS_TRIGGERED = 'Les points sont multipliés par %d aujourd\'hui !';
-
-    // 🐣 PLAYER_JOINED
-    public const string TITLE_PLAYER_JOINED = '🐣 Nouveau concurrent';
-    public const string MSG_PLAYER_JOINED = '%s est entré dans l\'arène !';
-
-    // 🏁 COMPETITION_STARTED
-    public const string TITLE_COMPETITION_STARTED = '🏁 Lancement de la saison';
-    public const string MSG_COMPETITION_STARTED = 'L\'arène %s est ouverte, que la chasse commence !';
-
-    // 🏆 COMPETITION_FINISHED
-    public const string TITLE_COMPETITION_FINISHED = '🏆 Fin de la compétition';
-    public const string MSG_COMPETITION_FINISHED = 'L\'arène %s est close. Consultez le classement final !';
-
-    // 👁️ FOG_DISABLED
-    public const string TITLE_FOG_DISABLED = '👁️ Brouillard dissipé';
-    public const string MSG_FOG_DISABLED = 'Le secret est levé, les scores de l\'arène sont visibles !';
-
-    // 👻 FOG_ENABLED
-    public const string TITLE_FOG_ENABLED = '👻 Brouillard activé';
-    public const string MSG_FOG_ENABLED = 'L\'arène est plongée dans l\'ombre, les scores sont masqués !';
-
-    // 📋 ADDED_BY_REFEREE
-    public const string TITLE_ADDED_BY_REFEREE = '📋 Ajout à une compétition';
-    public const string MSG_ADDED_BY_REFEREE = '%s vous a ajouté à l\'arène %s.';
+    // 2. LE DICTIONNAIRE DE CONTENUS (Idéal pour la future page Paramètres)
+    public const array CONTENT = [
+        self::TYPE_NEW_SUBMISSION => [
+            'label' => 'Nouvelles demandes d\'arbitrage',
+            'title' => '⚖️ Arbitrage requis',
+            'msg' => 'Une action sur %s attend ton verdict.',
+        ],
+        self::TYPE_ACTION_VALIDATED => [
+            'label' => 'Validation des méfaits',
+            'title' => '🚨 Sentence confirmée !',
+            'msg_target' => 'Tu as pris %d points ! (%s)',
+            'msg_others' => '%s a pris %d points ! (%s)',
+            'msg_fog_target' => 'Tu as pris des points ! (%s)',
+            'msg_fog_others' => '%s a pris des points !',
+        ],
+        self::TYPE_ACTION_REJECTED => [
+            'label' => 'Rejet de mes signalements',
+            'title' => '✕ Signalement refusé',
+            'msg' => 'Ton signalement sur %s a été classé sans suite.',
+        ],
+        self::TYPE_BONUS_TRIGGERED => [
+            'label' => 'Jours Bonus activés',
+            'title' => '🔥 Multiplicateur activé !',
+            'msg' => 'Les points sont multipliés par %d aujourd\'hui !',
+        ],
+        self::TYPE_PLAYER_JOINED => [
+            'label' => 'Nouveaux concurrents dans l\'arène',
+            'title' => '🐣 Nouveau concurrent',
+            'msg' => '%s est entré dans l\'arène !',
+        ],
+        self::TYPE_COMPETITION_STARTED => [
+            'label' => 'Ouverture officielle des arènes',
+            'title' => '🏁 Lancement de la saison',
+            'msg' => 'L\'arène %s est ouverte, que la chasse commence !',
+        ],
+        self::TYPE_COMPETITION_FINISHED => [
+            'label' => 'Clôture des arènes',
+            'title' => '🏆 Fin de la compétition',
+            'msg' => 'L\'arène %s est close. Consultez le classement final !',
+        ],
+        self::TYPE_FOG_DISABLED => [
+            'label' => 'Levée du brouillard de guerre',
+            'title' => '👁️ Brouillard dissipé',
+            'msg' => 'Le secret est levé, les scores de l\'arène sont visibles !',
+        ],
+        self::TYPE_FOG_ENABLED => [
+            'label' => 'Activation du brouillard de guerre',
+            'title' => '👻 Brouillard activé',
+            'msg' => 'L\'arène est plongée dans l\'ombre, les scores sont masqués !',
+        ],
+        self::TYPE_ADDED_BY_REFEREE => [
+            'label' => 'Ajout forcé par un arbitre',
+            'title' => '📋 Ajout à une compétition',
+            'msg' => '%s vous a ajouté à l\'arène %s.',
+        ],
+        self::TYPE_REFEREE_PROMOTED => [
+            'label' => 'Nominations d\'arbitres',
+            'title' => '🛡️ Équipe d\'arbitrage',
+            'msg_target' => '%s vous a désigné arbitre pour l\'arène %s.',
+            'msg_others' => '%s a été désigné arbitre pour l\'arène %s.',
+        ],
+        self::TYPE_REFEREE_REVOKED => [
+            'label' => 'Révocations d\'arbitres',
+            'title' => '🛡️ Équipe d\'arbitrage',
+            'msg_target' => '%s a révoqué vos droits d\'arbitrage pour l\'arène %s.',
+            'msg_others' => '%s a été libéré de ses fonctions d\'arbitre pour l\'arène %s.',
+        ],
+        self::TYPE_GUEST_CLAIMED => [
+            'label' => 'Prise de contrôle d\'un profil invité',
+            'title' => '👋 Un joueur se réveille',
+            'msg' => '%s a créé son compte réel et gère désormais son propre profil !',
+        ],
+    ];
 }

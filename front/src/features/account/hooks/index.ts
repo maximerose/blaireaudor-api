@@ -4,6 +4,7 @@ export * from './useForgotPassword';
 export * from './useHistoricalSearchUI';
 export * from './useLogin';
 export * from './useLogout';
+export * from './useNotificationSettings';
 export * from './useProfile';
 export * from './useRegistration';
 export * from './useRegistrationForm';

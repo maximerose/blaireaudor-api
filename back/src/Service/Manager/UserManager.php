@@ -147,6 +147,10 @@ class UserManager
             $user->setEmail(trim($data['email']));
         }
 
+        if (isset($data['notification_preferences'])) {
+            $user->setNotificationPreferences($data['notification_preferences']);
+        }
+
         $userErrors = $this->validator->validate($user);
         $playerErrors = $player ? $this->validator->validate($player) : [];
 
