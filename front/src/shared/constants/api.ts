@@ -73,6 +73,8 @@ export const API = {
       LEADERBOARD: (id: string) => `${BASES.COMPETITIONS}/${id}/leaderboard`,
       ACTIONS: (id: string) => `${BASES.COMPETITIONS}/${id}/actions`,
       ACTIONS_DATES: (id: string) => `${BASES.COMPETITIONS}/${id}/action-dates`,
+      PENDING_ACTIONS: (id: string) =>
+        `${BASES.COMPETITIONS}/${id}/pending-actions`,
       PENDING_COUNT: (id: string) =>
         `${BASES.COMPETITIONS}/${id}/pending-count`,
       MERGE_PLAYERS: (id: string) =>

@@ -115,8 +115,8 @@ final class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('🦡 Le Blaireau d\'Or')
-            ->setFaviconPath('/favicon.ico');
+            ->setTitle('Le Blaireau d\'Or - Espace admin')
+            ->setFaviconPath('/favicon.svg');
     }
 
     public function configureCrud(): Crud

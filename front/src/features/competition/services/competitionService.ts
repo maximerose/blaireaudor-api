@@ -1,4 +1,3 @@
-import { API, apiFetch } from '@/shared';
 import type {
   Action,
   Competition,
@@ -7,6 +6,7 @@ import type {
   GetActionsParams,
   Participation,
 } from '@/features/competition/types';
+import { API, apiFetch } from '@/shared';
 
 export const competitionService = {
   create: async (payload: CompetitionCreatePayload): Promise<Competition> => {
@@ -94,6 +94,17 @@ export const competitionService = {
 
     const response = await apiFetch(
       `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?${params.toString()}`,
+      { signal },
+    );
+    return response.json();
+  },
+
+  getPendingActions: async (
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<Action[]> => {
+    const response = await apiFetch(
+      API.ENDPOINTS.COMPETITIONS.PENDING_ACTIONS(id),
       { signal },
     );
     return response.json();

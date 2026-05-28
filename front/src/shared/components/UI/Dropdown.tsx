@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
 import { ICONS } from '@/shared/constants';
 import { cn } from '@/shared/utils';
+import { useEffect, useRef, useState } from 'react';
 import { Button, BUTTON_SIZE, BUTTON_VARIANT } from './Button';
 import { Card, CARD_VARIANT } from './Card';
 import { List } from './List';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { Text, TEXT_THEME, TEXT_VARIANT } from './Text';
 
 interface DropdownOption {
   value: string;
@@ -65,7 +65,7 @@ export const Dropdown = ({
           radius="xl"
           className="absolute top-full left-0 mt-2 z-50 min-w-40 bg-dark-lighter shadow-2xl animate-fade-in"
         >
-          <List>
+          <List className="max-h-52 overflow-y-auto">
             {options.map((opt) => (
               <button
                 key={opt.value}

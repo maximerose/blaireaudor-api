@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react';
 import { getIdFromData, QUERY_KEYS, UI } from '@/shared';
+import { useMemo, useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
 import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useCompetitionContext } from '@/features/competition/context';
+import { competitionService } from '@/features/competition/services';
 import {
   ActionStatus,
   type Action,
   type ActionSortField,
   type Participation,
 } from '@/features/competition/types';
-import { competitionService } from '@/features/competition/services';
+import { useQuery } from '@tanstack/react-query';
 import { useInfiniteActions } from './useInfiniteActions';
 
 export const useActionTable = (competitionId: string | undefined) => {
@@ -25,6 +25,16 @@ export const useActionTable = (competitionId: string | undefined) => {
   const { data: availableDates = [] } = useQuery({
     queryKey: QUERY_KEYS.competition.byId(competitionId).actionDates,
     queryFn: () => competitionService.getActionsDates(competitionId!),
+    enabled: !!competitionId,
+  });
+
+  const { data: pendingActions = [] } = useQuery({
+    queryKey: [
+      ...QUERY_KEYS.competition.byId(competitionId!).actions,
+      'pending',
+    ],
+    queryFn: ({ signal }) =>
+      competitionService.getPendingActions(competitionId!, signal),
     enabled: !!competitionId,
   });
 
@@ -66,25 +76,22 @@ export const useActionTable = (competitionId: string | undefined) => {
   }, [actions, sortField, sortOrder]);
 
   const categories = useMemo(() => {
-    const pending = processedActions.filter(
-      (a) => a.status === ActionStatus.PENDING,
-    );
     const userId = user?.id;
 
     return {
-      myPending: pending.filter(
-        (a) => getIdFromData(a.created_by_id) === userId,
+      myPending: pendingActions.filter(
+        (a: Action) => getIdFromData(a.created_by_id) === userId,
       ),
-      othersPending: pending.filter(
-        (a) => getIdFromData(a.created_by_id) !== userId,
+      othersPending: pendingActions.filter(
+        (a: Action) => getIdFromData(a.created_by_id) !== userId,
       ),
       validated: processedActions.filter(
-        (a) => a.status === ActionStatus.VALIDATED,
+        (a: Action) => a.status === ActionStatus.VALIDATED,
       ),
       rejected: processedActions.filter(
-        (a) => a.status === ActionStatus.REJECTED,
+        (a: Action) => a.status === ActionStatus.REJECTED,
       ),
-      totalPending: pending.length,
+      totalPending: pendingActions.length,
     };
   }, [processedActions, user]);
 

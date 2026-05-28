@@ -1,30 +1,30 @@
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import './App.css';
-import { QueryClient } from '@tanstack/query-core';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'react-hot-toast';
-import {
-  ROUTES,
-  ConfirmModalProvider,
-  LoadingScreen,
-  ScrollToTop,
-} from '@/shared';
-import {
   ForgotPasswordForm,
   LoginForm,
   LogoutHandler,
   RegistrationForm,
   ResetPasswordForm,
 } from '@/features/account';
-import { QRJoinPage } from '@/features/competition';
-import { SplashScreen } from '@/shared/components/UI/SplashScreen';
 import { useAuthContext } from '@/features/account/context/AuthContext';
+import { QRJoinPage } from '@/features/competition';
+import {
+  ConfirmModalProvider,
+  LoadingScreen,
+  ROUTES,
+  ScrollToTop,
+} from '@/shared';
+import { SplashScreen } from '@/shared/components/UI/SplashScreen';
+import { QueryClient } from '@tanstack/query-core';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
+import { Toaster } from 'react-hot-toast';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
+import './App.css';
 
 const Dashboard = lazy(
   () => import('@/features/dashboard/components/Dashboard'),
@@ -54,11 +54,7 @@ declare global {
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 
 function App() {
-  const { user, loading } = useAuthContext();
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  const { user } = useAuthContext();
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -66,6 +66,15 @@ final class CompetitionActionController extends AbstractController
     }
 
     #[IsGranted(CompetitionVoter::VIEW, subject: 'competition')]
+    #[Route('/pending-actions', name: 'pending_actions', methods: ['GET'])]
+    public function getPendingActions(Competition $competition): JsonResponse
+    {
+        $actions = $this->actionRepository->findPendingByCompetition($competition);
+
+        return $this->json($actions, Response::HTTP_OK, [], ['groups' => ['action:read', 'player:read']]);
+    }
+
+    #[IsGranted(CompetitionVoter::VIEW, subject: 'competition')]
     #[Route('/pending-count', name: 'pending_count', methods: ['GET'])]
     public function getPendingCount(Competition $competition): JsonResponse
     {

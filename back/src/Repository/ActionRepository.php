@@ -20,6 +20,8 @@ class ActionRepository extends ServiceEntityRepository
         parent::__construct($registry, Action::class);
     }
 
+    // back/src/Repository/ActionRepository.php
+
     public function findByCompetition(
         Competition $competition,
         string $sortBy = 'dateAction',
@@ -55,17 +57,27 @@ class ActionRepository extends ServiceEntityRepository
         ';
 
         $params = ['comp_id' => $competition->getId()];
+        $filterConditions = [];
 
         if ($date) {
-            $sql .= " AND DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
+            $filterConditions[] = "DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
             $params['tz'] = AppConstants::TIMEZONE;
             $params['targetDate'] = $date;
         }
 
         if ($playerId) {
-            $sql .= ' AND p.id = :player_id';
+            $filterConditions[] = 'p.id = :player_id';
             $params['player_id'] = $playerId;
         }
+
+        if (!empty($filterConditions)) {
+            $filtersSql = implode(' AND ', $filterConditions);
+            $sql .= " AND ($filtersSql)";
+        }
+
+        // 🟢 Exclusion explicite des actions en attente pour le tableau historique
+        $sql .= ' AND a.status != :status_pending';
+        $params['status_pending'] = ActionStatus::PENDING->value;
 
         $sql .= " ORDER BY {$sortField} {$order}";
 
@@ -90,19 +102,56 @@ class ActionRepository extends ServiceEntityRepository
         ';
 
         $params = ['comp_id' => $competition->getId()];
+        $filterConditions = [];
 
         if ($date) {
-            $sql .= " AND DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
+            $filterConditions[] = "DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
             $params['tz'] = AppConstants::TIMEZONE;
             $params['targetDate'] = $date;
         }
 
         if ($playerId) {
-            $sql .= ' AND p.player_id = :player_id';
+            $filterConditions[] = 'p.player_id = :player_id';
             $params['player_id'] = $playerId;
         }
 
+        if (!empty($filterConditions)) {
+            $filtersSql = implode(' AND ', $filterConditions);
+            $sql .= " AND ($filtersSql)";
+        }
+
+        // 🟢 On exclut aussi du compteur pour ne pas casser la pagination
+        $sql .= ' AND a.status != :status_pending';
+        $params['status_pending'] = ActionStatus::PENDING->value;
+
         return (int) $connection->fetchOne($sql, $params);
+    }
+
+    // 🟢 NOUVELLE FONCTION DÉDIÉE : Récupère uniquement la to-do list d'attente
+    public function findPendingByCompetition(Competition $competition): array
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
+                TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
+                p.display_name as player_name, 
+                p.id as player_id,
+                COALESCE(cp.display_name, u.username, null) as creator_name
+            FROM action a
+            JOIN participation part ON a.participation_id = part.id
+            JOIN player p ON part.player_id = p.id
+            LEFT JOIN "user" u ON a.created_by_id = u.id
+            LEFT JOIN player cp ON cp.associated_user_id = u.id
+            WHERE part.competition_id = :comp_id
+            AND a.status = :status_pending
+            ORDER BY a.date_action DESC
+        ';
+
+        return $connection->fetchAllAssociative($sql, [
+            'comp_id' => $competition->getId(),
+            'status_pending' => ActionStatus::PENDING->value,
+        ]);
     }
 
     public function recalculateParticipationScore(Participation $participation): void

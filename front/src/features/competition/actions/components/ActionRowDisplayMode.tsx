@@ -1,23 +1,23 @@
+import { useActionRow } from '@/features/competition/actions/hooks';
+import { useCompetitionAdmin } from '@/features/competition/admin';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useCompetitionContext } from '@/features/competition/context';
+import { ActionStatus, type Action } from '@/features/competition/types';
 import {
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
   BUTTONS,
-  ICONS,
   cn,
   formatShortDate,
-  TextButton,
-  TEXT_BUTTON_THEME,
-  IconButton,
   Grid,
+  IconButton,
+  ICONS,
   Row,
   Stack,
+  Text,
+  TEXT_BUTTON_THEME,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  TextButton,
 } from '@/shared';
-import { ActionStatus, type Action } from '@/features/competition/types';
-import { useCompetitionContext } from '@/features/competition/context';
-import { useActionRow } from '@/features/competition/actions/hooks';
-import { COMPETITION_UI } from '@/features/competition/constants';
-import { useCompetitionAdmin } from '@/features/competition/admin';
 
 interface ActionRowDisplayModeProps {
   action: Action;
@@ -97,7 +97,7 @@ export const ActionRowDisplayMode = ({
           {action.creator_name && (
             <Text
               variant={TEXT_VARIANT.BODY}
-              colorTheme={TEXT_THEME.DIMMED}
+              colorTheme={TEXT_THEME.MUTED}
               className="text-[8px] md:text-[10px]"
             >
               {COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.REPORTED_BY}{' '}

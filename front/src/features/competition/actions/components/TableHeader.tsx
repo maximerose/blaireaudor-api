@@ -1,7 +1,7 @@
-import { Text, TEXT_VARIANT, TEXT_THEME, cn, Grid } from '@/shared';
-import { useActionTableContext } from '@/features/competition/context';
 import { COMPETITION_UI } from '@/features/competition/constants';
+import { useActionTableContext } from '@/features/competition/context';
 import type { ActionSortField } from '@/features/competition/types';
+import { cn, Grid, Text, TEXT_THEME, TEXT_VARIANT } from '@/shared';
 
 interface Column {
   id: ActionSortField;
@@ -47,7 +47,6 @@ export const TableHeader = () => {
       cols={12}
       gap="xs"
       align="center"
-      /* 🟢 border-white/10 remplacé par border-border-base pour respecter la charte */
       className="px-4 py-2 bg-white/5 rounded-t-3xl border-x border-t border-border-base"
     >
       <div role="row" className="contents">
