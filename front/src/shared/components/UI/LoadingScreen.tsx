@@ -1,9 +1,9 @@
-import type React from 'react';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
-import { cn } from '@/shared/utils';
 import { UI } from '@/shared/constants';
-import { Stack } from '../Layout/Stack';
 import { BadgerLogo } from '@/shared/logo';
+import { cn } from '@/shared/utils';
+import type React from 'react';
+import { Stack } from '../Layout/Stack';
+import { Text, TEXT_THEME, TEXT_VARIANT } from './Text';
 
 interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -51,7 +51,6 @@ export const LoadingScreen = ({
           >
             {message}
           </Text>
-
           <div className={BAR_CONTAINER} aria-hidden="true">
             <div className={BAR_ANIMATION} />
           </div>

@@ -22,7 +22,14 @@
             <h6 class="text-muted text-uppercase small mb-2" style="{{ inline_style }}">{{ title }}</h6>
             
             <h2 class="fw-bold mb-0 {{ text_class }}" style="{{ inline_style }}">
-                {{ value }}
+                {% if id == 'MOST_FREQUENT_TARGET_PAIR' and names is defined and names|length == 2 %}
+                    <span class="fs-4 fw-semibold">{{ names[0] }}</span>
+                    <i class="fas fa-exchange-alt mx-2 fs-5 opacity-75" style="{{ inline_style }}"></i>
+                    <span class="fs-4 fw-semibold">{{ names[1] }}</span>
+                {% else %}
+                    {{ value }}
+                {% endif %}
+                
                 {% if suffix is defined and suffix is not empty %}
                     <span class="small fs-6 font-normal {{ is_gold ? '' : 'text-muted' }}" style="{{ inline_style }}">
                         {{ suffix }}

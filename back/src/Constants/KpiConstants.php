@@ -179,8 +179,8 @@ final class KpiConstants
             'color' => 'info',
             'suffix' => null,
             'empty_value' => 'Aucune',
-            'subtext' => 'A harcelé sa cible avec <strong>%d signalements</strong>',
-            'hint' => 'Le binôme infernal qui passe ses vacances à se renvoyer mutuellement les signalements.',
+            'subtext' => '<strong>%d vendettas fermes</strong> (%d coups échangés)',
+            'hint' => 'Le binôme infernal possédant le plus haut score d\'allers-retours de dénonciations validées.',
         ],
         'MAX_POINTS_SINGLE_ACTION' => [
             'title' => 'Le Casse du Siècle (Bonus)',

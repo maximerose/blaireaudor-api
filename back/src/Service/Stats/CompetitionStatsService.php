@@ -428,8 +428,13 @@ final readonly class CompetitionStatsService
             return null;
         }
 
+        $pairs = array_map(fn ($row) => [
+            'player1' => $row['p1_name'],
+            'player2' => $row['p2_name'],
+        ], $data);
+
         return [
-            'pair_names' => array_map(fn ($row) => $row['p1_name'].' ⚔️ '.$row['p2_name'], $data),
+            'pairs' => $pairs,
             'reciprocal_score' => (int) $data[0]['reciprocal_score'],
             'total_exchanges' => (int) $data[0]['total_exchanges'],
         ];

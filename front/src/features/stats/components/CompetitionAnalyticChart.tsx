@@ -1,40 +1,40 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
-import {
-  Card,
-  CARD_VARIANT,
-  Row,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  formatShortDate,
-  cn,
-  Stack,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  SECTION_HEADER_THEME,
-  ICONS,
-} from '@/shared';
-import {
-  COMPETITION_STATS_GENERAL,
   CHART_COLORS,
   CHART_ME_COLOR,
+  COMPETITION_STATS_GENERAL,
 } from '@/features/stats/constants';
-import type { AnalyticChartProps } from '@/features/stats/types';
-import { CompetitionChartTooltip } from './CompetitionChartTooltip';
-import { CompetitionChartLegend } from './CompetitionChartLegend';
 import { useAnalyticChartUI } from '@/features/stats/hooks';
+import type { AnalyticChartProps } from '@/features/stats/types';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Card,
+  CARD_VARIANT,
+  cn,
+  formatShortDate,
+  ICONS,
+  Row,
+  SECTION_HEADER_THEME,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { CompetitionChartLegend } from './CompetitionChartLegend';
+import { CompetitionChartTooltip } from './CompetitionChartTooltip';
 
 export const CompetitionAnalyticChart = ({
   bumpData,
@@ -52,7 +52,10 @@ export const CompetitionAnalyticChart = ({
   const { chartMode, setChartMode, isDense } = useAnalyticChartUI(bumpData);
 
   const renderRanksChart = (heightClass: string) => (
-    <div className={cn('w-full animate-fade-in', heightClass)}>
+    <div
+      className={cn('w-full animate-fade-in min-w-0', heightClass)}
+      style={{ minWidth: 0, minHeight: 0 }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={bumpData}
@@ -124,7 +127,10 @@ export const CompetitionAnalyticChart = ({
   );
 
   const renderPointsChart = (heightClass: string) => (
-    <div className={cn('w-full animate-fade-in', heightClass)}>
+    <div
+      className={cn('w-full animate-fade-in min-w-0', heightClass)}
+      style={{ minWidth: 0, minHeight: 0 }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={dailyEvolution}

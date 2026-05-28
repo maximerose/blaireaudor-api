@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ICONS, pluralize, withIconPrefix, withIconSuffix } from '@/shared';
 import type { CompCategoryConfig } from '@/features/stats/types';
+import { ICONS, pluralize, withIconPrefix, withIconSuffix } from '@/shared';
 
 // ---------------------------------------------------------
 // 1. TEXTES GLOBAUX
@@ -82,6 +82,25 @@ const fmtNames = (names?: string[]) => {
   if (names.length === 1) return names[0];
   if (names.length === 2) return `${names[0]} et ${names[1]}`;
   return `${names.length} ex-aequo`;
+};
+
+const fmtPairs = (pairs?: { player1: string; player2: string }[]) => {
+  if (!pairs || pairs.length === 0) return 'Aucune';
+  if (pairs.length === 1) {
+    return (
+      <span className="flex flex-col items-center justify-center gap-1.5 text-[0.85em]">
+        <span className="truncate">{pairs[0].player1}</span>
+        <span
+          className="text-danger-bright opacity-80 shrink-0 animate-pulse-subtle"
+          aria-hidden="true"
+        >
+          {ICONS.STAB}
+        </span>
+        <span className="truncate">{pairs[0].player2}</span>
+      </span>
+    );
+  }
+  return `${pairs.length} paires ex-aequo`;
 };
 
 // ---------------------------------------------------------
@@ -320,7 +339,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
         getLabel: () => 'Pire Rivalité',
         icon: ICONS.STAB,
         getColor: () => 'text-danger-bright',
-        getValue: (s) => fmtNames(s.max_reciprocal_target_pair?.pair_names),
+        getValue: (s) => fmtPairs(s.max_reciprocal_target_pair?.pairs),
         getSubtext: (s) =>
           s.max_reciprocal_target_pair
             ? `${s.max_reciprocal_target_pair.reciprocal_score} ${pluralize(s.max_reciprocal_target_pair.reciprocal_score, 'coup rendu')} (${s.max_reciprocal_target_pair.total_exchanges} échanges)`

@@ -231,14 +231,49 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMostFrequentTargetPair(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT reporter, target, cnt FROM (SELECT r.display_name as reporter, t.display_name as target, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.created_by_id = u.id JOIN player r ON r.associated_user_id = u.id JOIN participation part ON a.participation_id = part.id JOIN player t ON part.player_id = t.id WHERE r.id != t.id GROUP BY r.id, r.display_name, t.id, t.display_name) t WHERE rnk = 1');
+        $sql = "SELECT p1_name, 
+               p2_name,
+               reciprocal_score, 
+               total_exchanges 
+        FROM (
+            SELECT MAX(CASE WHEN r.id < t.id THEN r.display_name ELSE t.display_name END) as p1_name, 
+                   MAX(CASE WHEN r.id > t.id THEN r.display_name ELSE t.display_name END) as p2_name, 
+                   LEAST(
+                       COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                       COUNT(CASE WHEN r.id > t.id THEN 1 END)) as reciprocal_score, 
+                   COUNT(a.id) as total_exchanges, 
+                   RANK() OVER (
+                       ORDER BY LEAST(
+                           COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                           COUNT(CASE WHEN r.id > t.id THEN 1 END)) DESC, 
+                       COUNT(a.id) DESC) as rnk 
+            FROM action a 
+            JOIN \"user\" u ON a.created_by_id = u.id 
+            JOIN player r ON r.associated_user_id = u.id 
+            JOIN participation p ON a.participation_id = p.id 
+            JOIN player t ON p.player_id = t.id 
+            WHERE r.id != t.id 
+            AND a.status = 'validated' 
+            GROUP BY LEAST(r.id, t.id), 
+                     GREATEST(r.id, t.id) 
+            HAVING LEAST(
+                COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                COUNT(CASE WHEN r.id > t.id THEN 1 END)) > 0
+        ) t 
+        WHERE rnk = 1
+    ";
+
+        $data = $conn->fetchAllAssociative($sql);
         if (empty($data)) {
             return null;
         }
 
         return [
-            'names' => array_map(fn ($row) => $row['reporter'].' ➔ '.$row['target'], $data),
-            'args' => [$data[0]['cnt']],
+            'names' => [$data[0]['p1_name'], $data[0]['p2_name']],
+            'args' => [
+                (int) $data[0]['reciprocal_score'],
+                (int) $data[0]['total_exchanges'],
+            ],
         ];
     }
 
