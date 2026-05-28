@@ -1,20 +1,20 @@
-import type {
-  UseFormRegister,
-  UseFormWatch,
-  FieldErrors,
-} from 'react-hook-form';
+import { useEmailCheck } from '@/features/account/hooks';
 import {
-  Input,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
+  AVAILABILITY,
   FORM,
   ICONS,
-  AVAILABILITY,
-  Stack,
+  Input,
   Row,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
 } from '@/shared';
-import { useEmailCheck } from '@/features/account/hooks';
+import type {
+  FieldErrors,
+  UseFormRegister,
+  UseFormWatch,
+} from 'react-hook-form';
 
 interface EmailFieldProps {
   register: UseFormRegister<any>;
@@ -72,22 +72,22 @@ export const EmailField = ({
             <Text
               variant={TEXT_VARIANT.MICRO}
               colorTheme={TEXT_THEME.SUCCESS}
-              className="text-center"
+              className="flex items-center justify-center gap-1 text-center" // 🟢 Alignement Flex injecté
             >
-              <span className="mr-1" aria-hidden="true">
+              <span aria-hidden="true" className="flex items-center">
                 {ICONS.SUCCESS}
-              </span>{' '}
+              </span>
               {FORM.AUTH.HINTS.EMAIL_AVAILABLE}
             </Text>
           ) : emailStatus === AVAILABILITY.TAKEN ? (
             <Text
               variant={TEXT_VARIANT.MICRO}
               colorTheme={TEXT_THEME.DANGER}
-              className="text-center"
+              className="flex items-center justify-center gap-1 text-center" // 🟢 Alignement Flex injecté
             >
-              <span className="mr-1" aria-hidden="true">
+              <span aria-hidden="true" className="flex items-center">
                 {ICONS.FAILURE}
-              </span>{' '}
+              </span>
               {FORM.AUTH.HINTS.EMAIL_TAKEN}
             </Text>
           ) : null}

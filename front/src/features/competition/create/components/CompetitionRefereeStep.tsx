@@ -283,7 +283,7 @@ export const CompetitionRefereeStep = ({
           fullWidth
           className="flex-1"
           icon={ICONS.CREATE_COMPETITION}
-          iconPosition="right"
+          iconPosition="left"
         >
           {FORM.COMPETITION.BUTTONS.CREATE}
         </Button>

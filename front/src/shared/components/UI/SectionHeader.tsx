@@ -70,6 +70,16 @@ export const SectionHeader = ({
         ? TEXT_THEME.MUTED
         : TEXT_THEME.GOLD;
 
+  const iconColorClass = cn(
+    resolvedTheme === TEXT_THEME.GOLD
+      ? 'text-gold'
+      : resolvedTheme === TEXT_THEME.DANGER
+        ? 'text-danger-bright'
+        : resolvedTheme === TEXT_THEME.DIMMED
+          ? 'text-text-dimmed'
+          : 'text-text-base',
+  );
+
   if (isDivider) {
     const renderRightElement =
       rightElement ||
@@ -89,19 +99,7 @@ export const SectionHeader = ({
           fullWidth={false}
           className="whitespace-nowrap shrink-0"
         >
-          {icon && (
-            <div
-              className={cn(
-                resolvedTheme === TEXT_THEME.GOLD
-                  ? 'text-gold'
-                  : resolvedTheme === TEXT_THEME.DANGER
-                    ? 'text-danger-bright'
-                    : 'text-text-muted',
-              )}
-            >
-              {icon}
-            </div>
-          )}
+          {icon && <div className={iconColorClass}>{icon}</div>}
           <Text variant={TEXT_VARIANT.CAPTION} colorTheme={resolvedTheme}>
             {title}
           </Text>
@@ -137,7 +135,11 @@ export const SectionHeader = ({
       gap={isSub ? 'xs' : 'sm'}
       className={cn(centered ? 'text-center' : 'text-left', className)}
     >
-      {icon && <div className="flex items-center justify-center">{icon}</div>}
+      {icon && (
+        <div className={cn('flex items-center justify-center', iconColorClass)}>
+          {icon}
+        </div>
+      )}
 
       <Text
         id={id}

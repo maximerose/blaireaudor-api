@@ -1,9 +1,9 @@
-import React, { forwardRef } from 'react';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { ICONS } from '@/shared/constants';
 import { useInputUI } from '@/shared/hooks';
 import { cn } from '@/shared/utils';
-import { ICONS } from '@/shared/constants';
+import React, { forwardRef } from 'react';
 import { Stack } from '../Layout/Stack';
+import { Text, TEXT_THEME, TEXT_VARIANT } from './Text';
 
 // ==========================================
 // 1. COMPOSANT LABEL GÉNÉRIQUE
@@ -140,9 +140,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <Text
             variant={TEXT_VARIANT.MICRO}
             colorTheme={TEXT_THEME.DANGER}
-            className="text-center animate-fade-in"
+            className="text-center animate-fade-in flex items-center justify-center gap-1" // 🟢 Remplacement par flexbox
           >
-            <span aria-hidden="true">{ICONS.DANGER} </span>
+            <span aria-hidden="true" className="flex items-center">
+              {ICONS.DANGER}
+            </span>
             {error}
           </Text>
         )}
