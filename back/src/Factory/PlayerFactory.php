@@ -37,7 +37,7 @@ final class PlayerFactory extends PersistentObjectFactory
     {
         return [
             'createdBy' => UserFactory::new(),
-            'displayName' => self::faker()->unique()->name(),
+            'displayName' => self::faker()->unique()->firstName(),
         ];
     }
 
@@ -50,6 +50,16 @@ final class PlayerFactory extends PersistentObjectFactory
         return $this
             // ->afterInstantiate(function(Player $player): void {})
         ;
+    }
+
+    /**
+     * Lie automatiquement un compte User réel au Player.
+     */
+    public function withUser(array $userAttributes = []): static
+    {
+        return $this->with([
+            'associatedUser' => UserFactory::new($userAttributes),
+        ]);
     }
 
     /**

@@ -8,16 +8,8 @@ use App\Entity\Action;
 use App\Enum\ActionStatus;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
-/**
- * Factory pour générer des actions de jeu dans les tests.
- *
- * @extends PersistentObjectFactory<Action>
- */
 final class ActionFactory extends PersistentObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     */
     public function __construct()
     {
     }
@@ -28,32 +20,40 @@ final class ActionFactory extends PersistentObjectFactory
         return Action::class;
     }
 
-    /**
-     * Définit les valeurs par défaut pour une Action.
-     * * Par défaut, l'action est créée avec le statut PENDING et
-     * génère automatiquement une nouvelle Competition et un nouveau Player
-     * via leurs factories respectives si aucune valeur n'est fournie.
-     */
     #[\Override]
     protected function defaults(): array|callable
     {
         return [
             'participation' => ParticipationFactory::new(),
-            'description' => self::faker()->text(255),
+            'description' => rtrim(self::faker()->sentence(random_int(2, 3)), '.'),
             'points' => self::faker()->numberBetween(-50, 100),
             'status' => ActionStatus::PENDING,
-            'dateAction' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     #[\Override]
     protected function initialize(): static
     {
-        return $this
-            // ->afterInstantiate(function(Action $action): void {})
-        ;
+        return $this->afterInstantiate(function (Action $action, array $attributes): void {
+            // Si aucune date n'a été forcée (via les fixtures historiques par exemple)
+            if (!isset($attributes['dateAction']) && $participation = $action->getParticipation()) {
+                $comp = $participation->getCompetition();
+
+                if ($comp) {
+                    $start = $comp->getStartDate();
+                    $end = $comp->getEndDate() ?? new \DateTimeImmutable('+1 month');
+
+                    if ($start > $end) {
+                        $end = (clone $start)->modify('+1 day');
+                    }
+
+                    $randomDate = self::faker()->dateTimeBetween(
+                        $start->format('Y-m-d H:i:s'),
+                        $end->format('Y-m-d H:i:s')
+                    );
+                    $action->setDateAction(\DateTimeImmutable::createFromMutable($randomDate));
+                }
+            }
+        });
     }
 }

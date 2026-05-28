@@ -151,7 +151,7 @@ export const CompetitionHeader = () => {
               </Text>
               {referees.map((ref: RefereeListItem) => {
                 const isMe = user?.player?.id === ref.id;
-                const isCreator = ref.userId === competition.created_by.id;
+                const isCreator = ref.userId === competition.created_by?.id;
 
                 return (
                   <Badge

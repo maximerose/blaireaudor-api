@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Competition;
 use App\Enum\ActionStatus;
 use App\Factory\ActionFactory;
 use App\Factory\BonusDayFactory;
@@ -27,893 +26,175 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $this->notificationBuilder->mute();
-
+        // Initialisation de la console pour l'affichage
         $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-        $io->title('Importation des données du Blaireau d\'Or');
+        $io->title('🌱 Génération des Fixtures du Blaireau d\'Or (Environnement de Dev)');
 
-        // --- 1. Création du compte technique pour l'import ---
-        $io->section('Création du compte administrateur');
-        $admin = UserFactory::createOne([
-            'username' => 'maxime',
-            'email' => 'maxime@blaireaudor.com',
+        // 🔇 On coupe les notifications pour ne pas spammer pendant la génération des fixtures
+        $this->notificationBuilder->mute();
+        $io->info('Moteur de notifications rendu silencieux.');
+
+        // -------------------------------------------------------------------
+        // 1. IMPORTATION DE L'HISTORIQUE RÉEL (Depuis le JSON)
+        // -------------------------------------------------------------------
+        $io->section("1. Importation de l'historique réel");
+        $jsonPath = dirname(__DIR__, 2).'/import/history.json';
+        $data = json_decode(file_get_contents($jsonPath), true);
+
+        // Création de l'admin à partir du JSON
+        $admin = UserFactory::new()->withPlayer(['displayName' => $data['admin']['displayName']])->create([
+            'username' => $data['admin']['username'],
+            'email' => 'admin@blaireau.fr',
             'plainPassword' => 'password',
             'roles' => ['ROLE_SUPER_ADMIN'],
         ]);
-        $io->success('Admin Maxime créé');
+        $io->note('Super Admin de dev créé : admin@blaireau.fr / password');
 
-        // --- 2. Création de tous les joueurs ---
-        $io->section('Initialisation des profils joueurs');
-        $list2025 = [
-            'Aurélie', 'Baptist', 'Chloé', 'Christophe Robine', 'Christophe Rose',
-            'David', 'Églantine', 'Élisa', 'Katia', 'Maxime', 'Sylvain',
-            'Tatie', 'Typhaine', 'Valérie', 'Victorien',
-        ];
-
-        $list2026 = [
-            'Andréa', 'Axel', 'Camille', 'Chloé', 'Christophe Robine', 'Christophe Rose',
-            'David', 'Églantine', 'Élisa', 'Franck', 'Jeanne', 'Katia',
-            'Sylvain', 'Tatie', 'Typhaine', 'Valérie', 'Victorien',
-        ];
-
-        $allUniqueNames = array_unique([...$list2025, ...$list2026]);
-        sort($allUniqueNames);
-
-        $io->text('Création des profils pour :');
-        $io->listing($allUniqueNames);
-
-        $players = [];
-
-        $io->progressStart(count($allUniqueNames));
-        foreach ($allUniqueNames as $name) {
-            $isMaxime = 'Maxime' === $name;
-            $players[$name] = PlayerFactory::createOne([
-                'displayName' => $name,
-                'username' => $isMaxime ? 'maxime' : strtolower(str_replace(' ', '.', $name)),
-                'createdBy' => $admin,
-                'associatedUser' => $isMaxime ? $admin : null,
-            ]);
-            $io->progressAdvance();
-        }
-        $io->progressFinish();
-        $io->note(\sprintf('%d joueurs créés', \count($players)));
-
-        // --- 3. Création des compétitions ---
-        $io->section('Configuration des compétitions');
-        $comp2025 = CompetitionFactory::createOne([
-            'name' => "Blaireau d'or 2025",
-            'startDate' => new \DateTimeImmutable('2025-02-15 00:00:00'),
-            'endDate' => new \DateTimeImmutable('2025-02-22 23:59:59'),
-            'joinCode' => 'BLAIREAU25',
-            'fogOfWar' => false,
-            'createdBy' => $admin,
-            'referees' => [$players['Chloé']],
-        ]);
-
-        $comp2026 = CompetitionFactory::createOne([
-            'name' => "Blaireau d'or 2026",
-            'startDate' => new \DateTimeImmutable('2026-02-21 00:00:00'),
-            'endDate' => new \DateTimeImmutable('2026-02-28 23:59:59'),
-            'joinCode' => 'BLAIREAU26',
-            'fogOfWar' => false,
-            'createdBy' => $admin,
-            'referees' => [$players['Axel']],
-        ]);
-
-        $io->note('2025 : '.$comp2025->getName().' arbitré par '.$comp2025->getReferees()->first()->getDisplayName());
-        $io->note('2026 : '.$comp2026->getName().' arbitré par '.$comp2026->getReferees()->first()->getDisplayName());
-
-        // --- 4. Inscriptions aux compétitions (Participations) ---
+        $playersMap = [];
         $participationsMap = [];
 
-        foreach ($players as $name => $player) {
-            // Inscription sélective 2025
-            if (\in_array($name, $list2025)) {
-                $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2025]);
-                $participationsMap[(string) $comp2025->getId()][$name] = $p;
-            }
+        // On associe directement ton joueur "Maxime" à ton compte Admin
+        $playersMap[$data['admin']['displayName']] = $admin->getPlayer();
 
-            // Inscription sélective 2026
-            if (\in_array($name, $list2026)) {
-                $p = ParticipationFactory::createOne(['player' => $player, 'competition' => $comp2026]);
-                $participationsMap[(string) $comp2026->getId()][$name] = $p;
+        // Étape de pré-création de TOUS les joueurs du JSON pour gérer proprement les arbitres
+        foreach ($data['competitions'] as $compData) {
+            foreach (array_merge($compData['referees'], array_column($compData['actions'], 'playerName')) as $name) {
+                if (!isset($playersMap[$name])) {
+                    $playersMap[$name] = PlayerFactory::createOne(['displayName' => $name]);
+                }
             }
         }
 
-        // --- 5. Import des Actions (Excel) ---
-        $io->section('Importation des actions historiques');
-        $actions2025 = [
-            // SAMEDI 15 FÉVRIER
-            ['David', 10, 'Retard', '2025-02-15'],
-            ['Typhaine', 10, 'Retard', '2025-02-15'],
-            ['Églantine', 10, 'Retard', '2025-02-15'],
-            ['Christophe Rose', 10, 'Touchage de coffre de toit au péage', '2025-02-15'],
-            ['Katia', 20, "Annonce d'oubli de carte bancaire", '2025-02-15'],
-            ['Chloé', 10, 'Compréhensage très long du tableau de points', '2025-02-15'],
-            ['Élisa', 20, 'Diffamage : annonce de points erronée envers Katia', '2025-02-15'],
-            ['Christophe Rose', 10, 'Pensage téléphone HS (luminosité mini)', '2025-02-15'],
-            ['Tatie', 10, 'N\'a pas reconnu Typhaine sur l\'autoroute', '2025-02-15'],
-            ['Christophe Rose', 10, 'Oubliage de brosse à dent', '2025-02-15'],
-            ['Christophe Rose', 10, 'Confondage de voiture dans le village', '2025-02-15'],
-            ['Christophe Rose', 10, 'Klaxonne un inconnu', '2025-02-15'],
-            ['Chloé', 10, 'Appeler Katia tatie', '2025-02-15'],
-            ['Christophe Rose', 40, 'Oubliage de Stan', '2025-02-15'],
-            ['Christophe Rose', 10, 'Vient avec Nathalie...', '2025-02-15'],
-            ['Typhaine', 10, 'Christophe et Nathalie', '2025-02-15'],
-            ['Christophe Rose', 10, 'Trompage de verre', '2025-02-15'],
-            ['Katia', 10, 'Il reste 1 kilo au lieu de km', '2025-02-15'],
-            ['Sylvain', 10, 'On a une belle vue sur la mer', '2025-02-15'],
-            ['Chloé', 10, 'Prendage de volet pendant snap visite chalet', '2025-02-15'],
-            ['David', 20, 'Vin blanc dans la gamelle', '2025-02-15'],
-            ['David', 10, 'Trompé de verre', '2025-02-15'],
-            ['Sylvain', 10, 'C\'est qui Séverine ?', '2025-02-15'],
-            ['Élisa', 10, 'Christophe et Nathalie', '2025-02-15'],
-            ['Tatie', 20, 'Citron dans le canapé', '2025-02-15'],
-            ['Valérie', 10, 'Trompage mettre de table', '2025-02-15'],
-            ['Tatie', 10, 'Trompage mettre de table', '2025-02-15'],
-            ['Sylvain', 10, 'Trompage mettre de table', '2025-02-15'],
-            ['Chloé', 10, 'Macdo au lieu de Margot', '2025-02-15'],
-            ['Baptist', 20, 'Trompage de verre (2x)', '2025-02-15'],
-            ['Valérie', 10, 'Renversage de verre', '2025-02-15'],
-            ['Valérie', 20, 'A relavé la vaisselle déjà faite', '2025-02-15'],
-            ['David', 10, 'Barbecue dimanche mais pas demain', '2025-02-15'],
-            ['Victorien', 10, 'Renversage de jet', '2025-02-15'],
-            ['Christophe Rose', 10, 'On est vendredi', '2025-02-15'],
-            ['Typhaine', 30, 'Gamelle du chien au lave-vaisselle', '2025-02-15'],
-            ['Victorien', 10, 'Trompage de dentifrice', '2025-02-15'],
+        $io->text('Chargement des compétitions historiques...');
+        $io->progressStart(count($data['competitions']));
 
-            // DIMANCHE 16 FÉVRIER
-            ['Katia', 10, 'Oubliage de lait', '2025-02-16'],
-            ['Tatie', 10, 'Cherche le chien dehors alors qu\'il est dedans', '2025-02-16'],
-            ['Victorien', 10, 'Tombage de cuillère', '2025-02-16'],
-            ['Élisa', 20, 'Pieds dans la gamelle du chien', '2025-02-16'],
-            ['Christophe Rose', 20, 'Chute à pieds bien longue', '2025-02-16'],
-            ['Chloé', 10, 'Tombage de dentifrice', '2025-02-16'],
-            ['Églantine', 20, 'Décrochage de ski au télésiège', '2025-02-16'],
-            ['Christophe Rose', 10, 'Chute à l\'arrêt à ski', '2025-02-16'],
-            ['David', 10, 'Perdage de bâton au télésiège', '2025-02-16'],
-            ['Élisa', 30, 'Grosse chute à ski', '2025-02-16'],
-            ['Élisa', 10, 'Fonçage dans une ficelle au ski', '2025-02-16'],
-            ['Chloé', 10, 'Fonçage dans une ficelle au ski', '2025-02-16'],
-            ['Sylvain', 10, 'Fonçage dans une ficelle au ski', '2025-02-16'],
-            ['Chloé', 10, 'Renversage de chips', '2025-02-16'],
-            ['Sylvain', 10, 'Utilise son bâton à l\'envers', '2025-02-16'],
-            ['Sylvain', 10, 'Arrivage au télésiège douteux', '2025-02-16'],
-            ['Baptist', 20, 'Crachage de fromage', '2025-02-16'],
-            ['Christophe Rose', 10, 'A appelé Sylvain Vincent', '2025-02-16'],
-            ['Typhaine', 10, 'Céline, Aurélie... ah non', '2025-02-16'],
-            ['Sylvain', 30, 'Tombé à pieds + craquage pantalon', '2025-02-16'],
-            ['Élisa', 10, 'A confondu Vic avec son père', '2025-02-16'],
-            ['Valérie', 10, 'A perdu Joska', '2025-02-16'],
-            ['Christophe Robine', 40, '2 trompages de route (x2)', '2025-02-16'],
-            ['Chloé', 10, 'Max a dit que (dyslexie)', '2025-02-16'],
-            ['Christophe Rose', 10, 'J\'ai filmé les vidéos', '2025-02-16'],
-            ['Christophe Robine', 20, 'Renversage bouteille (x2)', '2025-02-16'],
-            ['Christophe Robine', 20, 'Ne sait pas filmer avec son tel (x2)', '2025-02-16'],
-            ['Valérie', 10, 'Laisse ouvert Sylvain (c\'est Christophe)', '2025-02-16'],
-            ['Valérie', 10, 'Ne sait pas fermer une porte', '2025-02-16'],
-            ['Tatie', 10, 'Renversage de verre', '2025-02-16'],
-            ['Typhaine', 10, 'Truc avec le tancarville', '2025-02-16'],
-            ['Victorien', 10, 'Crachage dentifrice sur tee-shirt', '2025-02-16'],
-            ['Chloé', 10, 'Crachage dentifrice par terre', '2025-02-16'],
-
-            // LUNDI 17 FÉVRIER
-            ['Victorien', 10, 'Confondage école et terrain pétanque', '2025-02-17'],
-            ['Chloé', 10, 'Accrocher manche poignée porte', '2025-02-17'],
-            ['Sylvain', 10, 'Cognage tête dans télé', '2025-02-17'],
-            ['Katia', 10, 'Médicaments à la boulangerie', '2025-02-17'],
-            ['Christophe Rose', 10, '17 baguettes pour des croissants', '2025-02-17'],
-            ['Chloé', 10, 'Renversage de verre', '2025-02-17'],
-            ['Christophe Rose', 10, 'Pain aux céréales (pain nature)', '2025-02-17'],
-            ['Christophe Rose', 10, 'Sylvain en a acheté 2 (c\'était Elisa)', '2025-02-17'],
-            ['Christophe Robine', 10, 'Trompage pouce chèques vacances', '2025-02-17'],
-            ['Élisa', 20, 'Pieds dans la gamelle d\'eau', '2025-02-17'],
-            ['Chloé', 10, 'Trébuchage sur bottes de ski', '2025-02-17'],
-            ['Baptist', 10, 'Tombage téléphone', '2025-02-17'],
-            ['Chloé', 10, 'Braguette et bouton ouvert', '2025-02-17'],
-            ['Chloé', 20, 'Une jambe de chaque côté barrière', '2025-02-17'],
-            ['Victorien', 10, 'Ne lève pas pieds télésiège', '2025-02-17'],
-            ['Katia', 20, 'Comprends pas et conteste', '2025-02-17'],
-            ['Valérie', 10, 'Photo avec gros doigt dessus', '2025-02-17'],
-            ['Chloé', 10, 'Blaireaux au lieu de arbitre', '2025-02-17'],
-            ['Christophe Rose', 10, 'Appelé Valérie Chloé', '2025-02-17'],
-            ['Tatie', 10, 'Change banc soleil (face au soleil)', '2025-02-17'],
-            ['Chloé', 30, 'Chute pieds + perdage bouteille', '2025-02-17'],
-            ['Sylvain', 10, 'Tombage transat', '2025-02-17'],
-            ['Aurélie', 10, 'Chute à ski', '2025-02-17'],
-            ['Valérie', 10, 'Chute à ski', '2025-02-17'],
-            ['Christophe Rose', 10, 'Renversage de bière', '2025-02-17'],
-            ['Élisa', 20, 'Chute à pieds', '2025-02-17'],
-            ['Élisa', 10, 'N\'allume pas le décodeur', '2025-02-17'],
-            ['Sylvain', 10, 'Oublié boule de pétanque', '2025-02-17'],
-            ['Baptist', 10, 'Se cogne tête mur en rigolant', '2025-02-17'],
-            ['Aurélie', 10, 'Ski qui tombe', '2025-02-17'],
-            ['Aurélie', 20, 'Chute ski et déchausse', '2025-02-17'],
-            ['Aurélie', 20, 'Chute ski et déchausse (bis)', '2025-02-17'],
-            ['Aurélie', 20, 'Chute ski et déchausse (ter)', '2025-02-17'],
-            ['Chloé', 10, 'Cogne pieds douche', '2025-02-17'],
-            ['David', 10, 'Trompage de route', '2025-02-17'],
-            ['Chloé', 10, 'Papier Doliprane par terre', '2025-02-17'],
-            ['Tatie', 10, 'Le bus de chien', '2025-02-17'],
-            ['Victorien', 10, 'Rattage d\'apéro', '2025-02-17'],
-            ['Katia', 10, 'Axel et Chloé... c\'était Christophe', '2025-02-17'],
-            ['Valérie', 10, 'Après-soleil au lieu d\'après-ski', '2025-02-17'],
-            ['Valérie', 20, 'S\'est enfermée dehors', '2025-02-17'],
-            ['Valérie', 10, 'Mal au spasfon ?', '2025-02-17'],
-            ['Élisa', 10, 'Appelle Joska Lipsie', '2025-02-17'],
-            ['David', 10, 'Confondage charcuterie', '2025-02-17'],
-            ['Élisa', 10, 'Des caquelons... à fond la forme', '2025-02-17'],
-            ['Élisa', 10, 'Pommes terre assiette voisin', '2025-02-17'],
-            ['Maxime', 10, 'Trompage de gîte', '2025-02-17'],
-            ['Christophe Rose', 10, 'Plongeage dans la rivière', '2025-02-17'],
-            ['Typhaine', 10, 'Electrisage au vin blanc', '2025-02-17'],
-            ['Sylvain', 10, 'Trompage appareil raclette', '2025-02-17'],
-            ['Élisa', 10, 'Second degré != température', '2025-02-17'],
-            ['Sylvain', 40, 'Blague incompréhensible', '2025-02-17'],
-            ['Chloé', 10, 'Tombage lunettes soleil', '2025-02-17'],
-            ['Sylvain', 10, 'Retentage blague privé', '2025-02-17'],
-            ['Tatie', 10, 'Trompage de chien', '2025-02-17'],
-            ['Baptist', 10, 'Trompage de chaise', '2025-02-17'],
-            ['Chloé', 10, 'Trompage de chaise', '2025-02-17'],
-            ['Maxime', 10, 'Trompage de chaise', '2025-02-17'],
-            ['Maxime', 10, 'Ratage de bouche', '2025-02-17'],
-            ['Maxime', 10, 'Confondage Miss Météo', '2025-02-17'],
-            ['Christophe Rose', 10, 'Confirmage d\'Evelyne', '2025-02-17'],
-            ['Typhaine', 10, 'Zolophilage', '2025-02-17'],
-            ['Christophe Rose', 10, 'Aspifen', '2025-02-17'],
-            ['Typhaine', 10, 'Macron il est maire', '2025-02-17'],
-            ['Typhaine', 10, 'Mollardage', '2025-02-17'],
-            ['Chloé', 10, 'Gitanage', '2025-02-17'],
-            ['Typhaine', 10, 'Le monde de personne', '2025-02-17'],
-            ['Christophe Rose', 10, 'Confondage draps et housse', '2025-02-17'],
-
-            // MARDI 18 FÉVRIER (JOUR DOUBLE)
-            ['Valérie', 10, 'Cognage tête dans télé', '2025-02-18'],
-            ['Élisa', 10, 'Cognage tête vitre', '2025-02-18'],
-            ['Tatie', 10, 'Renversage eau table', '2025-02-18'],
-            ['Chloé', 10, 'Renversage jus orange', '2025-02-18'],
-            ['Baptist', 10, 'Galérage chocolat', '2025-02-18'],
-            ['Valérie', 10, 'Pain choco sur le sèche... ?', '2025-02-18'],
-            ['Baptist', 10, 'Renversage crunchs', '2025-02-18'],
-            ['Katia', 10, 'Open office au lieu d\'open space', '2025-02-18'],
-            ['Valérie', 10, 'Pas mis les croquettes Lipsie', '2025-02-18'],
-            ['Victorien', 10, 'Oubliage dormage Pelletier', '2025-02-18'],
-            ['Victorien', 10, 'Ronflage intempestif', '2025-02-18'],
-            ['Victorien', 10, 'Absence au petit dej', '2025-02-18'],
-            ['Aurélie', 10, 'Absence au petit dej', '2025-02-18'],
-            ['David', 20, 'Touchage échelle en reculant', '2025-02-18'],
-            ['David', 10, 'Laissage voiture ouverte', '2025-02-18'],
-            ['Victorien', 10, 'Jambe dans bretelles', '2025-02-18'],
-            ['Christophe Robine', 20, 'Loupage portique télésiège', '2025-02-18'],
-            ['Élisa', 10, 'Appelé Vic papa', '2025-02-18'],
-            ['Baptist', 10, 'Chloé Zoze', '2025-02-18'],
-            ['Christophe Robine', 10, 'Masque eud\'biaise', '2025-02-18'],
-            ['Maxime', 10, 'Pellicule pleine', '2025-02-18'],
-            ['Sylvain', 30, 'Chutage + déchaussage ski', '2025-02-18'],
-            ['Maxime', 10, 'Tombage bâton', '2025-02-18'],
-            ['Katia', 10, 'Tombage oignon', '2025-02-18'],
-            ['Victorien', 10, 'Tombage masque télésiège', '2025-02-18'],
-            ['Églantine', 10, 'Arrêtage non maîtrisé', '2025-02-18'],
-            ['Victorien', 30, 'Carambolage', '2025-02-18'],
-            ['Victorien', 20, 'Chute retournage kart', '2025-02-18'],
-            ['Victorien', 10, 'Roulage de grand-père', '2025-02-18'],
-            ['Élisa', 20, 'Sortie de piste', '2025-02-18'],
-            ['Élisa', 30, 'Chute retournage pilote', '2025-02-18'],
-            ['Élisa', 40, 'Filetage avec triple caméra', '2025-02-18'],
-            ['Maxime', 10, 'Tombage tel chaussures', '2025-02-18'],
-            ['Baptist', 10, 'Dormage voiture rentrant ski', '2025-02-18'],
-            ['Sylvain', 10, 'Carton pas rigolo', '2025-02-18'],
-            ['David', 10, 'Glissage filmage', '2025-02-18'],
-            ['Élisa', 10, 'Trébuchage barbecue', '2025-02-18'],
-            ['Élisa', 10, 'Enfumage dans l\'auto', '2025-02-18'],
-            ['Élisa', 20, 'Bilboquage mauvais sens', '2025-02-18'],
-            ['Katia', 10, 'Dormait pendant photo', '2025-02-18'],
-            ['Maxime', 10, 'Raclette vs Tartiflette', '2025-02-18'],
-            ['Baptist', 20, 'Buvage avant trinquage', '2025-02-18'],
-            ['Élisa', 10, 'Buvage avant trinquage', '2025-02-18'],
-            ['Maxime', 10, 'Bafouillage au conseil', '2025-02-18'],
-            ['Sylvain', 10, 'Collage tartiflette plat', '2025-02-18'],
-            ['Christophe Robine', 10, 'Loupage ouverture pétillant', '2025-02-18'],
-            ['Maxime', 10, 'Qui a mis de l\'eau ? (prosecco)', '2025-02-18'],
-            ['Élisa', 10, 'Comprend pas les z\'amours', '2025-02-18'],
-            ['Christophe Rose', 10, 'Tatie la grand-mère', '2025-02-18'],
-            ['Katia', 10, 'Appelle Aurélie Nathalie', '2025-02-18'],
-            ['Valérie', 10, 'Indices z\'amours par erreur', '2025-02-18'],
-            ['Christophe Rose', 20, 'Organisation z\'amours bancale', '2025-02-18'],
-            ['Typhaine', 10, 'Renversage verres', '2025-02-18'],
-            ['Katia', 10, 'Détacher serviette ananas pliée', '2025-02-18'],
-            ['Sylvain', 10, 'Trompage vin de noix', '2025-02-18'],
-            ['Katia', 10, 'Serrage main au lieu assiette', '2025-02-18'],
-            ['Christophe Robine', 10, 'Coupage couteau à l\'envers', '2025-02-18'],
-            ['Sylvain', 10, 'Cognage télé', '2025-02-18'],
-
-            // MERCREDI 19 FÉVRIER
-            ['Valérie', 10, 'Cognage tête télé', '2025-02-19'],
-            ['Aurélie', 10, 'Absence petit dej', '2025-02-19'],
-            ['Maxime', 30, 'Calage côte', '2025-02-19'],
-            ['Valérie', 10, 'Trompage route', '2025-02-19'],
-            ['Chloé', 10, 'Elle est où Titine ?', '2025-02-19'],
-            ['Katia', 10, 'Lachage cuillères', '2025-02-19'],
-            ['Katia', 10, 'Oubliage lumière', '2025-02-19'],
-            ['Aurélie', 10, 'Tombage cake', '2025-02-19'],
-            ['David', 20, 'Sens interdit', '2025-02-19'],
-            ['Christophe Robine', 10, 'Trompage route', '2025-02-19'],
-            ['Typhaine', 10, 'Faute "sans interdit"', '2025-02-19'],
-            ['Chloé', 10, 'Renversage riz', '2025-02-19'],
-            ['Élisa', 10, 'Tartiflette sur pull', '2025-02-19'],
-            ['Christophe Rose', 10, 'Tasses sales (c\'était déco)', '2025-02-19'],
-            ['Christophe Rose', 20, 'Flashage', '2025-02-19'],
-            ['Tatie', 10, 'Renversage café', '2025-02-19'],
-            ['Baptist', 20, 'Pets monument historique', '2025-02-19'],
-            ['Églantine', 10, 'Pantalon ski visite', '2025-02-19'],
-            ['Christophe Robine', 10, 'Tombage tel', '2025-02-19'],
-            ['Christophe Rose', 10, 'Trompage route', '2025-02-19'],
-            ['Élisa', 10, 'Eau sur téléphone', '2025-02-19'],
-            ['Élisa', 10, 'Ratage bouche', '2025-02-19'],
-
-            // JEUDI 20 FÉVRIER (JOUR DOUBLE)
-            ['Chloé', 10, 'Tombage couteau nutella', '2025-02-20'],
-            ['Chloé', 10, 'Tombage couteau nutella (bis)', '2025-02-20'],
-            ['Églantine', 10, 'Mauvaise vue', '2025-02-20'],
-            ['David', 10, 'Voiture Christophe (c\'était Sylvain)', '2025-02-20'],
-            ['Sylvain', 10, 'Oublier fermer casque', '2025-02-20'],
-            ['Christophe Rose', 10, 'Perdage sous montagne', '2025-02-20'],
-            ['Christophe Rose', 10, 'Elisa en Camille', '2025-02-20'],
-            ['Christophe Robine', 10, 'Tombage lunettes neige', '2025-02-20'],
-            ['Christophe Rose', 20, 'Trompage horaire', '2025-02-20'],
-            ['Christophe Rose', 40, 'Filet en luge', '2025-02-20'],
-            ['Victorien', 40, 'Prenage de filet', '2025-02-20'],
-            ['Christophe Rose', 30, 'Déchirage blouson autrui', '2025-02-20'],
-            ['Victorien', 20, 'Coincage bretelle luge', '2025-02-20'],
-            ['David', 25, 'Moulte chutes', '2025-02-20'],
-            ['Baptist', 20, 'Chute arrivée', '2025-02-20'],
-            ['Chloé', 40, 'Fonçage arbre', '2025-02-20'],
-            ['Églantine', 20, 'Sortie piste', '2025-02-20'],
-            ['Victorien', 25, 'Chutes', '2025-02-20'],
-            ['Christophe Rose', 25, 'Chutes', '2025-02-20'],
-            ['Chloé', 25, 'Chutes', '2025-02-20'],
-            ['Sylvain', 25, 'Chutes', '2025-02-20'],
-            ['Églantine', 25, 'Chutes', '2025-02-20'],
-            ['Élisa', 25, 'Chutes', '2025-02-20'],
-            ['Baptist', 10, 'Brouillage au lieu de brouillard', '2025-02-20'],
-            ['Valérie', 20, 'Chute à pieds', '2025-02-20'],
-            ['Élisa', 10, 'Lunettes sur la tête', '2025-02-20'],
-            ['David', 10, 'C\'est Tatie (Églantine)', '2025-02-20'],
-            ['Christophe Robine', 30, 'Oubliage fermage porte', '2025-02-20'],
-            ['Aurélie', 30, 'Oubliage fermage porte', '2025-02-20'],
-            ['Typhaine', 20, 'Chute à pieds', '2025-02-20'],
-            ['Aurélie', 20, 'Chute à pieds', '2025-02-20'],
-            ['Typhaine', 20, 'Vic vs Sylvain', '2025-02-20'],
-            ['Christophe Robine', 10, 'Ski défaillant', '2025-02-20'],
-            ['Valérie', 10, 'Appelé Lipsie', '2025-02-20'],
-            ['Typhaine', 10, 'Coup coude Katia', '2025-02-20'],
-            ['Katia', 10, 'Chaise neige', '2025-02-20'],
-            ['Typhaine', 10, 'Tentative meurtre arme blanche', '2025-02-20'],
-            ['Christophe Robine', 10, 'Trompage fajitas', '2025-02-20'],
-        ];
-
-        $actions2026 = [
-            // SAMEDI 21 FÉVRIER
-            ['Valérie', 10, 'Oubliage de carte à typhaine', '2026-02-21'],
-            ['Christophe Rose', 10, 'Il est où Francky : à côté à de lui', '2026-02-21'],
-            ['Christophe Robine', 10, 'Confondage de mot : Bluetooth / ADblue', '2026-02-21'],
-            ['Axel', 20, 'Va aux toilettes à la dernière minute, trompage de toilettes et retrouve pas la voiture', '2026-02-21'],
-            ['Christophe Robine', 10, 'Trompage de sortie sur l\'autoroute', '2026-02-21'],
-            ['Christophe Rose', 10, 'Trompage de sortie sur l\'autoroute', '2026-02-21'],
-            ['Chloé', 10, 'Trompage de père', '2026-02-21'],
-            ['Andréa', 10, 'Envolage de tous ses papiers', '2026-02-21'],
-            ['Axel', 30, 'Oubliage de bouteille d\'eau au dessus de la voiture', '2026-02-21'],
-            ['Franck', 10, 'Ah les vla, ah nan', '2026-02-21'],
-            ['Katia', 20, 'Dire Elisa arrive devant le proprio', '2026-02-21'],
-            ['Typhaine', 10, 'Oh y\'a une avalanche : c\'était un nuage', '2026-02-21'],
-            ['Typhaine', 10, 'Confondage de personne', '2026-02-21'],
-            ['Typhaine', 10, 'Oubliage de saucisson', '2026-02-21'],
-            ['Franck', 10, 'Non fermage de grille', '2026-02-21'],
-            ['Christophe Robine', 20, 'Non fermage de grille', '2026-02-21'],
-            ['Chloé', 10, 'Tombage on sac', '2026-02-21'],
-            ['Sylvain', 10, 'Elle est pas là Elisa : elle était là', '2026-02-21'],
-            ['Christophe Rose', 10, 'Renversage', '2026-02-21'],
-            ['Valérie', 10, 'Appeler son fils Sylvain', '2026-02-21'],
-            ['Franck', 10, 'Alex', '2026-02-21'],
-            ['Christophe Robine', 10, 'Renversage de verre', '2026-02-21'],
-            ['Christophe Robine', 10, 'encore Renversage', '2026-02-21'],
-            ['Églantine', 10, 'Degueulage intempestif', '2026-02-21'],
-            ['Sylvain', 10, 'Non ecoutage', '2026-02-21'],
-            ['Christophe Rose', 30, 'Route au hasard', '2026-02-21'],
-            ['Christophe Robine', 10, 'Trompage de route', '2026-02-21'],
-            ['David', 20, 'Embouteillage sur l\'autoroute', '2026-02-21'],
-            ['Franck', 10, 'Trompage de route', '2026-02-21'],
-            ['Sylvain', 10, 'Gobelet tombé', '2026-02-21'],
-            ['Valérie', 10, 'Il est mon tel', '2026-02-21'],
-            ['Valérie', 10, 'Chercher essence sur mauvaise autoroute', '2026-02-21'],
-            ['Élisa', 20, 'Jetage de clémentine + tracage sur t shirt', '2026-02-21'],
-            ['Élisa', 10, 'Coinçage de manche', '2026-02-21'],
-            ['Tatie', 10, 'Emma c\'est la fille de Céline : Non', '2026-02-21'],
-            ['Axel', 10, 'Tombage de pâte', '2026-02-21'],
-            ['Camille', 10, 'Mollard sur Chloé', '2026-02-21'],
-            ['Camille', 10, 'Confondage de vic et axel', '2026-02-21'],
-            ['Camille', 20, 'Confondage 3 fois de suite', '2026-02-21'],
-            ['Victorien', 10, 'Non dénonçage volontaire', '2026-02-21'],
-            ['Christophe Rose', 10, 'Fourchage de langue abusif', '2026-02-21'],
-            ['Axel', 10, 'Tombage de tarte', '2026-02-21'],
-            ['Tatie', 10, 'Cassage de verre', '2026-02-21'],
-
-            // DIMANCHE 22 FÉVRIER
-            ['Sylvain', 10, 'Confondre crème fraîche et lait', '2026-02-22'],
-            ['Élisa', 10, 'Giclage de fromage blanc sur tête', '2026-02-22'],
-            ['Chloé', 10, 'Pain au raisin au lieu de pain au céréales', '2026-02-22'],
-            ['Camille', 10, 'Tombage de yayour', '2026-02-22'],
-            ['Axel', 10, 'Cognage Porte de douche', '2026-02-22'],
-            ['Axel', 10, 'Envolage de brosse à dent', '2026-02-22'],
-            ['Camille', 10, 'Dégringolage de téléphone', '2026-02-22'],
-            ['Camille', 10, 'Cognage de tête sur fenêtre', '2026-02-22'],
-            ['Tatie', 10, 'Tombage de cuillère', '2026-02-22'],
-            ['Valérie', 20, 'Sortir de la voiture attachée', '2026-02-22'],
-            ['Sylvain', 10, 'Chutage à ski', '2026-02-22'],
-            ['Camille', 10, 'Chute à ski', '2026-02-22'],
-            ['Jeanne', 10, 'Chute à ski', '2026-02-22'],
-            ['Jeanne', 10, 'Accrochage portique', '2026-02-22'],
-            ['Sylvain', 10, 'Accrochage portique', '2026-02-22'],
-            ['Camille', 10, 'Bâton resté accroché', '2026-02-22'],
-            ['Christophe Robine', 60, 'Oubliage de chaussures + met celles des autres', '2026-02-22'],
-            ['Élisa', 10, 'Accrochage portique', '2026-02-22'],
-            ['Andréa', 10, 'Oubliage de lunette', '2026-02-22'],
-            ['Andréa', 10, 'Tombage de téléphone', '2026-02-22'],
-            ['Axel', 10, 'Oubliage de lunettes', '2026-02-22'],
-            ['Églantine', 10, 'Tombage de tel', '2026-02-22'],
-            ['Axel', 10, 'Renversage', '2026-02-22'],
-            ['Valérie', 10, 'Parle à des inconnus en pensant que c\'est nous', '2026-02-22'],
-            ['Valérie', 10, 'Cogné s\'tête dans les skis d\'autrui', '2026-02-22'],
-            ['Chloé', 10, 'Bâton resté planté', '2026-02-22'],
-            ['Camille', 10, 'Tape dans le mur et loupe la marche', '2026-02-22'],
-            ['David', 10, 'Accrochage dans jardinière', '2026-02-22'],
-            ['Typhaine', 20, 'Appeler 2 fois Christophe Tonton', '2026-02-22'],
-            ['Élisa', 10, 'Persuadée que Tatie dort en bas alors qu\'elle dort en haut', '2026-02-22'],
-            ['David', 10, 'Confondage entre sa fille et andré', '2026-02-22'],
-            ['Valérie', 10, 'Renversage', '2026-02-22'],
-            ['Sylvain', 10, 'Tombage de tel', '2026-02-22'],
-            ['Sylvain', 10, 'Coup de coude intempestif', '2026-02-22'],
-            ['David', 10, 'Raclette au lieu de raquette', '2026-02-22'],
-            ['Camille', 10, 'Retard apéro', '2026-02-22'],
-            ['Jeanne', 10, 'Retard apéro', '2026-02-22'],
-            ['Églantine', 10, 'Retard apéro', '2026-02-22'],
-            ['Axel', 10, 'Oublie d\'une chaussure', '2026-02-22'],
-            ['Christophe Rose', 10, 'Trebuchage dans tapis', '2026-02-22'],
-            ['Christophe Rose', 10, 'Pas vu la maison', '2026-02-22'],
-            ['Christophe Rose', 10, 'Gant dans neige', '2026-02-22'],
-            ['David', 20, 'Reconnaît pas ses chaussures', '2026-02-22'],
-            ['Églantine', 30, 'Double déchaussage', '2026-02-22'],
-            ['Jeanne', 10, 'Ratage de bouche', '2026-02-22'],
-            ['Christophe Rose', 10, 'Double badge, passe pas au péage', '2026-02-22'],
-            ['Franck', 10, 'Coupe mal le pain', '2026-02-22'],
-            ['Katia', 10, 'Confondage de prénom', '2026-02-22'],
-            ['Tatie', 10, 'Trebuchage tapis', '2026-02-22'],
-            ['Valérie', 10, 'Coucou à mauvaise voiture', '2026-02-22'],
-            ['Élisa', 10, 'Coucou à mauvaise voiture', '2026-02-22'],
-            ['David', 10, 'Coucou à mauvaise voiture', '2026-02-22'],
-            ['Valérie', 10, 'Defenestrage', '2026-02-22'],
-            ['David', 10, 'Trompage de jour', '2026-02-22'],
-            ['Jeanne', 10, 'Emmelage des membres supérieurs', '2026-02-22'],
-            ['Jeanne', 10, 'Bloquage de pied', '2026-02-22'],
-            ['Élisa', 10, 'Chips à terre', '2026-02-22'],
-            ['Tatie', 10, 'Nul en maths', '2026-02-22'],
-            ['Christophe Rose', 10, 'Nul en maths', '2026-02-22'],
-            ['Christophe Robine', 10, 'Sabotage et trichement', '2026-02-22'],
-            ['Valérie', 10, 'Trompage de prenom', '2026-02-22'],
-            ['Sylvain', 10, 'Loupage de marche', '2026-02-22'],
-            ['Axel', 10, 'Trebuchage dans le tapis', '2026-02-22'],
-            ['Typhaine', 20, 'Trompage de prénom qui n\'est même pas la', '2026-02-22'],
-            ['Chloé', 10, 'Salade partout', '2026-02-22'],
-            ['Axel', 10, 'Met le code de téléphone d\'autrui', '2026-02-22'],
-            ['Sylvain', 10, 'Gros fourchage de langue', '2026-02-22'],
-            ['Valérie', 10, 'Comprend rien aux blagues', '2026-02-22'],
-            ['Typhaine', 30, 'Triple débordage de champagne', '2026-02-22'],
-            ['Christophe Rose', 10, 'Filmage du sol', '2026-02-22'],
-            ['Chloé', 20, 'Double Trompage de nom : typhaine et jade au lieu de titine et jeanne', '2026-02-22'],
-            ['Christophe Rose', 10, 'Renversage de verre', '2026-02-22'],
-
-            // LUNDI 23 FÉVRIER
-            ['Valérie', 10, 'Mettage de t shirt a l\'envers', '2026-02-23'],
-            ['Christophe Rose', 20, 'Envoie des messages à vic alors qu\'il est à côté', '2026-02-23'],
-            ['Christophe Rose', 10, 'Perdage de tel', '2026-02-23'],
-            ['Christophe Rose', 10, 'Marche sur son téléphone', '2026-02-23'],
-            ['Églantine', 20, 'Pete le ballon en s\'asseyant', '2026-02-23'],
-            ['Typhaine', 10, 'Mon cochon', '2026-02-23'],
-            ['Victorien', 10, 'Cognage de tête', '2026-02-23'],
-            ['Franck', 20, 'Bouteille d\'eau renversée', '2026-02-23'],
-            ['Jeanne', 10, 'Mauvaise direction', '2026-02-23'],
-            ['Églantine', 10, 'Mauvaise direction', '2026-02-23'],
-            ['Chloé', 10, 'Bâton resté planté', '2026-02-23'],
-            ['Christophe Robine', 10, 'Tombage de t shirt', '2026-02-23'],
-            ['Axel', 10, 'Chute à ski', '2026-02-23'],
-            ['David', 10, 'Confondage de voiture', '2026-02-23'],
-            ['Chloé', 10, 'Bâton encore planté', '2026-02-23'],
-            ['Camille', 10, 'Trompage de sens', '2026-02-23'],
-            ['Élisa', 10, 'Trompage de sens', '2026-02-23'],
-            ['Chloé', 10, 'Trompage de sens', '2026-02-23'],
-            ['Andréa', 10, 'Trebuchage au portique', '2026-02-23'],
-            ['Axel', 20, 'Double Tombage de beurre de cacao', '2026-02-23'],
-            ['Élisa', 10, 'Auto école au lieu de école de ski', '2026-02-23'],
-            ['Katia', 10, 'Mauvaise gestion du climat', '2026-02-23'],
-            ['Katia', 20, 'Perdage de pompom', '2026-02-23'],
-            ['Andréa', 10, 'Bouffe du savon', '2026-02-23'],
-            ['Axel', 10, 'Patate par terre', '2026-02-23'],
-            ['Élisa', 10, 'Dire papa ta tartiflette est meilleure devant le serveur', '2026-02-23'],
-            ['Christophe Rose', 10, 'Renversage', '2026-02-23'],
-            ['Axel', 10, 'Ratage de bouche', '2026-02-23'],
-            ['Valérie', 10, 'Trompage de prénom', '2026-02-23'],
-            ['Christophe Rose', 10, 'Trompage de prénom', '2026-02-23'],
-            ['Chloé', 10, 'Des cafés normal ?', '2026-02-23'],
-            ['Katia', 10, 'J\'ai fait Pâques à Noël', '2026-02-23'],
-            ['Katia', 10, 'Shootage de ski', '2026-02-23'],
-            ['Typhaine', 10, 'Tombage de téléphone', '2026-02-23'],
-            ['Christophe Robine', 10, 'Trompage de route', '2026-02-23'],
-            ['Christophe Rose', 10, 'Trompage de route', '2026-02-23'],
-            ['David', 10, 'Trompage de route', '2026-02-23'],
-            ['Chloé', 10, 'Accrochage intempestif', '2026-02-23'],
-            ['Chloé', 10, 'Acide ou agrume', '2026-02-23'],
-            ['Sylvain', 10, 'Tombage de cigarette', '2026-02-23'],
-            ['Franck', 20, 'Défonçage de rétro d\'autrui', '2026-02-23'],
-            ['Sylvain', 10, 'Appeler Franck Tof', '2026-02-23'],
-            ['Élisa', 10, 'Gant envolé avec le tire fesse', '2026-02-23'],
-            ['Élisa', 10, 'Avril - mars', '2026-02-23'],
-            ['Christophe Rose', 10, 'Le vide est verre', '2026-02-23'],
-            ['David', 10, 'Renversage', '2026-02-23'],
-            ['Élisa', 10, 'Profiterol au lieu de bitterol', '2026-02-23'],
-            ['Axel', 10, 'Renversage sur pantalon', '2026-02-23'],
-            ['Christophe Rose', 10, 'Chute', '2026-02-23'],
-            ['Christophe Rose', 30, 'Marche dans la merde en claquette + prevenage', '2026-02-23'],
-            ['Christophe Robine', 20, 'Debordage + coupage de doigt', '2026-02-23'],
-            ['Axel', 10, 'Renversage de lait', '2026-02-23'],
-            ['Valérie', 10, 'Trompage de neige avec plastique', '2026-02-23'],
-            ['Valérie', 10, 'Refus d\'obtempérer et outrage à agent et abus de pouvoir', '2026-02-23'],
-            ['Tatie', 10, 'Idem', '2026-02-23'],
-            ['Valérie', 10, 'Bavage de poulet', '2026-02-23'],
-            ['Franck', 10, 'Reflechissement intempestif', '2026-02-23'],
-            ['Typhaine', 10, 'Idem', '2026-02-23'],
-            ['David', 10, 'Tombage de gant', '2026-02-23'],
-            ['Élisa', 10, 'Tombage dans filet', '2026-02-23'],
-            ['Sylvain', 10, 'Braguette ouverte', '2026-02-23'],
-            ['Églantine', 10, 'Ski dans l\'herbe', '2026-02-23'],
-            ['Victorien', 10, 'Non écoutage', '2026-02-23'],
-            ['Églantine', 10, 'Cochon au lieu d\'éléphant', '2026-02-23'],
-            ['Églantine', 10, 'Tombage de tel', '2026-02-23'],
-            ['Églantine', 10, 'Mauvaise ecritage', '2026-02-23'],
-            ['Églantine', 10, 'Confondage de personne', '2026-02-23'],
-            ['Franck', 10, 'Garé comme un parisien', '2026-02-23'],
-            ['Andréa', 10, 'Gros begeyage', '2026-02-23'],
-            ['Christophe Robine', 10, 'Perdage de verre', '2026-02-23'],
-            ['Valérie', 10, 'Cherche Axel alors qu\'il est à côté', '2026-02-23'],
-            ['Andréa', 10, 'Accrochage de chausson', '2026-02-23'],
-            ['Christophe Robine', 10, 'Fourchage de langue', '2026-02-23'],
-            ['Élisa', 20, 'Chute à pied', '2026-02-23'],
-            ['Axel', 10, 'Confondage de fenetre et porte', '2026-02-23'],
-            ['Jeanne', 10, 'Non rangeage de chaussure', '2026-02-23'],
-            ['Jeanne', 10, 'Mon cache couille', '2026-02-23'],
-            ['Valérie', 10, 'On descend pas en téléphone', '2026-02-23'],
-            ['Axel', 10, 'Renversage', '2026-02-23'],
-            ['Christophe Robine', 10, 'Confondre pot et couvercle', '2026-02-23'],
-            ['Chloé', 10, 'La meuf du péage', '2026-02-23'],
-            ['Axel', 10, 'Les gosses sont pas attachés', '2026-02-23'],
-            ['David', 10, 'Fourchage de langue', '2026-02-23'],
-            ['Victorien', 10, 'Arrachage de sopalin intempestif', '2026-02-23'],
-            ['Valérie', 10, 'Renversage', '2026-02-23'],
-            ['Andréa', 10, 'Mélange vaisselle propre et vaisselle sale', '2026-02-23'],
-            ['Franck', 10, 'Confondage de nom', '2026-02-23'],
-            ['Jeanne', 10, 'Prenage de porte', '2026-02-23'],
-            ['Andréa', 20, 'Dentifrice par terre et Cognage du mur', '2026-02-23'],
-            ['Camille', 10, 'Téléphone tombé', '2026-02-23'],
-            ['Axel', 10, 'Arrachage de mouette', '2026-02-23'],
-            ['Élisa', 10, 'Arrache la moquette', '2026-02-23'],
-            ['Andréa', 10, 'Crachage de dentifrice', '2026-02-23'],
-            ['Andréa', 10, 'Gognage de tête', '2026-02-23'],
-
-            // MARDI 24 FÉVRIER
-            ['Tatie', 10, 'Bonjour églantine au lieu de andrea', '2026-02-24'],
-            ['Élisa', 10, 'Appeler vic papa', '2026-02-24'],
-            ['Christophe Rose', 10, 'Je serai pas ballon d\'or cette année', '2026-02-24'],
-            ['Valérie', 10, 'Parle toute seule + radotage', '2026-02-24'],
-            ['Valérie', 10, 'Renversage de café', '2026-02-24'],
-            ['Katia', 10, 'Camille est plus là ah si', '2026-02-24'],
-            ['Camille', 10, 'Tombage de tel', '2026-02-24'],
-            ['Andréa', 10, 'Confondage de prénom', '2026-02-24'],
-            ['Sylvain', 10, 'Confondage de prénom', '2026-02-24'],
-            ['Chloé', 20, 'Bâton et gant tombé', '2026-02-24'],
-            ['Andréa', 10, 'Accrochage au portique', '2026-02-24'],
-            ['Andréa', 10, 'Ski qui part en vrille au télésiège', '2026-02-24'],
-            ['Andréa', 30, '3 fois Tombage de baton', '2026-02-24'],
-            ['Andréa', 10, 'Begayage intempestif', '2026-02-24'],
-            ['Axel', 10, 'Chute à ski', '2026-02-24'],
-            ['Typhaine', 20, 'Marche dans le caca de Tof', '2026-02-24'],
-            ['Typhaine', 10, 'Renversage de bière', '2026-02-24'],
-            ['Typhaine', 10, 'Marcher torse nu au lieu de bras nu', '2026-02-24'],
-            ['Élisa', 10, 'Tombage de chips du balcon sur la voiture', '2026-02-24'],
-            ['Christophe Rose', 10, 'Non nettoyage de libouze sur claquette', '2026-02-24'],
-            ['Élisa', 10, 'Chute à ski', '2026-02-24'],
-            ['Axel', 10, 'Renversage', '2026-02-24'],
-            ['David', 10, 'Bafouillement intempestif', '2026-02-24'],
-            ['Franck', 10, 'Renversage', '2026-02-24'],
-            ['Christophe Robine', 10, 'Tombage de tel', '2026-02-24'],
-            ['Chloé', 10, 'Tachage de nappe', '2026-02-24'],
-            ['Camille', 10, 'Tombage de tel', '2026-02-24'],
-            ['Camille', 20, 'Slalom au téléski + enguelage', '2026-02-24'],
-            ['Camille', 10, 'Stationner au lieu de slalomer', '2026-02-24'],
-            ['Andréa', 10, 'On a vu direct que la mouette était arrachée', '2026-02-24'],
-            ['Élisa', 10, 'Tombage de tel', '2026-02-24'],
-            ['Chloé', 10, 'Appelle Lipsie partout alors qu\'elle est à côté', '2026-02-24'],
-            ['Andréa', 10, 'Confondage de prénom', '2026-02-24'],
-            ['Christophe Robine', 10, 'Retard à l\'apéro', '2026-02-24'],
-            ['Franck', 10, 'Retard à l\'apéro', '2026-02-24'],
-            ['Andréa', 10, 'Ratage de bouche', '2026-02-24'],
-            ['Victorien', 10, 'Répond à côté de la plaque', '2026-02-24'],
-            ['Christophe Rose', 10, 'Les sans nom', '2026-02-24'],
-            ['Christophe Rose', 10, 'Connaît pas l\'Annee de naissance de son fils', '2026-02-24'],
-            ['Katia', 20, 'Coton tige', '2026-02-24'],
-            ['Christophe Rose', 10, 'Sylviane au lieu de typhaine', '2026-02-24'],
-            ['Christophe Rose', 10, 'Cédez le passage', '2026-02-24'],
-            ['Élisa', 10, 'Cédez le passage', '2026-02-24'],
-            ['Christophe Robine', 20, 'Perte d\'un objet quelconque', '2026-02-24'],
-            ['Christophe Robine', 10, 'Tapage de capot', '2026-02-24'],
-            ['Élisa', 10, 'Montre sous la douche', '2026-02-24'],
-            ['Chloé', 10, 'Bâton coincé', '2026-02-24'],
-            ['Axel', 10, 'Bâton tombé et mec me rattrape', '2026-02-24'],
-            ['Camille', 10, 'Remplie de miette', '2026-02-24'],
-            ['Églantine', 10, 'Tombage de boîte de gâteau', '2026-02-24'],
-            ['Christophe Robine', 10, 'Renversage', '2026-02-24'],
-            ['Sylvain', 20, 'Oubli de pain', '2026-02-24'],
-            ['Sylvain', 10, 'Mauvais eteignage', '2026-02-24'],
-            ['Franck', 10, 'Ski qui part en couille', '2026-02-24'],
-            ['Franck', 10, 'Abandon de poste', '2026-02-24'],
-            ['Sylvain', 10, 'T\'es un blaireau', '2026-02-24'],
-            ['Sylvain', 10, 'Miette', '2026-02-24'],
-            ['Chloé', 10, '3 bouffées', '2026-02-24'],
-            ['Jeanne', 20, 'Chute et percutage', '2026-02-24'],
-            ['Camille', 10, 'Non maîtrise du freinage', '2026-02-24'],
-            ['Jeanne', 10, 'Nid dans les cheveux', '2026-02-24'],
-            ['Andréa', 10, 'Tirage par un inconnu', '2026-02-24'],
-            ['Axel', 20, 'Tombage de tel et Renversage', '2026-02-24'],
-            ['Tatie', 10, 'Bras trop court', '2026-02-24'],
-            ['Victorien', 10, 'Je sais pas pourquoi mais 10 points dans ta gueule', '2026-02-24'],
-            ['Axel', 10, 'Renversage', '2026-02-24'],
-            ['Chloé', 10, 'Buttage', '2026-02-24'],
-            ['Typhaine', 10, 'Fourchage de langue', '2026-02-24'],
-
-            // MERCREDI 25 FÉVRIER
-            ['Sylvain', 10, 'Trompage d\'objet', '2026-02-25'],
-            ['Tatie', 10, 'Renversage', '2026-02-25'],
-            ['Tatie', 10, 'Trompage d\'actualité', '2026-02-25'],
-            ['Tatie', 10, 'Fourchage', '2026-02-25'],
-            ['Victorien', 10, 'Laisse son pull dehors toute la nuit', '2026-02-25'],
-            ['Églantine', 30, 'Bouteille d\'eau renversée dans le sac + mouillage enceinte', '2026-02-25'],
-            ['Élisa', 10, 'Perdage de lunette', '2026-02-25'],
-            ['Élisa', 30, 'Confondage de chaussure + accusation à tort', '2026-02-25'],
-            ['Andréa', 10, 'Tombage de lunette', '2026-02-25'],
-            ['Axel', 10, 'Mini coupage de doigt', '2026-02-25'],
-            ['Andréa', 20, '2 chutes', '2026-02-25'],
-            ['Valérie', 20, 'Chute à pied avec le chien', '2026-02-25'],
-            ['Élisa', 10, 'Confondage de prénom', '2026-02-25'],
-            ['Typhaine', 10, 'C\'est ou le jet ski', '2026-02-25'],
-            ['Christophe Rose', 10, 'Répond à la place d\'autrui', '2026-02-25'],
-            ['Valérie', 10, 'Zeanne au lieu de jeanne', '2026-02-25'],
-            ['Andréa', 20, '2 chutes', '2026-02-25'],
-            ['Christophe Rose', 10, 'Confondage des saisons', '2026-02-25'],
-            ['Camille', 20, 'Chute', '2026-02-25'],
-            ['Andréa', 10, 'Confondage de prénom', '2026-02-25'],
-            ['Valérie', 10, 'Tafid et Dyvaine', '2026-02-25'],
-            ['Chloé', 20, 'Renversage de chips', '2026-02-25'],
-            ['Axel', 10, 'Renversage', '2026-02-25'],
-            ['Chloé', 20, 'Chute à pied', '2026-02-25'],
-            ['Chloé', 10, 'Typhaine il conduit David elle est derrière', '2026-02-25'],
-            ['Christophe Rose', 10, 'Mauvais servage d\'apéro', '2026-02-25'],
-            ['Christophe Rose', 10, 'Trouve pas les verres à bière à côté de lui', '2026-02-25'],
-            ['Christophe Rose', 40, 'Tombage à pied + arrachage de filet', '2026-02-25'],
-            ['Axel', 10, 'Polluage', '2026-02-25'],
-            ['Christophe Robine', 10, 'Tombage de casque', '2026-02-25'],
-            ['Christophe Robine', 20, 'Filme en mode photo', '2026-02-25'],
-            ['Camille', 10, 'Trompage de personne', '2026-02-25'],
-            ['Christophe Robine', 10, 'Renversage', '2026-02-25'],
-            ['Christophe Robine', 10, 'Tombage de lunette', '2026-02-25'],
-            ['David', 10, 'Prune', '2026-02-25'],
-            ['Typhaine', 20, 'Prune chauffeur', '2026-02-25'],
-            ['Victorien', 20, 'Prune', '2026-02-25'],
-            ['Valérie', 20, 'Perte définitive de bonnet', '2026-02-25'],
-            ['Valérie', 10, 'Cherche les Poches de vin blanc devant ses yeux', '2026-02-25'],
-            ['Valérie', 20, 'Recidive : sort de la voiture attachée', '2026-02-25'],
-            ['Valérie', 10, 'Machine interminable', '2026-02-25'],
-            ['Sylvain', 10, 'Confond droite et gauche', '2026-02-25'],
-            ['Andréa', 10, 'Confondage de prénom', '2026-02-25'],
-            ['Andréa', 10, 'Polluage', '2026-02-25'],
-            ['Chloé', 10, 'Cognage de télésiège', '2026-02-25'],
-            ['Christophe Rose', 10, 'Oubliage de casque', '2026-02-25'],
-            ['Axel', 10, 'Oubliage de casque', '2026-02-25'],
-            ['Chloé', 10, 'Oubliage de casque', '2026-02-25'],
-            ['Christophe Robine', 10, 'Oubliage de casque', '2026-02-25'],
-            ['Axel', 10, 'Confondage de personne', '2026-02-25'],
-            ['Andréa', 10, 'Confondage de prénom', '2026-02-25'],
-            ['Chloé', 10, 'Cherchage de voiture intempestif', '2026-02-25'],
-            ['Camille', 10, 'Cherchage de voiture intempestif', '2026-02-25'],
-            ['Camille', 10, 'Rentrage en ski dans Christophe', '2026-02-25'],
-            ['Camille', 10, 'Oubliage de basket', '2026-02-25'],
-            ['Typhaine', 10, 'Oubliage de tel', '2026-02-25'],
-            ['Typhaine', 10, '4000 mètres ??', '2026-02-25'],
-            ['Typhaine', 10, 'Honte en communauté', '2026-02-25'],
-            ['Franck', 20, 'Cherchage de voiture', '2026-02-25'],
-            ['Franck', 10, 'Tombé bâton', '2026-02-25'],
-            ['Franck', 10, 'Assomage par un tiers', '2026-02-25'],
-            ['Franck', 10, 'Tombage de gant', '2026-02-25'],
-            ['Jeanne', 10, 'Chute à ski', '2026-02-25'],
-            ['Jeanne', 10, 'Bloquée dans le télésiège', '2026-02-25'],
-            ['Jeanne', 10, 'Chute à ski', '2026-02-25'],
-            ['Jeanne', 10, 'Tentative d\'assassinat sur mineur', '2026-02-25'],
-            ['Tatie', 10, 'De l\'eau, à boire', '2026-02-25'],
-            ['Valérie', 10, 'Plus d\'ombre ici', '2026-02-25'],
-            ['Jeanne', 10, 'Non maîtrise de soi', '2026-02-25'],
-            ['Camille', 10, 'Foncage dans les skis bleus', '2026-02-25'],
-            ['Jeanne', 10, 'Cognage de tel', '2026-02-25'],
-            ['David', 70, 'Renversage de motoneige et couvert de honte', '2026-02-25'],
-            ['David', 10, 'Confondage de nom', '2026-02-25'],
-            ['Valérie', 10, 'Confondage de nom', '2026-02-25'],
-            ['Sylvain', 10, 'Renversage d\'ananas', '2026-02-25'],
-            ['Églantine', 10, 'Non maîtrisage des skis', '2026-02-25'],
-            ['Églantine', 10, 'Perdage', '2026-02-25'],
-            ['Jeanne', 10, 'Perdage', '2026-02-25'],
-            ['Églantine', 10, 'Vous êtes où ? Sur les pistes', '2026-02-25'],
-            ['Églantine', 20, 'Chute et tape dans le casque de jeanne', '2026-02-25'],
-            ['Sylvain', 10, 'Coup de coude non maitrisé', '2026-02-25'],
-            ['Églantine', 10, 'Chute à ski', '2026-02-25'],
-            ['Katia', 10, 'Prune', '2026-02-25'],
-            ['Valérie', 10, 'Prune', '2026-02-25'],
-            ['Katia', 20, 'Tombage de masque et enguelage en public', '2026-02-25'],
-            ['Tatie', 10, 'Prune', '2026-02-25'],
-            ['Tatie', 10, 'Bras trop court', '2026-02-25'],
-            ['Tatie', 20, 'Appeler Lipsie Louis, + 10 pour belle interprétation', '2026-02-25'],
-            ['Tatie', 10, 'Répète les conneries de Typhaine', '2026-02-25'],
-            ['Sylvain', 10, 'Incompréhension avec individu lambda', '2026-02-25'],
-            ['Chloé', 10, 'Fourchage de langue', '2026-02-25'],
-            ['Typhaine', 10, 'Lapsus', '2026-02-25'],
-            ['Axel', 10, 'Tombage de tel', '2026-02-25'],
-            ['Tatie', 10, 'Non repérage dans le temps', '2026-02-25'],
-            ['Sylvain', 10, 'Tombage de bouteille', '2026-02-25'],
-            ['Christophe Rose', 10, 'Confondage de mot', '2026-02-25'],
-
-            // JEUDI 26 FÉVRIER
-            ['Chloé', 10, 'Laisse goûter la douche', '2026-02-26'],
-            ['Andréa', 10, 'Tombage de brosse', '2026-02-26'],
-            ['Camille', 10, 'Tombage de bâton', '2026-02-26'],
-            ['Franck', 10, 'Cherche Tof alors qu\'il est à côté', '2026-02-26'],
-            ['Axel', 10, 'Cognage de tête', '2026-02-26'],
-            ['Axel', 10, 'Chute à l\'arrêt', '2026-02-26'],
-            ['Chloé', 10, 'Tombage de bâton', '2026-02-26'],
-            ['Chloé', 10, 'Trebuchage intempestif', '2026-02-26'],
-            ['Camille', 10, 'Chute', '2026-02-26'],
-            ['Camille', 10, 'Chute', '2026-02-26'],
-            ['Églantine', 20, 'Double Tombage de bâton', '2026-02-26'],
-            ['Églantine', 10, 'Chute', '2026-02-26'],
-            ['David', 20, 'Chute à pied', '2026-02-26'],
-            ['Franck', 10, 'Trompage de route', '2026-02-26'],
-            ['Franck', 10, 'Gros Trebuchage', '2026-02-26'],
-            ['Axel', 10, 'Trompage de route', '2026-02-26'],
-            ['Camille', 10, 'Trompage de route', '2026-02-26'],
-            ['Andréa', 10, 'Trompage de route', '2026-02-26'],
-            ['Chloé', 10, 'Trompage de route', '2026-02-26'],
-            ['Camille', 10, 'Emmelage de ski + tordage de bambou-', '2026-02-26'],
-            ['Franck', 10, 'Trompage de chemin', '2026-02-26'],
-            ['Christophe Rose', 10, 'Trompage de chemin', '2026-02-26'],
-            ['Sylvain', 20, 'Raie apparente + braguette ouverte', '2026-02-26'],
-            ['Camille', 10, 'Renversage', '2026-02-26'],
-            ['Christophe Rose', 10, 'Mauvaise ouverture de frigo', '2026-02-26'],
-            ['Typhaine', 10, 'Aperio', '2026-02-26'],
-            ['Christophe Robine', 10, 'Se prend pour une glaine', '2026-02-26'],
-            ['Chloé', 10, 'Renversage de yaourt', '2026-02-26'],
-            ['Andréa', 20, 'Nasage dans sa main', '2026-02-26'],
-            ['Élisa', 20, 'Caca sec sous les claquettes', '2026-02-26'],
-            ['David', 10, 'Bafouillage, AVC buccal', '2026-02-26'],
-            ['Katia', 30, 'Galerage de rangeage de bro d\'eau', '2026-02-26'],
-            ['Valérie', 10, 'Confondage de prénom', '2026-02-26'],
-            ['Chloé', 20, 'Chute à pied', '2026-02-26'],
-            ['Andréa', 10, 'Trempage de manche dans verre', '2026-02-26'],
-            ['Élisa', 20, 'Vol planage', '2026-02-26'],
-            ['Églantine', 10, 'Boit du vin chaud', '2026-02-26'],
-            ['Élisa', 10, 'Prenage de skis', '2026-02-26'],
-            ['Élisa', 10, 'Ratage de bouche', '2026-02-26'],
-            ['Typhaine', 10, 'Titine et églantine', '2026-02-26'],
-            ['Christophe Robine', 10, 'Ratage de bouche', '2026-02-26'],
-            ['Églantine', 10, 'Renversage', '2026-02-26'],
-            ['Jeanne', 10, 'Confondage de titine', '2026-02-26'],
-            ['Chloé', 10, 'Confondage de chien', '2026-02-26'],
-            ['Christophe Rose', 10, 'Cognage sur tête', '2026-02-26'],
-            ['Chloé', 20, 'Chute a pied', '2026-02-26'],
-            ['Chloé', 10, 'Pomme de terre', '2026-02-26'],
-            ['Valérie', 10, 'Le frigo dans le lait', '2026-02-26'],
-            ['Christophe Robine', 10, 'Niveau d\'huile dans le noir', '2026-02-26'],
-            ['Élisa', 10, 'Oubliage de pull', '2026-02-26'],
-            ['Élisa', 10, '500k au lieu de 5k', '2026-02-26'],
-            ['Églantine', 10, 'Retard', '2026-02-26'],
-            ['Jeanne', 10, 'Retard', '2026-02-26'],
-            ['Églantine', 50, 'Chutage d\'étagère magasin', '2026-02-26'],
-            ['Victorien', 10, 'Tombage de tel', '2026-02-26'],
-            ['Franck', 10, 'Grillage d\'ampoule', '2026-02-26'],
-            ['Franck', 10, 'Désistement footing', '2026-02-26'],
-            ['Victorien', 10, 'Désistement footing', '2026-02-26'],
-            ['Églantine', 10, 'Oubli de chaussures dans le coffre', '2026-02-26'],
-            ['Sylvain', 20, 'Tombage de lampe', '2026-02-26'],
-            ['Typhaine', 10, 'Fourchage', '2026-02-26'],
-            ['Jeanne', 10, 'Tombage de gant et bâton', '2026-02-26'],
-            ['Jeanne', 10, 'Confondage de genre', '2026-02-26'],
-            ['Tatie', 20, 'Tombage de fromage blanc + explosion', '2026-02-26'],
-            ['Andréa', 10, 'Cognage au portique', '2026-02-26'],
-        ];
-
-        $io->progressStart(\count($actions2025) + \count($actions2026));
-
-        $this->importActions($io, $actions2025, $comp2025, $participationsMap);
-        $this->importActions($io, $actions2026, $comp2026, $participationsMap);
-
-        $io->progressFinish();
-
-        // --- 6. Ajout des jours bonus ---
-        $io->section('Ajout des jours bonus');
-        BonusDayFactory::createOne([
-            'competition' => $comp2025,
-            'date' => new \DateTimeImmutable('2025-02-18'),
-            'multiplier' => 2,
-        ]);
-        BonusDayFactory::createOne([
-            'competition' => $comp2025,
-            'date' => new \DateTimeImmutable('2025-02-20'),
-            'multiplier' => 2,
-        ]);
-        $io->note('Jours bonus de '.$comp2025->getName().' ajoutés');
-
-        BonusDayFactory::createOne([
-            'competition' => $comp2026,
-            'date' => new \DateTimeImmutable('2026-02-26'),
-            'multiplier' => 2,
-        ]);
-        $io->note('Jours bonus de '.$comp2026->getName().' ajoutés');
-
-        // --- 7. Calcul des Scores ---
-        $io->section('Calcul final des scores');
-        $manager->flush();
-
-        foreach ($participationsMap as $competitionId => $playersMap) {
-            foreach ($playersMap as $playerName => $participation) {
-                $io->text(\sprintf(
-                    '-> %s : Calcul du score de %s...',
-                    $participation->getCompetition()->getName(),
-                    $participation->getPlayer()->getDisplayName()
-                ));
-            }
-        }
-
-        $manager->flush();
-        $io->success('Base de données synchronisée et scores calculés !');
-    }
-
-    /**
-     * Helper pour importer les actions en utilisant la map de participations.
-     */
-    private function importActions(SymfonyStyle $io, array $actions, Competition $competition, array $map): void
-    {
-        $compId = (string) $competition->getId();
-
-        foreach ($actions as $data) {
-            $playerName = $data[0];
-            $participation = $map[$compId][$playerName] ?? null;
-
-            if (!$participation) {
-                $io->error("Participation introuvable pour $playerName dans ".$competition->getName());
-                continue;
+        foreach ($data['competitions'] as $compData) {
+            $currentReferees = [];
+            foreach ($compData['referees'] as $refName) {
+                $currentReferees[] = $playersMap[$refName];
             }
 
-            ActionFactory::createOne([
-                'participation' => $participation,
-                'points' => $data[1],
-                'description' => trim($data[2]),
-                'dateAction' => new \DateTimeImmutable($data[3]),
-                'status' => ActionStatus::VALIDATED,
+            $competition = CompetitionFactory::createOne([
+                'name' => $compData['name'],
+                'joinCode' => $compData['joinCode'],
+                'startDate' => new \DateTimeImmutable($compData['startDate']),
+                'endDate' => new \DateTimeImmutable($compData['endDate']),
+                'fogOfWar' => false,
+                'createdBy' => null, // ❌ Aucun créateur sur l'historique
+                'referees' => $currentReferees, // 🔒 Liste d'arbitres stricte
             ]);
+
+            foreach ($compData['bonusDays'] as $bdData) {
+                BonusDayFactory::createOne([
+                    'competition' => $competition,
+                    'date' => new \DateTimeImmutable($bdData['date']),
+                    'multiplier' => $bdData['multiplier'],
+                ]);
+            }
+
+            foreach ($compData['actions'] as $actData) {
+                $player = $playersMap[$actData['playerName']];
+                $partKey = $competition->getId()->toString().'_'.$player->getId()->toString();
+
+                if (!isset($participationsMap[$partKey])) {
+                    $participationsMap[$partKey] = ParticipationFactory::createOne([
+                        'competition' => $competition,
+                        'player' => $player,
+                        'score' => 0,
+                    ]);
+                }
+
+                ActionFactory::createOne([
+                    'participation' => $participationsMap[$partKey],
+                    'points' => $actData['points'],
+                    'description' => $actData['description'],
+                    'dateAction' => new \DateTimeImmutable($actData['dateAction']),
+                    'status' => ActionStatus::VALIDATED,
+                    'createdBy' => null,
+                ]);
+            }
+
             $io->progressAdvance();
         }
+        $io->progressFinish();
+        $io->success(count($data['competitions']).' arènes historiques importées !');
+
+        // -------------------------------------------------------------------
+        // 2. GÉNÉRATION DU BAC À SABLE DE DÉVELOPPEMENT (Données Faker)
+        // -------------------------------------------------------------------
+        $io->section('2. Génération du bac à sable (Faker)');
+
+        $nbFakePlayers = random_int(5, 12);
+        $io->text("Création de $nbFakePlayers faux profils joueurs (avec comptes rattachés)...");
+
+        $allPlayers = array_values($playersMap);
+        $allUsers = [$admin];
+
+        for ($j = 0; $j < $nbFakePlayers; ++$j) {
+            $fakeUser = UserFactory::new()->withPlayer()->create();
+            $allUsers[] = $fakeUser;
+            $allPlayers[] = $fakeUser->getPlayer();
+        }
+
+        $nbFakeComps = random_int(3, 8);
+        $io->text("Création de $nbFakeComps fausses compétitions et de leur activité...");
+        $io->progressStart($nbFakeComps);
+
+        $fakeCompetitions = CompetitionFactory::createMany($nbFakeComps, function () use ($allUsers) {
+            return [
+                'createdBy' => $allUsers[array_rand($allUsers)],
+            ];
+        });
+
+        foreach ($fakeCompetitions as $competition) {
+            foreach ($allPlayers as $player) {
+                if (random_int(1, 100) > 60) {
+                    $participation = ParticipationFactory::createOne([
+                        'competition' => $competition,
+                        'player' => $player,
+                        'score' => 0,
+                    ]);
+
+                    ActionFactory::createMany(random_int(1, 15), [
+                        'participation' => $participation,
+                        'status' => ActionStatus::VALIDATED,
+                        'createdBy' => $allUsers[array_rand($allUsers)],
+                    ]);
+
+                    if (random_int(1, 100) > 85) {
+                        ActionFactory::createMany(random_int(1, 3), [
+                            'participation' => $participation,
+                            'status' => ActionStatus::PENDING,
+                        ]);
+                    }
+
+                    if (random_int(1, 100) > 85) {
+                        ActionFactory::createMany(random_int(1, 2), [
+                            'participation' => $participation,
+                            'status' => ActionStatus::REJECTED,
+                            'createdBy' => $allUsers[array_rand($allUsers)],
+                        ]);
+                    }
+                }
+            }
+
+            $nbBonusDays = random_int(0, 2);
+            for ($k = 0; $k < $nbBonusDays; ++$k) {
+                $start = $competition->getStartDate();
+                $bonusDate = $start->modify('+'.($k + 2).' days');
+
+                BonusDayFactory::createOne([
+                    'competition' => $competition,
+                    'date' => $bonusDate,
+                ]);
+            }
+
+            $io->progressAdvance();
+        }
+
+        $io->progressFinish();
+        $manager->flush();
+
+        $io->success('Fixtures chargées avec succès ! Ton environnement de développement est propre. 🦡');
     }
 }

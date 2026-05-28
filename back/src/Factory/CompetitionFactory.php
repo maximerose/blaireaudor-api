@@ -7,16 +7,8 @@ namespace App\Factory;
 use App\Entity\Competition;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
-/**
- * Factory pour générer des compétitions dans les tests.
- *
- * @extends PersistentObjectFactory<Competition>
- */
 final class CompetitionFactory extends PersistentObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     */
     public function __construct()
     {
     }
@@ -27,27 +19,28 @@ final class CompetitionFactory extends PersistentObjectFactory
         return Competition::class;
     }
 
-    /**
-     * Définit les réglages par défaut d'une compétition de test.
-     * * Génère un code d'invitation (joinCode) au format Alphanumérique (ex: AB12C3).
-     * * Lie automatiquement un créateur (User) via la UserFactory.
-     */
     #[\Override]
     protected function defaults(): array|callable
     {
+        $startDate = self::faker()->dateTimeBetween('-3 months', '+1 month');
+        $endDate = (clone $startDate)->modify('+'.self::faker()->numberBetween(5, 15).' days');
+
+        $startDateImmutable = \DateTimeImmutable::createFromMutable($startDate);
+        $endDateImmutable = \DateTimeImmutable::createFromMutable($endDate);
+
+        $now = new \DateTimeImmutable('now');
+        $shouldFogBeDisabled = $endDateImmutable < $now;
+
         return [
             'createdBy' => UserFactory::new(),
-            'endDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'name' => self::faker()->words(3, true),
-            'startDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'name' => 'Arène '.self::faker()->city(),
+            'startDate' => $startDateImmutable,
+            'endDate' => $endDateImmutable,
             'joinCode' => strtoupper(self::faker()->bothify('??##?#')),
-            'fogOfWar' => true,
+            'fogOfWar' => !$shouldFogBeDisabled,
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     #[\Override]
     protected function initialize(): static
     {

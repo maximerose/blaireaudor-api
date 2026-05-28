@@ -24,15 +24,11 @@ final class BonusDayFactory extends PersistentObjectFactory
         return BonusDay::class;
     }
 
-    /**
-     * Définit les réglages par défaut d'un jour bonus de test.
-     */
     #[\Override]
     protected function defaults(): array|callable
     {
         return [
             'competition' => CompetitionFactory::new(),
-            'date' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('-1 month', '+1 month')),
             'multiplier' => self::faker()->numberBetween(2, 5),
         ];
     }
@@ -40,6 +36,21 @@ final class BonusDayFactory extends PersistentObjectFactory
     #[\Override]
     protected function initialize(): static
     {
-        return $this;
+        return $this->afterInstantiate(function (BonusDay $bonusDay, array $attributes): void {
+            if (!isset($attributes['date']) && $comp = $bonusDay->getCompetition()) {
+                $start = $comp->getStartDate();
+                $end = $comp->getEndDate() ?? new \DateTimeImmutable('+1 month');
+
+                if ($start > $end) {
+                    $end = (clone $start)->modify('+1 day');
+                }
+
+                $randomDate = self::faker()->dateTimeBetween(
+                    $start->format('Y-m-d H:i:s'),
+                    $end->format('Y-m-d H:i:s')
+                );
+                $bonusDay->setDate(\DateTimeImmutable::createFromMutable($randomDate));
+            }
+        });
     }
 }
