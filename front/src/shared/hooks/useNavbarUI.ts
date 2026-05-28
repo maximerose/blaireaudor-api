@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { ICONS, NAV, ROUTES } from '../constants';
 
 export const useNavbarUI = () => {

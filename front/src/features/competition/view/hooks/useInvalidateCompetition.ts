@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/shared';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 
 export const useInvalidateCompetition = () => {
   const queryClient = useQueryClient();

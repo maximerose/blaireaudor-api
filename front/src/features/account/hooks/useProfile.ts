@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { AVAILABILITY, ERRORS, SUCCESS, handleApiError } from '@/shared';
-import { useAuthContext } from '@/features/account/context';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import {
   updatePasswordSchema,
   updateProfileInfoSchema,

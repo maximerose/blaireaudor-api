@@ -9,12 +9,13 @@ import { Card, CARD_VARIANT } from './Card';
 import { Text, TEXT_VARIANT, TEXT_THEME, type TextTheme } from './Text';
 import { Stack } from '../Layout/Stack';
 import { cn } from '@/shared/utils';
+import type React from 'react';
 
 interface ConfirmModalProps {
   isOpen: boolean;
   isLoading: boolean;
-  title: string;
-  message: string;
+  title: React.ReactNode;
+  message: React.ReactNode;
   onConfirm: () => void;
   onClose: () => void;
   confirmLabel?: string;

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, LOG_MESSAGES } from '@/shared';
 import { useCallback } from 'react';
-import { useAuthContext } from '@/features/account/context';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { authService } from '@/features/account/services';
 
 export const useLogout = () => {

@@ -11,8 +11,8 @@ export const BUTTONS = {
   CONFIRM: 'Confirmer',
 
   // Navigation
-  CONTINUE: 'Continuer →',
-  PREVIOUS: '← Précédent',
+  CONTINUE: 'Continuer',
+  PREVIOUS: 'Précédent',
   BACK: '← Retour',
   CLOSE: 'Fermer',
   CLEAR_SEARCH: 'Effacer la recherche',

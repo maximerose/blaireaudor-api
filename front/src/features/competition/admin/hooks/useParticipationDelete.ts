@@ -8,7 +8,7 @@ import {
 } from '@/shared';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import type { Participation } from '@/features/competition/types';
 import { competitionService } from '@/features/competition/services';
 

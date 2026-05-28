@@ -1,9 +1,9 @@
-import type React from 'react';
-import { Text, TEXT_VARIANT, TEXT_THEME, type TextTheme } from './Text';
 import { cn } from '@/shared/utils';
-import { Stack } from '../Layout/Stack';
+import type React from 'react';
 import { Row } from '../Layout/Row';
+import { Stack } from '../Layout/Stack';
 import { Badge, BADGE_VARIANT } from './Badge';
+import { Text, TEXT_THEME, TEXT_VARIANT, type TextTheme } from './Text';
 
 export const SECTION_HEADER_VARIANT = {
   TITLE: 'title',

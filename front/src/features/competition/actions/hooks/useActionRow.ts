@@ -1,4 +1,4 @@
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { ActionStatus, type Action } from '@/features/competition/types';
 import { useCompetitionContext } from '@/features/competition/context';
 import { UI } from '@/shared';

@@ -15,6 +15,7 @@ import {
   FORM,
 } from '@/shared';
 import { useJoinCodeCheck } from '@/features/competition/join';
+import type React from 'react';
 
 interface CompetitionJoinCodeFieldProps {
   register: UseFormRegister<any>;
@@ -25,7 +26,7 @@ interface CompetitionJoinCodeFieldProps {
   fieldName?: string;
   disabled?: boolean;
   renderRight?: React.ReactNode;
-  emptyHint?: string;
+  emptyHint?: React.ReactNode;
 }
 
 export const CompetitionJoinCodeField = ({

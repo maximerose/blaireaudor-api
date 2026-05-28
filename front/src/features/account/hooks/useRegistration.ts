@@ -13,12 +13,8 @@ import {
   ROUTES,
   handleApiError,
 } from '@/shared';
-import {
-  usePlayerSearch,
-  type Player,
-  type PlayerCompact,
-} from '@/features/player';
-import { useAuthContext } from '@/features/account/context';
+import { type Player, type PlayerCompact } from '@/features/player';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import {
   registerSchema,
   type RegisterFormData,
@@ -28,6 +24,7 @@ import { authService } from '@/features/account/services';
 import { AUTH_UI } from '@/features/account/constants';
 import { useAccountValidation } from './useAccountValidation';
 import { useJoinCodeQuery } from '@/features/competition/join';
+import { usePlayerSearch } from '@/features/player/hooks/usePlayerSearch';
 
 export const useRegistration = (redirectUrl: string) => {
   const { login } = useAuthContext();

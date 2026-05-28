@@ -11,7 +11,7 @@ import {
   Stack,
 } from '@/shared';
 import { type RefereeListItem } from '@/features/player';
-import { useAuthContext } from '@/features/account/context';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useCompetitionContext } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
 import { useRefereeManagementUI } from '@/features/competition/admin/hooks';

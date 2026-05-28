@@ -1,17 +1,18 @@
 import { CompetitionCard } from '@/features/competition';
+import type { DashboardItem } from '@/features/dashboard/types';
 import {
+  Grid,
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
   Stack,
-  Grid,
 } from '@/shared';
-import type { DashboardItem } from '@/features/dashboard/types';
+import type React from 'react';
 import { DASHBOARD_UI } from '../constants';
 
 interface CompetitionListSectionProps {
   title: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   items: DashboardItem[];
   variant?: 'gold' | 'white' | 'dimmed';
   emptyState?: React.ReactNode;
@@ -42,18 +43,19 @@ export const CompetitionListSection = ({
         icon={icon}
         badge={DASHBOARD_UI.NB_COMPETITIONS(items.length)}
       />
-
-      <Grid cols={1} lg={2} gap="sm" className="w-full">
-        {items?.length > 0
-          ? items.map((item) => (
-              <CompetitionCard
-                key={item.competition.id}
-                competition={item.competition}
-                participation={item.participation}
-              />
-            ))
-          : emptyState}
-      </Grid>
+      {items?.length > 0 ? (
+        <Grid cols={1} lg={2} gap="sm" className="w-full">
+          {items.map((item) => (
+            <CompetitionCard
+              key={item.competition.id}
+              competition={item.competition}
+              participation={item.participation}
+            />
+          ))}
+        </Grid>
+      ) : (
+        emptyState
+      )}
     </Stack>
   );
 };

@@ -63,7 +63,11 @@ export const IconButton = ({
 
   if (to && !disabled) {
     return (
-      <Link to={to} className={baseClasses} {...(props as any)}>
+      <Link
+        to={to}
+        className={baseClasses}
+        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
         {icon}
       </Link>
     );

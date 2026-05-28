@@ -10,7 +10,7 @@ import {
 } from '@/shared';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthContext } from '@/features/account/context';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import {
   loginSchema,
   type LoginFormData,

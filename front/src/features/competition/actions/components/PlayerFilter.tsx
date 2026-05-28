@@ -10,7 +10,7 @@ import {
   Row,
   Divider,
 } from '@/shared';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import {
   useActionTableContext,

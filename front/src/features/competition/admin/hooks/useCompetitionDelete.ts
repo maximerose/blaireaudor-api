@@ -9,7 +9,7 @@ import {
   handleApiError,
 } from '@/shared';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 
 export const useCompetitionDelete = () => {
   const navigate = useNavigate();

@@ -14,23 +14,34 @@ import {
   LoadingScreen,
   ScrollToTop,
 } from '@/shared';
-import { Dashboard } from '@/features/dashboard';
 import {
-  useAuthContext,
   ForgotPasswordForm,
   LoginForm,
   LogoutHandler,
-  ProfilePage,
   RegistrationForm,
   ResetPasswordForm,
 } from '@/features/account';
-import {
-  CompetitionDetailPage,
-  CreateCompetitionPage,
-  QRJoinPage,
-} from '@/features/competition';
-import { PlayerStatsPage } from '@/features/stats';
+import { QRJoinPage } from '@/features/competition';
 import { SplashScreen } from '@/shared/components/UI/SplashScreen';
+import { useAuthContext } from '@/features/account/context/AuthContext';
+import { lazy, Suspense } from 'react';
+
+const Dashboard = lazy(
+  () => import('@/features/dashboard/components/Dashboard'),
+);
+const PlayerStatsPage = lazy(
+  () => import('@/features/stats/components/PlayerStatsPage'),
+);
+const ProfilePage = lazy(
+  () => import('@/features/account/components/ProfilePage'),
+);
+const CompetitionDetailPage = lazy(
+  () => import('@/features/competition/view/components/CompetitionDetailPage'),
+);
+const CreateCompetitionPage = lazy(
+  () =>
+    import('@/features/competition/create/components/CreateCompetitionPage'),
+);
 
 const queryClient = new QueryClient();
 
@@ -57,85 +68,90 @@ function App() {
           <Toaster position="bottom-center" reverseOrder={false} />
           <ScrollToTop />
           <div className="min-h-screen w-full bg-dark">
-            <Routes>
-              <Route path={ROUTES.NAV.QR_JOIN_PATH} element={<QRJoinPage />} />
-              <Route
-                path={ROUTES.NAV.FORGOT_PASSWORD}
-                element={<ForgotPasswordForm />}
-              />
-              <Route
-                path={ROUTES.NAV.RESET_PASSWORD_PATH}
-                element={<ResetPasswordForm />}
-              />
-              <Route path={ROUTES.NAV.LOGIN} element={<LoginForm />} />
-              <Route
-                path={ROUTES.NAV.REGISTER}
-                element={<RegistrationForm />}
-              />
+            <Suspense fallback={<LoadingScreen layout="fullscreen" />}>
+              <Routes>
+                <Route
+                  path={ROUTES.NAV.QR_JOIN_PATH}
+                  element={<QRJoinPage />}
+                />
+                <Route
+                  path={ROUTES.NAV.FORGOT_PASSWORD}
+                  element={<ForgotPasswordForm />}
+                />
+                <Route
+                  path={ROUTES.NAV.RESET_PASSWORD_PATH}
+                  element={<ResetPasswordForm />}
+                />
+                <Route path={ROUTES.NAV.LOGIN} element={<LoginForm />} />
+                <Route
+                  path={ROUTES.NAV.REGISTER}
+                  element={<RegistrationForm />}
+                />
 
-              <Route
-                path={ROUTES.NAV.DASHBOARD}
-                element={
-                  user ? (
-                    <Dashboard />
-                  ) : (
-                    <Navigate to={ROUTES.NAV.LOGIN} replace />
-                  )
-                }
-              />
-              <Route
-                path={ROUTES.NAV.STATS}
-                element={
-                  user ? (
-                    <PlayerStatsPage />
-                  ) : (
-                    <Navigate to={ROUTES.NAV.LOGIN} replace />
-                  )
-                }
-              />
-              <Route
-                path={ROUTES.NAV.PROFILE}
-                element={
-                  user ? (
-                    <ProfilePage />
-                  ) : (
-                    <Navigate to={ROUTES.NAV.LOGIN} replace />
-                  )
-                }
-              />
+                <Route
+                  path={ROUTES.NAV.DASHBOARD}
+                  element={
+                    user ? (
+                      <Dashboard />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} replace />
+                    )
+                  }
+                />
+                <Route
+                  path={ROUTES.NAV.STATS}
+                  element={
+                    user ? (
+                      <PlayerStatsPage />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} replace />
+                    )
+                  }
+                />
+                <Route
+                  path={ROUTES.NAV.PROFILE}
+                  element={
+                    user ? (
+                      <ProfilePage />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} replace />
+                    )
+                  }
+                />
 
-              <Route
-                path={ROUTES.NAV.HOME}
-                element={
-                  <Navigate
-                    to={user ? ROUTES.NAV.DASHBOARD : ROUTES.NAV.LOGIN}
-                    replace
-                  />
-                }
-              />
+                <Route
+                  path={ROUTES.NAV.HOME}
+                  element={
+                    <Navigate
+                      to={user ? ROUTES.NAV.DASHBOARD : ROUTES.NAV.LOGIN}
+                      replace
+                    />
+                  }
+                />
 
-              <Route
-                path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
-                element={
-                  user ? (
-                    <CreateCompetitionPage />
-                  ) : (
-                    <Navigate to={ROUTES.NAV.LOGIN} />
-                  )
-                }
-              />
-              <Route
-                path={ROUTES.NAV.COMPETITION_DETAIL_PATH}
-                element={
-                  user ? (
-                    <CompetitionDetailPage />
-                  ) : (
-                    <Navigate to={ROUTES.NAV.LOGIN} replace />
-                  )
-                }
-              />
-              <Route path={ROUTES.NAV.LOGOUT} element={<LogoutHandler />} />
-            </Routes>
+                <Route
+                  path={ROUTES.NAV.ADMIN_CREATE_COMPETITION}
+                  element={
+                    user ? (
+                      <CreateCompetitionPage />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} />
+                    )
+                  }
+                />
+                <Route
+                  path={ROUTES.NAV.COMPETITION_DETAIL_PATH}
+                  element={
+                    user ? (
+                      <CompetitionDetailPage />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} replace />
+                    )
+                  }
+                />
+                <Route path={ROUTES.NAV.LOGOUT} element={<LogoutHandler />} />
+              </Routes>
+            </Suspense>
           </div>
         </Router>
       </ConfirmModalProvider>

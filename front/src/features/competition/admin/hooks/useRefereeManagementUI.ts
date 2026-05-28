@@ -1,7 +1,6 @@
 import toast from 'react-hot-toast';
 import { CONFIRMS, SUCCESS, useConfirmModal } from '@/shared';
 import {
-  usePlayerSearch,
   type Player,
   type PlayerCompact,
   type RefereeListItem,
@@ -10,6 +9,7 @@ import type { Competition } from '@/features/competition/types';
 import { useCompetitionReferees } from './useCompetitionReferees';
 import { useMemo } from 'react';
 import { getCompetitionReferees } from '@/features/competition/utils';
+import { usePlayerSearch } from '@/features/player/hooks/usePlayerSearch';
 
 export const useRefereeManagementUI = (competition: Competition) => {
   const { addReferee, removeReferee, loadingAction } = useCompetitionReferees(

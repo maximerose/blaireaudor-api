@@ -1,3 +1,4 @@
+import { useState, lazy, Suspense } from 'react'; // 🟢 Ajout de lazy et Suspense
 import {
   MainLayout,
   SectionHeader,
@@ -8,6 +9,7 @@ import {
   Button,
   BUTTON_VARIANT,
   ICONS,
+  LoadingScreen, // Ton loader standard
 } from '@/shared';
 import { useCompetitionContext } from '@/features/competition/context';
 import { CompetitionHeader } from './CompetitionHeader';
@@ -16,14 +18,20 @@ import { ReportingSection } from '@/features/competition/reporting';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { Leaderboard } from '@/features/competition/leaderboard';
 import { ActionTable } from '@/features/competition/actions';
-import { useState } from 'react';
-import { CompetitionStatsTab } from '@/features/stats/components';
+
+// 🟢 CHARGEMENT DYNAMIQUE : On isole l'onglet de stats et la lourde librairie Recharts
+const CompetitionStatsTab = lazy(() =>
+  import('@/features/stats/components/CompetitionsStatsTab').then((module) => ({
+    default: module.CompetitionStatsTab,
+  })),
+);
 
 export const CompetitionDetailContent = () => {
   const { competition } = useCompetitionContext();
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'stats'>(
     'leaderboard',
   );
+
   return (
     <MainLayout title={competition.name} subtitle={competition.name}>
       <CompetitionHeader />
@@ -82,7 +90,16 @@ export const CompetitionDetailContent = () => {
         </Grid>
       ) : (
         <Stack mt="xl" className="animate-fade-in">
-          <CompetitionStatsTab />
+          <Suspense
+            fallback={
+              <LoadingScreen
+                layout="local"
+                message={COMPETITION_UI.DETAIL.SECTIONS.STATS.LOADING_ANALYTICS}
+              />
+            }
+          >
+            <CompetitionStatsTab />
+          </Suspense>
         </Stack>
       )}
     </MainLayout>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { competitionService } from '@/features/competition/services';
 import { ROUTES, ERRORS, handleApiError } from '@/shared';
 import toast from 'react-hot-toast';

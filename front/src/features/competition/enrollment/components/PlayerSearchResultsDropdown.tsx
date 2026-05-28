@@ -1,5 +1,6 @@
 import { Card, Text, TEXT_VARIANT, CARD_VARIANT, FORM } from '@/shared';
-import { PlayerSearchResultItem, type PlayerCompact } from '@/features/player';
+import { type PlayerCompact } from '@/features/player';
+import { PlayerSearchResultItem } from '@/features/player/components/PlayerSearchResultItem';
 
 interface PlayerSearchResultsDropdownProps {
   results: PlayerCompact[];

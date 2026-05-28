@@ -8,8 +8,9 @@ import {
   cn,
   Input,
 } from '@/shared';
-import { PlayerSearchResultItem, type PlayerCompact } from '@/features/player';
+import { type PlayerCompact } from '@/features/player';
 import { usePlayerSearchFieldUI } from './hooks.ts';
+import { PlayerSearchResultItem } from '@/features/player/components/PlayerSearchResultItem';
 
 interface PlayerSearchFieldProps {
   searchTerm: string;

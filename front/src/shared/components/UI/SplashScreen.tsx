@@ -18,7 +18,7 @@ export const SplashScreen = () => {
         isFading ? 'opacity-0 pointer-events-none' : 'opacity-100',
       )}
     >
-      <Stack as="h1" gap="xl" align="center" className="animate-pulse">
+      <Stack gap="xl" align="center" className="animate-pulse">
         <BadgerLogo className="w-80 h-80 drop-shadow-[0_0_30px_rgba(255,184,0,0.5)]" />
         <Text as="h1" variant={TEXT_VARIANT.H1} colorTheme={TEXT_THEME.GOLD}>
           {UI.APP_NAME}

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 
 export const useCareerPalmares = () => {
   const { user } = useAuthContext();

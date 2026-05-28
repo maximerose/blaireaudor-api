@@ -1,10 +1,9 @@
-// front/src/shared/components/UI/Button.tsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/shared/utils';
 import { Row } from '../Layout/Row';
 import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
+import { UI } from '@/shared/constants';
 
 export const BUTTON_VARIANT = {
   PRIMARY: 'primary',
@@ -30,6 +29,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   fullWidth?: boolean;
   icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
   to?: string;
 }
 
@@ -62,6 +62,7 @@ export const Button = ({
   isLoading = false,
   fullWidth = false,
   icon,
+  iconPosition = 'left',
   className,
   disabled,
   to,
@@ -82,22 +83,22 @@ export const Button = ({
         ? TEXT_VARIANT.CAPTION
         : TEXT_VARIANT.BODY;
 
+  const visualElement = (isLoading || icon) && (
+    <span
+      className="flex items-center justify-center shrink-0 leading-none"
+      aria-hidden="true"
+    >
+      {isLoading ? (
+        <div className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" />
+      ) : (
+        icon
+      )}
+    </span>
+  );
+
   const content = (
     <Row justify="center" gap="sm" className="w-full">
-      {isLoading && (
-        <div
-          className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full shrink-0"
-          aria-hidden="true"
-        />
-      )}
-      {!isLoading && icon && (
-        <span
-          className="flex items-center justify-center shrink-0 leading-none"
-          aria-hidden="true"
-        >
-          {icon}
-        </span>
-      )}
+      {iconPosition === 'left' && visualElement}
 
       <Text
         as="span"
@@ -106,10 +107,14 @@ export const Button = ({
         className={cn(
           'leading-none text-center',
           size === BUTTON_SIZE.LARGE && 'font-bold uppercase tracking-widest',
-        )} // Forçage du style sur le bouton large si on utilise le variant BODY
+        )}
       >
-        {isLoading && typeof children === 'string' ? 'Chargement...' : children}
+        {isLoading && typeof children === 'string'
+          ? UI.LOADING_DEFAULT
+          : children}
       </Text>
+
+      {iconPosition === 'right' && visualElement}
     </Row>
   );
 

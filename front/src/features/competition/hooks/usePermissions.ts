@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import type { Competition } from '@/features/competition/types';
 import { CompetitionContext } from '@/features/competition/context';
 import {

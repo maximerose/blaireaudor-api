@@ -12,7 +12,7 @@ export const DASHBOARD_UI = {
     VIEW_COMPETITION: 'Voir le classement',
     MANAGE_COMPETITION: 'Gérer la compétition',
     ENTER_COMPETITION: 'Entrer dans la compétition',
-    CREATE_COMPETITION: '+ Créer une compétition',
+    CREATE_COMPETITION: 'Créer une compétition',
     JOIN_COMPETITION: 'Rejoindre une compétition',
   },
   HEADER: {

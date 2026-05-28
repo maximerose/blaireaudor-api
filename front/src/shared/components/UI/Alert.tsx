@@ -31,7 +31,7 @@ const ALERT_STYLES: Record<AlertVariant, string> = {
     'bg-success-soft border-success-border text-success-bright',
 };
 
-const ALERT_ICONS: Record<AlertVariant, string> = {
+const ALERT_ICONS: Record<AlertVariant, React.ReactNode> = {
   [ALERT_VARIANT.DANGER]: ICONS.DANGER,
   [ALERT_VARIANT.WARNING]: ICONS.ALARM,
   [ALERT_VARIANT.INFO]: ICONS.HINT,

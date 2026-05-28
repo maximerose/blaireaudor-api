@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import type {
   Competition,
   EnrichedLeaderboardItem,

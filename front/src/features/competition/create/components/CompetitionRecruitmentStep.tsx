@@ -8,6 +8,7 @@ import {
   BUTTONS,
   Stack,
   Row,
+  ICONS,
 } from '@/shared';
 import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
@@ -82,6 +83,8 @@ export const CompetitionRecruitmentStep = ({
           variant={BUTTON_VARIANT.GHOST}
           onClick={onBack}
           size={BUTTON_SIZE.MEDIUM}
+          icon={ICONS.ARROW_BIG_LEFT}
+          iconPosition="left"
         >
           {BUTTONS.PREVIOUS}
         </Button>
@@ -90,6 +93,8 @@ export const CompetitionRecruitmentStep = ({
           size={BUTTON_SIZE.MEDIUM}
           fullWidth
           className="flex-1"
+          icon={ICONS.ARROW_BIG_RIGHT}
+          iconPosition="right"
         >
           {BUTTONS.CONTINUE}
         </Button>

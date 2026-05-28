@@ -1,4 +1,4 @@
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useMemo } from 'react';
 import { useCompetitionContext } from '@/features/competition/context';
 import { useParticipationDelete } from '@/features/competition/admin';

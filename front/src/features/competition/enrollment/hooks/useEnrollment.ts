@@ -11,7 +11,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import {
   usePlayerSearch,
   type FormParticipant,

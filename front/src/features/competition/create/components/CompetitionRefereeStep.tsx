@@ -1,32 +1,32 @@
-import {
-  Text,
-  Button,
-  Card,
-  Input,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  CARD_VARIANT,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  FORM,
-  cn,
-  ICONS,
-  BUTTONS,
-  Stack,
-  Row,
-  UI,
-} from '@/shared';
-import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
-import { useAuthContext } from '@/features/account';
-import type { UseFormReturn } from 'react-hook-form';
-import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useRefereeStepLogic } from '@/features/competition/create/hooks';
 import {
   PlayerSearchResultsDropdown,
   SelectedPlayersList,
 } from '@/features/competition/enrollment';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import type { FormParticipant, Player, PlayerCompact } from '@/features/player';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  BUTTONS,
+  Card,
+  CARD_VARIANT,
+  cn,
+  FORM,
+  ICONS,
+  Input,
+  Row,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
+} from '@/shared';
+import type { UseFormReturn } from 'react-hook-form';
 
 interface SearchState {
   searchTerm: string;
@@ -135,7 +135,12 @@ export const CompetitionRefereeStep = ({
               )}
             >
               <Row align="center" gap="sm">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm shrink-0">
+                <div
+                  className={cn(
+                    'w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0',
+                    isCreatorReferee ? 'bg-gold/5 text-gold' : 'bg-white/5',
+                  )}
+                >
                   {ICONS.CREATOR}
                 </div>
                 <Text
@@ -167,7 +172,7 @@ export const CompetitionRefereeStep = ({
             <Stack gap="xs" className="w-full">
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                colorTheme={TEXT_THEME.DIMMED}
+                colorTheme={TEXT_THEME.MUTED}
                 className="uppercase tracking-widest pl-1"
               >
                 {FORM.COMPETITION.LABELS.EXTERNAL_REFEREES}
@@ -188,7 +193,7 @@ export const CompetitionRefereeStep = ({
             <Stack gap="xs" className="w-full">
               <Text
                 variant={TEXT_VARIANT.MICRO}
-                colorTheme={TEXT_THEME.DIMMED}
+                colorTheme={TEXT_THEME.MUTED}
                 className="uppercase tracking-widest pl-1"
               >
                 {FORM.COMPETITION.LABELS.PLAYER_REFEREES}
@@ -210,7 +215,12 @@ export const CompetitionRefereeStep = ({
                     )}
                   >
                     <Row align="center" gap="sm">
-                      <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm shrink-0">
+                      <div
+                        className={cn(
+                          'w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0',
+                          isRef ? 'bg-gold/5 text-gold' : 'bg-white/5',
+                        )}
+                      >
                         {isRef ? ICONS.REFEREE : ICONS.PLAYER}
                       </div>
                       <Text
@@ -272,6 +282,8 @@ export const CompetitionRefereeStep = ({
           size={BUTTON_SIZE.MEDIUM}
           fullWidth
           className="flex-1"
+          icon={ICONS.CREATE_COMPETITION}
+          iconPosition="right"
         >
           {FORM.COMPETITION.BUTTONS.CREATE}
         </Button>

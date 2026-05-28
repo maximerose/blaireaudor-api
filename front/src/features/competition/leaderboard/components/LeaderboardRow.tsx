@@ -1,28 +1,28 @@
-import type React from 'react';
-import {
-  Badge,
-  Text,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  BADGE_VARIANT,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  cn,
-  ICONS,
-  Stack,
-  Row,
-} from '@/shared';
-import { RoleBadge } from '@/features/competition/view';
+import { MergePlayersModal } from '@/features/competition/admin/components';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import { useLeaderboardRow } from '@/features/competition/leaderboard/hooks';
 import type {
   Competition,
   EnrichedLeaderboardItem,
 } from '@/features/competition/types';
 import { getMedalStyle } from '@/features/competition/utils';
-import { COMPETITION_UI } from '@/features/competition/constants';
+import { RoleBadge } from '@/features/competition/view';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  cn,
+  ICONS,
+  Row,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
+import type React from 'react';
 import { RankedScore } from './RankedScore';
-import { MergePlayersModal } from '@/features/competition/admin/components';
 
 interface LeaderboardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   participation: EnrichedLeaderboardItem;

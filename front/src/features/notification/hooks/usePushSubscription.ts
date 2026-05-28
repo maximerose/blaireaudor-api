@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { pushService } from '@/features/notification/services';
 
 /**

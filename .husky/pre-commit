@@ -6,6 +6,10 @@ echo "🐶 Husky vérifie la qualité et le style..."
 echo "🧹 Nettoyage des scripts Front (ESLint)..."
 docker compose run --rm quality eslint front/src --fix --max-warnings 0 || exit 1
 
+# --- 1.5 TYPAGE FRONT (TypeScript) ---
+echo "🟦 Vérification des types (TypeScript)..."
+docker compose run --rm quality sh -c "cd front && npx tsc -b" || exit 1
+
 # --- 2. STYLE FRONT (Prettier) ---
 echo "✨ Embellissement du Front (Prettier)..."
 docker compose run --rm quality npx prettier --write front/src --log-level warn

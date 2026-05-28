@@ -62,6 +62,7 @@ export const ERRORS = {
 
     // Participants et Arbitres
     JOIN_FAILED: 'Impossible de rejoindre la compétition.',
+    MERGE_PLAYER_NOT_SELECTED: 'Sélection du joueur requise.',
     PARTICIPATION_ADD_FAILED:
       "Une erreur est survenue lors de l'ajout des participants.",
     PARTICIPATION_REMOVE_FAILED:

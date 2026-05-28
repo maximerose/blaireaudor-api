@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useCompetitionContext } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
 import {

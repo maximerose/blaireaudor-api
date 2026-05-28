@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { QUERY_KEYS } from '@/shared';
 import { notificationService } from '@/features/notification/services';
 import type { NotificationItem } from '@/features/notification/types';

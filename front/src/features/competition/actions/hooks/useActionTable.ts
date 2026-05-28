@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { getIdFromData, QUERY_KEYS, UI } from '@/shared';
 
 import { useQuery } from '@tanstack/react-query';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useCompetitionContext } from '@/features/competition/context';
 import {
   ActionStatus,

@@ -205,3 +205,5 @@ export const ProfilePage = () => {
     </MainLayout>
   );
 };
+
+export default ProfilePage;

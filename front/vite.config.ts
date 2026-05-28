@@ -29,5 +29,29 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts') || id.includes('d3')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (
+              id.includes('@tanstack') ||
+              id.includes('zod') ||
+              id.includes('hookform')
+            ) {
+              return 'vendor-tooling';
+            }
+            return 'vendor-core';
+          }
+        }
+      }
+    }
   }
 })

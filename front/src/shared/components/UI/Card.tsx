@@ -63,10 +63,10 @@ export const CardRoot = <T extends React.ElementType = 'div'>({
       ? 'hover:border-gold-border hover:bg-surface-hover hover:shadow-lg hover:shadow-gold-soft cursor-pointer focus:outline-none focus:ring-1 focus:ring-gold-border'
       : '';
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
-      (onClick as any)?.(e);
+      (onClick as (e: React.SyntheticEvent<HTMLElement>) => void)?.(e);
     }
   };
 

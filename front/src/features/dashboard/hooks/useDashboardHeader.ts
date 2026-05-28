@@ -1,5 +1,5 @@
 import { DASHBOARD_UI } from '@/features/dashboard/constants';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 
 export const useDashboardHeader = () => {
   const { user } = useAuthContext();

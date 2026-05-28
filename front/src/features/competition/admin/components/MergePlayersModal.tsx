@@ -17,6 +17,7 @@ import {
 } from '@/shared';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { useMergePlayers } from '@/features/competition/admin/hooks';
+import type { User } from '@/features/account';
 
 interface MergePlayersModalProps {
   competitionId: string;
@@ -100,7 +101,7 @@ export const MergePlayersModal = (props: MergePlayersModalProps) => {
                   className="absolute top-full left-0 right-0 mt-1 z-50 max-h-48 overflow-y-auto bg-dark border-gold-border shadow-2xl"
                 >
                   <List>
-                    {users.map((u: any) => (
+                    {users.map((u: User) => (
                       <button
                         key={u.id}
                         type="button"

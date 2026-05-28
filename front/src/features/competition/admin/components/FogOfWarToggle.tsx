@@ -43,8 +43,30 @@ export const FogOfWarToggle = () => {
             isFogActive ? 'bg-gold text-black' : 'bg-white/5 text-text-muted',
           )}
         >
-          <div className={cn(isUpdating && 'animate-spin')}>
-            {ICONS.FOG_STATUS(isFogActive)}
+          <div className="relative w-6 h-6 flex items-center justify-center">
+            {/* Oeil fermé (Brouillard ACTIF) */}
+            <span
+              className={cn(
+                'absolute origin-center transition-all duration-300 ease-in-out',
+                isFogActive ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0',
+              )}
+              aria-hidden="true"
+            >
+              {ICONS.FOG_ACTIVE}
+            </span>
+
+            {/* Oeil ouvert (Brouillard INACTIF) */}
+            <span
+              className={cn(
+                'absolute origin-center transition-all duration-300 ease-in-out',
+                !isFogActive
+                  ? 'opacity-100 scale-y-100'
+                  : 'opacity-0 scale-y-0',
+              )}
+              aria-hidden="true"
+            >
+              {ICONS.FOG_INACTIVE}
+            </span>
           </div>
         </div>
 

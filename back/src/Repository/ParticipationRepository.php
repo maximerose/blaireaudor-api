@@ -38,8 +38,10 @@ class ParticipationRepository extends ServiceEntityRepository
     public function findLeaderboard(Competition $competition): array
     {
         $results = $this->createQueryBuilder('p')
-        ->select('p', 'player')
+        ->select('p', 'player', 'user', 'actions')
         ->join('p.player', 'player')
+        ->leftJoin('player.associatedUser', 'user')
+        ->leftJoin('p.actions', 'actions')
         ->where('p.competition = :competition')
         ->setParameter('competition', $competition)
         ->orderBy('p.score', 'DESC')

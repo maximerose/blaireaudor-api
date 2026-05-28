@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { getIdFromData, QUERY_KEYS, ROUTES } from '@/shared';
 import type { Player, PlayerCompact } from '@/features/player';

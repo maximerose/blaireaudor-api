@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  usePlayerSearch,
   type FormParticipant,
   type Player,
   type PlayerCompact,
 } from '@/features/player';
+import { usePlayerSearch } from '@/features/player/hooks/usePlayerSearch';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   cleanJoinCode,
@@ -16,7 +16,7 @@ import {
   type ApiError,
   handleApiError,
 } from '@/shared';
-import { useAuthContext } from '@/features/account';
+import { useAuthContext } from '@/features/account/context/AuthContext';
 import type {
   Competition,
   CompetitionCreatePayload,

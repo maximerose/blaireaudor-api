@@ -2,7 +2,6 @@
 export { ForgotPasswordForm } from './components/ForgotPasswordForm';
 export { LoginForm } from './components/LoginForm';
 export { LogoutHandler } from './components/LogoutHandler';
-export { ProfilePage } from './components/ProfilePage';
 export { RegistrationForm } from './components/RegistrationForm';
 export { ResetPasswordForm } from './components/ResetPasswordForm';
 

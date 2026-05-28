@@ -1,22 +1,22 @@
-import {
-  Card,
-  Button,
-  Text,
-  BUTTON_SIZE,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  CARD_VARIANT,
-  SectionHeader,
-  ICONS,
-  cn,
-  SECTION_HEADER_VARIANT,
-  Row,
-  Stack,
-} from '@/shared';
-import { DASHBOARD_UI } from '@/features/dashboard';
 import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
 import type { Competition, Participation } from '@/features/competition/types';
 import { useCompetitionCard } from '@/features/competition/view/hooks';
+import { DASHBOARD_UI } from '@/features/dashboard';
+import {
+  Button,
+  BUTTON_SIZE,
+  Card,
+  CARD_VARIANT,
+  cn,
+  ICONS,
+  Row,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
 import { RoleBadge } from './RoleBadge';
 import { StatusBadge } from './StatusBadge';
 
@@ -223,14 +223,20 @@ export const CompetitionCard = ({
             </Stack>
 
             <Button
-              variant={
-                competition.is_finished || isManager ? 'primary' : 'secondary'
-              }
+              variant={!competition.is_finished ? 'primary' : 'secondary'}
               size={BUTTON_SIZE.SMALL}
               className="w-full sm:w-auto shrink-0 mt-2 sm:mt-0"
               aria-label={DASHBOARD_UI.CARD.ARIA.ENTER_COMPETITION(
                 competition.name,
               )}
+              iconPosition="left"
+              icon={
+                competition.is_finished
+                  ? ICONS.RANKING
+                  : isManager
+                    ? ICONS.REFEREE
+                    : ICONS.ENTER
+              }
             >
               {competition.is_finished
                 ? DASHBOARD_UI.BUTTONS.VIEW_COMPETITION

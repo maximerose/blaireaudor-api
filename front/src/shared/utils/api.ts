@@ -19,14 +19,16 @@ export const getIdFromData = (data: Identifiable): string | null => {
 /**
  * Extrait l'ID Utilisateur (UUID) de n'importe quel sujet (User, Player ou IRI)
  */
-export const resolveUserId = (subject: any): string | null => {
+export const resolveUserId = (subject: unknown): string | null => {
   if (!subject) return null;
   if (typeof subject === 'string') return subject;
-  return 'associated_user' in subject
-    ? subject.associated_user
-      ? getIdFromData(subject.associated_user)
+  const obj = subject as Record<string, unknown>;
+
+  return 'associated_user' in obj
+    ? obj.associated_user
+      ? getIdFromData(obj.associated_user as Identifiable)
       : null
-    : getIdFromData(subject);
+    : getIdFromData(subject as Identifiable);
 };
 
 /**

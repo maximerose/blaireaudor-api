@@ -1,17 +1,22 @@
-import type { UseFormRegister, FieldErrors } from 'react-hook-form';
+import type {
+  UseFormRegister,
+  FieldErrors,
+  FieldValues,
+  Path,
+} from 'react-hook-form';
 import { Input, FORM } from '@/shared';
 
-interface CompetitionNameFieldProps {
-  register: UseFormRegister<any>;
-  errors: FieldErrors<any>;
+interface CompetitionNameFieldProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
   disabled?: boolean;
 }
 
-export const CompetitionNameField = ({
+export const CompetitionNameField = <T extends FieldValues>({
   register,
   errors,
   disabled = false,
-}: CompetitionNameFieldProps) => {
+}: CompetitionNameFieldProps<T>) => {
   return (
     <Input
       label={FORM.COMPETITION.LABELS.NAME}
@@ -20,7 +25,7 @@ export const CompetitionNameField = ({
       required
       disabled={disabled}
       error={errors.name?.message as string}
-      {...register('name')}
+      {...register('name' as Path<T>)}
     />
   );
 };

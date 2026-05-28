@@ -69,7 +69,7 @@ export const FORM = {
    */
   COMPETITION: {
     BUTTONS: {
-      CREATE: withIconSuffix('Créer la compétition', ICONS.STARS),
+      CREATE: 'Créer la compétition',
     },
     STEPS: {
       CONFIG: {

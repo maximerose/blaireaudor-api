@@ -14,3 +14,5 @@ export const CreateCompetitionPage = () => {
     </WizardLayout>
   );
 };
+
+export default CreateCompetitionPage;

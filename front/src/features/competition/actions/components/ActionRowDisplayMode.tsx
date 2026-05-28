@@ -104,7 +104,7 @@ export const ActionRowDisplayMode = ({
               <span
                 className={cn(
                   'font-bold text-player-other',
-                  creatorIsMe && 'text-player-me', // 🟢 Doublon de ligne supprimé ici
+                  creatorIsMe && 'text-player-me',
                 )}
               >
                 {action.creator_name}

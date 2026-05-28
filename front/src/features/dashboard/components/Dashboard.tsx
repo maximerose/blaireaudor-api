@@ -52,6 +52,7 @@ export const Dashboard = () => {
             variant={BUTTON_VARIANT.PRIMARY}
             size={BUTTON_SIZE.MEDIUM}
             className="w-full cursor-pointer"
+            icon={ICONS.CREATE_COMPETITION}
           >
             {DASHBOARD_UI.BUTTONS.CREATE_COMPETITION}
           </Button>
@@ -60,6 +61,7 @@ export const Dashboard = () => {
             variant={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZE.MEDIUM}
             className="w-full cursor-pointer"
+            icon={ICONS.SECRET}
           >
             {DASHBOARD_UI.BUTTONS.JOIN_COMPETITION}
           </Button>

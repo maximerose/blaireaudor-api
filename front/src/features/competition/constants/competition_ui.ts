@@ -1,4 +1,4 @@
-import { pluralize, ICONS, withIconPrefix } from '@/shared';
+import { ICONS, pluralize, withIconPrefix } from '@/shared';
 
 export const COMPETITION_UI = {
   CREATE: {
@@ -89,10 +89,7 @@ export const COMPETITION_UI = {
         COUNTDOWN_PREFIX: 'Clôture',
         CREATOR_LABEL: 'Créateur',
         REFEREE_LABEL: (count: number) => pluralize(count, 'Arbitre'),
-        MULTIPLIERS_SECTION_TITLE: withIconPrefix(
-          ICONS.BONUS,
-          'Calendrier des Bonus',
-        ),
+        MULTIPLIERS_SECTION_TITLE: 'Calendrier des Bonus',
         QR_BUTTON: 'QR Code',
         QR_MODAL_TITLE: 'Inviter des blaireaux',
         QR_MODAL_SUBTITLE: 'Fais scanner ce code pour une entrée directe.',
@@ -165,6 +162,7 @@ export const COMPETITION_UI = {
       },
       STATS: {
         TITLE: 'Statistiques',
+        LOADING_ANALYTICS: 'Analyse des graphiques...',
       },
     },
   },

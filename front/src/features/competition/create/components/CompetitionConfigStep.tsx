@@ -1,32 +1,32 @@
-import type { UseFormReturn } from 'react-hook-form';
-import {
-  Button,
-  Text,
-  Card,
-  Switch,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  CARD_VARIANT,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  FORM,
-  ICONS,
-  BUTTONS,
-  AVAILABILITY,
-  generateClientSideCode,
-  Stack,
-  Grid,
-  Row,
-} from '@/shared';
-import type { CreateCompetitionFormData } from '@/features/competition/validations';
-import { useJoinCodeCheck } from '@/features/competition/join';
 import {
   CompetitionDateTimeField,
   CompetitionJoinCodeField,
   CompetitionNameField,
 } from '@/features/competition/fields';
+import { useJoinCodeCheck } from '@/features/competition/join';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import {
+  AVAILABILITY,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  BUTTONS,
+  Card,
+  CARD_VARIANT,
+  FORM,
+  generateClientSideCode,
+  Grid,
+  ICONS,
+  Row,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Switch,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
+import type { UseFormReturn } from 'react-hook-form';
 
 interface ConfigStepProps {
   formMethods: UseFormReturn<CreateCompetitionFormData>;
@@ -182,6 +182,8 @@ export const CompetitionConfigStep = ({
         disabled={!canNext}
         onClick={onNext}
         size={BUTTON_SIZE.MEDIUM}
+        icon={ICONS.ARROW_BIG_RIGHT}
+        iconPosition="right"
       >
         {BUTTONS.CONTINUE}
       </Button>

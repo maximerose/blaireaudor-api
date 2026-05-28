@@ -3,7 +3,8 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { competitionService } from '@/features/competition/services';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { useInvalidateCompetition } from '@/features/competition/view/hooks';
-import { handleApiError } from '@/shared';
+import { ERRORS, handleApiError, type ApiError } from '@/shared';
+import type { User } from '@/features/account';
 
 interface UseMergePlayersProps {
   competitionId: string;
@@ -20,7 +21,7 @@ export const useMergePlayers = ({
 }: UseMergePlayersProps) => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { invalidateAll } = useInvalidateCompetition();
@@ -38,22 +39,26 @@ export const useMergePlayers = ({
   });
 
   const mutation = useMutation({
-    mutationFn: () =>
-      competitionService.mergePlayers(
+    mutationFn: () => {
+      if (!selectedUser)
+        throw new Error(ERRORS.COMPETITION.MERGE_PLAYER_NOT_SELECTED);
+
+      return competitionService.mergePlayers(
         competitionId,
         guestPlayerId,
         selectedUser.id,
-      ),
+      );
+    },
     onSuccess: async () => {
       await invalidateAll(competitionId, competitionCode);
       onClose();
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       handleApiError(err, undefined, COMPETITION_UI.ADMIN.MERGE.ERROR_TOAST);
     },
   });
 
-  const handleSelectUser = (user: any) => {
+  const handleSelectUser = (user: User) => {
     setSelectedUser(user);
     setSearch(`${user.player?.display_name || user.username} (${user.email})`);
   };
