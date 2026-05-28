@@ -12,6 +12,7 @@ use App\Factory\CompetitionFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\PlayerFactory;
 use App\Factory\UserFactory;
+use App\Service\Notification\NotificationBuilder;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -20,8 +21,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(private readonly NotificationBuilder $notificationBuilder)
+    {
+    }
+
     public function load(ObjectManager $manager): void
     {
+        $this->notificationBuilder->mute();
+
         $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
         $io->title('Importation des données du Blaireau d\'Or');
 

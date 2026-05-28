@@ -10,16 +10,32 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-final readonly class NotificationBuilder
+final class NotificationBuilder
 {
+    private bool $isMuted = false;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private Security $security,
     ) {
     }
 
+    public function mute(): void
+    {
+        $this->isMuted = true;
+    }
+
+    public function unmute(): void
+    {
+        $this->isMuted = false;
+    }
+
     public function createAndPersist(User $recipient, string $title, string $message, string $type, ?Competition $competition = null): void
     {
+        if ($this->isMuted) {
+            return;
+        }
+
         $prefs = $recipient->getNotificationPreferences();
         if (isset($prefs[$type]) && false === $prefs[$type]) {
             return;
