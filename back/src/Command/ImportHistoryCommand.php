@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\Action;
 use App\Entity\BonusDay;
 use App\Entity\Competition;
+use App\Entity\Participation;
 use App\Entity\Player;
 use App\Entity\User;
 use App\Enum\ActionStatus;
@@ -16,7 +17,6 @@ use App\Service\Manager\PlayerManager;
 use App\Service\Notification\NotificationBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -136,21 +136,45 @@ class ImportHistoryCommand extends Command
         $io->section('Traitement par lots de '.\count($flatActions).' actions...');
         $io->progressStart(\count($flatActions));
 
+        // Registres de mémoire pour éviter les doublons hors-cache Doctrine
+        $playersRegistry = [];
+        $participationsRegistry = [];
+
+        // On pré-charge le Super-Admin pour éviter sa duplication
+        if ($adminUser->getPlayer()) {
+            $playersRegistry[$adminUser->getPlayer()->getDisplayName()] = $adminUser->getPlayer();
+        }
+
         foreach ($flatActions as $i => $act) {
             $comp = $this->entityManager->getRepository(Competition::class)->findOneBy(['joinCode' => $act['compCode']]);
-            $player = $this->entityManager->getRepository(Player::class)->findOneBy(['displayName' => $act['playerName']]);
 
-            if (!$player) {
-                $player = $this->playerManager->createPlayer($act['playerName']);
-                $this->entityManager->persist($player);
-                $this->entityManager->flush();
+            $pName = $act['playerName'];
+            if (!isset($playersRegistry[$pName])) {
+                $player = $this->entityManager->getRepository(Player::class)->findOneBy(['displayName' => $pName]);
+                if (!$player) {
+                    $player = $this->playerManager->createPlayer($pName);
+                    $this->entityManager->persist($player);
+                }
+                $playersRegistry[$pName] = $player;
             }
+            $player = $playersRegistry[$pName];
 
             if ($act['isReferee'] && !$comp->getReferees()->contains($player)) {
                 $comp->addReferee($player);
             }
 
-            $participation = $this->participationManager->joinCompetition($player, $comp);
+            $partKey = $comp->getJoinCode().'_'.$pName;
+            if (!isset($participationsRegistry[$partKey])) {
+                $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
+                    'player' => $player,
+                    'competition' => $comp,
+                ]);
+                if (!$participation) {
+                    $participation = $this->participationManager->joinCompetition($player, $comp);
+                }
+                $participationsRegistry[$partKey] = $participation;
+            }
+            $participation = $participationsRegistry[$partKey];
 
             $action = new Action();
             $action->setParticipation($participation);
@@ -166,6 +190,16 @@ class ImportHistoryCommand extends Command
             if (($i + 1) % $batchSize === 0) {
                 $this->entityManager->flush();
                 $this->entityManager->clear();
+
+                // On vide les registres pour éviter les entités détachées (detached)
+                $playersRegistry = [];
+                $participationsRegistry = [];
+
+                // On ré-indexe le super admin fraîchement re-généré au besoin
+                $adminUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $adminEmail]);
+                if ($adminUser && $adminUser->getPlayer()) {
+                    $playersRegistry[$adminUser->getPlayer()->getDisplayName()] = $adminUser->getPlayer();
+                }
             }
         }
 
