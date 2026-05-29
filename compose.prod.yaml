@@ -40,6 +40,11 @@ services:
       MERCURE_URL: http://mercure/.well-known/mercure
       MERCURE_PUBLIC_URL: https://blaireaudor.maximerose.com/.well-known/mercure
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
+      JWT_SECRET_KEY: /app/config/jwt/private.pem
+      JWT_PUBLIC_KEY: /app/config/jwt/public.pem
+      JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+    volumes:
+      - /volume1/docker/blaireaudor/jwt_keys:/app/config/jwt
     depends_on:
       database:
         condition: service_healthy
@@ -64,3 +69,16 @@ services:
       MERCURE_EXTRA_DIRECTIVES: |
         cors_origins https://blaireaudor.maximerose.com
     command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
+
+  webhook:
+    image: almir/webhook
+    container_name: blaireaudor_webhook
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docker/webhook:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    environment:
+      - WEBHOOK_SECRET=TonSecretSuperSecurise123!
+    command: -verbose -hooks=/config/hooks.json -hotreload
