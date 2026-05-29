@@ -68,6 +68,10 @@ final class NotificationBuilder
 
     public function flush(): void
     {
+        if ($this->isMuted) {
+            return;
+        }
+
         $this->entityManager->flush();
     }
 }

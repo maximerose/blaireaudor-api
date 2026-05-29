@@ -93,7 +93,6 @@ class ImportHistoryCommand extends Command
         }
 
         $flatActions = [];
-        $batchSize = 50;
 
         foreach ($data['competitions'] as $compData) {
             $competition = $this->entityManager->getRepository(Competition::class)->findOneBy(['joinCode' => $compData['joinCode']]);
@@ -137,19 +136,19 @@ class ImportHistoryCommand extends Command
         $io->section('Traitement par lots de '.\count($flatActions).' actions...');
         $io->progressStart(\count($flatActions));
 
-        // Registres de mémoire pour éviter les doublons hors-cache Doctrine
+        // Registres de mémoire pour centraliser les entités de manière unique
         $playersRegistry = [];
         $participationsRegistry = [];
 
-        // On pré-charge le Super-Admin pour éviter sa duplication
         if ($adminUser->getPlayer()) {
             $playersRegistry[$adminUser->getPlayer()->getDisplayName()] = $adminUser->getPlayer();
         }
 
-        foreach ($flatActions as $i => $act) {
+        foreach ($flatActions as $act) {
             $comp = $this->entityManager->getRepository(Competition::class)->findOneBy(['joinCode' => $act['compCode']]);
-
             $pName = $act['playerName'];
+
+            // Récupération ou création unique du joueur
             if (!isset($playersRegistry[$pName])) {
                 $player = $this->entityManager->getRepository(Player::class)->findOneBy(['displayName' => $pName]);
                 if (!$player) {
@@ -164,6 +163,7 @@ class ImportHistoryCommand extends Command
                 $comp->addReferee($player);
             }
 
+            // Récupération ou création unique de la participation
             $partKey = $comp->getJoinCode().'_'.$pName;
             if (!isset($participationsRegistry[$partKey])) {
                 $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
@@ -177,6 +177,7 @@ class ImportHistoryCommand extends Command
             }
             $participation = $participationsRegistry[$partKey];
 
+            // Création de l'action
             $action = new Action();
             $action->setParticipation($participation);
             $action->setPoints($act['points']);
@@ -187,21 +188,6 @@ class ImportHistoryCommand extends Command
 
             $this->entityManager->persist($action);
             $io->progressAdvance();
-
-            if (($i + 1) % $batchSize === 0) {
-                $this->entityManager->flush();
-                $this->entityManager->clear();
-
-                // On vide les registres pour éviter les entités détachées (detached)
-                $playersRegistry = [];
-                $participationsRegistry = [];
-
-                // On ré-indexe le super admin fraîchement re-généré au besoin
-                $adminUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $adminEmail]);
-                if ($adminUser && $adminUser->getPlayer()) {
-                    $playersRegistry[$adminUser->getPlayer()->getDisplayName()] = $adminUser->getPlayer();
-                }
-            }
         }
 
         $this->entityManager->flush();
