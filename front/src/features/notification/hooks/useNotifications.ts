@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthContext } from '@/features/account/context/AuthContext';
-import { QUERY_KEYS } from '@/shared';
 import { notificationService } from '@/features/notification/services';
 import type { NotificationItem } from '@/features/notification/types';
+import { QUERY_KEYS } from '@/shared';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 export const useNotifications = () => {
   const { user } = useAuthContext();
@@ -18,8 +18,8 @@ export const useNotifications = () => {
       `urn:blaireau:user:${user.id}:notifications`,
     );
     const hubUrl = new URL(
-      import.meta.env.VITE_MERCURE_PUBLIC_URL ||
-        'http://localhost/.well-known/mercure',
+      import.meta.env.VITE_MERCURE_PUBLIC_URL || '/.well-known/mercure',
+      window.location.origin,
     );
     hubUrl.searchParams.append('topic', topic);
 
