@@ -1,0 +1,66 @@
+# compose.prod.yaml
+services:
+  # 🌐 PROXY INTERNE (Le Nginx qui utilise ton prod.conf)
+  proxy:
+    image: nginx:alpine
+    container_name: blaireaudor_proxy
+    ports:
+      - "8080:80" # Le port d'entrée visé par le Reverse Proxy de ton Synology
+    volumes:
+      - ./docker/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - front
+      - back
+      - mercure
+
+  # 🐘 BASE DE DONNÉES PostgreSQL
+  database:
+    image: postgres:16-alpine
+    container_name: blaireaudor_db
+    environment:
+      POSTGRES_DB: blaireaudor_prod
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - /volume1/docker/blaireaudor/db_data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "blaireaudor_prod", "-U", "${POSTGRES_USER}"]
+      timeout: 5s
+      retries: 5
+
+  # ⚙️ BACK-END SYMFONY
+  back:
+    build: ./back
+    container_name: blaireaudor_back
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/blaireaudor_prod?serverVersion=16&charset=utf8
+      CORS_ALLOW_ORIGIN: '^https://blaireaudor\.maximerose\.com$'
+      MERCURE_URL: http://mercure/.well-known/mercure
+      MERCURE_PUBLIC_URL: https://blaireaudor.maximerose.com/.well-known/mercure
+      MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # ⚡ FRONT-END REACT (Compilé pour la Prod)
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_VAPID_PUBLIC_KEY=${VITE_VAPID_PUBLIC_KEY}
+    container_name: blaireaudor_front
+
+  # 📡 HUB MERCURE (Notifications Temps Réel)
+  mercure:
+    image: dunglas/mercure
+    container_name: blaireaudor_mercure
+    environment:
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins https://blaireaudor.maximerose.com
+    command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
