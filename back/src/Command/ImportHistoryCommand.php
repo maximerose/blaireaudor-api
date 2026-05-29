@@ -136,7 +136,7 @@ class ImportHistoryCommand extends Command
         $io->section('Traitement par lots de '.\count($flatActions).' actions...');
         $io->progressStart(\count($flatActions));
 
-        // Registres de mémoire pour centraliser les entités de manière unique
+        // Registres de mémoire persistants tout au long de l'exécution
         $playersRegistry = [];
         $participationsRegistry = [];
 
@@ -163,7 +163,7 @@ class ImportHistoryCommand extends Command
                 $comp->addReferee($player);
             }
 
-            // Récupération ou création unique de la participation
+            // Récupération ou création unique et centralisée de la participation
             $partKey = $comp->getJoinCode().'_'.$pName;
             if (!isset($participationsRegistry[$partKey])) {
                 $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
@@ -177,7 +177,7 @@ class ImportHistoryCommand extends Command
             }
             $participation = $participationsRegistry[$partKey];
 
-            // Création de l'action
+            // Création de l'action de jeu
             $action = new Action();
             $action->setParticipation($participation);
             $action->setPoints($act['points']);
@@ -190,6 +190,7 @@ class ImportHistoryCommand extends Command
             $io->progressAdvance();
         }
 
+        // Un seul et unique flush à la fin de la boucle pour tout sceller d'un coup
         $this->entityManager->flush();
         $io->progressFinish();
 
