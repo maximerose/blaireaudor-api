@@ -17,5 +17,10 @@ RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
+
+# 🟢 AJOUT PRODUCTION : On copie le code de l'API et on installe les dépendances
+COPY . .
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
