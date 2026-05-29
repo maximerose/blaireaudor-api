@@ -133,10 +133,8 @@ class ImportHistoryCommand extends Command
             }
         }
 
-        $io->section('Traitement par lots de '.\count($flatActions).' actions...');
-        $io->progressStart(\count($flatActions));
+        $io->section('Traitement des '.\count($flatActions).' actions...');
 
-        // Registres de mémoire persistants tout au long de l'exécution
         $playersRegistry = [];
         $participationsRegistry = [];
 
@@ -144,18 +142,34 @@ class ImportHistoryCommand extends Command
             $playersRegistry[$adminUser->getPlayer()->getDisplayName()] = $adminUser->getPlayer();
         }
 
-        foreach ($flatActions as $act) {
+        foreach ($flatActions as $index => $act) {
             $comp = $this->entityManager->getRepository(Competition::class)->findOneBy(['joinCode' => $act['compCode']]);
             $pName = $act['playerName'];
 
-            // Récupération ou création unique du joueur
+            // 🔍 CONSOLE.LOG 1 : Affichage de la ligne lue
+            $io->text(sprintf(
+                '👉 [%d/%d] Code: %s | Joueur: %s | Points: %d | Méfait: "%s"',
+                $index + 1,
+                count($flatActions),
+                $act['compCode'],
+                $pName,
+                $act['points'],
+                substr($act['description'], 0, 35)
+            ));
+
+            // Gestion du joueur unique
             if (!isset($playersRegistry[$pName])) {
                 $player = $this->entityManager->getRepository(Player::class)->findOneBy(['displayName' => $pName]);
                 if (!$player) {
+                    $io->text("   ├── 🟢 Joueur absent de la BDD, création de l'entité...");
                     $player = $this->playerManager->createPlayer($pName);
                     $this->entityManager->persist($player);
+                } else {
+                    $io->text('   ├── 🟡 Joueur récupéré depuis la BDD PostgreSQL');
                 }
                 $playersRegistry[$pName] = $player;
+            } else {
+                $io->text('   ├── 🔵 Joueur récupéré depuis le Registre Mémoire (Cache)');
             }
             $player = $playersRegistry[$pName];
 
@@ -163,7 +177,7 @@ class ImportHistoryCommand extends Command
                 $comp->addReferee($player);
             }
 
-            // Récupération ou création unique et centralisée de la participation
+            // Gestion de l'inscription unique
             $partKey = $comp->getJoinCode().'_'.$pName;
             if (!isset($participationsRegistry[$partKey])) {
                 $participation = $this->entityManager->getRepository(Participation::class)->findOneBy([
@@ -171,13 +185,18 @@ class ImportHistoryCommand extends Command
                     'competition' => $comp,
                 ]);
                 if (!$participation) {
+                    $io->text(sprintf('   └── 🟢 Inscription absente, création du lien unique pour %s...', $pName));
                     $participation = $this->participationManager->joinCompetition($player, $comp);
+                } else {
+                    $io->text('   └── 🟡 Inscription trouvée en BDD');
                 }
                 $participationsRegistry[$partKey] = $participation;
+            } else {
+                $io->text('   └── 🔵 Inscription récupérée depuis le Registre Mémoire (Cache)');
             }
             $participation = $participationsRegistry[$partKey];
 
-            // Création de l'action de jeu
+            // Création du méfait
             $action = new Action();
             $action->setParticipation($participation);
             $action->setPoints($act['points']);
@@ -187,14 +206,12 @@ class ImportHistoryCommand extends Command
             $action->setCreatedBy(null);
 
             $this->entityManager->persist($action);
-            $io->progressAdvance();
         }
 
-        // Un seul et unique flush à la fin de la boucle pour tout sceller d'un coup
+        $io->text("\n🚀 [FLUSH] Envoi de l'intégralité du bloc vers PostgreSQL...");
         $this->entityManager->flush();
-        $io->progressFinish();
 
-        $io->text("\nRecalcul final des scores pour toutes les arènes...");
+        $io->text('Recalcul final des scores pour toutes les arènes...');
         $allComps = $this->entityManager->getRepository(Competition::class)->findAll();
         foreach ($allComps as $comp) {
             $this->actionRepository->updateAllScoresForCompetition($comp);
