@@ -1,7 +1,10 @@
+// front/src/features/account/components/ProfilePage.tsx
+
 import { PROFILE_UI } from '@/features/account/constants';
 import { useProfile } from '@/features/account/hooks';
 import {
   Button,
+  BUTTON_SIZE,
   BUTTON_VARIANT,
   BUTTONS,
   Card,
@@ -10,13 +13,11 @@ import {
   Grid,
   ICONS,
   MainLayout,
+  ROUTES,
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
   Stack,
-  Text,
-  TEXT_THEME,
-  TEXT_VARIANT,
 } from '@/shared';
 import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 import { DisplayNameField } from './fields/DisplayNameField';
@@ -35,15 +36,13 @@ export const ProfilePage = () => {
     onInfoSubmit,
     onPasswordSubmit,
     usernameRegistryOptions,
-    activeHint,
-    setActiveHint,
     prefsForm,
     onPrefsSubmit,
   } = useProfile();
 
   return (
     <MainLayout title={PROFILE_UI.TITLE} subtitle={PROFILE_UI.TITLE}>
-      <Stack gap="xl" className="max-w-2xl mx-auto w-full">
+      <Stack gap="lg" className="max-w-2xl mx-auto w-full">
         <SectionHeader
           variant={SECTION_HEADER_VARIANT.TITLE}
           colorTheme={SECTION_HEADER_THEME.GOLD}
@@ -67,12 +66,10 @@ export const ProfilePage = () => {
               as="h2"
               centered
             />
-
             <DisplayNameField
               error={infoForm.formState.errors?.display_name?.message}
               {...infoForm.register('display_name')}
             />
-
             <Grid cols={1} sm={2} gap="lg" className="w-full">
               <UsernameField
                 register={infoForm.register}
@@ -81,7 +78,6 @@ export const ProfilePage = () => {
                 initialUsername={defaultUsername}
                 registerOptions={usernameRegistryOptions}
               />
-
               <EmailField
                 register={infoForm.register}
                 watch={infoForm.watch}
@@ -89,7 +85,6 @@ export const ProfilePage = () => {
                 initialEmail={defaultEmail}
               />
             </Grid>
-
             <Button
               type="submit"
               isLoading={infoForm.formState.isSubmitting}
@@ -120,13 +115,11 @@ export const ProfilePage = () => {
               centered
               colorTheme={SECTION_HEADER_THEME.DANGER}
             />
-
             <PasswordField
               label={FORM.AUTH.LABELS.CURRENT_PASSWORD}
               error={passwordForm.formState.errors.current_password?.message}
               {...passwordForm.register('current_password')}
             />
-
             <Stack
               gap="md"
               className="pt-4 border-t border-border-subtle w-full"
@@ -138,13 +131,11 @@ export const ProfilePage = () => {
                 error={passwordForm.formState.errors.new_password?.message}
                 {...passwordForm.register('new_password')}
               />
-
               <ConfirmPasswordField
                 error={passwordForm.formState.errors.confirm_password?.message}
                 {...passwordForm.register('confirm_password')}
               />
             </Stack>
-
             <Button
               type="submit"
               variant={BUTTON_VARIANT.DANGER}
@@ -160,53 +151,35 @@ export const ProfilePage = () => {
           </Card.Body>
         </Card>
 
+        {/* --- NOTIFICATIONS --- */}
         <NotificationSettingsForm form={prefsForm} onSubmit={onPrefsSubmit} />
-      </Stack>
 
-      {/* 🟢 LA MODALE INTERACTIVE UNIFIÉE (Même design que sur le Dashboard !) */}
-      {activeHint && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay backdrop-blur-md animate-fade-in"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setActiveHint(null)}
+        {/* --- BLOC FIN DE SESSION DE CARRIÈRE --- */}
+        <Card
+          variant={CARD_VARIANT.DARK}
+          className="border-danger-border/30 bg-danger-soft/5 w-full animate-slide-up"
         >
-          <div
-            className="w-full max-w-sm animate-slide-up"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Card
-              variant={CARD_VARIANT.DARK}
-              className="shadow-modal-gold border-gold/20"
+          <Card.Body p="md" gap="sm" align="center">
+            <SectionHeader
+              title={PROFILE_UI.LOGOUT_CARD.TITLE}
+              subtitle={PROFILE_UI.LOGOUT_CARD.SUBTITLE}
+              variant={SECTION_HEADER_VARIANT.BLOCK}
+              colorTheme={SECTION_HEADER_THEME.DANGER}
+              centered
+            />
+
+            <Button
+              to={ROUTES.NAV.LOGOUT}
+              variant={BUTTON_VARIANT.DANGER}
+              size={BUTTON_SIZE.SMALL}
+              className="mt-2 w-full sm:w-auto"
+              icon={ICONS.LOGOUT}
             >
-              <Card.Body p="lg" gap="md" align="center">
-                <Text
-                  variant={TEXT_VARIANT.H2}
-                  colorTheme={TEXT_THEME.GOLD}
-                  className="italic text-center"
-                >
-                  {activeHint.title}
-                </Text>
-                <Text
-                  variant={TEXT_VARIANT.BODY}
-                  colorTheme={TEXT_THEME.MUTED}
-                  className="text-center text-xs leading-relaxed"
-                >
-                  {activeHint.description}
-                </Text>
-                <Button
-                  fullWidth
-                  variant={BUTTON_VARIANT.SECONDARY}
-                  onClick={() => setActiveHint(null)}
-                  className="mt-2"
-                >
-                  {BUTTONS.CLOSE}
-                </Button>
-              </Card.Body>
-            </Card>
-          </div>
-        </div>
-      )}
+              {PROFILE_UI.LOGOUT_CARD.BUTTON}
+            </Button>
+          </Card.Body>
+        </Card>
+      </Stack>
     </MainLayout>
   );
 };

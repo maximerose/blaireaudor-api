@@ -13,8 +13,8 @@
   --color-border-subtle: rgba(255, 255, 255, 0.05);
   --color-border-base: rgba(255, 255, 255, 0.1);
 
-  --color-text-muted: rgba(255, 255, 255, 0.4);
-  --color-text-dimmed: rgba(255, 255, 255, 0.2);
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+  --color-text-dimmed: rgba(255, 255, 255, 0.5);
 
   --color-overlay: rgba(0, 0, 0, 0.8);
 
@@ -181,9 +181,13 @@
   --animate-danger-glow: danger-glow 2s infinite ease-in-out;
 
   /* --- EFFETS ET OMBRES --- */
-  --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
+  --shadow-glow-gold: 0 0 20px
+    color-mix(in srgb, var(--color-gold) 30%, transparent);
+  --shadow-glow-info: 0 0 20px
+    color-mix(in srgb, var(--color-info) 30%, transparent);
   --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   --shadow-modal-gold: var(--shadow-modal), var(--shadow-glow-gold);
+  --shadow-modal-info: var(--shadow-modal), var(--shadow-glow-info);
 }
 
 @layer utilities {
@@ -200,16 +204,22 @@
 
 @layer base {
   html {
-    /* 16px par défaut -> passe à 14.4px sur mobile */
     font-size: 90%;
+
     @apply bg-dark text-silver font-sans antialiased;
     cursor: default;
     overflow-x: hidden;
   }
 
+  @media (min-width: 375px) {
+    html {
+      font-size: 93.75%;
+    }
+  }
+
   @media (min-width: 640px) {
     html {
-      font-size: 100%; /* Retour à la normale sur tablettes/desktop */
+      font-size: 100%;
     }
   }
 
@@ -217,6 +227,7 @@
     @apply bg-dark text-silver font-sans antialiased;
     cursor: default;
   }
+
   a,
   button,
   input,

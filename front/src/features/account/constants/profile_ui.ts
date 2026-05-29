@@ -9,6 +9,12 @@ export const PROFILE_UI = {
   NOTIFICATIONS_TITLE: "Préférences d'alertes",
   NOTIFICATIONS_SUBTITLE: 'Choisis les notifications que tu souhaites recevoir',
   NOTIFICATIONS_SAVE: 'Sauvegarder les préférences',
+  LOGOUT_CARD: {
+    TITLE: 'Fin de session',
+    SUBTITLE:
+      "Tu quittes l'arène ? Tes scores et signalements seront conservés intacts en base.",
+    BUTTON: 'Déconnexion',
+  },
 } as const;
 
 export const NOTIFICATION_SETTINGS_CONFIG = [

@@ -1,5 +1,5 @@
-import React from 'react';
 import { cn } from '@/shared/utils';
+import React from 'react';
 
 export const TEXT_BUTTON_THEME = {
   DEFAULT: 'default',
@@ -37,7 +37,7 @@ export const TextButton = ({
     <button
       type="button"
       className={cn(
-        'inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-default hover:underline cursor-pointer focus:outline-none rounded px-1 py-0.5',
+        'inline-flex items-center gap-1 text-xs font-black uppercase tracking-widest transition-default hover:underline cursor-pointer focus:outline-none rounded px-1 py-0.5',
         THEME_STYLES[theme],
         className,
       )}

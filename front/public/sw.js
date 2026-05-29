@@ -1,16 +1,73 @@
+const CACHE_NAME = 'blaireau-cache-v1';
+
+// --- 1. INSTALLATION & ACTIVATION PWA ---
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  // Nettoie les vieux caches si on change de version (v2, v3...)
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  event.waitUntil(clients.claim());
+});
+
+// --- 2. STRATÉGIE DE CACHE (Stale-While-Revalidate) ---
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  if (
+    event.request.method !== 'GET' ||
+    url.pathname.startsWith('/api') ||
+    url.pathname.includes('.well-known/mercure')
+  ) {
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return cachedResponse;
+      });
+
+      return cachedResponse || fetchPromise;
+    })
+  );
+});
+
+// --- 3. NOTIFICATIONS PUSH (Existant) ---
+
 self.addEventListener('push', function (event) {
   if (!(self.Notification && self.Notification.permission === 'granted')) {
     return;
   }
 
-  // On extrait le payload envoyé par notre WebPushNotificationListener PHP
   const data = event.data ? event.data.json() : {};
   const title = data.title || "Le Blaireau d'Or";
 
   const options = {
     body: data.message || "Il y a du mouvement dans l'arène !",
-    icon: '/favicon.svg',
-    badge: '/badge.svg',
+    icon: '/favicon.svg', // Icone de la notif dans la barre d'état
+    badge: '/badge.svg', // Icone monochrome pour Android
     data: {
       url: data.targetUrl || '/'
     },
@@ -21,15 +78,12 @@ self.addEventListener('push', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-  // On ferme la notification système
   event.notification.close();
 
   const urlToOpen = event.notification.data.url;
 
-  // On cherche si l'application est déjà ouverte dans un onglet
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Si oui, on ramène l'onglet au premier plan et on navigue
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url && 'focus' in client) {
@@ -38,7 +92,6 @@ self.addEventListener('notificationclick', function (event) {
           return;
         }
       }
-      // Sinon, on ouvre carrément une nouvelle fenêtre sur la bonne URL
       if (clients.openWindow && urlToOpen) {
         return clients.openWindow(urlToOpen);
       }

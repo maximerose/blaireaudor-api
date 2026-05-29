@@ -1,7 +1,7 @@
-import type React from 'react';
-import { Badge, cn, Row } from '@/shared';
-import { useRankBadgeUI } from '@/features/competition/leaderboard/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
+import { useRankBadgeUI } from '@/features/competition/leaderboard/hooks';
+import { Badge, cn, Row } from '@/shared';
+import type React from 'react';
 
 interface RankBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   rank: number;
@@ -39,7 +39,7 @@ export const RankBadge = ({ rank, className, ...props }: RankBadgeProps) => {
       <Badge variant={variant} className={cn('font-black italic', badgeShadow)}>
         <span className="flex items-baseline" aria-hidden="true">
           {rank}
-          <span className="text-[7px] lowercase ml-0.5 opacity-70 font-bold">
+          <span className="text-xs lowercase ml-0.5 opacity-80 font-bold">
             {suffix}
           </span>
         </span>

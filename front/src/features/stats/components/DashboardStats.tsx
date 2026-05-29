@@ -1,20 +1,20 @@
-import {
-  Grid,
-  Stack,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  ROUTES,
-  Row,
-  HintModal,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  SECTION_HEADER_THEME,
-  ICONS,
-} from '@/shared';
-import { StatCard } from './StatCard';
 import { PLAYER_STATS_GENERAL } from '@/features/stats/constants';
 import { useDashboardStats } from '@/features/stats/hooks';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Grid,
+  HintModal,
+  ICONS,
+  ROUTES,
+  Row,
+  SECTION_HEADER_THEME,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+} from '@/shared';
+import { StatCard } from './StatCard';
 import { StatFocusCard } from './StatFocusCard';
 
 export const DashboardStats = () => {
@@ -75,7 +75,7 @@ export const DashboardStats = () => {
           to={ROUTES.NAV.STATS}
           variant={BUTTON_VARIANT.GHOST}
           size={BUTTON_SIZE.SMALL}
-          className="text-[11px] text-info-bright hover:underline cursor-pointer"
+          className="text-xs text-info-bright hover:underline cursor-pointer"
         >
           {PLAYER_STATS_GENERAL.LINK_ALL}
         </Button>

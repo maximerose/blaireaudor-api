@@ -1,9 +1,9 @@
-import { MainLayout, LoadingScreen, NotFoundState, ERRORS } from '@/shared';
-import { useParams } from 'react-router-dom';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { CompetitionProvider } from '@/features/competition/context';
-import { CompetitionDetailContent } from './CompetitionDetailContent';
 import { useCompetitionData } from '@/features/competition/view/hooks';
+import { ERRORS, LoadingScreen, MainLayout, NotFoundState } from '@/shared';
+import { useParams } from 'react-router-dom';
+import { CompetitionDetailContent } from './CompetitionDetailContent';
 
 export const CompetitionDetailPage = () => {
   const { code: rawCode } = useParams<{ code: string }>();
@@ -14,7 +14,10 @@ export const CompetitionDetailPage = () => {
   if (isLoading) {
     return (
       <MainLayout>
-        <LoadingScreen layout="local" message={COMPETITION_UI.DETAIL.LOADING} />
+        <LoadingScreen
+          layout="fullscreen"
+          message={COMPETITION_UI.DETAIL.LOADING}
+        />
       </MainLayout>
     );
   }

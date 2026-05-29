@@ -10,8 +10,7 @@ interface LoadingScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   layout?: 'fullscreen' | 'local';
 }
 
-const SPINNER_BASE = 'relative flex items-center justify-center';
-const BAR_CONTAINER = 'w-12 h-px bg-gold-soft relative overflow-hidden';
+const BAR_CONTAINER = 'w-12 h-px bg-gold-soft relative overflow-hidden mx-auto';
 const BAR_ANIMATION =
   'absolute inset-0 bg-gold opacity-40 animate-[loading-bar_1.5s_infinite_ease-in-out] motion-reduce:hidden';
 
@@ -21,6 +20,7 @@ export const LoadingScreen = ({
   className = '',
   ...props
 }: LoadingScreenProps) => {
+  const isFullscreen = layout === 'fullscreen';
   return (
     <div
       className={cn(
@@ -36,18 +36,14 @@ export const LoadingScreen = ({
       {...props}
     >
       <Stack align="center" gap="xl">
-        <BadgerLogo className="w-40 h-40 md:w-60 md:h-60" />
-        <div className={SPINNER_BASE} aria-hidden="true">
-          <div className="w-16 h-16 border-2 border-gold-soft rounded-full" />
-          <div className="absolute w-16 h-16 border-2 border-transparent border-t-gold rounded-full animate-spin motion-reduce:animate-none" />
-          <div className="absolute w-1 h-1 bg-gold-border rounded-full" />
-        </div>
-
-        <Stack align="center" gap="sm" px="lg">
+        {isFullscreen && (
+          <BadgerLogo className="w-60 h-60 md:w-80 md:h-80 animate-pulse drop-shadow-[0_0_30px_rgba(255,184,0,0.5)]" />
+        )}
+        <Stack align="center" gap="sm" px="lg" className="mx-3">
           <Text
-            variant={TEXT_VARIANT.CAPTION}
+            variant={isFullscreen ? TEXT_VARIANT.CAPTION : TEXT_VARIANT.MICRO}
             colorTheme={TEXT_THEME.GOLD}
-            className="animate-pulse motion-reduce:animate-none italic tracking-[0.4em] text-center"
+            className="animate-pulse motion-reduce:animate-none italic tracking-[0.4em] pl-[0.4em] text-center"
           >
             {message}
           </Text>

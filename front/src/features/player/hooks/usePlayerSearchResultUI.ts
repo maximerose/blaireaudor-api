@@ -17,14 +17,14 @@ export const usePlayerSearchResultUI = (
     infoWrapper: 'flex flex-col min-w-0 pointer-events-none',
     name: 'text-sm text-gold font-bold truncate transition-default',
     username:
-      'text-[10px] text-text-muted font-mono italic leading-none mt-0.5 truncate',
+      'text-xs text-text-muted font-mono italic leading-none mt-0.5 truncate',
     lastCompWrapper: 'flex items-center gap-1 mt-1 overflow-hidden',
-    lastCompLabel: 'text-[9px] text-text-dimmed italic font-light shrink-0',
-    lastCompValue: 'text-[9px] text-info-bright/60 italic font-medium truncate',
+    lastCompLabel: 'text-xs text-text-dimmed italic font-light shrink-0',
+    lastCompValue: 'text-xs text-info-bright/60 italic font-medium truncate',
     newPlayerBadge: 'py-0 px-1.5 mt-1 w-fit opacity-60',
     actionWrapper: 'ml-4 shrink-0',
     actionIcon:
-      'text-[10px] font-black text-gold/20 group-hover:text-gold transition-default',
+      'text-xs font-black text-gold/20 group-hover:text-gold transition-default',
   };
 
   return { name, lastComp, classes };

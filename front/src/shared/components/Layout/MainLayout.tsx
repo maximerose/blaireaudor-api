@@ -1,9 +1,9 @@
-import React from 'react';
-import { useDocumentTitle } from '@/shared/hooks';
-import { Navbar } from '@/shared/components/UI';
-import { Stack } from './Stack';
-import { cn } from '@/shared/utils';
 import { usePushSubscription } from '@/features/notification';
+import { Navbar } from '@/shared/components/UI';
+import { useDocumentTitle } from '@/shared/hooks';
+import { cn } from '@/shared/utils';
+import React from 'react';
+import { Stack } from './Stack';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -27,10 +27,10 @@ export const MainLayout = ({
       <Stack
         as="main"
         gap="md"
-        px="lg"
+        px="md"
         mt="md"
         className={cn(
-          'flex-1 w-full pb-10 animate-fade-in mx-auto',
+          'flex-1 w-full pb-20 md:pb-10 animate-fade-in mx-auto',
           isFluid ? 'max-w-full' : 'max-w-6xl',
         )}
       >

@@ -1,23 +1,23 @@
+import type { User } from '@/features/account';
+import { useMergePlayers } from '@/features/competition/admin/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import {
+  Alert,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  BUTTONS,
   Card,
   CARD_VARIANT,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
+  ICONS,
   Input,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  Alert,
-  Stack,
   List,
   Row,
-  ICONS,
-  BUTTONS,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
 } from '@/shared';
-import { COMPETITION_UI } from '@/features/competition/constants';
-import { useMergePlayers } from '@/features/competition/admin/hooks';
-import type { User } from '@/features/account';
 
 interface MergePlayersModalProps {
   competitionId: string;
@@ -111,7 +111,7 @@ export const MergePlayersModal = (props: MergePlayersModalProps) => {
                         <span className="font-bold text-silver">
                           {u.player?.display_name || u.username}
                         </span>
-                        <span className="text-text-dimmed text-[10px]">
+                        <span className="text-text-dimmed text-sm">
                           @{u.username} • {u.email}
                         </span>
                       </button>

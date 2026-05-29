@@ -1,22 +1,22 @@
+import { useAuthContext } from '@/features/account/context/AuthContext';
+import { useRefereeManagementUI } from '@/features/competition/admin/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useCompetitionContext } from '@/features/competition/context';
+import { PlayerSearchField } from '@/features/competition/fields';
+import { usePermissions } from '@/features/competition/hooks';
+import { type RefereeListItem } from '@/features/player';
 import {
   Badge,
   BADGE_VARIANT,
   ICONS,
-  SectionHeader,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  UI,
   Row,
+  SectionHeader,
   Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
 } from '@/shared';
-import { type RefereeListItem } from '@/features/player';
-import { useAuthContext } from '@/features/account/context/AuthContext';
-import { useCompetitionContext } from '@/features/competition/context';
-import { usePermissions } from '@/features/competition/hooks';
-import { useRefereeManagementUI } from '@/features/competition/admin/hooks';
-import { COMPETITION_UI } from '@/features/competition/constants';
-import { PlayerSearchField } from '@/features/competition/fields';
 
 export const RefereeManagement = () => {
   const { competition } = useCompetitionContext();

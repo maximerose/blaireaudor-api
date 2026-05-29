@@ -1,8 +1,8 @@
-import React from 'react';
-import { Text, TEXT_VARIANT } from './Text';
-import { useEmptyStateUI } from '@/shared/hooks';
 import { ICONS, UI } from '@/shared/constants';
+import { useEmptyStateUI } from '@/shared/hooks';
+import React from 'react';
 import { Stack } from '../Layout/Stack';
+import { Text, TEXT_VARIANT } from './Text';
 
 interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: string | React.ReactNode;
@@ -54,7 +54,7 @@ export const EmptyState = ({
         {message && (
           <Text
             variant={TEXT_VARIANT.BODY}
-            className="text-text-dimmed text-[10px] sm:text-xs italic leading-tight"
+            className="text-text-dimmed text-sm sm:text-xs italic leading-tight"
           >
             {message}
           </Text>

@@ -1,6 +1,6 @@
-import { cn } from '@/shared';
 import { CHART_COLORS, CHART_ME_COLOR } from '@/features/stats/constants';
 import type { CompetitionChartLegendProps } from '@/features/stats/types';
+import { cn } from '@/shared';
 
 export const CompetitionChartLegend = ({
   leaderboard,
@@ -35,7 +35,7 @@ export const CompetitionChartLegend = ({
             />
             <span
               className={cn(
-                'font-medium truncate max-w-32 capitalize',
+                'font-medium text-sm truncate max-w-32 capitalize',
                 isHidden ? 'text-text-dimmed line-through' : 'text-silver',
               )}
             >

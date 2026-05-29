@@ -1,26 +1,26 @@
+import { COMPETITION_UI } from '@/features/competition/constants';
+import type { BonusDay } from '@/features/competition/types';
+import { useCompetitionHeaderUI } from '@/features/competition/view/hooks';
+import type { RefereeListItem } from '@/features/player';
 import {
   Badge,
   BADGE_VARIANT,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
   formatLongDate,
   ICONS,
+  Row,
   SECTION_HEADER_VARIANT,
   SectionHeader,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  UI,
   Stack,
-  Row,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
 } from '@/shared';
-import type { RefereeListItem } from '@/features/player';
 import { CompetitionCountdown } from './CompetitionCountdown';
-import { COMPETITION_UI } from '@/features/competition/constants';
-import type { BonusDay } from '@/features/competition/types';
 import { CompetitionQRCodeModal } from './CompetitionQRCodeModal';
-import { useCompetitionHeaderUI } from '@/features/competition/view/hooks';
 
 export const CompetitionHeader = () => {
   const {
@@ -117,7 +117,7 @@ export const CompetitionHeader = () => {
               >
                 {creatorName}
                 {roles.isCreator && (
-                  <span className="text-[9px] opacity-60 ml-1 uppercase">
+                  <span className="text-xs opacity-60 ml-1 uppercase">
                     ({UI.ME})
                   </span>
                 )}
@@ -197,7 +197,7 @@ export const CompetitionHeader = () => {
               fullWidth={false}
               className="rounded-md overflow-hidden border border-bonus-border bg-bonus-soft"
             >
-              <span className="px-2 py-1 text-[10px] font-mono text-silver bg-surface-base uppercase">
+              <span className="px-2 py-1 text-xs font-mono text-silver bg-surface-base uppercase">
                 {formatLongDate(bd.date)}
               </span>
               <span className="px-2 py-1 text-xs font-black text-game-bonus-bright">

@@ -18,6 +18,7 @@ export const ROUTES = {
     ADMIN_CREATE_COMPETITION: '/competition/new',
     PROFILE: '/profile',
     STATS: '/stats',
+    NOTIFICATIONS: '/notifications',
     ADMIN_BASE: import.meta.env.VITE_ADMIN_URL || '/admin',
 
     // Routes dynamiques

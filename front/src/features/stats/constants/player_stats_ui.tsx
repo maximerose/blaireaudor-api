@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ICONS, pluralize } from '@/shared';
 import type { CategoryConfig } from '@/features/stats/types';
+import { ICONS, pluralize } from '@/shared';
 
 // ---------------------------------------------------------
 // 1. TEXTES GLOBAUX
@@ -23,7 +23,7 @@ export const PLAYER_STATS_GENERAL = {
 };
 
 export const PLAYER_STATS_PALMARES = {
-  TITLE: 'Palmarès historique de tes compétitions',
+  TITLE: 'Palmarès',
   EMPTY: 'Aucune compétition archivée dans ton tableau de chasse.',
   TH_COMPETITION: 'Compétition',
   TH_RANK: 'Classement',
@@ -36,15 +36,14 @@ export const PLAYER_STATS_PALMARES = {
 // ---------------------------------------------------------
 const fmtPoints = (pts: number) => (
   <span className="flex items-baseline justify-center gap-1">
-    {pts}{' '}
-    <span className="text-[10px] opacity-50 font-normal lowercase">pts</span>
+    {pts} <span className="text-xs opacity-50 font-normal lowercase">pts</span>
   </span>
 );
 
 const fmtActions = (count: number, word = 'action') => (
   <span className="flex items-baseline justify-center gap-1">
     {count}{' '}
-    <span className="text-[10px] opacity-50 font-normal lowercase">
+    <span className="text-xs opacity-50 font-normal lowercase">
       {pluralize(count, word)}
     </span>
   </span>
@@ -53,8 +52,7 @@ const fmtActions = (count: number, word = 'action') => (
 const fmtPercent = (val: number | null) =>
   val !== null ? (
     <span className="flex items-baseline justify-center gap-1">
-      {val}{' '}
-      <span className="text-[10px] opacity-50 font-normal lowercase">%</span>
+      {val} <span className="text-xs opacity-50 font-normal lowercase">%</span>
     </span>
   ) : (
     '-'
@@ -259,41 +257,41 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
     metrics: [
       {
         id: 'main_enemy',
-        getLabel: () => 'Pire bourreau de carrière',
+        getLabel: () => 'Mon pire bourreau',
         icon: ICONS.SKULL,
         getColor: () => 'text-danger-bright',
         getValue: (s) =>
           s.max_reports_from_single_actor?.player_name || 'Aucun',
         getSubtext: (s) =>
           s.max_reports_from_single_actor
-            ? `${s.max_reports_from_single_actor.count} ${pluralize(s.max_reports_from_single_actor.count, 'alignement subi', 'alignements subis')}`
-            : '0 alignement subi',
+            ? `${s.max_reports_from_single_actor.count} ${pluralize(s.max_reports_from_single_actor.count, 'dénonciation')}`
+            : '0 dénnociation',
         hint: {
-          title: 'Pire bourreau de carrière',
+          title: 'Mon pire bourreau',
           description:
             "Le joueur qui t'a le plus souvent aligné et envoyé au piquet tout au long de ta carrière.",
         },
       },
       {
         id: 'favorite_victim',
-        getLabel: () => 'Mon souffre-douleur à vie',
+        getLabel: () => 'Mon souffre-douleur',
         icon: ICONS.TARGET,
         getColor: () => 'text-warning-bright',
         getValue: (s) =>
           s.max_reports_to_single_receiver?.player_name || 'Aucun',
         getSubtext: (s) =>
           s.max_reports_to_single_receiver
-            ? `${s.max_reports_to_single_receiver.count} ${pluralize(s.max_reports_to_single_receiver.count, 'dossier envoyé')}`
-            : '0 dossier envoyé',
+            ? `${s.max_reports_to_single_receiver.count} ${pluralize(s.max_reports_to_single_receiver.count, 'balance')}`
+            : '0 balance',
         hint: {
-          title: 'Mon souffre-douleur à vie',
+          title: 'Mon souffre-douleur',
           description:
             'Ta cible favorite. Le joueur sur lequel tu as le plus fréquemment balancé de gros dossiers de méfaits.',
         },
       },
       {
         id: 'vendetta',
-        getLabel: () => 'Ma vendetta éternelle',
+        getLabel: () => 'Mon rival',
         icon: ICONS.STAB,
         getColor: () => 'text-info-bright',
         getValue: (s) =>
@@ -301,9 +299,9 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
         getSubtext: (s) =>
           s.max_reciprocal_reports_with_single_peer
             ? `${s.max_reciprocal_reports_with_single_peer.reciprocal_score} ${pluralize(s.max_reciprocal_reports_with_single_peer.reciprocal_score, 'coup rendu')} (${s.max_reciprocal_reports_with_single_peer.total_sent} émis / ${s.max_reciprocal_reports_with_single_peer.total_received} subis)`
-            : '0 coup échangé',
+            : '0 échange',
         hint: {
-          title: 'Ma vendetta éternelle',
+          title: 'Mon rival',
           description:
             "Récidive symétrique pure : la personne avec qui tu as le plus haut score d'échange réciproque.",
         },

@@ -1,5 +1,5 @@
-import { formatShortDate } from '@/shared';
 import type { CompetitionChartTooltipProps } from '@/features/stats/types';
+import { formatShortDate } from '@/shared';
 
 export const CompetitionChartTooltip = ({
   active,
@@ -40,9 +40,7 @@ export const CompetitionChartTooltip = ({
                     {rankText}
                   </span>
                   {secondaryText && (
-                    <span className="opacity-50 text-[10px]">
-                      {secondaryText}
-                    </span>
+                    <span className="opacity-50 text-xs">{secondaryText}</span>
                   )}
                 </span>
               </div>

@@ -3,10 +3,8 @@ import { cn } from '@/shared/utils';
 const LOGO_COLORS = {
   BADGER: 'text-gold', // Le blaireau en or massif
   SWORDS: 'text-silver', // Les lames en argent
-  HANDLES: 'text-danger-dark', // Les pommeaux en cuir rouge
+  HANDLES: 'text-danger', // Les pommeaux en cuir rouge
   RINGS: 'text-gold opacity-30', // Les cercles en or discret
-  // Astuce : Si tu veux que le blaireau change de couleur selon le parent
-  // (ex: hover:text-white), tu peux mettre 'fill-current' ici !
 } as const;
 
 interface BadgerLogoProps extends React.SVGProps<SVGSVGElement> {

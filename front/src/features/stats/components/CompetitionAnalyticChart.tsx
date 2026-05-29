@@ -59,7 +59,7 @@ export const CompetitionAnalyticChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={bumpData}
-          margin={{ top: 50, right: 35, left: -15, bottom: 0 }}
+          margin={{ top: 30, right: 35, left: -15, bottom: 0 }}
         >
           <CartesianGrid
             strokeDasharray="3 3"
@@ -208,6 +208,7 @@ export const CompetitionAnalyticChart = ({
         title={COMPETITION_STATS_GENERAL.CHART.TITLE}
       />
 
+      {/* 🏷️ 1. ZONE DES FILTRES DE POPULATION (TOP 3, TOP 5...) */}
       <Row
         justify="center"
         gap="sm"
@@ -284,41 +285,46 @@ export const CompetitionAnalyticChart = ({
         </Button>
       </Row>
 
+      {/* 🔄 2. NOUVELLE ZONE DU SÉLECTEUR DE MODE (Extraite du graphique !) */}
+      <div className="bg-surface-base p-1 rounded-xl border border-border-subtle flex gap-1 w-fit mx-auto mt-1 animate-fade-in">
+        <button
+          type="button"
+          onClick={() => setChartMode('ranks')}
+          className={cn(
+            'px-3 py-1.5 text-xs font-bold uppercase rounded-md transition-default cursor-pointer',
+            chartMode === 'ranks'
+              ? 'bg-gold text-dark font-black'
+              : 'text-text-muted hover:bg-white/5 hover:text-white',
+          )}
+        >
+          {COMPETITION_STATS_GENERAL.CHART.TOGGLE_RANKS}
+        </button>
+        <button
+          type="button"
+          onClick={() => setChartMode('points')}
+          className={cn(
+            'px-3 py-1.5 text-xs font-bold uppercase rounded-md transition-default cursor-pointer',
+            chartMode === 'points'
+              ? 'bg-gold text-dark font-black'
+              : 'text-text-muted hover:bg-white/5 hover:text-white',
+          )}
+        >
+          {COMPETITION_STATS_GENERAL.CHART.TOGGLE_POINTS}
+        </button>
+      </div>
+
+      {/* 📊 3. CARTE DU GRAPHIQUE */}
       <Card
         variant={CARD_VARIANT.DARK}
-        className="w-full border-border-subtle p-2 sm:p-4 mt-2 relative overflow-visible"
+        className="w-full border-border-subtle p-4 mt-2 relative overflow-visible"
       >
-        <div className="absolute top-2 left-2 z-10 w-fit bg-dark-lighter p-1 rounded-lg border border-border-subtle flex gap-1 shadow-lg">
-          <button
-            type="button"
-            onClick={() => setChartMode('ranks')}
-            className={cn(
-              'px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-default',
-              chartMode === 'ranks'
-                ? 'bg-gold text-dark'
-                : 'text-silver hover:bg-white/5',
-            )}
-          >
-            {COMPETITION_STATS_GENERAL.CHART.TOGGLE_RANKS}
-          </button>
-          <button
-            type="button"
-            onClick={() => setChartMode('points')}
-            className={cn(
-              'px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-default',
-              chartMode === 'points'
-                ? 'bg-gold text-dark'
-                : 'text-silver hover:bg-white/5',
-            )}
-          >
-            {COMPETITION_STATS_GENERAL.CHART.TOGGLE_POINTS}
-          </button>
-        </div>
-        <div className="absolute top-2 right-2 z-10">
+        {/* Le bouton Agrandir reste en absolute discret en haut à droite */}
+        <div className="absolute top-3 right-3 z-10">
           <Button
             variant={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZE.SMALL}
             onClick={onOpenFullscreen}
+            icon={ICONS.MAXIMIZE}
           >
             <span className="sm:hidden">{ICONS.MAXIMIZE}</span>
             <span className="hidden sm:block">
@@ -327,7 +333,7 @@ export const CompetitionAnalyticChart = ({
           </Button>
         </div>
 
-        <div className="pt-10 sm:pt-0">{renderActiveChart('h-96')}</div>
+        <div className="w-full">{renderActiveChart('h-64 sm:h-96')}</div>
 
         <CompetitionChartLegend
           leaderboard={leaderboard}
@@ -345,6 +351,7 @@ export const CompetitionAnalyticChart = ({
         </Text>
       </Card>
 
+      {/* 📱 4. MODALE PLEIN ÉCRAN */}
       {isFullscreen && (
         <div className="fixed inset-0 z-50 bg-dark flex flex-col animate-fade-in pb-4">
           <Row
@@ -360,12 +367,13 @@ export const CompetitionAnalyticChart = ({
               variant={BUTTON_VARIANT.DANGER}
               size={BUTTON_SIZE.SMALL}
               onClick={onCloseFullscreen}
+              icon={ICONS.CANCEL}
             >
               {COMPETITION_STATS_GENERAL.CHART.BTN_CLOSE}
             </Button>
           </Row>
           <div className="p-2 sm:p-6 flex-1 min-h-0 w-full overflow-y-auto flex flex-col">
-            {renderActiveChart('flex-1 min-h-96')}
+            {renderActiveChart('flex-1 min-h-64 sm:h-96')}
             <CompetitionChartLegend
               leaderboard={leaderboard}
               hiddenLines={hiddenLines}

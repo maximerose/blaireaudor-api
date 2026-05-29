@@ -1,24 +1,24 @@
+import type { StatCardProps } from '@/features/stats/types';
 import {
   Card,
   CARD_VARIANT,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  ICONS,
   cn,
+  ICONS,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
 } from '@/shared';
-import type { StatCardProps } from '@/features/stats/types';
 
 export const StatCard = ({ metric, onClick }: StatCardProps) => {
+  const hasHint = !!metric.hint;
+
   return (
     <Card
       variant={CARD_VARIANT.DARK}
       onClick={onClick}
-      isHoverable={!!metric.hint}
-      className={cn(
-        'border-border-subtle bg-surface-base/30 relative',
-        metric.hint && 'hover:border-gold/40 group',
-      )}
+      isHoverable={hasHint}
+      hoverVariant={hasHint ? 'info' : 'gold'}
+      className="border-border-subtle bg-surface-base/30 relative group"
     >
       <Card.Body
         p="sm"
@@ -28,7 +28,7 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
       >
         {metric.hint && (
           <span
-            className="absolute top-2 right-2 text-xs text-gold/30 group-hover:text-gold/80 transition-default"
+            className="absolute top-2 right-2 text-sm text-info-bright/50 group-hover:text-info-bright transition-default"
             aria-hidden="true"
           >
             {ICONS.HINT}
@@ -55,7 +55,7 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
           {metric.subtext && (
             <Text
               variant={TEXT_VARIANT.MICRO}
-              colorTheme={TEXT_THEME.MUTED}
+              colorTheme={TEXT_THEME.DIMMED}
               className="mt-2 font-medium normal-case italic"
             >
               {metric.subtext}
@@ -65,7 +65,7 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
 
         <Text
           variant={TEXT_VARIANT.MICRO}
-          colorTheme={TEXT_THEME.DIMMED}
+          colorTheme={TEXT_THEME.MUTED}
           className="mt-3 block w-full"
         >
           {metric.label}

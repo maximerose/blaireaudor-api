@@ -27,12 +27,12 @@ final class NotificationConstants
     public const array CONTENT = [
         self::TYPE_NEW_SUBMISSION => [
             'label' => 'Nouvelles demandes d\'arbitrage',
-            'title' => '⚖️ Arbitrage requis',
+            'title' => 'Arbitrage requis',
             'msg' => 'Une action sur %s attend ton verdict.',
         ],
         self::TYPE_ACTION_VALIDATED => [
             'label' => 'Validation des méfaits',
-            'title' => '🚨 Sentence confirmée !',
+            'title' => 'Sentence confirmée !',
             'msg_target' => 'Tu as pris %d points ! (%s)',
             'msg_others' => '%s a pris %d points ! (%s)',
             'msg_fog_target' => 'Tu as pris des points ! (%s)',
@@ -40,59 +40,59 @@ final class NotificationConstants
         ],
         self::TYPE_ACTION_REJECTED => [
             'label' => 'Rejet de mes signalements',
-            'title' => '✕ Signalement refusé',
+            'title' => 'Signalement refusé',
             'msg' => 'Ton signalement sur %s a été classé sans suite.',
         ],
         self::TYPE_BONUS_TRIGGERED => [
             'label' => 'Jours Bonus activés',
-            'title' => '🔥 Multiplicateur activé !',
+            'title' => 'Multiplicateur activé !',
             'msg' => 'Les points sont multipliés par %d aujourd\'hui !',
         ],
         self::TYPE_PLAYER_JOINED => [
             'label' => 'Nouveaux concurrents dans l\'arène',
-            'title' => '🐣 Nouveau concurrent',
+            'title' => 'Nouveau concurrent',
             'msg' => '%s est entré dans l\'arène !',
         ],
         self::TYPE_COMPETITION_STARTED => [
             'label' => 'Ouverture officielle des arènes',
-            'title' => '🏁 Lancement de la saison',
+            'title' => 'Lancement de la saison',
             'msg' => 'L\'arène %s est ouverte, que la chasse commence !',
         ],
         self::TYPE_COMPETITION_FINISHED => [
             'label' => 'Clôture des arènes',
-            'title' => '🏆 Fin de la compétition',
+            'title' => 'Fin de la compétition',
             'msg' => 'L\'arène %s est close. Consultez le classement final !',
         ],
         self::TYPE_FOG_DISABLED => [
             'label' => 'Levée du brouillard de guerre',
-            'title' => '👁️ Brouillard dissipé',
+            'title' => 'Brouillard dissipé',
             'msg' => 'Le secret est levé, les scores de l\'arène sont visibles !',
         ],
         self::TYPE_FOG_ENABLED => [
             'label' => 'Activation du brouillard de guerre',
-            'title' => '👻 Brouillard activé',
+            'title' => 'Brouillard activé',
             'msg' => 'L\'arène est plongée dans l\'ombre, les scores sont masqués !',
         ],
         self::TYPE_ADDED_BY_REFEREE => [
             'label' => 'Ajout forcé par un arbitre',
-            'title' => '📋 Ajout à une compétition',
+            'title' => 'Ajout à une compétition',
             'msg' => '%s vous a ajouté à l\'arène %s.',
         ],
         self::TYPE_REFEREE_PROMOTED => [
             'label' => 'Nominations d\'arbitres',
-            'title' => '🛡️ Équipe d\'arbitrage',
+            'title' => 'Équipe d\'arbitrage',
             'msg_target' => '%s vous a désigné arbitre pour l\'arène %s.',
             'msg_others' => '%s a été désigné arbitre pour l\'arène %s.',
         ],
         self::TYPE_REFEREE_REVOKED => [
             'label' => 'Révocations d\'arbitres',
-            'title' => '🛡️ Équipe d\'arbitrage',
+            'title' => 'Équipe d\'arbitrage',
             'msg_target' => '%s a révoqué vos droits d\'arbitrage pour l\'arène %s.',
             'msg_others' => '%s a été libéré de ses fonctions d\'arbitre pour l\'arène %s.',
         ],
         self::TYPE_GUEST_CLAIMED => [
             'label' => 'Prise de contrôle d\'un profil invité',
-            'title' => '👋 Un joueur se réveille',
+            'title' => 'Un joueur se réveille',
             'msg' => '%s a créé son compte réel et gère désormais son propre profil !',
         ],
     ];

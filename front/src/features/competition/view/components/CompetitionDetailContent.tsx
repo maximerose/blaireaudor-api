@@ -1,25 +1,24 @@
-import { useState, lazy, Suspense } from 'react'; // 🟢 Ajout de lazy et Suspense
-import {
-  MainLayout,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  Grid,
-  Stack,
-  Row,
-  Button,
-  BUTTON_VARIANT,
-  ICONS,
-  LoadingScreen, // Ton loader standard
-} from '@/shared';
-import { useCompetitionContext } from '@/features/competition/context';
-import { CompetitionHeader } from './CompetitionHeader';
+import { ActionTable } from '@/features/competition/actions';
 import { AdminSettings } from '@/features/competition/admin';
-import { ReportingSection } from '@/features/competition/reporting';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import { Leaderboard } from '@/features/competition/leaderboard';
-import { ActionTable } from '@/features/competition/actions';
+import { ReportingSection } from '@/features/competition/reporting';
+import {
+  Button,
+  BUTTON_VARIANT,
+  Grid,
+  ICONS,
+  LoadingScreen,
+  MainLayout,
+  Row,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+} from '@/shared';
+import { lazy, Suspense } from 'react'; // 🟢 Ajout de lazy et Suspense
+import { useCompetitionDetailUI } from '../hooks';
+import { CompetitionHeader } from './CompetitionHeader';
 
-// 🟢 CHARGEMENT DYNAMIQUE : On isole l'onglet de stats et la lourde librairie Recharts
 const CompetitionStatsTab = lazy(() =>
   import('@/features/stats/components/CompetitionsStatsTab').then((module) => ({
     default: module.CompetitionStatsTab,
@@ -27,13 +26,10 @@ const CompetitionStatsTab = lazy(() =>
 );
 
 export const CompetitionDetailContent = () => {
-  const { competition } = useCompetitionContext();
-  const [activeTab, setActiveTab] = useState<'leaderboard' | 'stats'>(
-    'leaderboard',
-  );
+  const { competition, activeTab, handleTabChange } = useCompetitionDetailUI();
 
   return (
-    <MainLayout title={competition.name} subtitle={competition.name}>
+    <MainLayout title={competition?.name} subtitle={competition?.name}>
       <CompetitionHeader />
       <AdminSettings />
       <ReportingSection />
@@ -49,7 +45,7 @@ export const CompetitionDetailContent = () => {
               ? BUTTON_VARIANT.PRIMARY
               : BUTTON_VARIANT.GHOST
           }
-          onClick={() => setActiveTab('leaderboard')}
+          onClick={() => handleTabChange('leaderboard')}
           className="flex-1 rounded-lg"
           size="sm"
           icon={ICONS.RANKING}
@@ -62,7 +58,7 @@ export const CompetitionDetailContent = () => {
               ? BUTTON_VARIANT.PRIMARY
               : BUTTON_VARIANT.GHOST
           }
-          onClick={() => setActiveTab('stats')}
+          onClick={() => handleTabChange('stats')}
           className="flex-1 rounded-lg"
           size="sm"
           icon={ICONS.STATS}
@@ -78,7 +74,7 @@ export const CompetitionDetailContent = () => {
               title={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.TITLE}
               variant={SECTION_HEADER_VARIANT.DIVIDER}
               badge={COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.NB_PLAYERS(
-                competition.participations?.length || 0,
+                competition?.participations?.length || 0,
               )}
             />
             <Leaderboard />

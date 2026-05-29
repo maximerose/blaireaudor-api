@@ -1,20 +1,20 @@
 import {
-  Card,
-  CARD_VARIANT,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  Row,
-  Stack,
-  cn,
-  UI,
-  formatShortDate,
-} from '@/shared';
-import {
-  PLAYER_STATS_GENERAL,
   FOCUS_THEME_CONFIG,
+  PLAYER_STATS_GENERAL,
 } from '@/features/stats/constants';
 import type { StatFocusCardProps } from '@/features/stats/types';
+import {
+  Card,
+  CARD_VARIANT,
+  cn,
+  formatShortDate,
+  Row,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
+} from '@/shared';
 
 export const StatFocusCard = ({
   title,
@@ -54,7 +54,7 @@ export const StatFocusCard = ({
               <Text
                 variant={TEXT_VARIANT.CAPTION}
                 colorTheme={config.textTheme}
-                className="font-black text-[10px] tracking-normal whitespace-nowrap"
+                className="font-black text-xs tracking-normal whitespace-nowrap"
               >
                 {title}
               </Text>
@@ -70,8 +70,8 @@ export const StatFocusCard = ({
 
                   <Text
                     variant={TEXT_VARIANT.MICRO}
-                    colorTheme={TEXT_THEME.DIMMED}
-                    className="text-[8px] tracking-normal truncate mt-0.5 flex flex-wrap items-center gap-1"
+                    colorTheme={TEXT_THEME.MUTED}
+                    className="text-xs tracking-normal truncate mt-0.5 flex flex-wrap items-center gap-1"
                   >
                     {data.involvedName && (
                       <span className="flex items-center normal-case">
@@ -93,7 +93,7 @@ export const StatFocusCard = ({
                       )}
 
                     {data.date ? (
-                      <span className="text-silver italic font-mono text-[9px]">
+                      <span className="text-silver italic font-mono text-xs">
                         {formatShortDate(data.date)}
                       </span>
                     ) : data.competitionName ? (
@@ -107,7 +107,7 @@ export const StatFocusCard = ({
                 <Text
                   variant={TEXT_VARIANT.MICRO}
                   colorTheme={TEXT_THEME.DIMMED}
-                  className="italic text-[10px] tracking-normal mt-0.5 normal-case"
+                  className="italic text-xs tracking-normal mt-0.5 normal-case"
                 >
                   {PLAYER_STATS_GENERAL.FOCUS.RECORD_EMPTY}
                 </Text>
@@ -122,7 +122,7 @@ export const StatFocusCard = ({
               className={cn('shrink-0 font-black text-lg', config.glowClass)}
             >
               +{data.points}
-              <span className="text-[7px] font-normal lowercase opacity-40 ml-0.5">
+              <span className="text-xs font-normal lowercase opacity-40 ml-0.5">
                 pts
               </span>
             </Text>

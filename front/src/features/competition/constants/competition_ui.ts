@@ -1,4 +1,4 @@
-import { ICONS, pluralize, withIconPrefix } from '@/shared';
+import { pluralize } from '@/shared';
 
 export const COMPETITION_UI = {
   CREATE: {
@@ -28,10 +28,8 @@ export const COMPETITION_UI = {
       TOOLTIP_RESIGN: 'Démissionner',
       TOOLTIP_REVOKE: 'Révoquer cet arbitre',
       ARIA_REVOKE: 'Révoquer',
-      LAST_REF_WARNING: withIconPrefix(
-        ICONS.DANGER,
+      LAST_REF_WARNING:
         'Tu es le dernier arbitre. Ajoute un successeur avant de pouvoir démissionner.',
-      ),
       APPOINT: 'Nommer',
     },
     MULTIPLIER: {
@@ -48,12 +46,9 @@ export const COMPETITION_UI = {
     },
     CLOSE: {
       HEADER: 'Fin de partie',
-      SUBMIT: withIconPrefix(ICONS.FINISHED, 'Clôturer la compétition'),
+      SUBMIT: 'Clôturer la compétition',
       PENDING_WARNING: (count: number) =>
-        withIconPrefix(
-          ICONS.DANGER,
-          `${count} ${pluralize(count, 'action')} en attente`,
-        ),
+        `${count} ${pluralize(count, 'action')} en attente`,
       COMPETITION_NOT_STARTED:
         'La compétition doit avoir débuté pour être clôturée.',
     },
@@ -112,10 +107,7 @@ export const COMPETITION_UI = {
         ARIA_TITLE: (competitionName?: string) =>
           `Classement pour la compétition ${competitionName ? competitionName : 'en cours'} `,
         FOG_OF_WAR: {
-          ACTIVE: withIconPrefix(
-            ICONS.FOG_ACTIVE,
-            'Brouillard de guerre actif',
-          ),
+          ACTIVE: 'Brouillard de guerre actif',
         },
         EMPTY: {
           TITLE: "No man's land...",
@@ -152,7 +144,7 @@ export const COMPETITION_UI = {
           PENDING: `Actions en attente`,
           MY_SUBMISSIONS: 'Mes envois',
           OTHER_SUBMISSIONS: 'Signalements des autres',
-          REJECTED: withIconPrefix(ICONS.TRASH, 'Actions rejetées (Archive)'),
+          REJECTED: 'Actions rejetées (Archive)',
         },
         OTHER_PLAYERS: 'Autres joueurs...',
         REPORTED_BY: 'Dénoncé par : ',

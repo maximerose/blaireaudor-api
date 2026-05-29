@@ -1,23 +1,23 @@
-import {
-  Text,
-  Input,
-  Button,
-  Badge,
-  BADGE_VARIANT,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  SectionHeader,
-  formatLongDate,
-  FORM,
-  BUTTONS,
-  Row,
-  Stack,
-  Grid,
-  RULES,
-} from '@/shared';
 import { useBonusDayForm } from '@/features/competition/admin/hooks';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import type { BonusDay } from '@/features/competition/types';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Button,
+  BUTTONS,
+  FORM,
+  formatLongDate,
+  Grid,
+  Input,
+  Row,
+  RULES,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
 
 export const BonusDayManagement = () => {
   const {
@@ -48,7 +48,7 @@ export const BonusDayManagement = () => {
             onRemove={() => deleteBonus(bd.id)}
             removeLabel={FORM.BONUS_DAY.BUTTONS.DELETE}
           >
-            <span className="font-mono text-[10px]">
+            <span className="font-mono text-sm">
               {formatLongDate(bd.date)} —{' '}
               <span className="text-text-muted">x{bd.multiplier}</span>
             </span>

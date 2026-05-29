@@ -1,29 +1,29 @@
-import { Link, useSearchParams } from 'react-router-dom';
-import {
-  Input,
-  Button,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  Alert,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  WizardLayout,
-  FORM,
-  ROUTES,
-  WizardCard,
-  CARD_VARIANT,
-  Stack,
-  Row,
-  Divider,
-  UI,
-  ERRORS,
-  BadgerLogo,
-} from '@/shared';
-import { useLogin } from '@/features/account/hooks';
 import { AUTH_UI } from '@/features/account/constants';
-import { PasswordField } from './fields/PasswordField';
+import { useLogin } from '@/features/account/hooks';
 import { useJoinCodeQuery } from '@/features/competition/join';
+import {
+  Alert,
+  BadgerLogo,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  CARD_VARIANT,
+  Divider,
+  ERRORS,
+  FORM,
+  Input,
+  ROUTES,
+  Row,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
+  WizardCard,
+  WizardLayout,
+} from '@/shared';
+import { Link, useSearchParams } from 'react-router-dom';
+import { PasswordField } from './fields/PasswordField';
 
 export const LoginForm = () => {
   const [searchParams] = useSearchParams();
@@ -41,7 +41,7 @@ export const LoginForm = () => {
   return (
     <WizardLayout title={AUTH_UI.LOGIN.TITLE}>
       <Stack as="h1" gap="md" align="center" mb="lg">
-        <BadgerLogo className="w-40 h-40 md:w-60 md:h-60 drop-shadow-[0_0_15px_rgba(255,184,0,0.3)]" />
+        <BadgerLogo className="w-30 h-30 md:w-40 md:h-40 drop-shadow-[0_0_15px_rgba(255,184,0,0.3)]" />
         <Text as="h1" variant={TEXT_VARIANT.H1} colorTheme={TEXT_THEME.GOLD}>
           {UI.APP_NAME}
         </Text>

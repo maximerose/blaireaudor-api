@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { CompCategoryConfig } from '@/features/stats/types';
-import { ICONS, pluralize, withIconPrefix, withIconSuffix } from '@/shared';
+import { ICONS, pluralize } from '@/shared';
 
 // ---------------------------------------------------------
 // 1. TEXTES GLOBAUX
@@ -11,17 +11,12 @@ export const COMPETITION_STATS_GENERAL = {
     EMPTY: "L'arène est trop calme, aucune donnée à analyser.",
     FOG_WARNING:
       "Les statistiques et l'évolution temporelle sont masquées jusqu'à la levée du brouillard de guerre par l'arbitre.",
-    HELP_HINT: withIconPrefix(
-      ICONS.HINT,
+    HELP_HINT:
       'Astuce : Clique sur les noms dans la légende ci-dessous pour masquer/afficher leurs courbes.',
-    ),
-    FULLSCREEN_HELP: withIconPrefix(
-      ICONS.ROTATE,
+    FULLSCREEN_HELP:
       'Plein écran activé. Tournez votre appareil en mode paysage pour une meilleure lecture.',
-    ),
-    BTN_MAXIMIZE: withIconPrefix(ICONS.MAXIMIZE, 'Agrandir'),
-    BTN_OPEN: '🔍 Ouvrir le graphique',
-    BTN_CLOSE: withIconSuffix('Fermer', ICONS.CANCEL),
+    BTN_MAXIMIZE: 'Agrandir',
+    BTN_CLOSE: 'Fermer',
     TOGGLE_RANKS: 'Évolution des rangs',
     TOGGLE_POINTS: 'Évolution des points',
   },
@@ -53,15 +48,14 @@ export const COMPETITION_STATS_GENERAL = {
 // ---------------------------------------------------------
 const fmtPoints = (pts: number) => (
   <span className="flex items-baseline justify-center gap-1">
-    {pts}{' '}
-    <span className="text-[10px] opacity-50 font-normal lowercase">pts</span>
+    {pts} <span className="text-xs opacity-50 font-normal lowercase">pts</span>
   </span>
 );
 
 const fmtPointsPerAction = (pts: number) => (
   <span className="flex items-baseline justify-center gap-1">
     {pts}{' '}
-    <span className="text-[10px] opacity-50 font-normal lowercase">
+    <span className="text-xs opacity-50 font-normal lowercase">
       pts / action
     </span>
   </span>
@@ -70,8 +64,7 @@ const fmtPointsPerAction = (pts: number) => (
 const fmtPercent = (val: number | null) =>
   val !== null ? (
     <span className="flex items-baseline justify-center gap-1">
-      {val}{' '}
-      <span className="text-[10px] opacity-50 font-normal lowercase">%</span>
+      {val} <span className="text-xs opacity-50 font-normal lowercase">%</span>
     </span>
   ) : (
     '-'

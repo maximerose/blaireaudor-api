@@ -9,4 +9,8 @@ export const UI = {
   LOADING_DEFAULT: 'Chargement...',
   LOADING_SR: 'Patiente, le contenu de la page est en cours de chargement.',
   INFO_ARIA: (title: string) => `Information : ${title}`,
+
+  TIMINGS: {
+    SPLASH_DURATION: 2000,
+  },
 };

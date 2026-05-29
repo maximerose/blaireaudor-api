@@ -95,11 +95,11 @@ export const SectionHeader = ({
       <Row align="center" gap="md" px="xs" className={className}>
         <Row
           align="center"
-          gap="xs"
+          gap="sm"
           fullWidth={false}
           className="whitespace-nowrap shrink-0"
         >
-          {icon && <div className={iconColorClass}>{icon}</div>}
+          {icon && <div className={cn(iconColorClass, 'mr-0.5')}>{icon}</div>}
           <Text variant={TEXT_VARIANT.CAPTION} colorTheme={resolvedTheme}>
             {title}
           </Text>

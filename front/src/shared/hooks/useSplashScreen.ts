@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { UI } from '../constants';
 
-export const useSplashScreen = (fadeDelay = 1500, unmountDelay = 2000) => {
+export const useSplashScreen = (
+  unmountDelay = UI.TIMINGS.SPLASH_DURATION,
+  fadeDelay = unmountDelay - 500,
+) => {
   const [isMounted, setIsMounted] = useState(() => {
     return !sessionStorage.getItem('splash_seen');
   });

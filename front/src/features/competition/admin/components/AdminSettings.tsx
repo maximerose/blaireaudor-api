@@ -1,4 +1,9 @@
-import { useState } from 'react';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import {
+  AdminProvider,
+  useCompetitionContext,
+} from '@/features/competition/context';
+import { usePermissions } from '@/features/competition/hooks';
 import {
   Badge,
   BADGE_VARIANT,
@@ -9,25 +14,20 @@ import {
   Card,
   CARD_VARIANT,
   cn,
+  Grid,
   ICONS,
+  Row,
+  Stack,
   Text,
   TEXT_VARIANT,
-  Stack,
-  Row,
-  Grid,
 } from '@/shared';
+import { useState } from 'react';
 import { BonusDayManagement } from './BonusDayManagement';
 import { CloseCompetitionAction } from './CloseCompetitionAction';
 import { CompetitionGeneralSettings } from './CompetitionGeneralSettings';
 import { DeleteCompetitionAction } from './DeleteCompetitionAction';
 import { FogOfWarToggle } from './FogOfWarToggle';
 import { RefereeManagement } from './RefereeManagement';
-import { COMPETITION_UI } from '@/features/competition/constants';
-import {
-  useCompetitionContext,
-  AdminProvider,
-} from '@/features/competition/context';
-import { usePermissions } from '@/features/competition/hooks';
 
 export const AdminSettings = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -82,7 +82,7 @@ export const AdminSettings = () => {
                     variant={
                       isFogActive ? BADGE_VARIANT.INFO : BADGE_VARIANT.GHOST
                     }
-                    className="text-[8px] py-0 whitespace-nowrap"
+                    className="text-xs py-0 whitespace-nowrap"
                   >
                     {COMPETITION_UI.ADMIN.FOG.LABEL}{' '}
                     {isFogActive
@@ -91,7 +91,7 @@ export const AdminSettings = () => {
                   </Badge>
                   <Badge
                     variant={BADGE_VARIANT.GHOST}
-                    className="text-[8px] py-0 whitespace-nowrap"
+                    className="text-xs py-0 whitespace-nowrap"
                   >
                     {COMPETITION_UI.ADMIN.GENERAL.REFEREES_COUNT(
                       competition.referees?.length || 0,

@@ -95,7 +95,7 @@ export const NotificationSettingsForm = ({ form, onSubmit }: Props) => {
                             colorTheme={
                               isChecked ? TEXT_THEME.DEFAULT : TEXT_THEME.DIMMED
                             }
-                            className="font-bold truncate"
+                            className="font-bold leading-tight pr-2 text-left"
                           >
                             {option.label}
                           </Text>

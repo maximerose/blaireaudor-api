@@ -1,15 +1,15 @@
+import { COMPETITION_UI } from '@/features/competition/constants';
+import { useAdminContext } from '@/features/competition/context';
 import {
-  Text,
   Badge,
   BADGE_VARIANT,
-  TEXT_VARIANT,
   cn,
   ICONS,
-  Stack,
   Row,
+  Stack,
+  Text,
+  TEXT_VARIANT,
 } from '@/shared';
-import { useAdminContext } from '@/features/competition/context';
-import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const FogOfWarToggle = () => {
   const { isFogActive, handleToggleFog, isUpdating } = useAdminContext();
@@ -74,7 +74,7 @@ export const FogOfWarToggle = () => {
         <Stack gap="none" className="flex-1 min-w-0">
           <Text
             variant={TEXT_VARIANT.H3}
-            className="font-black uppercase text-[10px] sm:text-[11px] leading-none tracking-tight"
+            className="font-black uppercase text-sm leading-none tracking-tight"
           >
             {isFogActive
               ? COMPETITION_UI.ADMIN.FOG.DISABLE
@@ -82,7 +82,7 @@ export const FogOfWarToggle = () => {
           </Text>
           <Text
             variant={TEXT_VARIANT.BODY}
-            className="text-[9px] sm:text-[10px] opacity-60 font-normal italic mt-1 leading-tight line-clamp-2"
+            className="text-xs opacity-60 font-normal italic mt-1 leading-tight line-clamp-2"
           >
             {isFogActive
               ? COMPETITION_UI.ADMIN.FOG.DESC_OFF

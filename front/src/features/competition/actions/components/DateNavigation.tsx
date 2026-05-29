@@ -1,3 +1,9 @@
+import { useDateNavigation } from '@/features/competition/actions/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
+import {
+  useActionTableContext,
+  useCompetitionContext,
+} from '@/features/competition/context';
 import {
   Button,
   BUTTON_SIZE,
@@ -5,12 +11,6 @@ import {
   cn,
   formatLongDate,
 } from '@/shared';
-import {
-  useActionTableContext,
-  useCompetitionContext,
-} from '@/features/competition/context';
-import { useDateNavigation } from '@/features/competition/actions/hooks';
-import { COMPETITION_UI } from '@/features/competition/constants';
 
 export const DateNavigation = () => {
   const { availableDates, selectedDate, setSelectedDate } =
@@ -68,7 +68,7 @@ export const DateNavigation = () => {
 
                 {multiplier && (
                   <div className="absolute top-0 right-0 bottom-0 w-6 bg-game-bonus flex items-center justify-center border-l border-border-subtle animate-fade-in">
-                    <span className="text-[10px] font-black text-white">
+                    <span className="text-xs font-black text-white">
                       x{multiplier}
                     </span>
                   </div>

@@ -21,7 +21,7 @@ const ROLE_CONFIG = {
     variant: BADGE_VARIANT.GHOST,
     label: 'Invité',
     icon: undefined,
-    className: 'opacity-60 text-[8px] py-0 px-1.5',
+    className: 'opacity-60 text-xs py-0 px-1.5',
   },
 };
 
@@ -33,6 +33,7 @@ export const RoleBadge = ({ role }: RoleBadgeProps) => {
       variant={config.variant}
       icon={config.icon}
       className={config.className}
+      hideTextMobile={!!config.icon}
     >
       {config.label}
     </Badge>

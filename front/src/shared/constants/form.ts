@@ -1,6 +1,3 @@
-import { withIconPrefix, withIconSuffix } from '@/shared/utils';
-import { ICONS } from './icons';
-
 export const FORM = {
   /**
    * ÉLÉMENTS PARTAGÉS (Reutilisables partout)
@@ -104,17 +101,14 @@ export const FORM = {
       EXTERNAL_REFEREE: 'Chercher un arbitre externe...',
     },
     HINTS: {
-      JOIN_CODE: withIconSuffix('Vide = génération automatique', ICONS.STARS),
+      JOIN_CODE: 'Vide = génération automatique',
       JOIN_CODE_CHECK: 'Vérification du code...',
       JOIN_CODE_AVAILABLE: "Code d'accès disponible !",
       JOIN_CODE_TAKEN: "Code d'accès déjà utilisé.",
       FOG_OF_WAR: 'Scores cachés pendant le tournoi',
       PARTICIPATE: 'Participer au tournoi en tant que joueur',
       ALREADY_STARTED: 'Déjà lancée',
-      REFEREE: withIconPrefix(
-        ICONS.DANGER,
-        'Tu dois désigner au moins un arbitre.',
-      ),
+      REFEREE: 'Tu dois désigner au moins un arbitre.',
     },
   },
 
@@ -161,7 +155,7 @@ export const FORM = {
    */
   ADMIN: {
     BONUS: {
-      TITLE: withIconPrefix(ICONS.BONUS, 'Multiplicateurs'),
+      TITLE: 'Multiplicateurs',
       SUBTITLE: 'Multiplier les points de la journée.',
       EMPTY: 'Aucun multiplicateur programmé.',
     },

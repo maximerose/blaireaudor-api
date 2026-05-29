@@ -46,6 +46,60 @@ export const getLocalDayString = (dateInput: string | Date): string => {
   return `${year}-${month}-${day}`;
 };
 
+export const formatCompactDate = (
+  dateStr: string | null | undefined,
+): string | null => {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  return isNaN(date.getTime())
+    ? null
+    : date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+      });
+};
+
+/**
+ * Convertit une date ISO en indicateur temporel relatif compact (style Facebook/Instagram)
+ * Exemple : "5 min", "2 h", "3 j", "1 sem"
+ */
+export const formatRelativeTime = (dateInput: string | Date): string => {
+  if (!dateInput) return '-';
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  if (isNaN(date.getTime())) return '-';
+
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  // Moins d'une minute
+  if (diffInSeconds < 60) return 'Maintenant';
+
+  // Moins d'une heure
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes} min`;
+
+  // Moins d'un jour
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} h`;
+
+  // Moins d'une semaine
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays} j`;
+
+  // Moins d'un mois (estimé à 30 jours)
+  const diffInWeeks = Math.floor(diffInDays / 7);
+  if (diffInDays < 30) return `${diffInWeeks} sem`;
+
+  // Moins d'un an
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} mois`;
+
+  // Au-delà d'un an, on réutilise le format court standard (ex: 15 mai)
+  return date
+    .toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
+    .replace('.', '');
+};
+
 export const formatFrenchDate = (
   dateStr: string | null | undefined,
 ): string | null => {

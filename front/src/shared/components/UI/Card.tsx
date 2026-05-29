@@ -1,8 +1,8 @@
 // front/src/shared/components/UI/Card.tsx
 
-import React from 'react';
-import { cn } from '@/shared/utils';
 import { LAYOUT, type LayoutP } from '@/shared/constants';
+import { cn } from '@/shared/utils';
+import React from 'react';
 import { Row, Stack } from '../Layout';
 
 export const CARD_VARIANT = {
@@ -21,6 +21,7 @@ export interface BaseCardProps {
   variant?: CardVariant;
   padding?: LayoutP;
   radius?: CardRadius;
+  hoverVariant?: 'gold' | 'info';
 }
 
 export type CardProps<T extends React.ElementType = 'div'> = BaseCardProps & {
@@ -53,14 +54,23 @@ export const CardRoot = <T extends React.ElementType = 'div'>({
   padding,
   radius = 'xl',
   onClick,
+  hoverVariant = 'gold',
   ...props
 }: CardProps<T>) => {
   const Tag = as || 'div';
   const isClickable = !!onClick;
 
+  const HOVER_THEMES = {
+    gold: 'hover:border-gold-border hover:shadow-glow-gold focus:ring-gold-border',
+    info: 'hover:border-info-border hover:shadow-glow-info focus:ring-info-border',
+  };
+
   const hoverStyles =
     isHoverable || isClickable
-      ? 'hover:border-gold-border hover:bg-surface-hover hover:shadow-lg hover:shadow-gold-soft cursor-pointer focus:outline-none focus:ring-1 focus:ring-gold-border'
+      ? cn(
+          'hover:bg-surface-hover cursor-pointer focus:outline-none focus:ring-1 transition-default',
+          HOVER_THEMES[hoverVariant],
+        )
       : '';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {

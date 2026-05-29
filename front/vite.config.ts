@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
@@ -12,7 +12,12 @@ export default defineConfig({
     watch: { usePolling: true },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://back:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/.well-known/mercure': {
+        target: 'http://mercure:80',
         changeOrigin: true,
         secure: false,
       }
@@ -24,7 +29,7 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://back:8000',
         changeOrigin: true,
         secure: false,
       }

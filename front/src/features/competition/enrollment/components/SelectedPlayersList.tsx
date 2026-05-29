@@ -1,13 +1,13 @@
+import type { PlayerCompact } from '@/features/player';
 import {
   Badge,
   BADGE_VARIANT,
-  Text,
-  TEXT_VARIANT,
+  cn,
   FORM,
   ICONS,
-  cn,
+  Text,
+  TEXT_VARIANT,
 } from '@/shared';
-import type { PlayerCompact } from '@/features/player';
 
 interface SelectedPlayersListProps {
   participants: PlayerCompact[];
@@ -47,7 +47,7 @@ export const SelectedPlayersList = ({
                 onRemove(p.id);
               }}
               aria-label={`Supprimer ${p.display_name}`}
-              className="text-gold/40 hover:text-danger-bright transition-default text-[11px]"
+              className="text-gold/40 hover:text-danger-bright transition-default text-sm"
             >
               {ICONS.CANCEL}
             </button>

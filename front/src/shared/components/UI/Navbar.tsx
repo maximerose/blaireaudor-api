@@ -1,195 +1,179 @@
-import { Link } from 'react-router-dom';
+// front/src/shared/components/UI/Navbar.tsx
+
+import { NotificationBell, useNotifications } from '@/features/notification';
+import { ICONS, NAV } from '@/shared/constants';
 import { ROUTES } from '@/shared/constants/routes';
 import { useNavbarUI } from '@/shared/hooks';
-import { ICONS, NAV } from '@/shared/constants';
-import { cn } from '@/shared/utils';
-import { SECTION_HEADER_VARIANT, SectionHeader } from './SectionHeader';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
-import { Button, BUTTON_VARIANT, BUTTON_SIZE } from './Button';
-import { Row, Stack } from '../Layout';
-import { NotificationBell } from '@/features/notification';
 import { BadgerLogo } from '@/shared/logo';
+import { cn } from '@/shared/utils';
+import { Link, useLocation } from 'react-router-dom';
+import { Stack } from '../Layout';
+import { Text, TEXT_THEME, TEXT_VARIANT } from './Text';
 
 interface NavbarProps {
   subtitle?: string;
 }
 
-const LOGO_LINK =
-  'flex flex-row items-center gap-3 group transition-default active:scale-95 focus-visible:ring-2 focus-visible:ring-gold-border focus-visible:outline-none rounded-lg p-1';
 export const Navbar = ({ subtitle = NAV.SUBTITLE.PLAYER }: NavbarProps) => {
-  const {
-    displayName,
-    isScrolled,
-    isMenuOpen,
-    setIsMenuOpen,
-    isSuperAdmin,
-    adminUrl,
-    navLinks,
-  } = useNavbarUI();
+  const { isScrolled, isSuperAdmin, adminUrl, navLinks } = useNavbarUI();
+  const { unreadCount } = useNotifications();
+  const location = useLocation();
+
   return (
     <>
+      {/* 💻📱 Bandeau Supérieur Commun */}
       <nav
         className={cn(
-          'sticky top-0 z-40 w-full flex items-center justify-between border-b transition-all duration-300 ease-in-out px-4 sm:px-6',
+          'sticky bg-black/95 top-0 z-40 w-full flex items-center justify-between border-b transition-all duration-300 ease-in-out px-4',
           isScrolled
-            ? 'bg-dark/95 backdrop-blur-md border-border-base shadow-lg'
-            : 'bg-transparent border-transparent',
+            ? ' backdrop-blur-md h-12 py-1 border-border-base shadow-lg'
+            : 'h-16 py-2 border-transparent',
         )}
         aria-label={NAV.ARIA.MAIN_NAV}
       >
         <Link
           to={ROUTES.NAV.DASHBOARD}
-          className={LOGO_LINK}
-          aria-label={NAV.ARIA.HOME}
+          className="flex flex-row items-center gap-2.5 rounded-lg p-1 outline-none transition-all duration-300"
         >
-          <BadgerLogo isIcon className="w-10 h-10 md:w-12 md:h-12" />
-          <Stack gap="xs" align="start">
-            <SectionHeader
-              id="navbar-link-title"
-              variant={SECTION_HEADER_VARIANT.BLOCK}
-              title={NAV.TITLE}
-              className="mb-0 leading-noe"
-            />
+          <BadgerLogo
+            isIcon
+            className={cn(
+              'transition-all duration-300 ease-in-out',
+              isScrolled ? 'w-7 h-7' : 'w-10 h-10 md:w-12 md:h-12',
+            )}
+          />
+
+          <Stack
+            gap="none"
+            align="start"
+            className="transition-all duration-300"
+          >
+            <Text
+              variant={TEXT_VARIANT.H2}
+              colorTheme={TEXT_THEME.GOLD}
+              className={cn(
+                'text-lg sm:text-xl leading-none font-black tracking-tight italic transition-all duration-300 ease-in-out',
+                isScrolled ? 'max-sm:hidden opacity-0' : 'block opacity-100',
+              )}
+            >
+              {NAV.TITLE}
+            </Text>
 
             <Text
               variant={TEXT_VARIANT.MICRO}
-              colorTheme={TEXT_THEME.MUTED}
-              className={isScrolled ? 'text-center' : ''}
+              colorTheme={isScrolled ? TEXT_THEME.GOLD : TEXT_THEME.MUTED}
+              className={cn(
+                'text-[10px] sm:text-xs font-bold transition-all duration-300 ease-in-out leading-none',
+                isScrolled
+                  ? 'max-sm:text-xs max-sm:font-black max-sm:tracking-wide mt-0'
+                  : 'mt-0.5',
+              )}
             >
               {subtitle}
             </Text>
           </Stack>
         </Link>
-        <Row align="center" gap="sm" fullWidth={false}>
-          <NotificationBell />
-          <Button
-            variant={BUTTON_VARIANT.GHOST_NEUTRAL}
-            onClick={() => setIsMenuOpen(true)}
-            aria-label={NAV.ARIA.OPEN_MENU}
-            aria-expanded={isMenuOpen}
-            className="px-2"
-          >
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+
+        {/* Droite Desktop uniquement */}
+        <nav
+          className={cn(
+            'hidden md:flex items-center gap-6 transition-all duration-300 font-bold',
+            isScrolled ? 'text-lg' : 'text-xl',
+          )}
+          aria-label={NAV.ARIA.MAIN_NAV}
+        >
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={cn(
+                'inline-block transition-colors',
+                location.pathname === link.to
+                  ? 'text-gold'
+                  : 'text-text-muted hover:text-silver',
+              )}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Button>
-        </Row>
+              {link.icon}
+            </Link>
+          ))}
+          {isSuperAdmin && (
+            <a
+              href={adminUrl}
+              className="text-role-creator-bright hover:text-role-creator items-center"
+            >
+              {ICONS.SETTINGS}
+            </a>
+          )}
+          <NotificationBell />
+        </nav>
       </nav>
 
-      <div
-        className={cn(
-          'fixed inset-0 z-50 transition-all duration-300',
-          isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible',
-        )}
-      >
-        <div
-          className="absolute inset-0 bg-overlay backdrop-blur-sm"
-          onClick={() => setIsMenuOpen(false)}
-          aria-hidden="true"
-        />
-
-        <div
-          className={cn(
-            'absolute right-0 top-0 bottom-0 w-72 max-w-[85vw] bg-dark-lighter border-l border-border-subtle shadow-2xl flex flex-col transform transition-transform duration-300 ease-out',
-            isMenuOpen ? 'translate-x-0' : 'translate-x-full',
-          )}
-        >
-          <Row
-            align="center"
-            justify="between"
-            p="lg"
-            className="border-b border-border-subtle"
-          >
-            <Stack gap="none">
-              <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.DIMMED}>
-                {NAV.CONNECTED_AS}
-              </Text>
-              <Text
-                variant={TEXT_VARIANT.H3}
-                colorTheme={TEXT_THEME.GOLD}
-                className="truncate"
-              >
-                {displayName}
-              </Text>
-            </Stack>
-
-            <Button
-              variant={BUTTON_VARIANT.GHOST_NEUTRAL}
-              size={BUTTON_SIZE.SMALL}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {ICONS.CANCEL}
-            </Button>
-          </Row>
-
-          <div className="flex-1 py-4 flex flex-col">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.to;
-              return (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={cn(
-                    'flex items-center gap-4 px-6 py-4 transition-all duration-200 border-l-2',
-                    isActive
-                      ? 'bg-gold-soft border-gold text-gold'
-                      : 'border-transparent text-text-muted hover:bg-surface-base hover:text-silver',
-                  )}
-                >
-                  <span className="text-xl" aria-hidden="true">
-                    {link.icon}
-                  </span>
-                  <Text
-                    variant={TEXT_VARIANT.BODY}
-                    colorTheme={TEXT_THEME.INHERIT}
-                    className="font-bold tracking-wide"
-                  >
-                    {link.label}
-                  </Text>
-                </Link>
-              );
-            })}
-
-            {isSuperAdmin && (
-              <a
-                href={adminUrl}
-                className="flex items-center gap-4 px-6 py-4 mt-2 transition-all duration-200 border-l-2 border-transparent text-role-creator-bright hover:bg-surface-base hover:text-white border-t border-t-border-subtle"
-              >
-                <span className="text-xl" aria-hidden="true">
-                  {ICONS.SETTINGS}
-                </span>
-                <Text
-                  variant={TEXT_VARIANT.BODY}
-                  colorTheme={TEXT_THEME.INHERIT}
-                  className="font-bold tracking-wide"
-                >
-                  {NAV.LINK.SUPER_ADMIN}
-                </Text>
-              </a>
+      {/* 📱 BARRE D'ONGLETS INFÉRIEURE MOBILE (Style Instagram Puro) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-t border-border-subtle shadow-2xl px-2 pb-safe">
+        <div className="flex justify-between items-center h-14 w-full max-w-md mx-auto text-2xl">
+          {/* Onglets identiques et épurés de ton précédent commit */}
+          <Link
+            to={ROUTES.NAV.DASHBOARD}
+            className={cn(
+              'flex items-center justify-center flex-1 h-full transition-colors',
+              location.pathname === ROUTES.NAV.DASHBOARD
+                ? 'text-gold'
+                : 'text-text-dimmed',
             )}
-          </div>
+            aria-label={NAV.ARIA.HOME}
+          >
+            {ICONS.HOME}
+          </Link>
 
-          <div className="p-6 border-t border-border-subtle">
-            <Button
-              variant={BUTTON_VARIANT.DANGER}
-              to={ROUTES.NAV.LOGOUT}
-              fullWidth
-              size={BUTTON_SIZE.MEDIUM}
+          <Link
+            to={ROUTES.NAV.STATS}
+            className={cn(
+              'flex items-center justify-center flex-1 h-full transition-colors',
+              location.pathname === ROUTES.NAV.STATS
+                ? 'text-gold'
+                : 'text-text-dimmed',
+            )}
+          >
+            {ICONS.STATS}
+          </Link>
+
+          <Link
+            to={ROUTES.NAV.NOTIFICATIONS}
+            className={cn(
+              'flex items-center justify-center flex-1 h-full transition-colors relative',
+              location.pathname === ROUTES.NAV.NOTIFICATIONS
+                ? 'text-gold'
+                : 'text-text-dimmed',
+            )}
+          >
+            <span>
+              {unreadCount > 0 ? ICONS.NOTIFICATION_ON : ICONS.NOTIFICATION}
+            </span>
+            {unreadCount > 0 && (
+              <span className="absolute top-4 right-7 w-2 h-2 bg-danger-bright rounded-full shadow-[0_0_6px_var(--color-danger-bright)]" />
+            )}
+          </Link>
+
+          <Link
+            to={ROUTES.NAV.PROFILE}
+            className={cn(
+              'flex items-center justify-center flex-1 h-full transition-colors',
+              location.pathname === ROUTES.NAV.PROFILE
+                ? 'text-gold'
+                : 'text-text-dimmed',
+            )}
+          >
+            {ICONS.PLAYER}
+          </Link>
+
+          {isSuperAdmin && (
+            <a
+              href={adminUrl}
+              className="flex items-center justify-center flex-1 h-full text-role-creator-bright opacity-80 hover:opacity-100"
             >
-              {NAV.LINK.LOGOUT}
-            </Button>
-          </div>
+              {ICONS.SETTINGS}
+            </a>
+          )}
         </div>
       </div>
     </>

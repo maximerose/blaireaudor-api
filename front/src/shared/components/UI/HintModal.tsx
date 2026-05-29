@@ -1,12 +1,12 @@
 import {
-  Card,
-  CARD_VARIANT,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
   Button,
   BUTTON_VARIANT,
   BUTTONS,
+  Card,
+  CARD_VARIANT,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
 } from '@/shared';
 
 interface HintModalProps {
@@ -37,12 +37,12 @@ export const HintModal = ({
       >
         <Card
           variant={CARD_VARIANT.DARK}
-          className="shadow-modal-gold border-gold/20"
+          className="shadow-modal-info border-info/50"
         >
           <Card.Body p="lg" gap="md" align="center">
             <Text
               variant={TEXT_VARIANT.H2}
-              colorTheme={TEXT_THEME.GOLD}
+              colorTheme={TEXT_THEME.INFO}
               className="italic text-center"
             >
               {title}

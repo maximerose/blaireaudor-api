@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Normalise une chaîne : enlève les accents et passe en minuscule.
  */
@@ -91,26 +89,3 @@ export const camelToSnake = (str: string): string => {
 export const snakeToCamel = (str: string): string => {
   return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 };
-
-/**
- * Aligne proprement une icône avec un texte en mode inline-flex
- * Utilisable dans les fichiers de constantes statiques (.ts)
- */
-export const withIconPrefix = (icon: React.ReactNode, text: string) =>
-  React.createElement(
-    'span',
-    { className: 'inline-flex items-center gap-2' },
-    icon,
-    React.createElement('span', null, text),
-  );
-
-/**
- * Aligne proprement un texte avec une icône en mode inline-flex
- */
-export const withIconSuffix = (text: string, icon: React.ReactNode) =>
-  React.createElement(
-    'span',
-    { className: 'inline-flex items-center gap-2' },
-    React.createElement('span', null, text),
-    icon,
-  );

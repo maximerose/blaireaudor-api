@@ -1,26 +1,26 @@
-import {
-  Card,
-  CARD_VARIANT,
-  EmptyState,
-  LoadingScreen,
-  SECTION_HEADER_VARIANT,
-  SectionHeader,
-  Text,
-  TEXT_VARIANT,
-  ICONS,
-  Stack,
-} from '@/shared';
-import { ActionRow } from './ActionRow';
-import { DateNavigation } from './DateNavigation';
-import { PendingSection } from './PendingSection';
-import { PlayerFilter } from './PlayerFilter';
-import { TableHeader } from './TableHeader';
 import { COMPETITION_UI } from '@/features/competition/constants';
 import {
   useActionTableContext,
   useCompetitionContext,
 } from '@/features/competition/context';
 import type { Action } from '@/features/competition/types';
+import {
+  Card,
+  CARD_VARIANT,
+  EmptyState,
+  ICONS,
+  LoadingScreen,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_VARIANT,
+} from '@/shared';
+import { ActionRow } from './ActionRow';
+import { DateNavigation } from './DateNavigation';
+import { PendingSection } from './PendingSection';
+import { PlayerFilter } from './PlayerFilter';
+import { TableHeader } from './TableHeader';
 
 export const ActionTableContent = () => {
   const { isAdmin } = useCompetitionContext();
@@ -85,7 +85,7 @@ export const ActionTableContent = () => {
 
                   <div
                     ref={loadMoreRef}
-                    className="flex justify-center p-8 border-t border-border-subtle w-full"
+                    className="flex justify-center p-3 border-t border-border-subtle w-full"
                   >
                     {isFetchingNextPage ? (
                       <Text

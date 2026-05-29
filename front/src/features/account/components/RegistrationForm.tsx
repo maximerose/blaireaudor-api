@@ -1,34 +1,34 @@
+import { AUTH_UI } from '@/features/account/constants';
+import { useRegistration } from '@/features/account/hooks';
+import { useJoinCodeQuery } from '@/features/competition/join';
 import {
+  Alert,
+  BadgerLogo,
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
   CARD_VARIANT,
+  Divider,
+  ERRORS,
   preventDefault,
   ROUTES,
+  Row,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+  UI,
   WizardCard,
   WizardLayout,
-  Stack,
-  Row,
-  Divider,
-  Alert,
-  UI,
-  ERRORS,
-  BadgerLogo,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
 } from '@/shared';
-import { useRegistration } from '@/features/account/hooks';
-import { AUTH_UI } from '@/features/account/constants';
-import { HistoricalPlayerSearch } from './HistoricalPlayerSearch';
+import { useSearchParams } from 'react-router-dom';
 import { GuestFoundAlert } from './GuestFoundAlert';
+import { HistoricalPlayerSearch } from './HistoricalPlayerSearch';
+import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
 import { DisplayNameField } from './fields/DisplayNameField';
 import { EmailField } from './fields/EmailField';
-import { UsernameField } from './fields/UsernameField';
 import { PasswordField } from './fields/PasswordField';
-import { ConfirmPasswordField } from './fields/ConfirmPasswordField';
-import { useSearchParams } from 'react-router-dom';
-import { useJoinCodeQuery } from '@/features/competition/join';
+import { UsernameField } from './fields/UsernameField';
 
 export const RegistrationForm = () => {
   const [searchParams] = useSearchParams();
@@ -64,7 +64,7 @@ export const RegistrationForm = () => {
   return (
     <WizardLayout title={AUTH_UI.REGISTER.TITLE}>
       <Stack gap="md" align="center" mb="lg">
-        <BadgerLogo className="w-40 h-40 md:w-60 md:h-60 drop-shadow-[0_0_15px_rgba(255,184,0,0.3)]" />
+        <BadgerLogo className="w-20 h-20 md:w-30 md:h-30 drop-shadow-[0_0_15px_rgba(255,184,0,0.3)]" />
         <Text variant={TEXT_VARIANT.H1} colorTheme={TEXT_THEME.GOLD}>
           {UI.APP_NAME}
         </Text>

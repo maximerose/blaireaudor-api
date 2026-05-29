@@ -1,20 +1,20 @@
-import {
-  Button,
-  Badge,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  BADGE_VARIANT,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  ICONS,
-  BUTTONS,
-  Stack,
-} from '@/shared';
+import { useCompetitionDelete } from '@/features/competition/admin/hooks';
+import { COMPETITION_UI } from '@/features/competition/constants';
 import { useCompetitionContext } from '@/features/competition/context';
 import { usePermissions } from '@/features/competition/hooks';
-import { useCompetitionDelete } from '@/features/competition/admin/hooks';
 import type { Participation } from '@/features/competition/types';
-import { COMPETITION_UI } from '@/features/competition/constants';
+import {
+  Badge,
+  BADGE_VARIANT,
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  BUTTONS,
+  ICONS,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+} from '@/shared';
 
 export const DeleteCompetitionAction = () => {
   const { competition } = useCompetitionContext();
@@ -59,7 +59,7 @@ export const DeleteCompetitionAction = () => {
       ) : (
         <Badge
           variant={BADGE_VARIANT.GHOST}
-          className="opacity-70 italic text-[8px]"
+          className="opacity-70 italic text-xs"
         >
           {COMPETITION_UI.DETAIL.PROTECTED}
         </Badge>

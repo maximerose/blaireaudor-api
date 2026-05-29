@@ -1,7 +1,7 @@
-import React from 'react';
-import { cn } from '@/shared/utils';
-import { Text, TEXT_VARIANT, TEXT_THEME } from './Text';
 import { BUTTONS, ICONS } from '@/shared/constants';
+import { cn } from '@/shared/utils';
+import React from 'react';
+import { Text, TEXT_THEME, TEXT_VARIANT } from './Text';
 
 export const BADGE_VARIANT = {
   GOLD: 'gold',
@@ -29,6 +29,7 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   icon?: React.ReactNode;
   onRemove?: () => void;
   removeLabel?: string;
+  hideTextMobile?: boolean;
 }
 
 const VARIANTS_STYLES: Record<BadgeVariant, string> = {
@@ -61,13 +62,18 @@ export const Badge = ({
   icon,
   onRemove,
   removeLabel = BUTTONS.REMOVE,
+  hideTextMobile = false,
   ...props
 }: BadgeProps) => {
   return (
     <span
       className={cn(
         'inline-flex items-center justify-center gap-1.5 px-2 py-1 rounded-md border shrink-0 transition-default whitespace-nowrap',
-        onRemove ? 'pl-2.5 pr-1' : 'px-2',
+        onRemove
+          ? 'pl-2.5 pr-1'
+          : hideTextMobile && icon
+            ? 'px-2 sm:px-2 max-sm:p-1'
+            : 'px-2',
         VARIANTS_STYLES[variant],
         isPulse && 'animate-pulse motion-reduce:animate-none',
         className,
@@ -86,7 +92,10 @@ export const Badge = ({
         as="span"
         variant={TEXT_VARIANT.MICRO}
         colorTheme={TEXT_THEME.INHERIT}
-        className="tracking-normal inline-flex items-center gap-1"
+        className={cn(
+          'tracking-normal inline-flex items-center gap-1',
+          hideTextMobile && 'hidden sm:inline-flex',
+        )}
       >
         {children}
       </Text>
@@ -101,7 +110,7 @@ export const Badge = ({
           title={removeLabel}
           aria-label={removeLabel}
         >
-          <span className="text-[10px] leading-none" aria-hidden="true">
+          <span className="text-xs leading-none" aria-hidden="true">
             {ICONS.CANCEL}
           </span>
         </button>

@@ -1,13 +1,13 @@
 // front/src/features/competition/create/components/CreateCompetitionStepper.tsx
 
 import {
-  ROUTES,
   Button,
   BUTTON_SIZE,
   BUTTON_VARIANT,
-  cn,
   BUTTONS,
+  cn,
   ICONS,
+  ROUTES,
   Row,
 } from '@/shared';
 
@@ -19,7 +19,7 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
     return (
       <div
         className={cn(
-          'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-default shrink-0',
+          'w-6 h-6 rounded-full flex items-center justify-center text-sm font-black transition-default shrink-0',
           isActive
             ? 'bg-gold text-dark'
             : isPassed
@@ -28,7 +28,7 @@ export const CreateCompetitionStepper = ({ step }: { step: number }) => {
         )}
         aria-live="polite"
       >
-        {isPassed ? <span className="text-xs">{ICONS.CHECK}</span> : num}
+        {isPassed ? ICONS.CHECK : num}
       </div>
     );
   };

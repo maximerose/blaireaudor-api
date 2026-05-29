@@ -1,7 +1,5 @@
-// front/src/shared/components/UI/Text.tsx
-
-import type React from 'react';
 import { cn } from '@/shared/utils';
+import type React from 'react';
 
 export const TEXT_VARIANT = {
   H1: 'h1',
@@ -15,34 +13,31 @@ export const TEXT_VARIANT = {
 
 export const TEXT_THEME = {
   DEFAULT: 'default',
-  MUTED: 'muted', // 🟢 Remplace opacity-60/80 (Gris clair)
-  DIMMED: 'dimmed', // 🟢 Remplace opacity-20/40 (Gris foncé/Discret)
-  GOLD: 'gold', // Pour les titres et accents
+  MUTED: 'muted',
+  DIMMED: 'dimmed',
+  GOLD: 'gold',
   DANGER: 'danger',
   SUCCESS: 'success',
   INFO: 'info',
   WARNING: 'warning',
-  INHERIT: 'inherit', // 🟢 Crucial pour les Alertes ou Boutons
+  INHERIT: 'inherit',
 } as const;
 
 export type TextVariant = (typeof TEXT_VARIANT)[keyof typeof TEXT_VARIANT];
 export type TextTheme = (typeof TEXT_THEME)[keyof typeof TEXT_THEME];
 
-// 🟢 On ne garde QUE les propriétés de fonte (taille, graisse, espacement)
 export const TEXT_STYLES: Record<TextVariant, string> = {
   [TEXT_VARIANT.H1]:
-    'text-xl sm:text-2xl font-black uppercase tracking-tight italic',
-  [TEXT_VARIANT.H2]: 'text-lg sm:text-xl font-bold uppercase tracking-tight',
-  [TEXT_VARIANT.H3]: 'text-sm sm:text-base font-bold leading-tight',
-  [TEXT_VARIANT.BODY]: 'text-sm leading-relaxed',
-  [TEXT_VARIANT.CAPTION]:
-    'text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em]',
-  [TEXT_VARIANT.MICRO]:
-    'text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.3em]',
-  [TEXT_VARIANT.MONO]: 'font-mono uppercase tracking-widest text-sm',
+    'text-2xl sm:text-3xl font-black uppercase tracking-tight italic',
+  [TEXT_VARIANT.H2]: 'text-xl sm:text-2xl font-bold uppercase tracking-tight',
+  [TEXT_VARIANT.H3]: 'text-lg font-bold leading-tight',
+  [TEXT_VARIANT.BODY]: 'text-base leading-relaxed',
+  [TEXT_VARIANT.CAPTION]: 'text-sm font-black uppercase tracking-wider',
+  [TEXT_VARIANT.MICRO]: 'text-xs font-bold uppercase tracking-wider',
+  [TEXT_VARIANT.MONO]:
+    'text-sm sm:text-base font-mono uppercase tracking-wider',
 } as const;
 
-// 🟢 On mappe explicitement nos tokens sémantiques Tailwind
 const THEME_STYLES: Record<TextTheme, string> = {
   [TEXT_THEME.DEFAULT]: 'text-silver',
   [TEXT_THEME.MUTED]: 'text-text-muted',
@@ -67,7 +62,7 @@ const DEFAULT_TAGS: Record<TextVariant, React.ElementType> = {
 
 interface TextProps extends React.HTMLAttributes<HTMLElement> {
   variant?: TextVariant;
-  colorTheme?: TextTheme; // 🟢 Nouvelle prop
+  colorTheme?: TextTheme;
   children: React.ReactNode;
   className?: string;
   as?: React.ElementType;

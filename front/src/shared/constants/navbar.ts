@@ -11,7 +11,7 @@ export const NAV = {
   LINK: {
     DASHBOARD: 'Tableau de bord',
     PROFILE: 'Mon profil',
-    ARBITRAGE: 'Arbitrage',
+    STATS: 'Mes stats',
     SUPER_ADMIN: 'Administration',
     LOGOUT: 'Déconnexion',
   },

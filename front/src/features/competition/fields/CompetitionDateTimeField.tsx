@@ -1,23 +1,23 @@
+import {
+  Badge,
+  BADGE_VARIANT,
+  cn,
+  FORM,
+  Input,
+  Label,
+  Row,
+  Stack,
+  Switch,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
 import type {
+  FieldErrors,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
-  FieldErrors,
 } from 'react-hook-form';
-import {
-  Input,
-  Switch,
-  Text,
-  Label,
-  Badge,
-  BADGE_VARIANT,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  FORM,
-  cn,
-  Stack,
-  Row,
-} from '@/shared';
 
 interface CompetitionDateTimeFieldProps {
   label: string;
@@ -62,7 +62,7 @@ export const CompetitionDateTimeField = ({
       <Label>
         {label}
         {badgeHint && (
-          <Badge variant={BADGE_VARIANT.GHOST} className="text-[8px] ml-2">
+          <Badge variant={BADGE_VARIANT.GHOST} className="text-xs ml-2">
             {badgeHint}
           </Badge>
         )}
@@ -94,7 +94,7 @@ export const CompetitionDateTimeField = ({
         <Text
           variant={TEXT_VARIANT.MICRO}
           colorTheme={isFullDay ? TEXT_THEME.DEFAULT : TEXT_THEME.MUTED}
-          className="uppercase font-black tracking-wider text-[9px] transition-colors"
+          className="uppercase font-black tracking-wider transition-colors"
         >
           {FORM.COMPETITION.LABELS.FULL_DAY}
         </Text>

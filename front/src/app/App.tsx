@@ -12,11 +12,12 @@ import {
   LoadingScreen,
   ROUTES,
   ScrollToTop,
+  UI,
 } from '@/shared';
 import { SplashScreen } from '@/shared/components/UI/SplashScreen';
 import { QueryClient } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import {
   Navigate,
@@ -26,9 +27,8 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-const Dashboard = lazy(
-  () => import('@/features/dashboard/components/Dashboard'),
-);
+import Dashboard from '@/features/dashboard/components/Dashboard';
+
 const PlayerStatsPage = lazy(
   () => import('@/features/stats/components/PlayerStatsPage'),
 );
@@ -42,6 +42,9 @@ const CreateCompetitionPage = lazy(
   () =>
     import('@/features/competition/create/components/CreateCompetitionPage'),
 );
+const NotificationPage = lazy(
+  () => import('@/features/notification/components/NotificationPage'),
+);
 
 const queryClient = new QueryClient();
 
@@ -54,17 +57,36 @@ declare global {
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 
 function App() {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
+  const [isSplashActive, setIsSplashActive] = useState(
+    () => !sessionStorage.getItem('splash_seen'),
+  );
+
+  useEffect(() => {
+    if (isSplashActive) {
+      const timer = setTimeout(() => {
+        setIsSplashActive(false);
+      }, UI.TIMINGS.SPLASH_DURATION);
+      return () => clearTimeout(timer);
+    }
+  }, [isSplashActive]);
+
+  if (isSplashActive) {
+    return <SplashScreen />;
+  }
+
+  if (loading) {
+    return <LoadingScreen layout="fullscreen" />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <ConfirmModalProvider>
-        <SplashScreen />
         <Router>
           <Toaster position="bottom-center" reverseOrder={false} />
           <ScrollToTop />
           <div className="min-h-screen w-full bg-dark">
-            <Suspense fallback={<LoadingScreen layout="fullscreen" />}>
+            <Suspense fallback={<LoadingScreen layout="local" />}>
               <Routes>
                 <Route
                   path={ROUTES.NAV.QR_JOIN_PATH}
@@ -114,7 +136,16 @@ function App() {
                     )
                   }
                 />
-
+                <Route
+                  path={ROUTES.NAV.NOTIFICATIONS}
+                  element={
+                    user ? (
+                      <NotificationPage />
+                    ) : (
+                      <Navigate to={ROUTES.NAV.LOGIN} replace />
+                    )
+                  }
+                />
                 <Route
                   path={ROUTES.NAV.HOME}
                   element={
