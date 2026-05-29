@@ -21,6 +21,7 @@ WORKDIR /app
 COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV APP_ENV=prod
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
