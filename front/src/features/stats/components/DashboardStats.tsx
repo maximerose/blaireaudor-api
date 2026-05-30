@@ -6,7 +6,6 @@ import {
   BUTTON_VARIANT,
   Grid,
   HintModal,
-  ICONS,
   ROUTES,
   Row,
   SECTION_HEADER_THEME,
@@ -18,14 +17,8 @@ import { StatCard } from './StatCard';
 import { StatFocusCard } from './StatFocusCard';
 
 export const DashboardStats = () => {
-  const {
-    stats,
-    teaserMetrics,
-    maxReceived,
-    maxReported,
-    activeHint,
-    setActiveHint,
-  } = useDashboardStats();
+  const { stats, teaserMetrics, focusCards, activeHint, setActiveHint } =
+    useDashboardStats();
 
   if (!stats || teaserMetrics.length === 0) return null;
 
@@ -55,18 +48,15 @@ export const DashboardStats = () => {
 
         {/* Partie Droite : Les deux Trophées de Faits d'armes (Records d'infractions) */}
         <Stack gap="xs" className="lg:col-span-5 h-full justify-start">
-          <StatFocusCard
-            title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
-            data={maxReceived}
-            icon={ICONS.MAX_RECEIVED}
-            variant="danger"
-          />
-          <StatFocusCard
-            title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
-            data={maxReported}
-            icon={ICONS.MAX_REPORTED}
-            variant="info"
-          />
+          {focusCards.map((card) => (
+            <StatFocusCard
+              key={card.id}
+              title={card.title}
+              data={card.data}
+              icon={card.icon}
+              variant={card.variant}
+            />
+          ))}
         </Stack>
       </Grid>
 

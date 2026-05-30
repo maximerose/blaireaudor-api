@@ -1,18 +1,18 @@
+import { COMPETITION_STATS_GENERAL } from '@/features/stats/constants';
+import { useCompetitionStatsTabUI } from '@/features/stats/hooks';
 import {
-  Stack,
   Alert,
   HintModal,
+  ICONS,
   LoadingScreen,
+  Stack,
   Text,
   TEXT_VARIANT,
-  ICONS,
 } from '@/shared';
-import { COMPETITION_STATS_GENERAL } from '@/features/stats/constants';
-import { CompetitionProgressBanner } from './CompetitionProgressBanner';
 import { CompetitionAnalyticChart } from './CompetitionAnalyticChart';
 import { CompetitionKpiGrid } from './CompetitionKpiGrid';
+import { CompetitionProgressBanner } from './CompetitionProgressBanner';
 import { StatFocusCard } from './StatFocusCard';
-import { useCompetitionStatsTabUI } from '@/features/stats/hooks';
 
 export const CompetitionStatsTab = () => {
   const {
@@ -34,6 +34,7 @@ export const CompetitionStatsTab = () => {
     closeFullscreenLandscape,
     categories,
     maxSingleActionMapped,
+    totalPoints,
   } = useCompetitionStatsTabUI();
 
   if (!canViewStats)
@@ -70,6 +71,8 @@ export const CompetitionStatsTab = () => {
           myParticipation={myParticipation}
           leaderboard={leaderboard}
           myPlayerId={myPlayerId}
+          totalPoints={totalPoints}
+          onCardClick={(hint) => setActiveHint(hint)}
         />
       )}
 

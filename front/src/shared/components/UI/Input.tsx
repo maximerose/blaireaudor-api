@@ -43,6 +43,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   renderRight?: React.ReactNode;
   align?: 'left' | 'center';
   error?: string;
+  hideAsterisk?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -56,6 +57,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       error,
       onChange,
+      hideAsterisk = false,
       ...props
     },
     ref,
@@ -93,7 +95,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <Label
             htmlFor={inputId}
-            required={props.required}
+            required={hideAsterisk ? false : props.required}
             className={labelClasses}
           >
             {label}

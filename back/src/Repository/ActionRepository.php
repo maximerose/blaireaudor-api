@@ -42,8 +42,7 @@ class ActionRepository extends ServiceEntityRepository
         $sortField = $sortMap[$sortBy] ?? 'a.date_action';
         $order = 'ASC' === strtoupper($order) ? 'ASC' : 'DESC';
 
-        $sql = '
-            SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
+        $sql = 'SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
                 TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
                 p.display_name as player_name, 
                 p.id as player_id,
@@ -94,8 +93,7 @@ class ActionRepository extends ServiceEntityRepository
     {
         $connection = $this->getEntityManager()->getConnection();
 
-        $sql = '
-            SELECT COUNT(a.id)
+        $sql = 'SELECT COUNT(a.id)
             FROM action a
             JOIN participation p ON a.participation_id = p.id
             WHERE p.competition_id = :comp_id
@@ -120,20 +118,17 @@ class ActionRepository extends ServiceEntityRepository
             $sql .= " AND ($filtersSql)";
         }
 
-        // 🟢 On exclut aussi du compteur pour ne pas casser la pagination
         $sql .= ' AND a.status != :status_pending';
         $params['status_pending'] = ActionStatus::PENDING->value;
 
         return (int) $connection->fetchOne($sql, $params);
     }
 
-    // 🟢 NOUVELLE FONCTION DÉDIÉE : Récupère uniquement la to-do list d'attente
     public function findPendingByCompetition(Competition $competition): array
     {
         $connection = $this->getEntityManager()->getConnection();
 
-        $sql = '
-            SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
+        $sql = 'SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
                 TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
                 p.display_name as player_name, 
                 p.id as player_id,
@@ -156,8 +151,13 @@ class ActionRepository extends ServiceEntityRepository
 
     public function recalculateParticipationScore(Participation $participation): void
     {
-        $sql = "
-        UPDATE participation
+        $comp = $participation->getCompetition();
+
+        if (!$comp || !$comp->getId() || !$participation->getId()) {
+            return;
+        }
+
+        $sql = "UPDATE participation
         SET score = (
             SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
             FROM action a
@@ -196,8 +196,7 @@ class ActionRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = "
-            UPDATE participation
+        $sql = "UPDATE participation
             SET score = (
                 SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
                 FROM action a
@@ -222,8 +221,7 @@ class ActionRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = "
-            SELECT DISTINCT DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) as date_day
+        $sql = "SELECT DISTINCT DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) as date_day
             FROM action a
             JOIN participation p ON a.participation_id = p.id
             WHERE p.competition_id = :comp_id

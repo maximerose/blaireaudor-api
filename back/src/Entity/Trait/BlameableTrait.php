@@ -21,7 +21,7 @@ trait BlameableTrait
      */
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['action:read', 'competition:read'])]
     private ?User $createdBy = null;
 
@@ -30,7 +30,7 @@ trait BlameableTrait
      */
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $updatedBy = null;
 
     public function getCreatedBy(): ?User

@@ -1,17 +1,17 @@
-import { useState, useEffect, useMemo } from 'react';
 import { useAuthContext } from '@/features/account/context/AuthContext';
 import { useCompetitionContext } from '@/features/competition/context';
-import { useCompetitionStats } from '@/features/stats/hooks';
 import {
   COMPETITION_STATS_CATEGORIES,
   COMPETITION_STATS_GENERAL,
 } from '@/features/stats/constants';
+import { useCompetitionStats } from '@/features/stats/hooks';
 import type {
-  ChartFilter,
   CategoryItem,
+  ChartFilter,
   HintModalData,
   StatFocusData,
 } from '@/features/stats/types';
+import { useEffect, useMemo, useState } from 'react';
 
 export const useCompetitionStatsTabUI = () => {
   const { user } = useAuthContext();
@@ -199,5 +199,6 @@ export const useCompetitionStatsTabUI = () => {
     closeFullscreenLandscape,
     categories,
     maxSingleActionMapped,
+    totalPoints: stats?.total_points || 0,
   };
 };

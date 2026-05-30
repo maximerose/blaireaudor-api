@@ -18,4 +18,20 @@ export const FOCUS_THEME_CONFIG = {
     defaultColor: 'text-info-bright',
     prefix: PLAYER_STATS_GENERAL.FOCUS.STAB_VICTIM,
   },
+  success: {
+    cardClass: 'border-success-border/40 bg-success-soft/5',
+    iconClass: 'bg-success/20 text-success-bright',
+    textTheme: TEXT_THEME.SUCCESS,
+    glowClass: 'drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]',
+    defaultColor: 'text-success-bright',
+    prefix: '',
+  },
+  warning: {
+    cardClass: 'border-warning-border/40 bg-warning-soft/5',
+    iconClass: 'bg-warning/20 text-warning-bright',
+    textTheme: TEXT_THEME.WARNING,
+    glowClass: 'drop-shadow-[0_0_6px_rgba(251,146,60,0.4)]',
+    defaultColor: 'text-warning-bright',
+    prefix: '',
+  },
 } as const;

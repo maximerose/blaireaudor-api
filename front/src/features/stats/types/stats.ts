@@ -1,6 +1,6 @@
-import type React from 'react';
-import type { PlayerStats } from '@/features/account/types';
+import type { PlayerStats, User } from '@/features/account/types';
 import type { EnrichedLeaderboardItem } from '@/features/competition/types';
+import type React from 'react';
 import type { ReactNode } from 'react';
 
 // --- TYPES DE BASE (MODALES & KPIs) ---
@@ -17,6 +17,7 @@ export interface MetricItem {
   color: string;
   subtext?: string;
   hint?: HintModalData;
+  competitionName?: string;
 }
 
 export interface CategoryItem {
@@ -32,6 +33,7 @@ export type StatConfig = {
   getColor: (stats: PlayerStats) => string;
   getValue: (stats: PlayerStats) => React.ReactNode | string | number;
   getSubtext?: (stats: PlayerStats) => string | undefined;
+  getCompetitionName?: (stats: PlayerStats) => string | undefined;
   hint?: HintModalData;
 };
 
@@ -55,6 +57,14 @@ export type CompCategoryConfig = {
   metrics: CompStatConfig[];
 };
 
+export type FocusStatConfig = {
+  id: string;
+  title: string;
+  icon: string | React.ReactNode;
+  variant: 'danger' | 'info' | 'success' | 'warning';
+  getData: (stats: PlayerStats, user: User) => StatFocusData | null;
+};
+
 // --- TYPES DES GRAPHIQUES ET CARTES ---
 export type ChartFilter = 'me' | 'top3' | 'top5' | 'top10' | 'all';
 
@@ -71,6 +81,8 @@ export interface StatFocusData {
   competitionName?: string | null;
   date?: string | null;
   prefixOverride?: string;
+  suffixOverride?: string;
+  hidePlus?: boolean;
   isMe: boolean;
 }
 
@@ -86,13 +98,33 @@ export interface StatFocusCardProps {
   title: string;
   data: StatFocusData | null;
   icon: string | React.ReactNode;
-  variant: 'danger' | 'info';
+  variant: 'danger' | 'info' | 'success' | 'warning';
 }
+
+export interface ProgressBannerData {
+  score: number;
+  pointsBehind: number;
+  rank: number;
+  actionsCount: number;
+  averageSeverity: string | number;
+  arenaWeight: number;
+}
+
+export type ProgressBannerConfig = {
+  id: string;
+  getLabel: () => string;
+  icon: string | React.ReactNode;
+  getColor: (data: ProgressBannerData) => string;
+  getValue: (data: ProgressBannerData) => React.ReactNode | string | number;
+  hint?: HintModalData;
+};
 
 export interface ProgressBannerProps {
   myParticipation: EnrichedLeaderboardItem;
   leaderboard: EnrichedLeaderboardItem[];
   myPlayerId: string | undefined;
+  totalPoints: number;
+  onCardClick: (hint: HintModalData) => void;
 }
 
 export interface AnalyticChartProps {

@@ -76,13 +76,14 @@ export const LoginForm = () => {
         )}
 
         <Input
-          label={FORM.AUTH.LABELS.USERNAME}
+          label={FORM.AUTH.LABELS.IDENTIFIER}
           icon="@"
-          placeholder={FORM.AUTH.PLACEHOLDERS.USERNAME}
+          placeholder={FORM.AUTH.PLACEHOLDERS.IDENTIFIER}
           autoComplete="username"
           disabled={isSubmitting}
+          required
+          hideAsterisk
           align="center"
-          error={errors.username?.message}
           {...register('username', { onChange: handleUsernameChange })}
         />
 
@@ -91,7 +92,8 @@ export const LoginForm = () => {
             label={FORM.AUTH.LABELS.PASSWORD}
             autoComplete="current-password"
             disabled={isSubmitting}
-            align="center"
+            required
+            hideAsterisk
             error={errors.password?.message}
             {...register('password')}
           />

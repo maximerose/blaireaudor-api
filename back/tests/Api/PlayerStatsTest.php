@@ -40,17 +40,20 @@ final class PlayerStatsTest extends WebTestCase
         $client->loginUser($userMe);
 
         // CONFIGURATION DES ARÈNES HISTORIQUES
-        $competition1 = CompetitionFactory::createOne(['startDate' => new \DateTimeImmutable('-30 days'), 'endDate' => new \DateTimeImmutable('-20 days')]);
+        $competition1 = CompetitionFactory::createOne(['name' => 'Arène 1', 'startDate' => new \DateTimeImmutable('-30 days'), 'endDate' => new \DateTimeImmutable('-20 days')]);
         $participationMe1 = ParticipationFactory::createOne(['competition' => $competition1, 'player' => $playerMe, 'score' => 80]);
 
         $participationRival1 = ParticipationFactory::createOne(['competition' => $competition1, 'player' => $playerRival]);
         $participationSouffre1 = ParticipationFactory::createOne(['competition' => $competition1, 'player' => $playerSouffre]);
         $participationBourreau1 = ParticipationFactory::createOne(['competition' => $competition1, 'player' => $playerBourreau]);
 
-        $competition2 = CompetitionFactory::createOne(['startDate' => new \DateTimeImmutable('-19 days'), 'endDate' => new \DateTimeImmutable('-2 days')]);
+        $competition2 = CompetitionFactory::createOne(['name' => 'Arène 2', 'startDate' => new \DateTimeImmutable('-19 days'), 'endDate' => new \DateTimeImmutable('-2 days')]);
         $participationMe2 = ParticipationFactory::createOne(['competition' => $competition2, 'player' => $playerMe, 'score' => 150]);
         ParticipationFactory::createOne(['competition' => $competition2, 'score' => 50]);
         ParticipationFactory::createOne(['competition' => $competition2, 'score' => 30]);
+
+        ActionFactory::createOne(['participation' => $participationMe2, 'createdBy' => $userBourreau, 'points' => 50, 'status' => ActionStatus::VALIDATED, 'description' => 'Grosse bêtise 1']);
+        ActionFactory::createOne(['participation' => $participationMe2, 'createdBy' => $userRival, 'points' => 50, 'status' => ActionStatus::VALIDATED, 'description' => 'Grosse bêtise 2']);
 
         // COMPÉTITION ACTIVE (Ignorée du calcul de carrière)
         $activeCompetition = CompetitionFactory::createOne(['startDate' => new \DateTimeImmutable('-2 days'), 'endDate' => new \DateTimeImmutable('+5 days')]);
@@ -59,7 +62,7 @@ final class PlayerStatsTest extends WebTestCase
         // 2. CONFIGURATION DE LA MÊLÉE GÉNÉRALE (MUTUAL ATTACKS)
         // Mon Bourreau m'attaque 5 fois
         for ($i = 0; $i < 5; ++$i) {
-            ActionFactory::createOne(['participation' => $participationMe1, 'createdBy' => $userBourreau, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'description' => 'Attaque Bourreau']);
+            ActionFactory::createOne(['participation' => $participationMe1, 'createdBy' => $userBourreau, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'description' => 'Attaque Bourreau', 'dateAction' => new \DateTimeImmutable('-25 days 10:00:00')]);
         }
         ActionFactory::createOne(['participation' => $participationBourreau1, 'createdBy' => $userMe, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'dateAction' => new \DateTimeImmutable('-25 days 08:00:00')]);
 
@@ -77,7 +80,7 @@ final class PlayerStatsTest extends WebTestCase
             ActionFactory::createOne(['participation' => $participationRival1, 'createdBy' => $userMe, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'dateAction' => new \DateTimeImmutable('-25 days 10:00:00')]);
         }
         for ($i = 0; $i < 3; ++$i) {
-            ActionFactory::createOne(['participation' => $participationMe1, 'createdBy' => $userRival, 'points' => 10, 'status' => ActionStatus::VALIDATED]);
+            ActionFactory::createOne(['participation' => $participationMe1, 'createdBy' => $userRival, 'points' => 10, 'status' => ActionStatus::VALIDATED, 'dateAction' => new \DateTimeImmutable('-25 days 11:00:00')]);
         }
 
         ActionFactory::createOne(['participation' => $participationSouffre1, 'createdBy' => $userMe, 'points' => 5, 'status' => ActionStatus::REJECTED]);
@@ -98,17 +101,40 @@ final class PlayerStatsTest extends WebTestCase
         $this->assertEquals('Mon Souffre Douleur', $stats['max_reports_to_single_receiver']['player_name']);
         $this->assertEquals('Mon Grand Rival', $stats['max_reciprocal_reports_with_single_peer']['player_name']);
         $this->assertEquals(3, $stats['max_reciprocal_reports_with_single_peer']['reciprocal_score']);
+        $this->assertEquals(3, $stats['total_distinct_targets']);
+
+        // --- ASSERTIONS DES RECORDS PAR ARÈNE ---
+        $this->assertEquals(100, $stats['max_competition_score']['points']);
+        $this->assertEquals('Arène 2', $stats['max_competition_score']['competition_name']);
+
+        // 5 actions reçues par le bourreau + 3 par le rival = 8
+        $this->assertEquals(8, $stats['max_competition_actions_received']['points']);
+        $this->assertEquals('Arène 1', $stats['max_competition_actions_received']['competition_name']);
+
+        $this->assertEquals(80, $stats['min_competition_score']['points']);
+        $this->assertEquals('Arène 1', $stats['min_competition_score']['competition_name']);
+
+        $this->assertEquals(2, $stats['min_competition_actions_received']['points']);
+        $this->assertEquals('Arène 2', $stats['min_competition_actions_received']['competition_name']);
 
         // --- ASSERTIONS VOLUMÉTRIE & EFFET D'AUBAINE ---
-        $this->assertEquals(8, $stats['total_actions_received']); // 5 Bourreau + 3 Rival
-        $this->assertEquals(80, $stats['total_points_received']); // 50 + 30
+        $this->assertEquals(10, $stats['total_actions_received']); // 5 Bourreau + 3 Rival + 2 Grosse betise
+        $this->assertEquals(180, $stats['total_points_received']); // 80 + 100
         $this->assertEquals(11, $stats['total_actions_reported']); // 1 Bourreau + 6 Souffre + 3 Rival + 1 Rejetée
         $this->assertEquals(90.9, $stats['report_approval_ratio']); // 10 validées / 11 jugées = 90.9%
-        $this->assertEquals(1.38, $stats['report_to_received_ratio']); // 11 émis / 8 subis = 1.375 -> 1.38
+        $this->assertEquals(1.1, $stats['report_to_received_ratio']); // 11 émis / 10 subis = 1.1
         $this->assertEquals(10.0, $stats['bonus_actions_ratio']); // 1 action bonus / 10 validées émanant de moi = 10.0%
 
+        // --- ASSERTIONS DES MOYENNES EXTRÊMES ---
+        $this->assertEquals(50.0, $stats['max_avg_points_received']['average']);
+        $this->assertEquals(2, $stats['max_avg_points_received']['count']);
+        $this->assertEquals(10.0, $stats['min_avg_points_received']['average']);
+        $this->assertEquals(8, $stats['min_avg_points_received']['count']);
+
         // --- ASSERTIONS DES RANGS DISTINCTS EXTRACTIBLES ---
-        $this->assertEquals(1, $stats['min_rank']); // 1er à l'arène 2
-        $this->assertEquals(2, $stats['max_rank']); // 2ème à l'arène 1
+        $this->assertEquals(1, $stats['min_rank']['rank']); // 1er à l'arène 2
+        $this->assertEquals('Arène 2', $stats['min_rank']['competition_name']);
+        $this->assertEquals(2, $stats['max_rank']['rank']); // 2ème à l'arène 1
+        $this->assertEquals('Arène 1', $stats['max_rank']['competition_name']);
     }
 }

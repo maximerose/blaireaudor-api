@@ -7,6 +7,7 @@ export * from './icons';
 export * from './layout';
 export * from './logs';
 export * from './navbar';
+export * from './pwa';
 export * from './queryKeys';
 export * from './routes';
 export * from './rules';

@@ -29,7 +29,7 @@ final readonly class ParticipationNotifier
         }
 
         $currentUser = $this->security->getUser();
-        $isSelfJoin = true;
+        $isSelfJoin = $currentUser instanceof User && $player->getAssociatedUser() === $currentUser;
 
         if (!$isSelfJoin) {
             if ($recipient = $player->getAssociatedUser()) {

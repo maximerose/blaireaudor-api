@@ -21,6 +21,7 @@ export const FORM = {
   AUTH: {
     LABELS: {
       USERNAME: 'Pseudo',
+      IDENTIFIER: 'Identifiant',
       PASSWORD: 'Mot de passe',
       DISPLAY_NAME: 'Ton petit nom',
       EMAIL: 'Adresse email',
@@ -30,6 +31,7 @@ export const FORM = {
     },
     PLACEHOLDERS: {
       USERNAME: 'ton-pseudo',
+      IDENTIFIER: 'email / pseudo',
       PASSWORD: '••••••••',
       DISPLAY_NAME: 'Ex: Jean Dupont',
       EMAIL: 'blaireau@or.com',

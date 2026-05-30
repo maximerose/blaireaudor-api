@@ -19,7 +19,7 @@ use App\Factory\UserFactory;
 use App\Service\Notification\RefereeNotifier;
 use App\State\Processor\Action\ActionCreateProcessor;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\DataProvider; // 🟢 L'IMPORT CRUCIAL
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Zenstruck\Foundry\Test\Factories;
@@ -30,7 +30,7 @@ final class NotificationSystemTest extends KernelTestCase
     use ResetDatabase;
     use Factories;
 
-    #[DataProvider('preferenceProvider')] // 🟢 L'ATTRIBUT PHP 8
+    #[DataProvider('preferenceProvider')]
     public function testActionCreationNotifiesReferees(bool $isPrefEnabled): void
     {
         self::bootKernel();
@@ -181,6 +181,41 @@ final class NotificationSystemTest extends KernelTestCase
 
         NotificationFactory::assert()->count(1, ['recipient' => $refereeA, 'type' => NotificationConstants::TYPE_GUEST_CLAIMED]);
         NotificationFactory::assert()->count($isPrefEnabled ? 1 : 0, ['recipient' => $refereeB, 'type' => NotificationConstants::TYPE_GUEST_CLAIMED]);
+    }
+
+    #[DataProvider('preferenceProvider')]
+    public function testRefereeAddingPlayerNotifiesTargetOnly(bool $isPrefEnabled): void
+    {
+        self::bootKernel();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+
+        $refereeUser = UserFactory::createOne(['player' => PlayerFactory::new()]);
+        $comp = CompetitionFactory::createOne(['referees' => [$refereeUser->getPlayer()]]);
+        ParticipationFactory::createOne(['competition' => $comp, 'player' => $refereeUser->getPlayer()]);
+
+        $bystander = UserFactory::createOne(['player' => PlayerFactory::new()]);
+        ParticipationFactory::createOne(['competition' => $comp, 'player' => $bystander->getPlayer()]);
+
+        $targetPrefs = $isPrefEnabled ? [] : [NotificationConstants::TYPE_ADDED_BY_REFEREE => false];
+        $targetUser = UserFactory::createOne(['notificationPreferences' => $targetPrefs, 'player' => PlayerFactory::new()]);
+
+        static::getContainer()->get('security.token_storage')->setToken(new UsernamePasswordToken($refereeUser, 'main', $refereeUser->getRoles()));
+
+        $participation = new Participation();
+        $participation->setCompetition($comp);
+        $participation->setPlayer($targetUser->getPlayer());
+
+        $em->persist($participation);
+        $em->flush();
+
+        NotificationFactory::assert()->count($isPrefEnabled ? 1 : 0, [
+            'recipient' => $targetUser,
+            'type' => NotificationConstants::TYPE_ADDED_BY_REFEREE,
+        ]);
+
+        NotificationFactory::assert()->count(0, [
+            'type' => NotificationConstants::TYPE_PLAYER_JOINED,
+        ]);
     }
 
     public static function preferenceProvider(): array

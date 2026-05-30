@@ -1,21 +1,14 @@
 import { usePlayerStats } from './usePlayerStats';
 
 export const useDashboardStats = () => {
-  const {
-    stats,
-    teaserMetrics,
-    focusReceived,
-    focusReported,
-    activeHint,
-    setActiveHint,
-  } = usePlayerStats();
+  const { stats, teaserMetrics, focusCards, activeHint, setActiveHint } =
+    usePlayerStats();
 
   return {
     stats,
     teaserMetrics,
     activeHint,
     setActiveHint,
-    maxReceived: focusReceived,
-    maxReported: focusReported,
+    focusCards,
   };
 };

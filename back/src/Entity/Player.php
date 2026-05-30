@@ -61,7 +61,7 @@ class Player
     /**
      * @var Collection<int, Participation> liste des compétitions auxquelles le joueur participe
      */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'player', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'player', orphanRemoval: true, cascade: ['remove'])]
     #[Groups(['user:read'])]
     private Collection $participations;
 

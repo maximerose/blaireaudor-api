@@ -50,7 +50,7 @@ export const HintModal = ({
             <Text
               variant={TEXT_VARIANT.BODY}
               colorTheme={TEXT_THEME.MUTED}
-              className="text-center text-xs leading-relaxed"
+              className="text-center text-md leading-relaxed"
             >
               {description}
             </Text>

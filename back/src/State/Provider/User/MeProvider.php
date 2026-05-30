@@ -58,11 +58,12 @@ final readonly class MeProvider implements ProviderInterface
             $statsDTO->createdCompetitions = $user->getCreatedCompetitions()->count();
             $statsDTO->refereedCompetitions = $player->getRefereedCompetitions()->count();
             $statsDTO->totalActionsReceived = $raw['totalActionsReceived'];
-            $statsDTO->maxCompetitionActionsReceived = $raw['maxCompetitionActionsReceived'];
             $statsDTO->totalPointsReceived = $raw['totalPointsReceived'];
-            $statsDTO->maxCompetitionScore = $raw['maxCompetitionScore'];
             $statsDTO->totalActionsReported = $raw['totalActionsReported'];
-
+            $statsDTO->maxCompetitionScore = $this->mapRecordOutput($raw['maxCompetitionScore']);
+            $statsDTO->maxCompetitionActionsReceived = $this->mapRecordOutput($raw['maxCompetitionActionsReceived']);
+            $statsDTO->minCompetitionScore = $this->mapRecordOutput($raw['minCompetitionScore']);
+            $statsDTO->minCompetitionActionsReceived = $this->mapRecordOutput($raw['minCompetitionActionsReceived']);
             $statsDTO->averagePointsPerCompetition = $totalComps > 0 ? round($raw['totalPointsReceived'] / $totalComps, 1) : 0.0;
             $statsDTO->averageActionsReceivedPerCompetition = $totalComps > 0 ? round($raw['totalActionsReceived'] / $totalComps, 1) : 0.0;
 
@@ -74,17 +75,17 @@ final readonly class MeProvider implements ProviderInterface
                 ? round($raw['totalActionsReported'] / $raw['totalActionsReceived'], 2)
                 : (float) $raw['totalActionsReported'];
 
-            $statsDTO->minRank = $raw['ranks']['min_rank'] ?? null;
-            $statsDTO->maxRank = $raw['ranks']['max_rank'] ?? null;
-
+            $statsDTO->minRank = $raw['ranks']['min_rank_data'] ?? null;
+            $statsDTO->maxRank = $raw['ranks']['max_rank_data'] ?? null;
             $statsDTO->maxPointsSingleActionReceived = $this->mapRecordOutput($raw['maxPointsSingleActionReceived']);
             $statsDTO->maxPointsSingleActionReported = $this->mapRecordOutput($raw['maxPointsSingleActionReported']);
-
+            $statsDTO->minAvgPointsReceived = $raw['minAvgPointsReceived'];
+            $statsDTO->maxAvgPointsReceived = $raw['maxAvgPointsReceived'];
             $statsDTO->bonusActionsRatio = $raw['bonusActionsRatio'];
-
             $statsDTO->maxReportsFromSingleActor = $raw['maxReportsFromSingleActor'];
             $statsDTO->maxReportsToSingleReceiver = $raw['maxReportsToSingleReceiver'];
             $statsDTO->maxReciprocalReportsWithSinglePeer = $raw['maxReciprocalReportsWithSinglePeer'];
+            $statsDTO->totalDistinctTargets = $raw['totalDistinctTargets'];
 
             $user->stats = $statsDTO;
         }
@@ -100,9 +101,9 @@ final readonly class MeProvider implements ProviderInterface
 
         $dto = new PlayerRecordOutput();
         $dto->points = (int) $data['points'];
-        $dto->description = (string) $data['description'];
-        $dto->competitionName = (string) $data['competition_name'];
-        $dto->involvedPlayerName = $data['involved_name'] ? (string) $data['involved_name'] : null;
+        $dto->description = (string) ($data['description'] ?? '');
+        $dto->competitionName = (string) ($data['competition_name'] ?? '');
+        $dto->involvedPlayerName = (string) ($data['involved_name'] ?? null);
 
         return $dto;
     }
