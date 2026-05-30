@@ -16,7 +16,7 @@ export const DASHBOARD_UI = {
     JOIN_COMPETITION: 'Rejoindre une compétition',
   },
   HEADER: {
-    TITLE: 'Tableau de bord',
+    TITLE: 'Dashboard',
     GREETING: 'Salut ',
     TOTAL_PARTICIPATIONS: (count: number) =>
       count > 0
