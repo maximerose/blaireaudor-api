@@ -1,5 +1,3 @@
-// front/src/features/account/components/ProfilePage.tsx
-
 import { PROFILE_UI } from '@/features/account/constants';
 import { useProfile } from '@/features/account/hooks';
 import {
@@ -13,6 +11,8 @@ import {
   Grid,
   ICONS,
   MainLayout,
+  PwaInstallCard,
+  PwaInstallGuideCard,
   ROUTES,
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
@@ -49,7 +49,7 @@ export const ProfilePage = () => {
           title={PROFILE_UI.TITLE}
           centered
         />
-
+        <PwaInstallCard />
         {/* --- FORMULAIRE DES INFORMATIONS GÉNÉRALES --- */}
         <Card
           as="form"
@@ -153,6 +153,8 @@ export const ProfilePage = () => {
 
         {/* --- NOTIFICATIONS --- */}
         <NotificationSettingsForm form={prefsForm} onSubmit={onPrefsSubmit} />
+
+        <PwaInstallGuideCard />
 
         {/* --- BLOC FIN DE SESSION DE CARRIÈRE --- */}
         <Card

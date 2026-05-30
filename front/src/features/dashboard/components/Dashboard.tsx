@@ -1,22 +1,23 @@
 import { JoinCompetitionModal } from '@/features/competition';
-import {
-  Button,
-  EmptyState,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  ROUTES,
-  ICONS,
-  NAV,
-  MainLayout,
-  Grid,
-  Stack,
-} from '@/shared';
 import { DASHBOARD_UI } from '@/features/dashboard/constants';
 import { useDashboardUI } from '@/features/dashboard/hooks';
-import { DashboardHeader } from './DashboardHeader';
-import { CompetitionListSection } from './CompetitionListSection';
 import { DashboardStats } from '@/features/stats';
 import { CareerPalmares } from '@/features/stats/components';
+import {
+  Button,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  EmptyState,
+  Grid,
+  ICONS,
+  MainLayout,
+  NAV,
+  PwaInstallCard,
+  ROUTES,
+  Stack,
+} from '@/shared';
+import { CompetitionListSection } from './CompetitionListSection';
+import { DashboardHeader } from './DashboardHeader';
 
 export const Dashboard = () => {
   const {
@@ -38,6 +39,7 @@ export const Dashboard = () => {
     >
       <Stack gap="xl" className="w-full">
         <DashboardHeader />
+        <PwaInstallCard />
 
         <Grid
           as="section"
