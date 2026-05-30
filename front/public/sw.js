@@ -7,7 +7,6 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  // Nettoie les vieux caches si on change de version (v2, v3...)
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -29,7 +28,10 @@ self.addEventListener('fetch', (event) => {
 
   if (
     event.request.method !== 'GET' ||
+    !url.protocol.startsWith('http') ||
     url.pathname.startsWith('/api') ||
+    url.pathname.startsWith('/admin') ||
+    url.pathname.startsWith('/bundles') ||
     url.pathname.includes('.well-known/mercure')
   ) {
     return;
@@ -47,7 +49,6 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => {
-        // En cas de panne réseau (hors-ligne), on pioche dans le cache
         return caches.match(event.request);
       })
   );
