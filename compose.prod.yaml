@@ -1,4 +1,3 @@
-# compose.prod.yaml
 services:
   # 🌐 PROXY INTERNE (Le Nginx qui utilise ton prod.conf)
   proxy:
@@ -70,15 +69,20 @@ services:
         cors_origins https://blaireaudor.maximerose.com
     command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
 
+ # 📡 WEBHOOK LISTENER (Déploiement Continu)
   webhook:
-    image: almir/webhook
+    build:
+      context: .
+      dockerfile: ./docker/webhook/Dockerfile
     container_name: blaireaudor_webhook
+    restart: always
     ports:
       - "9000:9000"
     volumes:
       - ./docker/webhook:/config
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
+      - /volume1/docker/blaireaudor:/volume1/docker/blaireaudor
+      - /volume1/homes/maxime/.ssh:/root/.ssh:ro
     environment:
-      - WEBHOOK_SECRET=TonSecretSuperSecurise123!
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
     command: -verbose -hooks=/config/hooks.json -hotreload
