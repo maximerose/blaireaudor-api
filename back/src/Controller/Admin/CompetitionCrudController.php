@@ -34,8 +34,7 @@ final class CompetitionCrudController extends AbstractCrudController
     {
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->disable(Action::DELETE);
+            ->remove(Crud::PAGE_INDEX, Action::EDIT);
     }
 
     public function configureFields(string $pageName): iterable
@@ -47,6 +46,15 @@ final class CompetitionCrudController extends AbstractCrudController
         yield DateTimeField::new('endDate', 'Fin');
         yield BooleanField::new('fogOfWar', 'Brouillard');
         yield AssociationField::new('createdBy', 'Créateur')->hideOnIndex();
+
+        if (Crud::PAGE_INDEX === $pageName) {
+            yield CollectionField::new('participations', 'Joueurs')
+        ->formatValue(function ($value) {
+            $count = is_countable($value) ? \count($value) : 0;
+
+            return \sprintf('%d joueur%s', $count, $count > 1 ? 's' : '');
+        });
+        }
 
         if (Crud::PAGE_DETAIL === $pageName) {
             yield CollectionField::new('participations', AdminConstants::FIELD_COLLECTION_TITLE)

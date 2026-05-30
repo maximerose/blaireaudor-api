@@ -88,7 +88,7 @@ final class KpiConstants
             'color' => 'danger',
             'suffix' => null,
             'empty_value' => 'Aucun',
-            'subtext' => '%d actions validées subies',
+            'subtext' => '%d actions validées au total',
             'hint' => "Le joueur ayant subi le plus grand nombre total d'actions validées historiques.",
         ],
         'MAX_ACTIONS_REPORTED' => [
@@ -106,7 +106,7 @@ final class KpiConstants
             'color' => 'success',
             'suffix' => null,
             'empty_value' => 'Aucun',
-            'subtext' => '%d méfait subi au total',
+            'subtext' => '%d actions réalisées au total',
             'hint' => 'Le participant exemplaire (ou fantôme) ayant subi le moins de sanctions validées.',
         ],
         'MAX_APPROVAL_RATIO' => [
@@ -191,6 +191,60 @@ final class KpiConstants
             'subtext' => '<strong class="text-danger border-0 pr-0 bg-transparent">+%d pts (Bonus Inclus)</strong> — %s <span class="text-warning">(%s)</span>',
             'hint' => "L'infraction d'anthologie ayant généré le plus de points en une seule fois.",
         ],
+        'MAX_TOTAL_POINTS_PLAYER' => [
+            'title' => 'Le Pire Palmarès',
+            'icon' => 'fas fa-skull-crossbones',
+            'color' => 'danger',
+            'suffix' => 'pts',
+            'empty_value' => 'Aucun',
+            'subtext' => '%s points cumulés sur toutes les arènes',
+            'hint' => "Le joueur ayant accumulé le plus grand nombre de points sur l'ensemble de sa carrière.",
+        ],
+        'MIN_TOTAL_POINTS_PLAYER' => [
+            'title' => 'Le Meilleur Élève',
+            'icon' => 'fas fa-graduation-cap',
+            'color' => 'success',
+            'suffix' => 'pts',
+            'empty_value' => 'Aucun',
+            'subtext' => '%s points cumulés au total',
+            'hint' => 'Le joueur avec le plus faible cumul de points de carrière.',
+        ],
+        'MAX_COMPETITION_SEVERITY' => [
+            'title' => 'L\'Arène la plus Sévère',
+            'icon' => 'fas fa-gavel',
+            'color' => 'danger',
+            'suffix' => null,
+            'empty_value' => 'Aucune',
+            'subtext' => 'Moyenne record de %s pts / action',
+            'hint' => 'La compétition où chaque erreur a coûté le plus cher en moyenne.',
+        ],
+        'MIN_COMPETITION_SEVERITY' => [
+            'title' => 'L\'Arène la plus Clémente',
+            'icon' => 'fas fa-dove',
+            'color' => 'success',
+            'suffix' => null,
+            'empty_value' => 'Aucune',
+            'subtext' => 'Moyenne plancher de %s pts / action',
+            'hint' => 'La compétition où les pénalités ont été les plus légères en moyenne.',
+        ],
+        'MAX_COMPETITION_ACTIVITY' => [
+            'title' => 'L\'Arène la plus Agitée',
+            'icon' => 'fas fa-meteor',
+            'color' => 'warning',
+            'suffix' => null,
+            'empty_value' => 'Aucune',
+            'subtext' => 'Moyenne de %s actions / joueur',
+            'hint' => 'La compétition avec le plus grand nombre de méfaits validés par participant.',
+        ],
+        'MIN_COMPETITION_ACTIVITY' => [
+            'title' => 'L\'Arène la plus Calme',
+            'icon' => 'fas fa-bed',
+            'color' => 'info',
+            'suffix' => null,
+            'empty_value' => 'Aucune',
+            'subtext' => 'Moyenne de %s actions / joueur',
+            'hint' => 'La compétition avec le plus faible ratio de méfaits par participant.',
+        ],
     ];
 
     /**
@@ -207,7 +261,7 @@ final class KpiConstants
         ],
         [
             'title' => '🏆 Le Livre des Records de Carrière',
-            'kpis' => ['MAX_ACTIONS_RECEIVED', 'MAX_ACTIONS_REPORTED', 'MIN_ACTIONS_RECEIVED'],
+            'kpis' => ['MAX_TOTAL_POINTS_PLAYER', 'MIN_TOTAL_POINTS_PLAYER', 'MAX_ACTIONS_RECEIVED', 'MAX_ACTIONS_REPORTED', 'MIN_ACTIONS_RECEIVED'],
         ],
         [
             'title' => '🕵️‍♂️ Profils Singuliers & Comportements',
@@ -219,7 +273,7 @@ final class KpiConstants
         ],
         [
             'title' => '🏟️ Contextes et Faits Historiques',
-            'kpis' => ['MAX_POINTS_COMPETITION', 'MOST_FREQUENT_TARGET_PAIR', 'MAX_POINTS_SINGLE_ACTION'],
+            'kpis' => ['MAX_COMPETITION_SEVERITY', 'MIN_COMPETITION_SEVERITY', 'MAX_COMPETITION_ACTIVITY', 'MIN_COMPETITION_ACTIVITY', 'MAX_POINTS_COMPETITION', 'MOST_FREQUENT_TARGET_PAIR', 'MAX_POINTS_SINGLE_ACTION'],
         ],
     ];
 }

@@ -83,7 +83,7 @@ class Participation
     #[Groups(['user:read', 'competition:read'])]
     private ?int $rank = null;
 
-    #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class)]
+    #[ORM\OneToMany(mappedBy: 'participation', targetEntity: Action::class, cascade: ['remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['dateAction' => 'DESC'])]
     private Collection $actions;
 

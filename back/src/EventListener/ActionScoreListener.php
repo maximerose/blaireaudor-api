@@ -7,6 +7,7 @@ namespace App\EventListener;
 use App\Entity\Action;
 use App\Service\Manager\ActionManager;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -19,6 +20,7 @@ class ActionScoreListener
 {
     public function __construct(
         private ActionManager $actionManager,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -39,7 +41,9 @@ class ActionScoreListener
 
     private function syncScore(Action $action): void
     {
-        if ($action->getParticipation()) {
+        $participation = $action->getParticipation();
+
+        if ($participation && !$this->entityManager->getUnitOfWork()->isScheduledForDelete($participation)) {
             $this->actionManager->updateScore($action);
         }
     }
