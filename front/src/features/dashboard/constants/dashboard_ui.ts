@@ -1,3 +1,4 @@
+import { PLAYER_STATS_PALMARES } from '@/features/stats';
 import { pluralize } from '@/shared';
 
 export const STATS_VAL = {
@@ -73,12 +74,12 @@ export const DASHBOARD_UI = {
     },
   },
   PALMARES_PANEL: {
-    TITLE: 'Palmarès',
-    EMPTY: 'Aucune compétition archivée dans ton tableau de chasse.',
+    TITLE: PLAYER_STATS_PALMARES.TITLE,
+    EMPTY: PLAYER_STATS_PALMARES.EMPTY,
     TABLE: {
-      TH_COMPETITION: 'Compétition',
-      TH_RANK: 'Classement',
-      TH_SCORE: 'Score Final',
+      TH_COMPETITION: PLAYER_STATS_PALMARES.TH_COMPETITION,
+      TH_RANK: PLAYER_STATS_PALMARES.TH_RANK,
+      TH_SCORE: PLAYER_STATS_PALMARES.TH_SCORE,
     },
   },
 } as const;
