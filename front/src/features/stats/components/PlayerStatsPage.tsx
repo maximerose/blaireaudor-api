@@ -1,31 +1,24 @@
-import {
-  MainLayout,
-  Text,
-  TEXT_VARIANT,
-  TEXT_THEME,
-  Stack,
-  ICONS,
-  HintModal,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  SECTION_HEADER_THEME,
-  cn,
-} from '@/shared';
-import { usePlayerStats } from '@/features/stats/hooks';
 import { PLAYER_STATS_GENERAL } from '@/features/stats/constants';
-import { StatFocusCard } from './StatFocusCard';
-import { StatCard } from './StatCard';
+import { usePlayerStats } from '@/features/stats/hooks';
+import {
+  cn,
+  HintModal,
+  MainLayout,
+  SECTION_HEADER_THEME,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
+  Text,
+  TEXT_THEME,
+  TEXT_VARIANT,
+} from '@/shared';
 import { CareerPalmares } from './CareerPalmares';
+import { StatCard } from './StatCard';
+import { StatFocusCard } from './StatFocusCard';
 
 export const PlayerStatsPage = () => {
-  const {
-    stats,
-    categories,
-    focusReceived,
-    focusReported,
-    activeHint,
-    setActiveHint,
-  } = usePlayerStats();
+  const { stats, categories, focusCards, activeHint, setActiveHint } =
+    usePlayerStats();
 
   if (!stats) return null;
 
@@ -34,17 +27,36 @@ export const PlayerStatsPage = () => {
       title={PLAYER_STATS_GENERAL.TITLE}
       subtitle={PLAYER_STATS_GENERAL.SUBTITLE_PAGE}
     >
-      <Stack gap="xl" className="max-w-4xl mx-auto w-full px-1">
-        {/* En-tête Principal de Carrière */}
-        <SectionHeader
-          variant={SECTION_HEADER_VARIANT.TITLE}
-          colorTheme={SECTION_HEADER_THEME.GOLD}
-          title={PLAYER_STATS_GENERAL.TITLE}
-          subtitle={PLAYER_STATS_GENERAL.SUBTITLE}
-          centered
-        />
+      {/* En-tête Principal de Carrière */}
+      <SectionHeader
+        variant={SECTION_HEADER_VARIANT.TITLE}
+        colorTheme={SECTION_HEADER_THEME.GOLD}
+        title={PLAYER_STATS_GENERAL.TITLE}
+        subtitle={PLAYER_STATS_GENERAL.SUBTITLE}
+        centered
+      />
 
-        {/* SECTION 1 : TOUTES LES GRILLES DE COMPTEURS ET DE RIVALITÉS */}
+      {/* SECTION 1 : FAITS D'ARMES (Positionnée en haut) */}
+      <Stack gap="xs" className="w-full pt-2">
+        <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.MUTED}>
+          {PLAYER_STATS_GENERAL.FOCUS.TITLE}
+        </Text>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full items-stretch">
+          {focusCards.map((card) => (
+            <StatFocusCard
+              key={card.id}
+              title={card.title}
+              data={card.data}
+              icon={card.icon}
+              variant={card.variant}
+            />
+          ))}
+        </div>
+      </Stack>
+
+      {/* SECTION 2 : TOUTES LES GRILLES DE COMPTEURS ET DE RIVALITÉS */}
+      <Stack gap="lg" className="w-full border-t border-border-subtle pt-6">
         <Stack gap="lg" className="w-full">
           {categories.map((cat, index) => {
             // Détermination dynamique de la parité du bloc
@@ -79,29 +91,6 @@ export const PlayerStatsPage = () => {
             );
           })}
         </Stack>
-
-        {/* SECTION 2 : FAITS D'ARMES (Positionnée en pleine largeur en bas de page) */}
-        <Stack gap="xs" className="w-full border-t border-border-subtle pt-6">
-          <Text variant={TEXT_VARIANT.MICRO} colorTheme={TEXT_THEME.MUTED}>
-            {PLAYER_STATS_GENERAL.FOCUS.TITLE}
-          </Text>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full items-stretch">
-            <StatFocusCard
-              title={PLAYER_STATS_GENERAL.FOCUS.RECORD}
-              data={focusReceived}
-              icon={ICONS.MAX_RECEIVED}
-              variant="danger"
-            />
-            <StatFocusCard
-              title={PLAYER_STATS_GENERAL.FOCUS.WORST_STAB}
-              data={focusReported}
-              icon={ICONS.MAX_REPORTED}
-              variant="info"
-            />
-          </div>
-        </Stack>
-
         {/* Palmarès de Carrière Historique */}
         <CareerPalmares />
       </Stack>

@@ -121,9 +121,10 @@ export const StatFocusCard = ({
               colorTheme={config.textTheme}
               className={cn('shrink-0 font-black text-lg', config.glowClass)}
             >
-              +{data.points}
+              {!data.hidePlus && '+'}
+              {data.points}
               <span className="text-xs font-normal lowercase opacity-40 ml-0.5">
-                pts
+                {data.suffixOverride || 'pts'}
               </span>
             </Text>
           )}

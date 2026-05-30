@@ -1,6 +1,16 @@
-/* eslint-disable react-refresh/only-export-components */
-import type { CategoryConfig } from '@/features/stats/types';
+import type {
+  CategoryConfig,
+  FocusStatConfig,
+  StatFocusData,
+} from '@/features/stats/types';
 import { ICONS, pluralize } from '@/shared';
+import {
+  fmtActions,
+  fmtPercent,
+  fmtPoints,
+  fmtPointsPerAction,
+  fmtRank,
+} from '../utils';
 
 // ---------------------------------------------------------
 // 1. TEXTES GLOBAUX
@@ -15,10 +25,18 @@ export const PLAYER_STATS_GENERAL = {
     TITLE: "Faits d'armes",
     RECORD: 'Plus grosse action de blaireau',
     WORST_STAB: 'Pire coup envoyé',
+    WORST_AVG: 'Pire moyenne subie',
+    BEST_AVG: 'Meilleure moyenne subie',
+    MAX_SCORE: 'Pire tournoi absolu (Score)',
+    MAX_ACTIONS: 'Pire tournoi absolu (Actions)',
+    BEST_SCORE: 'Meilleur tournoi absolu (Score)',
+    BEST_ACTIONS: 'Meilleur tournoi absolu (Actions)',
     RECORD_EMPTY: 'Aucun enregistrement historique',
     STAB_DENOUNCER: 'Dénoncé par : ',
     STAB_VICTIM: 'Victime : ',
     PREFIX_OVERRIDE: 'Coupable : ',
+    ACTION_COUNT: (count: number) =>
+      `${count} ${pluralize(count, 'action validée', 'actions validées')}`,
   },
 };
 
@@ -32,40 +50,62 @@ export const PLAYER_STATS_PALMARES = {
 };
 
 // ---------------------------------------------------------
-// 2. HELPERS DE FORMATAGE (JSX)
-// ---------------------------------------------------------
-const fmtPoints = (pts: number) => (
-  <span className="flex items-baseline justify-center gap-1">
-    {pts} <span className="text-xs opacity-50 font-normal lowercase">pts</span>
-  </span>
-);
-
-const fmtActions = (count: number, word = 'action') => (
-  <span className="flex items-baseline justify-center gap-1">
-    {count}{' '}
-    <span className="text-xs opacity-50 font-normal lowercase">
-      {pluralize(count, word)}
-    </span>
-  </span>
-);
-
-const fmtPercent = (val: number | null) =>
-  val !== null ? (
-    <span className="flex items-baseline justify-center gap-1">
-      {val} <span className="text-xs opacity-50 font-normal lowercase">%</span>
-    </span>
-  ) : (
-    '-'
-  );
-
-const fmtRank = (rank: number | null) =>
-  rank ? `${rank}${rank === 1 ? 'er' : 'ème'}` : '-';
-
-// ---------------------------------------------------------
-// 3. LA CONFIGURATION PILOTE (Le cœur du réacteur)
+// 2. LA CONFIGURATION PILOTE (Le cœur du réacteur)
 // ---------------------------------------------------------
 
-export const PLAYER_COMPETITIONS_STATS_CATEGORIES = [] as const;
+export const PLAYER_FOCUS_STATS: FocusStatConfig[] = [
+  {
+    id: 'record_received',
+    title: PLAYER_STATS_GENERAL.FOCUS.RECORD,
+    icon: ICONS.MAX_RECEIVED,
+    variant: 'danger',
+    getData: (stats, user): StatFocusData | null => {
+      const record = stats.max_points_single_action_received;
+      if (!record) return null;
+      const involvedName =
+        record.involved_player_name || (record as any).involvedPlayerName;
+      return {
+        points: record.points,
+        description: record.description,
+        competitionName:
+          record.competition_name || (record as any).competitionName,
+        involvedName,
+        date: record.date,
+        isMe: Boolean(
+          involvedName &&
+          user?.player?.display_name &&
+          involvedName === user.player.display_name,
+        ),
+      };
+    },
+  },
+  {
+    id: 'record_reported',
+    title: PLAYER_STATS_GENERAL.FOCUS.WORST_STAB,
+    icon: ICONS.MAX_REPORTED,
+    variant: 'info',
+    getData: (stats, user): StatFocusData | null => {
+      const record = stats.max_points_single_action_reported;
+      if (!record) return null;
+      const involvedName =
+        record.involved_player_name || (record as any).involvedPlayerName;
+      return {
+        points: record.points,
+        description: record.description,
+        competitionName:
+          record.competition_name || (record as any).competitionName,
+        involvedName,
+        date: record.date,
+        prefixOverride: PLAYER_STATS_GENERAL.FOCUS.PREFIX_OVERRIDE,
+        isMe: Boolean(
+          involvedName &&
+          user?.player?.display_name &&
+          involvedName === user.player.display_name,
+        ),
+      };
+    },
+  },
+];
 
 export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
   {
@@ -118,26 +158,28 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
     metrics: [
       {
         id: 'min_rank',
-        getLabel: () => 'Meilleur classement',
-        icon: ICONS.TRENDING_UP,
-        getColor: () => 'text-success-bright',
-        getValue: (s) => fmtRank(s.min_rank),
+        getLabel: () => 'Pire classement',
+        icon: ICONS.WORST,
+        getColor: () => 'text-danger-bright',
+        getValue: (s) => fmtRank(s.min_rank?.rank ?? null),
+        getCompetitionName: (s) => s.max_rank?.competition_name,
         hint: {
-          title: 'Meilleur classement',
+          title: 'Pire classement',
           description:
-            'Ton plus haut rang obtenu à la sueur de ton front dans une compétition officiellement close.',
+            "Le fond du trou : ton classement le plus proche du titre de Blaireau d'Or lors des tournois passés.",
         },
       },
       {
         id: 'max_rank',
-        getLabel: () => 'Pire classement',
-        icon: ICONS.TRENDING_DOWN,
-        getColor: () => 'text-danger-bright',
-        getValue: (s) => fmtRank(s.max_rank),
+        getLabel: () => 'Meilleur classement',
+        icon: ICONS.BEST,
+        getColor: () => 'text-success-bright',
+        getValue: (s) => fmtRank(s.max_rank?.rank ?? null),
+        getCompetitionName: (s) => s.min_rank?.competition_name,
         hint: {
-          title: 'Pire classement',
+          title: 'Meilleur classement',
           description:
-            'Le fond du trou : ton classement le plus bas enregistré lors des compétitions passées.',
+            'Ton classement le plus flatteur (le plus éloigné de la 1ère place) obtenu dans une arène close.',
         },
       },
     ],
@@ -161,10 +203,45 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
       },
       {
         id: 'max_competition_score',
-        getLabel: () => 'Score max',
-        icon: ICONS.MAX,
+        getLabel: () => 'Pire score',
+        icon: ICONS.WORST,
         getColor: () => 'text-danger-bright',
-        getValue: (s) => fmtPoints(s.max_competition_score),
+        getValue: (s) => fmtPoints(s.max_competition_score?.points ?? 0),
+        getCompetitionName: (s) => s.max_competition_score?.competition_name,
+      },
+      {
+        id: 'min_comp_score',
+        getLabel: () => 'Meilleur score',
+        icon: ICONS.BEST,
+        getColor: () => 'text-success-bright',
+        getValue: (s) => fmtPoints(s.min_competition_score?.points ?? 0),
+        getCompetitionName: (s) => s.min_competition_score?.competition_name,
+      },
+      {
+        id: 'worst_avg',
+        getLabel: () => 'Pire moyenne',
+        icon: ICONS.WORST,
+        getColor: () => 'text-danger-bright',
+        getValue: (s) =>
+          fmtPointsPerAction(s.max_avg_points_received?.average ?? 0),
+        getSubtext: (s) =>
+          s.max_avg_points_received
+            ? `${s.max_avg_points_received.count} ${pluralize(s.max_avg_points_received.count, 'action')}`
+            : undefined,
+        getCompetitionName: (s) => s.max_avg_points_received?.competition_name,
+      },
+      {
+        id: 'best_avg',
+        getLabel: () => 'Meilleure moyenne',
+        icon: ICONS.BEST,
+        getColor: () => 'text-success-bright',
+        getValue: (s) =>
+          fmtPointsPerAction(s.min_avg_points_received?.average ?? 0),
+        getSubtext: (s) =>
+          s.min_avg_points_received
+            ? `${s.min_avg_points_received.count} ${pluralize(s.min_avg_points_received.count, 'action')}`
+            : undefined,
+        getCompetitionName: (s) => s.min_avg_points_received?.competition_name,
       },
     ],
   },
@@ -186,11 +263,24 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
         getValue: (s) => fmtActions(s.average_actions_received_per_competition),
       },
       {
-        id: 'max_actions_received',
-        getLabel: () => 'Nombre max',
-        icon: ICONS.MAX,
+        id: 'max_competition_actions',
+        getLabel: () => "Nb max d'actions",
+        icon: ICONS.WORST,
         getColor: () => 'text-danger-bright',
-        getValue: (s) => fmtActions(s.max_competition_actions_received),
+        getValue: (s) =>
+          fmtActions(s.max_competition_actions_received?.points ?? 0),
+        getCompetitionName: (s) =>
+          s.max_competition_actions_received?.competition_name,
+      },
+      {
+        id: 'min_competition_actions',
+        getLabel: () => "Nb min d'actions",
+        icon: ICONS.BEST,
+        getColor: () => 'text-success-bright',
+        getValue: (s) =>
+          fmtActions(s.min_competition_actions_received?.points ?? 0),
+        getCompetitionName: (s) =>
+          s.min_competition_actions_received?.competition_name,
       },
     ],
   },
@@ -256,6 +346,20 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
     title: 'Écosystème Relationnel & Rivalités',
     metrics: [
       {
+        id: 'total_distinct_targets',
+        getLabel: () => 'Tableau de chasse',
+        icon: ICONS.PLAYERS,
+        getColor: () => 'text-silver',
+        getValue: (s) => s.total_distinct_targets,
+        getSubtext: (s) =>
+          `${s.total_distinct_targets} ${pluralize(s.total_distinct_targets, 'victime différente', 'victimes différentes')}`,
+        hint: {
+          title: 'Tableau de chasse',
+          description:
+            "Le nombre d'adversaires différents que tu as réussi à épingler (et faire valider) au cours de ta carrière.",
+        },
+      },
+      {
         id: 'main_enemy',
         getLabel: () => 'Mon pire bourreau',
         icon: ICONS.SKULL,
@@ -281,12 +385,12 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
           s.max_reports_to_single_receiver?.player_name || 'Aucun',
         getSubtext: (s) =>
           s.max_reports_to_single_receiver
-            ? `${s.max_reports_to_single_receiver.count} ${pluralize(s.max_reports_to_single_receiver.count, 'balance')}`
-            : '0 balance',
+            ? `${s.max_reports_to_single_receiver.count} ${pluralize(s.max_reports_to_single_receiver.count, 'dénonciation')}`
+            : '0 dénonciation',
         hint: {
           title: 'Mon souffre-douleur',
           description:
-            'Ta cible favorite. Le joueur sur lequel tu as le plus fréquemment balancé de gros dossiers de méfaits.',
+            'Ta cible favorite. Le joueur que tu as le plus souvent balancé tout au long de ta carrière.',
         },
       },
       {

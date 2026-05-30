@@ -31,7 +31,7 @@ export const FORM = {
     },
     PLACEHOLDERS: {
       USERNAME: 'ton-pseudo',
-      IDENTIFIER: 'ton-pseudo ou blaireau@or.com',
+      IDENTIFIER: 'email / pseudo',
       PASSWORD: '••••••••',
       DISPLAY_NAME: 'Ex: Jean Dupont',
       EMAIL: 'blaireau@or.com',

@@ -1,12 +1,14 @@
-import { useState, useMemo } from 'react';
 import { useAuthContext } from '@/features/account/context/AuthContext';
-import { PLAYER_STATS_CATEGORIES } from '@/features/stats/constants';
+import {
+  PLAYER_FOCUS_STATS,
+  PLAYER_STATS_CATEGORIES,
+} from '@/features/stats/constants';
 import type {
   CategoryItem,
   HintModalData,
   MetricItem,
-  StatFocusData,
 } from '@/features/stats/types';
+import { useMemo, useState } from 'react';
 
 export const usePlayerStats = () => {
   const { user } = useAuthContext();
@@ -25,6 +27,9 @@ export const usePlayerStats = () => {
         color: metric.getColor(stats),
         val: metric.getValue(stats),
         subtext: metric.getSubtext ? metric.getSubtext(stats) : undefined,
+        competitionName: metric.getCompetitionName
+          ? metric.getCompetitionName(stats)
+          : undefined,
         hint: metric.hint,
       })),
     }));
@@ -44,52 +49,19 @@ export const usePlayerStats = () => {
     ].filter(Boolean) as MetricItem[];
   }, [categories]);
 
-  const focusReceived = useMemo((): StatFocusData | null => {
-    const record = stats?.max_points_single_action_received;
-    if (!record) return null;
-    const involvedName =
-      record.involved_player_name || (record as any).involvedPlayerName;
-    return {
-      points: record.points,
-      description: record.description,
-      competitionName:
-        record.competition_name || (record as any).competitionName,
-      involvedName,
-      date: record.date,
-      isMe: Boolean(
-        involvedName &&
-        user?.player?.display_name &&
-        involvedName === user.player.display_name,
-      ),
-    };
-  }, [stats, user]);
-
-  const focusReported = useMemo((): StatFocusData | null => {
-    const record = stats?.max_points_single_action_reported;
-    if (!record) return null;
-    const involvedName =
-      record.involved_player_name || (record as any).involvedPlayerName;
-    return {
-      points: record.points,
-      description: record.description,
-      competitionName:
-        record.competition_name || (record as any).competitionName,
-      involvedName,
-      date: record.date,
-      isMe: Boolean(
-        involvedName &&
-        user?.player?.display_name &&
-        involvedName === user.player.display_name,
-      ),
-    };
+  const focusCards = useMemo(() => {
+    if (!stats) return [];
+    return PLAYER_FOCUS_STATS.map((config) => ({
+      ...config,
+      data: config.getData(stats, user),
+    }));
   }, [stats, user]);
 
   return {
     stats,
     categories,
     teaserMetrics,
-    focusReceived,
-    focusReported,
+    focusCards,
     activeHint,
     setActiveHint,
   };

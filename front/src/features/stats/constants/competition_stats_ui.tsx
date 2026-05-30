@@ -5,6 +5,13 @@ import type {
   ProgressBannerConfig,
 } from '@/features/stats/types';
 import { ICONS, pluralize } from '@/shared';
+import {
+  fmtNames,
+  fmtPairs,
+  fmtPercent,
+  fmtPoints,
+  fmtPointsPerAction,
+} from '../utils';
 
 // ---------------------------------------------------------
 // 1. TEXTES GLOBAUX
@@ -61,60 +68,7 @@ export const COMPETITION_STATS_GENERAL = {
 } as const;
 
 // ---------------------------------------------------------
-// 2. HELPERS DE FORMATAGE (JSX)
-// ---------------------------------------------------------
-const fmtPoints = (pts: number | string) => (
-  <span className="flex items-baseline justify-center gap-1">
-    {pts} <span className="text-xs opacity-50 font-normal lowercase">pts</span>
-  </span>
-);
-
-const fmtPointsPerAction = (pts: number | string) => (
-  <span className="flex items-baseline justify-center gap-1">
-    {pts}{' '}
-    <span className="text-xs opacity-50 font-normal lowercase">
-      pts / action
-    </span>
-  </span>
-);
-
-const fmtPercent = (val: number | string | null) =>
-  val !== null ? (
-    <span className="flex items-baseline justify-center gap-1">
-      {val} <span className="text-xs opacity-50 font-normal lowercase">%</span>
-    </span>
-  ) : (
-    '-'
-  );
-
-const fmtNames = (names?: string[]) => {
-  if (!names || names.length === 0) return 'Aucun';
-  if (names.length === 1) return names[0];
-  if (names.length === 2) return `${names[0]} et ${names[1]}`;
-  return `${names.length} ex-aequo`;
-};
-
-const fmtPairs = (pairs?: { player1: string; player2: string }[]) => {
-  if (!pairs || pairs.length === 0) return 'Aucune';
-  if (pairs.length === 1) {
-    return (
-      <span className="flex flex-col items-center justify-center gap-1.5 text-[0.85em]">
-        <span className="truncate">{pairs[0].player1}</span>
-        <span
-          className="text-danger-bright opacity-80 shrink-0 animate-pulse-subtle"
-          aria-hidden="true"
-        >
-          {ICONS.STAB}
-        </span>
-        <span className="truncate">{pairs[0].player2}</span>
-      </span>
-    );
-  }
-  return `${pairs.length} paires ex-aequo`;
-};
-
-// ---------------------------------------------------------
-// 3. LA CONFIGURATION PILOTE
+// 2. LA CONFIGURATION PILOTE
 // ---------------------------------------------------------
 
 export const PROGRESS_BANNER_METRICS: ProgressBannerConfig[] = [
@@ -134,7 +88,7 @@ export const PROGRESS_BANNER_METRICS: ProgressBannerConfig[] = [
     getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.GAP,
     icon: ICONS.GAP,
     getColor: (data) =>
-      data.pointsBehind > 0 ? 'text-danger-bright' : 'text-success-bright',
+      data.pointsBehind > 0 ? 'text-success-bright' : 'text-danger-bright',
     getValue: (data) =>
       data.pointsBehind > 0 ? (
         <span className="flex items-baseline justify-center gap-1">
@@ -309,7 +263,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'min_avg_points_received',
         getLabel: () => 'Meilleure moyenne subie',
-        icon: ICONS.TRENDING_UP,
+        icon: ICONS.BEST,
         getColor: () => 'text-danger-bright',
         getValue: (s) => fmtNames(s.min_avg_points_received?.player_names),
         getSubtext: (s) =>
@@ -325,7 +279,7 @@ export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
       {
         id: 'max_avg_points_received',
         getLabel: () => 'Pire moyenne subie',
-        icon: ICONS.TRENDING_DOWN,
+        icon: ICONS.WORST,
         getColor: () => 'text-success-bright',
         getValue: (s) => fmtNames(s.max_avg_points_received?.player_names),
         getSubtext: (s) =>

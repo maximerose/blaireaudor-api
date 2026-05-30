@@ -61,6 +61,14 @@ export const StatCard = ({ metric, onClick }: StatCardProps) => {
               {metric.subtext}
             </Text>
           )}
+          {metric.competitionName && (
+            <Text
+              variant={TEXT_VARIANT.MICRO}
+              className="mt-1.5 font-bold text-gold/80 max-w-full px-2"
+            >
+              {metric.competitionName}
+            </Text>
+          )}
         </div>
 
         <Text
