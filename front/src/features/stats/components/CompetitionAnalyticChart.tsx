@@ -59,7 +59,7 @@ export const CompetitionAnalyticChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={bumpData}
-          margin={{ top: 30, right: 35, left: -15, bottom: 0 }}
+          margin={{ top: 50, right: 35, left: -15, bottom: 0 }}
         >
           <CartesianGrid
             strokeDasharray="3 3"
@@ -134,7 +134,7 @@ export const CompetitionAnalyticChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={dailyEvolution}
-          margin={{ top: 20, right: 35, left: -15, bottom: 0 }}
+          margin={{ top: 50, right: 35, left: -15, bottom: 0 }}
         >
           <CartesianGrid
             strokeDasharray="3 3"
@@ -324,7 +324,6 @@ export const CompetitionAnalyticChart = ({
             variant={BUTTON_VARIANT.SECONDARY}
             size={BUTTON_SIZE.SMALL}
             onClick={onOpenFullscreen}
-            icon={ICONS.MAXIMIZE}
           >
             <span className="sm:hidden">{ICONS.MAXIMIZE}</span>
             <span className="hidden sm:block">

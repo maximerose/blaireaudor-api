@@ -1,6 +1,6 @@
-import type React from 'react';
 import type { PlayerStats } from '@/features/account/types';
 import type { EnrichedLeaderboardItem } from '@/features/competition/types';
+import type React from 'react';
 import type { ReactNode } from 'react';
 
 // --- TYPES DE BASE (MODALES & KPIs) ---
@@ -89,10 +89,30 @@ export interface StatFocusCardProps {
   variant: 'danger' | 'info';
 }
 
+export interface ProgressBannerData {
+  score: number;
+  pointsBehind: number;
+  rank: number;
+  actionsCount: number;
+  averageSeverity: string | number;
+  arenaWeight: number;
+}
+
+export type ProgressBannerConfig = {
+  id: string;
+  getLabel: () => string;
+  icon: string | React.ReactNode;
+  getColor: (data: ProgressBannerData) => string;
+  getValue: (data: ProgressBannerData) => React.ReactNode | string | number;
+  hint?: HintModalData;
+};
+
 export interface ProgressBannerProps {
   myParticipation: EnrichedLeaderboardItem;
   leaderboard: EnrichedLeaderboardItem[];
   myPlayerId: string | undefined;
+  totalPoints: number;
+  onCardClick: (hint: HintModalData) => void;
 }
 
 export interface AnalyticChartProps {

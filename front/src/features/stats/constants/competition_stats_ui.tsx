@@ -1,5 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
-import type { CompCategoryConfig } from '@/features/stats/types';
+import { RankBadge } from '@/features/competition/leaderboard';
+import type {
+  CompCategoryConfig,
+  ProgressBannerConfig,
+} from '@/features/stats/types';
 import { ICONS, pluralize } from '@/shared';
 
 // ---------------------------------------------------------
@@ -31,10 +35,23 @@ export const COMPETITION_STATS_GENERAL = {
     TITLE: 'Mon Bilan Actuel',
     SCORE: 'Mon Score',
     RANK: 'Mon Classement',
-    ACTIONS: (count: number) =>
-      pluralize(count, 'Action réalisée', 'Actions réalisées'),
+    ACTIONS: 'Actions subies',
     GAP: 'Écart avec le 1er',
-    BOSS_LABEL: "Tu es le blaireau d'or",
+    BOSS_LABEL: 'Le boss',
+    SEVERITY: 'Sévérité moyenne',
+    WEIGHT: "Poids dans l'arène",
+    HINTS: {
+      SCORE:
+        'La somme totale de tes points de pénalité validés par les arbitres dans cette arène.',
+      GAP: 'Le nombre de points exact qui te séparent du joueur en tête de la compétition.',
+      RANK: 'Ta position actuelle dans le classement (les ex-aequo obtiennent le même rang).',
+      ACTIONS:
+        'Le nombre total de tes actions/fautes qui ont été officiellement validées.',
+      SEVERITY:
+        "Le nombre moyen de points que te coûte chaque action validée (Total des points / Nombre d'actions).",
+      WEIGHT:
+        "La part que représente ton score par rapport à la totalité des points distribués dans l'arène.",
+    },
   },
   FOCUS: {
     SECTION_TITLE: "L'Action du Siècle",
@@ -46,13 +63,13 @@ export const COMPETITION_STATS_GENERAL = {
 // ---------------------------------------------------------
 // 2. HELPERS DE FORMATAGE (JSX)
 // ---------------------------------------------------------
-const fmtPoints = (pts: number) => (
+const fmtPoints = (pts: number | string) => (
   <span className="flex items-baseline justify-center gap-1">
     {pts} <span className="text-xs opacity-50 font-normal lowercase">pts</span>
   </span>
 );
 
-const fmtPointsPerAction = (pts: number) => (
+const fmtPointsPerAction = (pts: number | string) => (
   <span className="flex items-baseline justify-center gap-1">
     {pts}{' '}
     <span className="text-xs opacity-50 font-normal lowercase">
@@ -61,7 +78,7 @@ const fmtPointsPerAction = (pts: number) => (
   </span>
 );
 
-const fmtPercent = (val: number | null) =>
+const fmtPercent = (val: number | string | null) =>
   val !== null ? (
     <span className="flex items-baseline justify-center gap-1">
       {val} <span className="text-xs opacity-50 font-normal lowercase">%</span>
@@ -99,6 +116,88 @@ const fmtPairs = (pairs?: { player1: string; player2: string }[]) => {
 // ---------------------------------------------------------
 // 3. LA CONFIGURATION PILOTE
 // ---------------------------------------------------------
+
+export const PROGRESS_BANNER_METRICS: ProgressBannerConfig[] = [
+  {
+    id: 'score',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.SCORE,
+    icon: ICONS.POINTS,
+    getColor: () => 'text-gold',
+    getValue: (data) => fmtPoints(data.score),
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.SCORE,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.SCORE,
+    },
+  },
+  {
+    id: 'gap',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.GAP,
+    icon: ICONS.GAP,
+    getColor: (data) =>
+      data.pointsBehind > 0 ? 'text-danger-bright' : 'text-success-bright',
+    getValue: (data) =>
+      data.pointsBehind > 0 ? (
+        <span className="flex items-baseline justify-center gap-1">
+          -{data.pointsBehind}{' '}
+          <span className="text-xs font-normal opacity-50 lowercase">pts</span>
+        </span>
+      ) : (
+        <span className="text-[0.6em] whitespace-nowrap">
+          {COMPETITION_STATS_GENERAL.PROGRESS_BANNER.BOSS_LABEL}
+        </span>
+      ),
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.GAP,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.GAP,
+    },
+  },
+  {
+    id: 'rank',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.RANK,
+    icon: ICONS.RANKING,
+    getColor: () => '',
+    getValue: (data) => (
+      <RankBadge rank={data.rank} className="scale-[1.3] m-auto" />
+    ),
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.RANK,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.RANK,
+    },
+  },
+  {
+    id: 'actions',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.ACTIONS,
+    icon: ICONS.ACTION,
+    getColor: () => 'text-info-bright',
+    getValue: (data) => data.actionsCount,
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.ACTIONS,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.ACTIONS,
+    },
+  },
+  {
+    id: 'severity',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.SEVERITY,
+    icon: ICONS.CALCULATOR,
+    getColor: () => 'text-danger-bright',
+    getValue: (data) => fmtPointsPerAction(data.averageSeverity),
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.SEVERITY,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.SEVERITY,
+    },
+  },
+  {
+    id: 'weight',
+    getLabel: () => COMPETITION_STATS_GENERAL.PROGRESS_BANNER.WEIGHT,
+    icon: ICONS.KARMA,
+    getColor: () => 'text-warning-bright',
+    getValue: (data) => fmtPercent(data.arenaWeight),
+    hint: {
+      title: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.WEIGHT,
+      description: COMPETITION_STATS_GENERAL.PROGRESS_BANNER.HINTS.WEIGHT,
+    },
+  },
+];
 
 export const COMPETITION_STATS_CATEGORIES: CompCategoryConfig[] = [
   {
