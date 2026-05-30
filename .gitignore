@@ -17,3 +17,5 @@ repomix-output.xml
 # DEV tools
 *.diff
 *.log
+
+docker/webhook/hooks.json
