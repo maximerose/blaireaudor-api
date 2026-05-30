@@ -1,21 +1,20 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  ROUTES,
-  ERRORS,
-  slugify,
-  type ApiError,
-  HTTP_STATUS,
-  handleApiError,
-} from '@/shared';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthContext } from '@/features/account/context/AuthContext';
 import {
   loginSchema,
   type LoginFormData,
 } from '@/features/account/validations';
 import { competitionService } from '@/features/competition/services';
+import {
+  ERRORS,
+  HTTP_STATUS,
+  ROUTES,
+  handleApiError,
+  type ApiError,
+} from '@/shared';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -72,7 +71,8 @@ export const useLogin = () => {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('username', slugify(e.target.value), { shouldValidate: false });
+    const cleanValue = e.target.value.toLowerCase().replace(/\s/g, '');
+    setValue('username', cleanValue, { shouldValidate: false });
   };
 
   return {

@@ -1,5 +1,5 @@
+import { FORM, ICONS, Input, Stack, type InputProps } from '@/shared';
 import { forwardRef } from 'react';
-import { Input, type InputProps, FORM, ICONS, Stack } from '@/shared';
 import { PasswordStrength } from '../PasswordStrength';
 
 interface PasswordFieldProps extends Partial<InputProps> {
@@ -13,6 +13,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
       icon = ICONS.SECRET,
       watchValue,
       error,
+      hideAsterisk = false,
       ...props
     },
     ref,
@@ -24,7 +25,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
         label={label}
         icon={icon}
         placeholder={FORM.AUTH.PLACEHOLDERS.PASSWORD}
-        required
+        hideAsterisk={hideAsterisk}
         error={error}
         {...props}
       />
