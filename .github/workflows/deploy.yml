@@ -30,10 +30,25 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
-      # On utilise la micro-API d'o2switch pour mettre le robot en liste blanche
       - name: 🔓 Autoriser l'IP du robot sur o2switch
         run: |
-          curl -sX GET -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
+          # 1. Obtenir les en-têtes de connexion pour intercepter le jeton de session (cpsess)
+          REDIRECT_HEADERS=$(curl -sI -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/")
+          
+          # 2. Extraire le jeton dynamique généré par cPanel
+          TOKEN=$(echo "$REDIRECT_HEADERS" | grep -io 'cpsess[0-9]*' | head -n 1)
+          
+          if [ -z "$TOKEN" ]; then
+            echo "❌ Erreur : Impossible de récupérer le jeton de session cPanel. Vérifie tes secrets O2SWITCH_USER et O2SWITCH_PASSWORD."
+            exit 1
+          fi
+          
+          echo "🔑 Jeton de session sécurité intercepté : $TOKEN"
+          
+          # 3. Appeler le plugin d'o2switch au bon endroit avec son jeton pour valider l'IP
+          curl -sX GET -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/${TOKEN}/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
+          
+          echo "⏳ Attente de 10 secondes pour la propagation du pare-feu..."
           sleep 10
 
       # --- 3. SYNCHRONISATION DES FICHIERS (RSYNC) ---
