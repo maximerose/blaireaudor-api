@@ -30,39 +30,17 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
+      # Utilisation des cookies pour valider la session avant l'appel du plugin
       - name: 🔓 Autoriser l'IP du robot sur o2switch
         run: |
-          # 1. Vérifier le code de réponse HTTP d'o2switch
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/")
-          echo "📡 Statut de connexion au serveur : $HTTP_STATUS"
+          echo "🔐 Étape 1 : Connexion initiale et initialisation des cookies de session..."
+          curl -s -L -c cpanel_cookies.txt -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/"
           
-          if [ "$HTTP_STATUS" = "401" ]; then
-            echo "❌ Erreur 401 : Identifiant ou Mot de passe cPanel incorrect !"
-            exit 1
-          elif [ "$HTTP_STATUS" = "000" ]; then
-            echo "❌ Erreur 000 : Impossible de joindre le serveur. Vérifie O2SWITCH_HOST."
-            exit 1
-          fi
-
-          # 2. Obtenir les en-têtes de connexion pour intercepter la redirection
-          REDIRECT_HEADERS=$(curl -sI -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/")
+          echo "🔓 Étape 2 : Autorisation de l'IP du robot (${{ steps.ip.outputs.ipv4 }}) via le plugin o2switch..."
+          curl -s -L -b cpanel_cookies.txt -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
           
-          # 3. Extraire le jeton dynamique (supporte chiffres ET lettres désormais)
-          TOKEN=$(echo "$REDIRECT_HEADERS" | grep -io 'cpsess[a-zA-Z0-9]*' | head -n 1 | tr -d '\r')
-          
-          if [ -z "$TOKEN" ]; then
-            echo "❌ Erreur : Impossible d'extraire le jeton. Voici les en-têtes reçus pour déboguer :"
-            echo "$REDIRECT_HEADERS"
-            exit 1
-          fi
-          
-          echo "🔑 Jeton de session sécurité intercepté : $TOKEN"
-          
-          # 4. Appeler le plugin d'o2switch avec le jeton et l'IP du robot
-          curl -sX GET -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/${TOKEN}/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
-          
-          echo "⏳ Attente de 10 secondes pour la propagation du pare-feu..."
-          sleep 10
+          echo "⏳ Étape 3 : Attente de 15 secondes pour l'application de la règle par le pare-feu..."
+          sleep 15
 
       # --- 3. SYNCHRONISATION DES FICHIERS (RSYNC) ---
       - name: 📂 Transfert vers o2switch
