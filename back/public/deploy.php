@@ -1,10 +1,22 @@
 <?php
-// back/public/deploy.php
+
+$envLocalPath = dirname(__DIR__) . '/.env.local';
+$expectedSecret = null;
+
+if (file_exists($envLocalPath)) {
+    $lines = file($envLocalPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (str_starts_with(trim($line), 'DEPLOY_SECRET=')) {
+            $parts = explode('=', $line, 2);
+            $expectedSecret = trim($parts[1], " \t\n\r\0\x0B\"'");
+            break;
+        }
+    }
+}
 
 $secret = $_GET['secret'] ?? null;
-$expectedSecret = 'BlaireauDorFaitDuDevOpsEn2026'; 
 
-if ($secret !== $expectedSecret) {
+if (!$expectedSecret || $secret !== $expectedSecret) {
     header('HTTP/1.1 403 Forbidden');
     die('Accès refusé.');
 }
