@@ -37,7 +37,7 @@ jobs:
         env:
             APP_ENV: prod
         run: |
-          composer install --no-dev --optimize-autoloader --no-interaction
+          composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
       # --- 3. TÉLÉVERSEMENT DES FICHIERS VIA FTP ---
       - name: 📂 Transfert global vers o2switch via FTP
