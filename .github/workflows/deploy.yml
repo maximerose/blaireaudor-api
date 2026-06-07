@@ -1,4 +1,4 @@
-name: 🚀 Deploy Monorepo to o2switch Prod
+name: 🚀 Deploy Monorepo to o2switch Prod (FTP)
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - name: 🚚 Récupération du code
         uses: actions/checkout@v4
 
-      # --- 1. CONFIGURATION & COMPILATION DU FRONT (VITE) ---
+      # --- 1. COMPILATION DU FRONT (VITE) ---
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,46 +25,36 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. OUVERTURE AUTOMATIQUE DU PARE-FEU O2SWITCH ---
-      - name: 🌐 Récupérer l'IP du robot GitHub
-        id: ip
-        uses: haythem/public-ip@v1.3
-
-      # Utilisation des cookies pour valider la session avant l'appel du plugin
-      - name: 🔓 Autoriser l'IP du robot sur o2switch
-        run: |
-          echo "🔐 Étape 1 : Connexion initiale et initialisation des cookies de session..."
-          curl -s -L -c cpanel_cookies.txt -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/"
-          
-          echo "🔓 Étape 2 : Autorisation de l'IP du robot (${{ steps.ip.outputs.ipv4 }}) via le plugin o2switch..."
-          curl -s -L -b cpanel_cookies.txt -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
-          
-          echo "⏳ Étape 3 : Attente de 15 secondes pour l'application de la règle par le pare-feu..."
-          sleep 15
-
-      # --- 3. SYNCHRONISATION DES FICHIERS (RSYNC) ---
-      - name: 📂 Transfert vers o2switch
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.O2SWITCH_HOST }}
-          REMOTE_USER: ${{ secrets.O2SWITCH_USER }}
-          REMOTE_PORT: 22
-          SOURCE: "./"
-          TARGET: "/home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/"
-          EXCLUDE: "/.git/, /.github/, /front/node_modules/, /back/vendor/, /back/var/, /back/.env.local"
-
-      # --- 4. SCRIPTS SYMFONY SUR LE SERVEUR ---
-      - name: ⚙️ Post-Déploiement Symfony
-        uses: appleboy/ssh-action@v1.0.3
+      # --- 2. PRÉPARATION DU BACK (COMPOSER PROD) ---
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          host: ${{ secrets.O2SWITCH_HOST }}
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+
+      - name: 🛠️ Build Backend (Symfony Prod)
+        working-directory: ./back
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction
+
+      # --- 3. TÉLÉVERSEMENT DES FICHIERS VIA FTP ---
+      - name: 📂 Transfert global vers o2switch via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.O2SWITCH_HOST }}
           username: ${{ secrets.O2SWITCH_USER }}
-          key: ${{ secrets.O2SWITCH_SSH_KEY }}
-          port: 22
-          script: |
-            cd /home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/back
-            composer install --no-dev --optimize-autoloader --no-interaction
-            php bin/console cache:clear --env=prod
-            php bin/console doctrine:migrations:migrate -n --env=prod
-            php bin/console lexik:jwt:generate-keypair --skip-if-exists
+          password: ${{ secrets.O2SWITCH_PASSWORD }}
+          port: 21
+          local-dir: ./
+          server-dir: blaireaudor/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/back/var/**
+            **/back/.env.local
+
+      # --- 4. EXÉCUTION DES COMMANDES SYMFONY VIA LE WEB ---
+      - name: ⚙️ Exécution du script post-déploiement
+        run: |
+          curl -fsSL "https://api.blaireaudor.maximerose.com/deploy.php?secret=BlaireauDorFaitDuDevOpsEn2026"
