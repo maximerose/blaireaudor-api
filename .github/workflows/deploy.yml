@@ -46,4 +46,4 @@ jobs:
       # --- 3. EXÉCUTION DES COMMANDES COMPOSER & SYMFONY SUR O2SWITCH ---
       - name: ⚙️ Déclencher l'installation sur le serveur
         run: |
-          curl -fsSL "https://api.blaireaudor.maximerose.com/deploy.php?secret=${{ secrets.DEPLOY_SECRET }}"
+          curl -kfsSL "https://api.blaireaudor.maximerose.com/deploy.php?secret=${{ secrets.DEPLOY_SECRET }}"
