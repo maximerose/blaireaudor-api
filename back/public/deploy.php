@@ -1,5 +1,10 @@
 <?php
 
+// 1. Force Litespeed (o2switch) à ne pas couper la connexion pendant l'exécution
+header('X-LiteSpeed-NoAbort: true');
+set_time_limit(300); // Laisse 5 minutes au script pour travailler si besoin
+
+// 2. Aller chercher le secret dans le fichier confidentiel du serveur
 $envLocalPath = dirname(__DIR__) . '/.env.local';
 $expectedSecret = null;
 
@@ -14,7 +19,8 @@ if (file_exists($envLocalPath)) {
     }
 }
 
-$secret = $_GET['secret'] ?? null;
+// 3. Récupérer le secret via l'en-tête HTTP (Header) pour contourner le pare-feu
+$secret = $_SERVER['HTTP_X_DEPLOY_SECRET'] ?? null;
 
 if (!$expectedSecret || $secret !== $expectedSecret) {
     header('HTTP/1.1 403 Forbidden');
@@ -22,11 +28,11 @@ if (!$expectedSecret || $secret !== $expectedSecret) {
 }
 
 header('Content-Type: text/plain');
-echo "🚀 Démarrage des tâches post-déploiement directement sur o2switch...\n\n";
+echo "🚀 Démarrage des tâches post-déploiement o2switch...\n\n";
 
 chdir(dirname(__DIR__));
 
-echo "1. Installation des dépendances PHP (Composer) sur le serveur...\n";
+echo "1. Installation des dépendances PHP (Composer)...\n";
 passthru('composer install --no-dev --optimize-autoloader --no-interaction 2>&1');
 
 echo "\n2. Nettoyage du cache de production...\n";
@@ -38,4 +44,4 @@ passthru('php bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
 echo "\n4. Vérification des clés de chiffrement JWT...\n";
 passthru('php bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
 
-echo "\n✅ Tout est installé et synchronisé avec succès !";
+echo "\n✅ Tout est installé avec succès !";
