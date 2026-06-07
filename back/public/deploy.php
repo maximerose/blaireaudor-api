@@ -1,10 +1,10 @@
 <?php
+// back/public/deploy.php
 
-// 1. Force Litespeed (o2switch) à ne pas couper la connexion pendant l'exécution
 header('X-LiteSpeed-NoAbort: true');
-set_time_limit(300); // Laisse 5 minutes au script pour travailler si besoin
+set_time_limit(300);
 
-// 2. Aller chercher le secret dans le fichier confidentiel du serveur
+// 1. Récupération du secret dans le .env.local
 $envLocalPath = dirname(__DIR__) . '/.env.local';
 $expectedSecret = null;
 
@@ -19,29 +19,41 @@ if (file_exists($envLocalPath)) {
     }
 }
 
-// 3. Récupérer le secret via l'en-tête HTTP (Header) pour contourner le pare-feu
 $secret = $_SERVER['HTTP_X_DEPLOY_SECRET'] ?? null;
-
 if (!$expectedSecret || $secret !== $expectedSecret) {
     header('HTTP/1.1 403 Forbidden');
     die('Accès refusé.');
 }
 
 header('Content-Type: text/plain');
-echo "🚀 Démarrage des tâches post-déploiement o2switch...\n\n";
+echo "🚀 Démarrage de l'extraction à haute vitesse...\n\n";
 
 chdir(dirname(__DIR__));
 
-echo "1. Installation des dépendances PHP (Composer)...\n";
-passthru('composer install --no-dev --optimize-autoloader --no-interaction 2>&1');
+// 2. Désarchivage du dossier vendor
+$zipFile = 'vendor.zip';
+if (file_exists($zipFile)) {
+    echo "1. Extraction de vendor.zip en cours...\n";
+    $zip = new ZipArchive;
+    if ($zip->open($zipFile) === TRUE) {
+        $zip->extractTo('./');
+        $zip->close();
+        echo "✅ Dossier vendor extrait avec succès !\n";
+        unlink($zipFile); // On supprime le zip après extraction
+    } else {
+        echo "❌ Échec du désarchivage de vendor.zip\n";
+    }
+} else {
+    echo "ℹ️ vendor.zip introuvable, étape ignorée.\n";
+}
 
-echo "\n2. Nettoyage du cache de production...\n";
+echo "\n2. Nettoyage du cache Symfony...\n";
 passthru('php bin/console cache:clear --env=prod 2>&1');
 
 echo "\n3. Exécution des migrations de base de données...\n";
 passthru('php bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
 
-echo "\n4. Vérification des clés de chiffrement JWT...\n";
+echo "\n4. Clés de chiffrement JWT...\n";
 passthru('php bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
 
-echo "\n✅ Tout est installé avec succès !";
+echo "\n✨ Déploiement terminé avec succès !";

@@ -1,9 +1,12 @@
-name: 🚀 Deploy Monorepo to o2switch Prod (FTP Rapide)
+name: 🚀 Deploy Monorepo to o2switch Prod (ZIP Optimisé)
 
 on:
   push:
     branches:
       - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 👈 ICI ON SUPPRIME LE WARNING NODE 20
 
 jobs:
   build-and-deploy:
@@ -13,11 +16,11 @@ jobs:
       - name: 🚚 Récupération du code
         uses: actions/checkout@v4
 
-      # --- 1. COMPILATION DU FRONT (VITE) ---
+      # --- 1. COMPILATION DU FRONT ---
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           
       - name: 🛠️ Build Frontend
         working-directory: ./front 
@@ -25,7 +28,22 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. TÉLÉVERSEMENT DES FICHIERS VIA FTP (SANS LES VENDOR) ---
+      # --- 2. PRÉPARATION DU BACK & CRÉATION DU ZIP ---
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+
+      - name: 🛠️ Installation des dépendances et compression ZIP
+        working-directory: ./back
+        env:
+          APP_ENV: prod
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+          zip -r vendor.zip vendor # 👈 ON COMPRESSE LES 10 000 FICHIERS EN 1 SEUL
+
+      # --- 3. TÉLÉVERSEMENT DES FICHIERS VIA FTP (TRÈS RAPIDE) ---
       - name: 📂 Transfert global vers o2switch via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -39,11 +57,11 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            **/back/vendor/**
+            **/back/vendor/** # On exclut le dossier non-compressé, on envoie uniquement le .zip !
             **/back/var/**
             **/back/.env.local
 
-      # --- 3. EXÉCUTION DES COMMANDES COMPOSER & SYMFONY SUR O2SWITCH ---
-      - name: ⚙️ Déclencher l'installation sur le serveur
+      # --- 4. EXTRACTION ET COMMANDES FINALES SUR LE SERVEUR ---
+      - name: ⚙️ Déclencher l'extraction et les scripts sur o2switch
         run: |
           curl --http1.1 -kfsSL -H "X-Deploy-Secret: ${{ secrets.DEPLOY_SECRET }}" "https://api.blaireaudor.maximerose.com/deploy.php"
