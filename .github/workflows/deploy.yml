@@ -33,8 +33,8 @@ jobs:
       # On utilise la micro-API d'o2switch pour mettre le robot en liste blanche
       - name: 🔓 Autoriser l'IP du robot sur o2switch
         run: |
-          curl -sX GET "https://${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}@${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
-          sleep 10 # On attend 10 secondes que le pare-feu applique la règle
+          curl -sX GET -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
+          sleep 10
 
       # --- 3. SYNCHRONISATION DES FICHIERS (RSYNC) ---
       - name: 📂 Transfert vers o2switch
