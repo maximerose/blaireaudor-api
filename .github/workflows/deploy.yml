@@ -1,4 +1,4 @@
-name: 🚀 Deploy Monorepo to o2switch Prod (FTP)
+name: 🚀 Deploy Monorepo to o2switch Prod (FTP Rapide)
 
 on:
   push:
@@ -25,21 +25,7 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. PRÉPARATION DU BACK (COMPOSER PROD) ---
-      - name: 🐘 Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
-
-      - name: 🛠️ Build Backend (Symfony Prod)
-        working-directory: ./back
-        env:
-            APP_ENV: prod
-        run: |
-          composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-
-      # --- 3. TÉLÉVERSEMENT DES FICHIERS VIA FTP ---
+      # --- 2. TÉLÉVERSEMENT DES FICHIERS VIA FTP (SANS LES VENDOR) ---
       - name: 📂 Transfert global vers o2switch via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -53,10 +39,11 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/back/vendor/**
             **/back/var/**
             **/back/.env.local
 
-      # --- 4. EXÉCUTION DES COMMANDES SYMFONY VIA LE WEB ---
-      - name: ⚙️ Exécution du script post-déploiement
+      # --- 3. EXÉCUTION DES COMMANDES COMPOSER & SYMFONY SUR O2SWITCH ---
+      - name: ⚙️ Déclencher l'installation sur le serveur
         run: |
           curl -fsSL "https://api.blaireaudor.maximerose.com/deploy.php?secret=BlaireauDorFaitDuDevOpsEn2026"
