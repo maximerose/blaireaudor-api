@@ -32,20 +32,32 @@ jobs:
 
       - name: 🔓 Autoriser l'IP du robot sur o2switch
         run: |
-          # 1. Obtenir les en-têtes de connexion pour intercepter le jeton de session (cpsess)
+          # 1. Vérifier le code de réponse HTTP d'o2switch
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/")
+          echo "📡 Statut de connexion au serveur : $HTTP_STATUS"
+          
+          if [ "$HTTP_STATUS" = "401" ]; then
+            echo "❌ Erreur 401 : Identifiant (O2SWITCH_USER) ou Mot de passe (O2SWITCH_PASSWORD) cPanel incorrect !"
+            exit 1
+          elif [ "$HTTP_STATUS" = "000" ]; then
+            echo "❌ Erreur 000 : Impossible de joindre le serveur. Vérifie l'adresse dans O2SWITCH_HOST."
+            exit 1
+          fi
+
+          # 2. Obtenir les en-têtes de connexion pour intercepter le jeton de session (cpsess)
           REDIRECT_HEADERS=$(curl -sI -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/")
           
-          # 2. Extraire le jeton dynamique généré par cPanel
+          # 3. Extraire le jeton dynamique généré par cPanel
           TOKEN=$(echo "$REDIRECT_HEADERS" | grep -io 'cpsess[0-9]*' | head -n 1)
           
           if [ -z "$TOKEN" ]; then
-            echo "❌ Erreur : Impossible de récupérer le jeton de session cPanel. Vérifie tes secrets O2SWITCH_USER et O2SWITCH_PASSWORD."
+            echo "❌ Erreur : Impossible de récupérer le jeton de session cPanel malgré un statut valide."
             exit 1
           fi
           
           echo "🔑 Jeton de session sécurité intercepté : $TOKEN"
           
-          # 3. Appeler le plugin d'o2switch au bon endroit avec son jeton pour valider l'IP
+          # 4. Appeler le plugin d'o2switch au bon endroit avec son jeton pour valider l'IP
           curl -sX GET -u "${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}" "https://${{ secrets.O2SWITCH_HOST }}:2083/${TOKEN}/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
           
           echo "⏳ Attente de 10 secondes pour la propagation du pare-feu..."
