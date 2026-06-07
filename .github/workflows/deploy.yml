@@ -25,33 +25,40 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. SYNCHRONISATION DES FICHIERS (RSYNC) ---
+      # --- 2. OUVERTURE AUTOMATIQUE DU PARE-FEU O2SWITCH ---
+      - name: 🌐 Récupérer l'IP du robot GitHub
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      # On utilise la micro-API d'o2switch pour mettre le robot en liste blanche
+      - name: 🔓 Autoriser l'IP du robot sur o2switch
+        run: |
+          curl -sX GET "https://${{ secrets.O2SWITCH_USER }}:${{ secrets.O2SWITCH_PASSWORD }}@${{ secrets.O2SWITCH_HOST }}:2083/frontend/o2switch/o2switch-ssh-whitelist/index.live.php?ip=${{ steps.ip.outputs.ipv4 }}&action=add"
+          sleep 10 # On attend 10 secondes que le pare-feu applique la règle
+
+      # --- 3. SYNCHRONISATION DES FICHIERS (RSYNC) ---
       - name: 📂 Transfert vers o2switch
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.O2SWITCH_HOST }}
           REMOTE_USER: ${{ secrets.O2SWITCH_USER }}
+          REMOTE_PORT: 22
           SOURCE: "./"
           TARGET: "/home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/"
           EXCLUDE: "/.git/, /.github/, /front/node_modules/, /back/vendor/, /back/var/, /back/.env.local"
-          ARGS: "-rlgoDzvc -i --rsh='ssh -p 2222'"
 
-      # --- 3. SCRIPTS SYMFONY SUR LE SERVEUR ---
+      # --- 4. SCRIPTS SYMFONY SUR LE SERVEUR ---
       - name: ⚙️ Post-Déploiement Symfony
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.O2SWITCH_HOST }}
           username: ${{ secrets.O2SWITCH_USER }}
           key: ${{ secrets.O2SWITCH_SSH_KEY }}
-          port: 2222
+          port: 22
           script: |
             cd /home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/back
-            
-            # Installation propre des dépendances PHP de prod
             composer install --no-dev --optimize-autoloader --no-interaction
-            
-            # Gestion du cache et des bases de données
             php bin/console cache:clear --env=prod
             php bin/console doctrine:migrations:migrate -n --env=prod
             php bin/console lexik:jwt:generate-keypair --skip-if-exists
