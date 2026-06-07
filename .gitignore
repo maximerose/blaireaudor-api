@@ -3,9 +3,10 @@ node_modules/
 vendor/
 
 # Environnement
-/.env
-/.env.local
-/.env.*.local
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # IDE
 .idea/

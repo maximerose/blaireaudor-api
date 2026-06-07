@@ -24,6 +24,7 @@ services:
       - "5173:5173"
     volumes:
       - ./front:/app
+      - /app/node_modules
   
   quality:
     build: 
