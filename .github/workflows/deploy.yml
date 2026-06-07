@@ -20,7 +20,7 @@ jobs:
           node-version: '22'
           
       - name: 🛠️ Build Frontend
-        working-directory: ./front  # Indique à GitHub d'aller dans ton dossier front
+        working-directory: ./front 
         run: |
           npm ci
           npm run build
@@ -32,9 +32,10 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.O2SWITCH_HOST }}
           REMOTE_USER: ${{ secrets.O2SWITCH_USER }}
-          SOURCE: "./" # On synchronise TOUT le monorepo (front + back + config)
-          TARGET: "/home/${{ secrets.O2SWITCH_USER }}/blaireaudor/"
+          SOURCE: "./"
+          TARGET: "/home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/"
           EXCLUDE: "/.git/, /.github/, /front/node_modules/, /back/vendor/, /back/var/, /back/.env.local"
+          ARGS: "-rlgoDzvc -i --rsh='ssh -p 2222'"
 
       # --- 3. SCRIPTS SYMFONY SUR LE SERVEUR ---
       - name: ⚙️ Post-Déploiement Symfony
@@ -43,6 +44,7 @@ jobs:
           host: ${{ secrets.O2SWITCH_HOST }}
           username: ${{ secrets.O2SWITCH_USER }}
           key: ${{ secrets.O2SWITCH_SSH_KEY }}
+          port: 2222
           script: |
             cd /home2/${{ secrets.O2SWITCH_USER }}/blaireaudor/back
             
