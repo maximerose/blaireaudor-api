@@ -1,0 +1,42 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Raccorder un profil invité{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-8 col-xl-6">
+            <div class="alert alert-warning">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Fusion définitive</h4>
+                <p>
+                    Vous êtes sur le point de transférer l'intégralité de l'historique du profil invité <strong>{{ player.displayName }}</strong> 
+                    vers un compte réel. L'ancien profil fantôme sera ensuite détruit.
+                </p>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="POST" action="">
+                        <div class="form-group mb-4">
+                            <label for="target_user_id" class="form-control-label fw-bold mb-2">
+                                Sélectionnez le compte réel existant (User)
+                            </label>
+                            <select id="target_user_id" name="target_user_id" class="form-select" data-widget="select2" required>
+                                <option value="">Rechercher un compte...</option>
+                                {% for u in users %}
+                                    <option value="{{ u.id }}">{{ u.username }} ({{ u.email }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-object-group me-1"></i> Exécuter la fusion
+                            </button>
+                            <a href="{{ ea_url().setAction('index') }}" class="btn btn-secondary ms-2">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

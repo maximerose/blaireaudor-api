@@ -195,7 +195,7 @@ final class KpiConstants
             'title' => 'Le Pire Palmarès',
             'icon' => 'fas fa-skull-crossbones',
             'color' => 'danger',
-            'suffix' => 'pts',
+            'suffix' => null,
             'empty_value' => 'Aucun',
             'subtext' => '%s points cumulés sur toutes les arènes',
             'hint' => "Le joueur ayant accumulé le plus grand nombre de points sur l'ensemble de sa carrière.",

@@ -55,7 +55,7 @@ final class CompetitionMergeController extends AbstractController
         }
 
         try {
-            $this->playerMerger->merge($competition, $guestPlayer, $realUser);
+            $this->playerMerger->merge($guestPlayer, $realUser);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
