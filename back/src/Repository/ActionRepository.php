@@ -20,8 +20,6 @@ class ActionRepository extends ServiceEntityRepository
         parent::__construct($registry, Action::class);
     }
 
-    // back/src/Repository/ActionRepository.php
-
     public function findByCompetition(
         Competition $competition,
         string $sortBy = 'dateAction',
@@ -59,7 +57,7 @@ class ActionRepository extends ServiceEntityRepository
         $filterConditions = [];
 
         if ($date) {
-            $filterConditions[] = "DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
+            $filterConditions[] = "DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = :targetDate";
             $params['tz'] = AppConstants::TIMEZONE;
             $params['targetDate'] = $date;
         }
@@ -74,7 +72,6 @@ class ActionRepository extends ServiceEntityRepository
             $sql .= " AND ($filtersSql)";
         }
 
-        // 🟢 Exclusion explicite des actions en attente pour le tableau historique
         $sql .= ' AND a.status != :status_pending';
         $params['status_pending'] = ActionStatus::PENDING->value;
 
@@ -103,7 +100,7 @@ class ActionRepository extends ServiceEntityRepository
         $filterConditions = [];
 
         if ($date) {
-            $filterConditions[] = "DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = :targetDate";
+            $filterConditions[] = "DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = :targetDate";
             $params['tz'] = AppConstants::TIMEZONE;
             $params['targetDate'] = $date;
         }
@@ -162,7 +159,7 @@ class ActionRepository extends ServiceEntityRepository
             SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
             FROM action a
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date
                 AND b.competition_id = :comp_id
             )
             WHERE a.participation_id = :part_id
@@ -201,7 +198,7 @@ class ActionRepository extends ServiceEntityRepository
                 SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
                 FROM action a
                 LEFT JOIN bonus_day b ON (
-                    DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                     AND b.competition_id = participation.competition_id
                 )
                 WHERE a.participation_id = participation.id
@@ -221,7 +218,7 @@ class ActionRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = "SELECT DISTINCT DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) as date_day
+        $sql = "SELECT DISTINCT DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) as date_day
             FROM action a
             JOIN participation p ON a.participation_id = p.id
             WHERE p.competition_id = :comp_id

@@ -1,16 +1,15 @@
 FROM php:8.4-cli-alpine
 
-# 1. On ajoute gmp-dev et icu-dev (pour intl) dans la liste des paquets Alpine
+# 1. On ajoute gmp-dev et icu-dev (pour intl) dans la liste des paquets Alpine (postgresql-dev retiré)
 RUN apk add --no-cache \
     git \
     unzip \
-    postgresql-dev \
     gmp-dev \
     icu-dev
 
-# 2. On configure et installe intl, pdo_pgsql, gmp et bcmath
+# 2. On configure et installe intl, pdo_mysql, gmp et bcmath (pdo_mysql remplace pdo_pgsql)
 RUN docker-php-ext-configure intl \
-    && docker-php-ext-install pdo_pgsql gmp bcmath intl
+    && docker-php-ext-install pdo_mysql gmp bcmath intl
 
 # 3. On augmente la limite de mémoire par défaut de PHP (128M -> 512M)
 RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
@@ -23,7 +22,7 @@ COPY . .
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP_ENV=prod
 
-ENV DATABASE_URL=postgresql://dummy:dummy@127.0.0.1:5432/dummy?serverVersion=16&charset=utf8
+ENV DATABASE_URL="mysql://dummy:dummy@127.0.0.1:3306/dummy?serverVersion=mariadb-10.11.0&charset=utf8mb4"
 ENV APP_SECRET=7b8ad9ebbfa79f8be316a7d63237778
 ENV JWT_SECRET_KEY=dummy
 ENV JWT_PUBLIC_KEY=dummy

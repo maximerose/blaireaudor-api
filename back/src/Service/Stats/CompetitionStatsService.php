@@ -48,12 +48,12 @@ final readonly class CompetitionStatsService
     {
         $conn = $this->entityManager->getConnection();
 
-        $sql = "SELECT DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) as date_day,
+        $sql = "SELECT DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) as date_day,
                 part.player_id,
                 SUM(a.points * COALESCE(b.multiplier, 1)) as daily_points
             FROM action a
             JOIN participation part ON a.participation_id = part.id
-            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date AND b.competition_id = part.competition_id)
             WHERE part.competition_id = :comp_id AND a.status = :status
             GROUP BY date_day, part.player_id
             ORDER BY date_day ASC
@@ -119,7 +119,7 @@ final readonly class CompetitionStatsService
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE p.competition_id = :comp_id 
             AND a.status = 'validated'
@@ -132,7 +132,7 @@ final readonly class CompetitionStatsService
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date
                 AND b.competition_id = p.competition_id) 
             WHERE p.competition_id = :comp_id 
             AND a.status = 'validated'
@@ -147,7 +147,7 @@ final readonly class CompetitionStatsService
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE a.status = 'validated' 
             AND p.competition_id = :comp_id
@@ -248,7 +248,7 @@ final readonly class CompetitionStatsService
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id 
                 AND a.status = 'validated' 
@@ -271,7 +271,7 @@ final readonly class CompetitionStatsService
                 JOIN participation p ON a.participation_id = p.id 
                 JOIN player pl ON p.player_id = pl.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name
@@ -294,7 +294,7 @@ final readonly class CompetitionStatsService
                 JOIN participation p ON a.participation_id = p.id 
                 JOIN player pl ON p.player_id = pl.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name
@@ -440,7 +440,6 @@ final readonly class CompetitionStatsService
         ];
     }
 
-    // Le record unique reste en LIMIT 1
     private function fetchMaxPointsSingleAction(Connection $conn, string $compId): ?array
     {
         $data = $conn->fetchAssociative("SELECT pl.display_name, 
@@ -451,7 +450,7 @@ final readonly class CompetitionStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN player pl ON p.player_id = pl.id 
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE a.status = 'validated' 
             AND p.competition_id = :comp_id 

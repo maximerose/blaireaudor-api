@@ -159,7 +159,7 @@ final class DashboardController extends AbstractDashboardController
 
     private function calculateBonusActionsRatio(Connection $conn): float
     {
-        $data = $conn->fetchAssociative('SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total FROM action a JOIN participation part ON a.participation_id = part.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id)', ['tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAssociative('SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total FROM action a JOIN participation part ON a.participation_id = part.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id)', ['tz' => AppConstants::TIMEZONE]);
 
         return $data && $data['total'] > 0 ? round(($data['bonus_actions'] / $data['total']) * 100, 1) : 0.0;
     }
@@ -279,7 +279,7 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxPointsSingleAction(Connection $conn): ?array
     {
-        $data = $conn->fetchAssociative('SELECT p.display_name, c.name as comp_name, a.description, (a.points * COALESCE(b.multiplier, 1)) as total_pts FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status ORDER BY total_pts DESC, a.date_action DESC LIMIT 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAssociative('SELECT p.display_name, c.name as comp_name, a.description, (a.points * COALESCE(b.multiplier, 1)) as total_pts FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status ORDER BY total_pts DESC, a.date_action DESC LIMIT 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return $data ? [
             'value' => $data['display_name'],
@@ -289,28 +289,28 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMinTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMaxCompetitionSeverity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['severity']]];
     }
 
     private function findMinCompetitionSeverity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['severity']]];
     }

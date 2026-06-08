@@ -65,7 +65,7 @@ final readonly class PlayerStatsService
                 (SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
                     FROM action a
                     JOIN participation p ON a.participation_id = p.id
-                    LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+                    LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = p.competition_id)
                     WHERE p.player_id = :player_id AND a.status = :status
                 ) as total_points,
                 (SELECT COUNT(id) 
@@ -100,7 +100,7 @@ final readonly class PlayerStatsService
             FROM action a
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id
-            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = p.competition_id)
             LEFT JOIN "user" u ON a.created_by_id = u.id
             LEFT JOIN player cp ON cp.associated_user_id = u.id
             WHERE p.player_id = :player_id AND a.status = :status 
@@ -121,7 +121,7 @@ final readonly class PlayerStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN player tp ON p.player_id = tp.id
             JOIN competition c ON p.competition_id = c.id
-            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE \'UTC\' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = p.competition_id)
             WHERE a.created_by_id = :user_id AND a.status = :status AND p.player_id != :player_id
             ORDER BY points DESC, a.created_at DESC LIMIT 1
         ', [
@@ -143,7 +143,7 @@ final readonly class PlayerStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                 AND b.competition_id = p.competition_id)
             WHERE p.player_id = :player_id AND a.status = 'validated' 
             GROUP BY c.id, c.name
@@ -163,7 +163,7 @@ final readonly class PlayerStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id
             LEFT JOIN bonus_day b ON (
-                DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date 
+                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
                 AND b.competition_id = p.competition_id)
             WHERE p.player_id = :player_id AND a.status = 'validated' 
             GROUP BY c.id, c.name
@@ -211,7 +211,7 @@ final readonly class PlayerStatsService
         $data = $conn->fetchAssociative("SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total
             FROM action a
             JOIN participation p ON a.participation_id = p.id
-            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date AND b.competition_id = p.competition_id)
             WHERE a.created_by_id = :user_id AND a.status = 'validated'
         ", ['user_id' => $userId, 'tz' => AppConstants::TIMEZONE]);
 
@@ -312,7 +312,7 @@ final readonly class PlayerStatsService
           FROM action a
           JOIN participation p ON a.participation_id = p.id
           JOIN competition c ON p.competition_id = c.id
-          LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+          LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date AND b.competition_id = p.competition_id)
           WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
           GROUP BY p.id, c.name
           ORDER BY points DESC LIMIT 1
@@ -343,7 +343,7 @@ final readonly class PlayerStatsService
             FROM action a
             JOIN participation p ON a.participation_id = p.id
             JOIN competition c ON p.competition_id = c.id
-            LEFT JOIN bonus_day b ON (DATE(a.date_action AT TIME ZONE 'UTC' AT TIME ZONE :tz) = b.date AND b.competition_id = p.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date AND b.competition_id = p.competition_id)
             WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
             GROUP BY p.id, c.name
             ORDER BY points ASC LIMIT 1
