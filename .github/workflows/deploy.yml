@@ -63,5 +63,6 @@ jobs:
 
       # --- 4. EXTRACTION ET COMMANDES FINALES SUR LE SERVEUR ---
       - name: ⚙️ Déclencher l'extraction et les scripts sur o2switch
+        continue-on-error: true
         run: |
           curl --http1.1 -kfsSL "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
