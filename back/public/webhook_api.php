@@ -1,8 +1,15 @@
 <?php
-$envLocalPath = dirname(__DIR__) . '/.env.local';
-$expectedSecret = null;
+// On empêche le serveur de couper pour cause de délai (Litespeed)
+header('X-LiteSpeed-NoAbort: true');
+set_time_limit(300);
 
-// 1. On lit le secret dans le serveur
+echo "<pre style='background:#1e1e1e; color:#0f0; padding:20px; font-family:monospace;'>";
+echo "🚀 Démarrage du déploiement...\n\n";
+
+$expectedSecret = null;
+$envLocalPath = dirname(__DIR__) . '/.env.local';
+
+// 1. On lit le secret sur le serveur
 if (file_exists($envLocalPath)) {
     $lines = file($envLocalPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
@@ -13,36 +20,41 @@ if (file_exists($envLocalPath)) {
     }
 }
 
-// 2. On vérifie le secret passé dans l'URL (?secret=...)
-if (!$expectedSecret || ($_GET['secret'] ?? '') !== $expectedSecret) {
-    header('HTTP/1.1 403 Forbidden');
-    die('Accès refusé.');
+// 2. On vérifie ton accès
+$secret = $_GET['secret'] ?? '';
+if (!$expectedSecret || $secret !== $expectedSecret) {
+    die("❌ Accès refusé. Le secret est incorrect ou introuvable.");
 }
 
-// 3. On crée le script de travail en arrière-plan
-$scriptPath = dirname(__DIR__) . '/runner.php';
-$runnerCode = <<<PHP
-<?php
+echo "✅ Secret valide, autorisation accordée.\n";
 chdir(dirname(__DIR__));
 
-\$zipFile = 'vendor.zip';
-if (file_exists(\$zipFile)) {
-    \$zip = new ZipArchive;
-    if (\$zip->open(\$zipFile) === TRUE) {
-        \$zip->extractTo('./');
-        \$zip->close();
-        unlink(\$zipFile);
+// 3. Extraction du ZIP
+$zipFile = 'vendor.zip';
+if (file_exists($zipFile)) {
+    echo "📦 Extraction de vendor.zip en cours (cela prend quelques secondes)...\n";
+    $zip = new ZipArchive;
+    if ($zip->open($zipFile) === TRUE) {
+        $zip->extractTo('./');
+        $zip->close();
+        unlink($zipFile);
+        echo "✅ ZIP extrait avec succès et supprimé.\n\n";
+    } else {
+        echo "❌ Erreur critique lors de l'extraction du ZIP.\n\n";
     }
+} else {
+    echo "ℹ️ Pas de vendor.zip trouvé à la racine de /back.\n\n";
 }
 
-exec('php bin/console cache:clear --env=prod');
-exec('php bin/console doctrine:migrations:migrate -n --env=prod');
-exec('php bin/console lexik:jwt:generate-keypair --skip-if-exists');
-PHP;
+// 4. Commandes Symfony (on utilise system() pour voir la sortie en direct)
+echo "⚙️ Exécution de cache:clear...\n";
+system('php bin/console cache:clear --env=prod 2>&1');
 
-file_put_contents($scriptPath, $runnerCode);
+echo "\n\n⚙️ Exécution des migrations BDD...\n";
+system('php bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
 
-// 4. On lance le travailur dans l'ombre et on répond tout de suite à GitHub !
-exec("php " . escapeshellarg($scriptPath) . " > " . dirname(__DIR__) . "/deploy.log 2>&1 &");
+echo "\n\n⚙️ Génération des clés JWT...\n";
+system('php bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
 
-echo "✅ Webhook reçu avec succès ! Le ZIP va être extrait en arrière-plan.";
+echo "\n\n🎉 DÉPLOIEMENT TERMINÉ AVEC SUCCÈS !";
+echo "</pre>";
