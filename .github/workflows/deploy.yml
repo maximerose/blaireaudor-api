@@ -1,65 +1,69 @@
-name: 🚀 Deploy Monorepo to o2switch Prod (Full ZIP)
+name: Deploy to o2switch
 
 on:
   push:
     branches:
-      - main
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      - main # ou master selon la branche principale de ton repo
 
 jobs:
-  build-and-deploy:
+  deploy-backend:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: 🚚 Récupération du code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # --- 1. COMPILATION DU FRONT ---
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          
-      - name: 🛠️ Build Frontend
-        working-directory: ./front 
-        run: |
-          npm ci
-          npm run build
-
-      # --- 2. PRÉPARATION DU BACK ---
-      - name: 🐘 Setup PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql
+          php-version: '8.2' # Adapte selon ta version de PHP
+          extensions: mbstring, intl, pdo_mysql
 
-      - name: 🛠️ Installation des dépendances Back
+      - name: Install Composer dependencies
         working-directory: ./back
-        env:
-          APP_ENV: prod
-        run: composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+        # Installe les paquets de prod et optimise l'autoloader
+        run: composer install --no-dev --optimize-autoloader --no-progress --no-interaction
 
-      # --- 3. CRÉATION DE L'ARCHIVE GLOBALE ---
-      - name: 🗜️ Création du ZIP global
-        run: zip -r deploy.zip front/dist back -x "back/var/*" "back/.env.local" "back/.git/*"
+      - name: Clear Symfony cache
+        working-directory: ./back
+        run: APP_ENV=prod php bin/console cache:clear
 
-      # --- 4. TRANSFERT FTP D'UN SEUL FICHIER ---
-      - name: 📂 Transfert du ZIP vers o2switch
+      - name: Deploy Backend via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.O2SWITCH_HOST }}
-          username: ${{ secrets.O2SWITCH_USER }}
-          password: ${{ secrets.O2SWITCH_PASSWORD }}
-          port: 21
-          local-dir: ./
-          server-dir: /blaireaudor/
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./back/
+          server-dir: ./back/
+          # On exclut les dossiers lourds et inutiles en prod
           exclude: |
-            **/*
-            !deploy.zip
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
 
-      # --- 5. DÉCLENCHEMENT DU WEBHOOK ---
-      - name: ⚙️ Exécuter le Webhook sur o2switch
-        continue-on-error: true
-        run: curl --http1.1 -kfsSL "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    # On s'assure que le frontend se déploie en parallèle ou après
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Résout le warning Node.js que tu avais !
+
+      - name: Install dependencies and build
+        working-directory: ./front
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy Frontend via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./front/dist/
+          server-dir: ./front/dist/
