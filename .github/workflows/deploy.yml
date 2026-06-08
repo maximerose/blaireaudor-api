@@ -48,7 +48,7 @@ jobs:
           FTP_PASS: ${{ secrets.FTP_PASSWORD }}
           FTP_HOST: ${{ secrets.FTP_SERVER }}
         run: |
-          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v --parallel=10 --ignore-time --exclude-glob tests/ --exclude-glob var/log/ --exclude-glob .git/ --exclude .env.local ./back/ back/; quit" "$FTP_HOST"
+          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v --parallel=10 --ignore-time --exclude-glob tests/ --exclude-glob var/log/ --exclude-glob var/cache/ --exclude-glob .git/ --exclude .env.local ./back/ back/; quit" "$FTP_HOST"
 
   deploy-frontend:
     runs-on: ubuntu-latest
