@@ -1,10 +1,6 @@
 <?php
 // back/public/deploy.php
 
-header('X-LiteSpeed-NoAbort: true');
-set_time_limit(300);
-
-// 1. Récupération du secret dans le .env.local
 $envLocalPath = dirname(__DIR__) . '/.env.local';
 $expectedSecret = null;
 
@@ -25,35 +21,36 @@ if (!$expectedSecret || $secret !== $expectedSecret) {
     die('Accès refusé.');
 }
 
-header('Content-Type: text/plain');
-echo "🚀 Démarrage de l'extraction à haute vitesse...\n\n";
+// Le script principal à exécuter en arrière-plan
+$scriptPath = dirname(__DIR__) . '/runner.php';
 
+// Création du script runner.php s'il n'existe pas
+$runnerCode = <<<PHP
+<?php
 chdir(dirname(__DIR__));
 
-// 2. Désarchivage du dossier vendor
-$zipFile = 'vendor.zip';
-if (file_exists($zipFile)) {
-    echo "1. Extraction de vendor.zip en cours...\n";
-    $zip = new ZipArchive;
-    if ($zip->open($zipFile) === TRUE) {
-        $zip->extractTo('./');
-        $zip->close();
-        echo "✅ Dossier vendor extrait avec succès !\n";
-        unlink($zipFile); // On supprime le zip après extraction
-    } else {
-        echo "❌ Échec du désarchivage de vendor.zip\n";
+// Extraction du ZIP
+\$zipFile = 'vendor.zip';
+if (file_exists(\$zipFile)) {
+    \$zip = new ZipArchive;
+    if (\$zip->open(\$zipFile) === TRUE) {
+        \$zip->extractTo('./');
+        \$zip->close();
+        unlink(\$zipFile);
     }
-} else {
-    echo "ℹ️ vendor.zip introuvable, étape ignorée.\n";
 }
 
-echo "\n2. Nettoyage du cache Symfony...\n";
-passthru('php bin/console cache:clear --env=prod 2>&1');
+// Commandes Symfony
+exec('php bin/console cache:clear --env=prod');
+exec('php bin/console doctrine:migrations:migrate -n --env=prod');
+exec('php bin/console lexik:jwt:generate-keypair --skip-if-exists');
+PHP;
 
-echo "\n3. Exécution des migrations de base de données...\n";
-passthru('php bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
+file_put_contents($scriptPath, $runnerCode);
 
-echo "\n4. Clés de chiffrement JWT...\n";
-passthru('php bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
+// Lancement de la commande en arrière-plan (Linux)
+// On redirige les sorties vers un fichier log pour ne pas bloquer le script actuel
+$command = "php " . escapeshellarg($scriptPath) . " > " . dirname(__DIR__) . "/deploy.log 2>&1 &";
+exec($command);
 
-echo "\n✨ Déploiement terminé avec succès !";
+echo "Déploiement lancé en arrière-plan avec succès ! Vérifiez le fichier deploy.log dans quelques secondes.";
