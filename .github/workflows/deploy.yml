@@ -64,4 +64,4 @@ jobs:
       # --- 4. EXTRACTION ET COMMANDES FINALES SUR LE SERVEUR ---
       - name: ⚙️ Déclencher l'extraction et les scripts sur o2switch
         run: |
-          curl --http1.1 -kfsSL -H "X-Deploy-Secret: ${{ secrets.DEPLOY_SECRET }}" "https://api.blaireaudor.maximerose.com/deploy.php"
+          curl --http1.1 -kfsSL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36" -H "X-Deploy-Secret: ${{ secrets.DEPLOY_SECRET }}" "https://api.blaireaudor.maximerose.com/deploy.php"
