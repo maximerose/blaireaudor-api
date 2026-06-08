@@ -47,7 +47,7 @@ final readonly class ResetPasswordRequestProcessor implements ProcessorInterface
         $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173';
 
         $emailMessage = (new TemplatedEmail())
-            ->from(new Address('no-reply@blaireaudor.com', 'Le Maître Blaireau'))
+            ->from(new Address('no-reply@blaireaudor.maximerose.com', 'Le Maître Blaireau'))
             ->to((string) $user->getEmail())
             ->subject('Réinitialisation de votre mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
