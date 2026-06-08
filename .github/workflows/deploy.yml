@@ -3,7 +3,7 @@ name: Deploy to o2switch
 on:
   push:
     branches:
-      - main # ou master selon la branche principale de ton repo
+      - main
 
 jobs:
   deploy-backend:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # Adapte selon ta version de PHP
+          php-version: '8.2'
           extensions: mbstring, intl, pdo_mysql
 
       - name: Install Composer dependencies
@@ -29,14 +29,17 @@ jobs:
       - name: Clean up unused files
         run: rm -rf ./back/node_modules ./back/.git
 
-      - name: Deploy Backend via FTP
-        uses: appleboy/ftp-action@master
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./back/
-          server-dir: ./back/
+      - name: Install LFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Deploy Backend via native LFTP
+        # On passe les identifiants via l'environnement pour sécuriser les caractères spéciaux
+        env:
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+        run: |
+          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v ./back/ back/; quit" "$FTP_HOST"
 
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -47,7 +50,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' 
+          node-version: '20'
 
       - name: Install dependencies and build
         working-directory: ./front
@@ -55,11 +58,16 @@ jobs:
           npm install
           npm run build
 
-      - name: Deploy Frontend via FTP
-        uses: appleboy/ftp-action@master
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./front/dist/
-          server-dir: ./front/dist/
+      - name: Clean up unused files
+        run: rm -rf ./front/node_modules ./front/.git
+
+      - name: Install LFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Deploy Frontend via native LFTP
+        env:
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+        run: |
+          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v ./front/dist/ front/dist/; quit" "$FTP_HOST"
