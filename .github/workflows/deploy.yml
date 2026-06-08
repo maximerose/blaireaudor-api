@@ -57,7 +57,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            **/back/vendor/** # On exclut le dossier non-compressé, on envoie uniquement le .zip !
+            **/back/vendor/**
             **/back/var/**
             **/back/.env.local
 
