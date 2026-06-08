@@ -18,6 +18,12 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, intl, pdo_mysql
 
+      - name: Create fake .env for cache warmup
+        working-directory: ./back
+        run: |
+          echo 'APP_ENV=prod' > .env.local
+          echo 'DATABASE_URL="mysql://fake_user:fake_password@127.0.0.1:3306/fake_db?serverVersion=10.11.x-MariaDB"' >> .env.local
+          
       - name: Install Composer dependencies
         working-directory: ./back
         run: APP_ENV=prod composer install --no-dev --optimize-autoloader --no-progress --no-interaction
