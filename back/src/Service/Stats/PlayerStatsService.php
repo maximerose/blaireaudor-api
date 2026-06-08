@@ -31,18 +31,18 @@ final readonly class PlayerStatsService
         $reportedMetrics = $this->fetchReportedMetrics($conn, $userId);
 
         return [
-            'totalCompetitions' => $basicMetrics['total_comps'],
-            'totalPointsReceived' => $basicMetrics['total_points'],
-            'totalActionsReceived' => $basicMetrics['total_actions'],
+            'totalCompetitions' => (int) $basicMetrics['total_comps'],
+            'totalPointsReceived' => (int) $basicMetrics['total_points'],
+            'totalActionsReceived' => (int) $basicMetrics['total_actions'],
 
             'maxCompetitionScore' => $this->fetchMaxCompetitionScoreWithContext($conn, $playerId),
             'maxCompetitionActionsReceived' => $this->fetchMaxCompetitionActionsWithContext($conn, $playerId),
             'minCompetitionScore' => $this->fetchMinCompetitionScoreWithContext($conn, $playerId),
             'minCompetitionActionsReceived' => $this->fetchMinCompetitionActionsWithContext($conn, $playerId),
 
-            'totalActionsReported' => $reportedMetrics['total_reported'],
-            'totalActionsReportedValid' => $reportedMetrics['total_reported_valid'],
-            'totalActionsReportedJudged' => $reportedMetrics['total_reported_judged'],
+            'totalActionsReported' => (int) $reportedMetrics['total_reported'],
+            'totalActionsReportedValid' => (int) $reportedMetrics['total_reported_valid'],
+            'totalActionsReportedJudged' => (int) $reportedMetrics['total_reported_judged'],
 
             'maxPointsSingleActionReceived' => $this->fetchMaxPointsSingleActionReceived($conn, $playerId),
             'maxPointsSingleActionReported' => $this->fetchMaxPointsSingleActionReported($conn, $playerId, $userId),
@@ -101,7 +101,7 @@ final readonly class PlayerStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN competition c ON p.competition_id = c.id
             LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = p.competition_id)
-            LEFT JOIN "user" u ON a.created_by_id = u.id
+            LEFT JOIN `user` u ON a.created_by_id = u.id
             LEFT JOIN player cp ON cp.associated_user_id = u.id
             WHERE p.player_id = :player_id AND a.status = :status 
             ORDER BY points DESC, a.created_at DESC LIMIT 1
@@ -222,7 +222,7 @@ final readonly class PlayerStatsService
     {
         $data = $conn->fetchAssociative("SELECT r.display_name, COUNT(a.id) as cnt
             FROM action a
-            JOIN \"user\" u ON a.created_by_id = u.id
+            JOIN `user` u ON a.created_by_id = u.id
             JOIN player r ON r.associated_user_id = u.id
             JOIN participation p ON a.participation_id = p.id
             WHERE p.player_id = :player_id AND r.id != :player_id AND a.status = 'validated'
@@ -260,7 +260,7 @@ final readonly class PlayerStatsService
                 SELECT r.id as other_id, COUNT(a.id) as received_cnt
                 FROM action a
                 JOIN participation p ON a.participation_id = p.id
-                JOIN \"user\" u ON a.created_by_id = u.id
+                JOIN `user` u ON a.created_by_id = u.id
                 JOIN player r ON r.associated_user_id = u.id
                 WHERE p.player_id = :player_id AND a.status = 'validated' AND r.id != :player_id
                 GROUP BY r.id

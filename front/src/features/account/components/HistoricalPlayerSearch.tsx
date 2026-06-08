@@ -78,7 +78,7 @@ export const HistoricalPlayerSearch = ({
             : FORM.PLAYER.PLACEHOLDERS.SEARCH_PLAYER
         }
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(e.target.value.trimStart())}
         icon={searching ? ICONS.LOADING : ICONS.SEARCH}
         align="center"
         role="combobox"

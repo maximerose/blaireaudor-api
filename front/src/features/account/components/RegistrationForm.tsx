@@ -55,7 +55,7 @@ export const RegistrationForm = () => {
   } = useRegistration(ROUTES.NAV.DASHBOARD);
 
   const passwordValue = watch('plain_password') || '';
-  const isInputDisabled = isLoading || isSubmitting;
+  const isInputDisabled = isLoading || isSubmitting || playerSearch.searching;
 
   const loginUrl = joinCode
     ? ROUTES.NAV.LOGIN_WITH_JOIN_CODE(joinCode)

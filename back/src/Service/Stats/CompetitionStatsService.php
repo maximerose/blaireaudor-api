@@ -184,7 +184,7 @@ final readonly class CompetitionStatsService
                 SELECT pl.display_name, COUNT(a.id) as cnt, RANK() 
                 OVER (ORDER BY COUNT(a.id) DESC) as rnk 
                 FROM action a 
-                JOIN \"user\" u ON a.created_by_id = u.id 
+                JOIN `user` u ON a.created_by_id = u.id 
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 WHERE p.competition_id = :comp_id 
@@ -222,7 +222,7 @@ final readonly class CompetitionStatsService
                 OVER (ORDER BY COUNT(a.id) ASC) as rnk 
                 FROM player p 
                 JOIN participation part ON part.player_id = p.id 
-                JOIN \"user\" u ON p.associated_user_id = u.id 
+                JOIN `user` u ON p.associated_user_id = u.id 
                 LEFT JOIN action a ON a.created_by_id = u.id 
                 AND a.status = 'validated' 
                 AND a.participation_id IN (
@@ -244,7 +244,7 @@ final readonly class CompetitionStatsService
                 SELECT pl.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() 
                 OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) DESC) as rnk 
                 FROM action a 
-                JOIN \"user\" u ON a.created_by_id = u.id 
+                JOIN `user` u ON a.created_by_id = u.id 
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 LEFT JOIN bonus_day b ON (
@@ -309,13 +309,13 @@ final readonly class CompetitionStatsService
         $data = $conn->fetchAllAssociative("SELECT display_name, ratio, total 
             FROM (
                 SELECT pl.display_name, 
-                ROUND(COUNT(CASE WHEN a.status = 'validated' THEN 1 END)::numeric / COUNT(a.id) * 100, 1) as ratio, 
+                ROUND(COUNT(CASE WHEN a.status = 'validated' THEN 1 END) / COUNT(a.id) * 100, 1) as ratio, 
                 COUNT(a.id) as total, 
                 RANK() 
-                OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = 'validated' THEN 1 END)::numeric / COUNT(a.id) * 100, 1) DESC, 
+                OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = 'validated' THEN 1 END) / COUNT(a.id) * 100, 1) DESC, 
                     COUNT(a.id) DESC) as rnk 
                 FROM action a 
-                JOIN \"user\" u ON a.created_by_id = u.id 
+                JOIN `user` u ON a.created_by_id = u.id 
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 WHERE a.status IN ('validated', 'rejected') 
@@ -337,7 +337,7 @@ final readonly class CompetitionStatsService
                 RANK() 
                 OVER (ORDER BY COUNT(a.id) DESC) as rnk 
                 FROM action a 
-                JOIN \"user\" u ON a.created_by_id = u.id 
+                JOIN `user` u ON a.created_by_id = u.id 
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 WHERE a.status = 'rejected' 
@@ -377,7 +377,7 @@ final readonly class CompetitionStatsService
                 OVER (
                     ORDER BY COUNT(DISTINCT t.id) DESC) as rnk
                     FROM action a
-                    JOIN \"user\" u ON a.created_by_id = u.id 
+                    JOIN `user` u ON a.created_by_id = u.id 
                     JOIN player r ON r.associated_user_id = u.id 
                     JOIN participation p ON a.participation_id = p.id 
                     JOIN player t ON p.player_id = t.id 
@@ -410,7 +410,7 @@ final readonly class CompetitionStatsService
                         COUNT(CASE WHEN r.id > t.id THEN 1 END)) DESC, 
                     COUNT(a.id) DESC) as rnk 
                 FROM action a 
-                JOIN \"user\" u ON a.created_by_id = u.id 
+                JOIN `user` u ON a.created_by_id = u.id 
                 JOIN player r ON r.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 JOIN player t ON p.player_id = t.id 

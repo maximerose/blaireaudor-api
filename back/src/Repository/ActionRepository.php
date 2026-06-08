@@ -41,14 +41,14 @@ class ActionRepository extends ServiceEntityRepository
         $order = 'ASC' === strtoupper($order) ? 'ASC' : 'DESC';
 
         $sql = 'SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
-                TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
+                DATE_FORMAT(a.date_action, \'%Y-%m-%dT%H:%i:%SZ\') as date_action,
                 p.display_name as player_name, 
                 p.id as player_id,
                 COALESCE(cp.display_name, u.username, null) as creator_name
             FROM action a
             JOIN participation part ON a.participation_id = part.id
             JOIN player p ON part.player_id = p.id
-            LEFT JOIN "user" u ON a.created_by_id = u.id
+            LEFT JOIN `user` u ON a.created_by_id = u.id
             LEFT JOIN player cp ON cp.associated_user_id = u.id
             WHERE part.competition_id = :comp_id
         ';
@@ -126,14 +126,14 @@ class ActionRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT a.id, a.description, a.points, a.status, a.participation_id, a.created_by_id,
-                TO_CHAR(a.date_action, \'YYYY-MM-DD"T"HH24:MI:SS"Z"\') as date_action,
+                DATE_FORMAT(a.date_action, \'%Y-%m-%dT%H:%i:%SZ\') as date_action,
                 p.display_name as player_name, 
                 p.id as player_id,
                 COALESCE(cp.display_name, u.username, null) as creator_name
             FROM action a
             JOIN participation part ON a.participation_id = part.id
             JOIN player p ON part.player_id = p.id
-            LEFT JOIN "user" u ON a.created_by_id = u.id
+            LEFT JOIN `user` u ON a.created_by_id = u.id
             LEFT JOIN player cp ON cp.associated_user_id = u.id
             WHERE part.competition_id = :comp_id
             AND a.status = :status_pending

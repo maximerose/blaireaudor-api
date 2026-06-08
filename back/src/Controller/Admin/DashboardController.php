@@ -175,7 +175,7 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxActionsReported(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id GROUP BY pl.id, pl.display_name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id GROUP BY pl.id, pl.display_name) t WHERE rnk = 1');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
     }
@@ -189,14 +189,14 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxApprovalRatio(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, ratio, total FROM (SELECT pl.display_name, ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END)::numeric / COUNT(a.id) * 100, 1) as ratio, COUNT(a.id) as total, RANK() OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END)::numeric / COUNT(a.id) * 100, 1) DESC, COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status IN (\'validated\', \'rejected\') GROUP BY pl.id, pl.display_name HAVING COUNT(a.id) >= 3) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('SELECT display_name, ratio, total FROM (SELECT pl.display_name, ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) as ratio, COUNT(a.id) as total, RANK() OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) DESC, COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status IN (\'validated\', \'rejected\') GROUP BY pl.id, pl.display_name HAVING COUNT(a.id) >= 3) t WHERE rnk = 1');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['ratio'], $data[0]['total']]];
     }
 
     private function findMaxRejectedReports(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
     }
@@ -210,14 +210,14 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxActionsValidatedByReferee(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
     }
 
     private function findMaxActionsRejectedByReferee(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN "user" u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
     }
@@ -248,7 +248,7 @@ final class DashboardController extends AbstractDashboardController
                            COUNT(CASE WHEN r.id > t.id THEN 1 END)) DESC, 
                        COUNT(a.id) DESC) as rnk 
             FROM action a 
-            JOIN \"user\" u ON a.created_by_id = u.id 
+            JOIN `user` u ON a.created_by_id = u.id 
             JOIN player r ON r.associated_user_id = u.id 
             JOIN participation p ON a.participation_id = p.id 
             JOIN player t ON p.player_id = t.id 
@@ -317,14 +317,14 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxCompetitionActivity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id)::numeric / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id)::numeric / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) DESC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) DESC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['activity']]];
     }
 
     private function findMinCompetitionActivity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id)::numeric / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id)::numeric / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) ASC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) ASC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['activity']]];
     }

@@ -23,7 +23,7 @@ export const FORM = {
       USERNAME: 'Pseudo',
       IDENTIFIER: 'Identifiant',
       PASSWORD: 'Mot de passe',
-      DISPLAY_NAME: 'Ton petit nom',
+      DISPLAY_NAME: "Nom d'affichage",
       EMAIL: 'Adresse email',
       CURRENT_PASSWORD: 'Mot de passe actuel',
       NEW_PASSWORD: 'Nouveau mot de passe',

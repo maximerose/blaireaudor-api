@@ -22,7 +22,7 @@ final class PlayerController extends AbstractController
     #[Route('/search', name: 'search', methods: ['GET'], priority: 10)]
     public function searchPlayers(Request $request): JsonResponse
     {
-        $query = $request->query->get('displayName', '');
+        $query = trim($request->query->get('displayName', ''));
         $unlinkedOnly = $request->query->getBoolean('unlinked', false);
 
         $players = $this->playerRepository->searchByName($query, $unlinkedOnly);

@@ -24,17 +24,19 @@ export const usePlayerSearch = (): PlayerSearchLogic => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
+  const cleanTerm = debouncedTerm.trim();
+
   const { data: results = [], isFetching: searching } = useQuery<Player[]>({
-    queryKey: QUERY_KEYS.player.search(debouncedTerm),
-    queryFn: ({ signal }) => playerService.search(debouncedTerm, signal),
-    enabled: debouncedTerm.trim().length >= RULES.SEARCH.MIN_CHARS,
+    queryKey: QUERY_KEYS.player.search(cleanTerm),
+    queryFn: ({ signal }) => playerService.search(cleanTerm, signal),
+    enabled: cleanTerm.length >= RULES.SEARCH.MIN_CHARS,
     staleTime: STALE_TIMES.MUTATION_CHECK,
   });
 
   return {
     searchTerm,
     setSearchTerm,
-    results: searchTerm.trim().length < RULES.SEARCH.MIN_CHARS ? [] : results,
+    results: cleanTerm.length < RULES.SEARCH.MIN_CHARS ? [] : results,
     searching,
     clearSearch: () => setSearchTerm(''),
   };
