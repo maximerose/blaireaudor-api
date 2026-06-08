@@ -1,4 +1,4 @@
-name: 🚀 Deploy Monorepo to o2switch Prod (ZIP Optimisé)
+name: 🚀 Deploy Monorepo to o2switch Prod (Full ZIP)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 👈 ICI ON SUPPRIME LE WARNING NODE 20
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-deploy:
@@ -28,23 +28,25 @@ jobs:
           npm ci
           npm run build
 
-      # --- 2. PRÉPARATION DU BACK & CRÉATION DU ZIP ---
+      # --- 2. PRÉPARATION DU BACK ---
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql
 
-      - name: 🛠️ Installation des dépendances et compression ZIP
+      - name: 🛠️ Installation des dépendances Back
         working-directory: ./back
         env:
           APP_ENV: prod
-        run: |
-          composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-          zip -r vendor.zip vendor # 👈 ON COMPRESSE LES 10 000 FICHIERS EN 1 SEUL
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-      # --- 3. TÉLÉVERSEMENT DES FICHIERS VIA FTP (TRÈS RAPIDE) ---
-      - name: 📂 Transfert global vers o2switch via FTP
+      # --- 3. CRÉATION DE L'ARCHIVE GLOBALE ---
+      - name: 🗜️ Création du ZIP global
+        run: zip -r deploy.zip front/dist back -x "back/var/*" "back/.env.local" "back/.git/*"
+
+      # --- 4. TRANSFERT FTP D'UN SEUL FICHIER ---
+      - name: 📂 Transfert du ZIP vers o2switch
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.O2SWITCH_HOST }}
@@ -54,15 +56,10 @@ jobs:
           local-dir: ./
           server-dir: /blaireaudor/
           exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/back/vendor/**
-            **/back/var/**
-            **/back/.env.local
+            **/*
+            !deploy.zip
 
-      # --- 4. EXTRACTION ET COMMANDES FINALES SUR LE SERVEUR ---
-      - name: ⚙️ Déclencher l'extraction et les scripts sur o2switch
+      # --- 5. DÉCLENCHEMENT DU WEBHOOK ---
+      - name: ⚙️ Exécuter le Webhook sur o2switch
         continue-on-error: true
-        run: |
-          curl --http1.1 -kfsSL "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
+        run: curl --http1.1 -kfsSL "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"

@@ -30,20 +30,20 @@ echo "✅ Secret valide, autorisation accordée.\n";
 chdir(dirname(__DIR__));
 
 // 3. Extraction du ZIP
-$zipFile = 'vendor.zip';
+$zipFile = dirname(__DIR__, 2) . '/deploy.zip'; // On cherche le zip à la racine de /blaireaudor/
 if (file_exists($zipFile)) {
-    echo "📦 Extraction de vendor.zip en cours (cela prend quelques secondes)...\n";
+    echo "📦 Extraction de deploy.zip en cours...\n";
     $zip = new ZipArchive;
     if ($zip->open($zipFile) === TRUE) {
-        $zip->extractTo('./');
+        $zip->extractTo(dirname(__DIR__, 2) . '/'); // Extrait à la racine de /blaireaudor/
         $zip->close();
         unlink($zipFile);
-        echo "✅ ZIP extrait avec succès et supprimé.\n\n";
+        echo "✅ ZIP global extrait avec succès et supprimé.\n\n";
     } else {
         echo "❌ Erreur critique lors de l'extraction du ZIP.\n\n";
     }
 } else {
-    echo "ℹ️ Pas de vendor.zip trouvé à la racine de /back.\n\n";
+    echo "ℹ️ Pas de deploy.zip trouvé à la racine.\n\n";
 }
 
 // 4. Commandes Symfony (on utilise system() pour voir la sortie en direct)
