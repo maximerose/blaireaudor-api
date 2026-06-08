@@ -48,13 +48,13 @@ if (file_exists($zipFile)) {
 
 // 4. Commandes Symfony (on utilise system() pour voir la sortie en direct)
 echo "⚙️ Exécution de cache:clear...\n";
-system('php bin/console cache:clear --env=prod 2>&1');
+system('ea-php84 bin/console cache:clear --env=prod 2>&1');
 
 echo "\n\n⚙️ Exécution des migrations BDD...\n";
-system('php bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
+system('ea-php84 bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
 
 echo "\n\n⚙️ Génération des clés JWT...\n";
-system('php bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
+system('ea-php84 bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
 
 echo "\n\n🎉 DÉPLOIEMENT TERMINÉ AVEC SUCCÈS !";
 echo "</pre>";
