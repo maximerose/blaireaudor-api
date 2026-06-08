@@ -1,2 +1,20 @@
-RewriteEngine On
-RewriteRule ^\.well-known - [L]
+DirectoryIndex index.php
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # On garde ta règle pour Mercure / Let's Encrypt
+    RewriteRule ^\.well-known - [L]
+
+    # Détermine si l'URL pointe vers un fichier physique valide
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+
+    # Redirige toutes les autres requêtes vers le Front Controller (index.php)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ %{ENV:BASE}/index.php [QSA,L]
+</IfModule>
