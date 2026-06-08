@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.O2SWITCH_PASSWORD }}
           port: 21
           local-dir: ./
-          server-dir: blaireaudor/
+          server-dir: /blaireaudor/
           exclude: |
             **/.git*
             **/.git*/**
