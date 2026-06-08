@@ -20,30 +20,26 @@ jobs:
 
       - name: Install Composer dependencies
         working-directory: ./back
-        # Installe les paquets de prod et optimise l'autoloader
         run: composer install --no-dev --optimize-autoloader --no-progress --no-interaction
 
       - name: Clear Symfony cache
         working-directory: ./back
         run: APP_ENV=prod php bin/console cache:clear
 
+      - name: Clean up unused files
+        run: rm -rf ./back/node_modules ./back/.git
+
       - name: Deploy Backend via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: appleboy/ftp-action@master
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./back/
           server-dir: ./back/
-          # On exclut les dossiers lourds et inutiles en prod
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
 
   deploy-frontend:
     runs-on: ubuntu-latest
-    # On s'assure que le frontend se déploie en parallèle ou après
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Résout le warning Node.js que tu avais !
+          node-version: '20' 
 
       - name: Install dependencies and build
         working-directory: ./front
@@ -60,7 +56,7 @@ jobs:
           npm run build
 
       - name: Deploy Frontend via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: appleboy/ftp-action@master
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
