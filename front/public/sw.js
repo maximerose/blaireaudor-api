@@ -14,9 +14,9 @@ self.addEventListener('activate', (event) => {
           if (cache !== CACHE_NAME) {
             return caches.delete(cache);
           }
-        })
+        }),
       );
-    })
+    }),
   );
   event.waitUntil(clients.claim());
 });
@@ -40,7 +40,11 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+        if (
+          networkResponse &&
+          networkResponse.status === 200 &&
+          networkResponse.type === 'basic'
+        ) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
@@ -49,8 +53,10 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => {
-        return caches.match(event.request);
-      })
+        return caches.match(event.request).then((matching) => {
+          return matching || Response.error();
+        });
+      }),
   );
 });
 
@@ -69,9 +75,9 @@ self.addEventListener('push', function (event) {
     icon: '/favicon.svg', // Icone de la notif dans la barre d'état
     badge: '/badge.svg', // Icone monochrome pour Android
     data: {
-      url: data.targetUrl || '/'
+      url: data.targetUrl || '/',
     },
-    vibrate: [200, 100, 200]
+    vibrate: [200, 100, 200],
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
@@ -83,18 +89,20 @@ self.addEventListener('notificationclick', function (event) {
   const urlToOpen = event.notification.data.url;
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        if (client.url && 'focus' in client) {
-          client.focus();
-          if (urlToOpen) return client.navigate(urlToOpen);
-          return;
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        for (let i = 0; i < windowClients.length; i++) {
+          const client = windowClients[i];
+          if (client.url && 'focus' in client) {
+            client.focus();
+            if (urlToOpen) return client.navigate(urlToOpen);
+            return;
+          }
         }
-      }
-      if (clients.openWindow && urlToOpen) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
+        if (clients.openWindow && urlToOpen) {
+          return clients.openWindow(urlToOpen);
+        }
+      }),
   );
 });
