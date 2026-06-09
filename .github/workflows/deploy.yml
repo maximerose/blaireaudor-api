@@ -84,7 +84,7 @@ jobs:
           FTP_PASS: ${{ secrets.FTP_PASSWORD }}
           FTP_HOST: ${{ secrets.FTP_SERVER }}
         run: |
-          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v --parallel=10 --ignore-time --exclude-glob .git/ ./front/dist/ front/dist/; quit" "$FTP_HOST"
+          lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v --parallel=10 --delete --exclude-glob .git/ ./front/dist/ front/dist/; quit" "$FTP_HOST"
 
   trigger-production-webhook:
     runs-on: ubuntu-latest
