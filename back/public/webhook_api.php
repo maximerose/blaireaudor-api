@@ -8,6 +8,7 @@ echo "<pre style='background:#1e1e1e; color:#0f0; padding:20px; font-family:mono
 echo "🚀 Démarrage du déploiement...\n\n";
 
 $expectedSecret = null;
+$phpBinary = null;
 $envLocalPath = dirname(__DIR__) . '/.env.local';
 
 // 1. On lit le secret sur le serveur
@@ -16,7 +17,6 @@ if (file_exists($envLocalPath)) {
     foreach ($lines as $line) {
         if (str_starts_with(trim($line), 'DEPLOY_SECRET=')) {
             $expectedSecret = trim(explode('=', $line, 2)[1], " \t\n\r\0\x0B\"'");
-            break;
         }
 
         if (str_starts_with($line, 'PHP_PATH=')) {
