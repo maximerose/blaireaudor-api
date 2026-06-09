@@ -1,4 +1,5 @@
 <?php
+
 // On empêche le serveur de couper pour cause de délai (Litespeed)
 header('X-LiteSpeed-NoAbort: true');
 set_time_limit(300);
@@ -17,6 +18,10 @@ if (file_exists($envLocalPath)) {
             $expectedSecret = trim(explode('=', $line, 2)[1], " \t\n\r\0\x0B\"'");
             break;
         }
+
+        if (str_starts_with($line, 'PHP_PATH=')) {
+            $phpBinary = trim(explode('=', $line, 2)[1], " \t\n\r\0\x0B\"'");
+        }
     }
 }
 
@@ -29,12 +34,27 @@ if (!$expectedSecret || $secret !== $expectedSecret) {
 echo "✅ Secret valide, autorisation accordée.\n";
 chdir(dirname(__DIR__));
 
+if (!$phpBinary) {
+    // Chemin absolu officiel de cPanel o2switch pour PHP 8.4 CLI
+    $o2switchPhp84 = '/opt/cpanel/ea-php84/root/usr/bin/php';
+
+    if (file_exists($o2switchPhp84)) {
+        $phpBinary = $o2switchPhp84;
+    } else {
+        // Détection dynamique de secours basée sur l'instance en cours d'exécution
+        $currentBinary = defined('PHP_BINARY') ? PHP_BINARY : 'php';
+        $phpBinary = preg_replace('/(lsphp|php-cgi)$/', 'php', $currentBinary);
+    }
+}
+
+echo "🐘 Binaire PHP utilisé : $phpBinary\n\n";
+
 // 3. Extraction du ZIP
 $zipFile = dirname(__DIR__, 2) . '/deploy.zip'; // On cherche le zip à la racine de /blaireaudor/
 if (file_exists($zipFile)) {
     echo "📦 Extraction de deploy.zip en cours...\n";
-    $zip = new ZipArchive;
-    if ($zip->open($zipFile) === TRUE) {
+    $zip = new ZipArchive();
+    if ($zip->open($zipFile) === true) {
         $zip->extractTo(dirname(__DIR__, 2) . '/'); // Extrait à la racine de /blaireaudor/
         $zip->close();
         unlink($zipFile);
@@ -48,13 +68,13 @@ if (file_exists($zipFile)) {
 
 // 4. Commandes Symfony (on utilise system() pour voir la sortie en direct)
 echo "⚙️ Exécution de cache:clear...\n";
-system('ea-php84 bin/console cache:clear --env=prod 2>&1');
+system($phpBinary . ' bin/console cache:clear --env=prod 2>&1');
 
 echo "\n\n⚙️ Exécution des migrations BDD...\n";
-system('ea-php84 bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
+system($phpBinary . ' bin/console doctrine:migrations:migrate -n --env=prod 2>&1');
 
 echo "\n\n⚙️ Génération des clés JWT...\n";
-system('ea-php84 bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
+system($phpBinary . ' bin/console lexik:jwt:generate-keypair --skip-if-exists 2>&1');
 
 echo "\n\n🎉 DÉPLOIEMENT TERMINÉ AVEC SUCCÈS !";
 echo "</pre>";

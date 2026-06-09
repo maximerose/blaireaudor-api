@@ -23,9 +23,7 @@ export const useNotifications = () => {
     );
     hubUrl.searchParams.append('topic', topic);
 
-    const eventSource = new EventSource(hubUrl.toString(), {
-      withCredentials: true,
-    });
+    const eventSource = new EventSource(hubUrl.toString());
 
     eventSource.onopen = () => setIsMercureConnected(true);
 

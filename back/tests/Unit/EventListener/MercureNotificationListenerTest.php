@@ -49,10 +49,11 @@ final class MercureNotificationListenerTest extends TestCase
 
         $hubMock->expects($this->once())
             ->method('publish')
-            ->with($this->callback(fn (Update $update) =>
+            ->with($this->callback(
+                fn (Update $update) =>
              \in_array($expectedTopic, $update->getTopics(), true)
                     && $update->getData() === $expectedJson
-                    && $update->isPrivate() === true
+                    && $update->isPrivate() === false
             ));
 
         // 4. Exécution

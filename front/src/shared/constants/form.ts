@@ -122,7 +122,7 @@ export const FORM = {
       SEARCH_PLAYER: 'Rechercher un joueur',
     },
     PLACEHOLDERS: {
-      SEARCH_PLAYER: 'Nom du blaireau...',
+      SEARCH_PLAYER: 'Chercher un joueur...',
       SEARCH_OR_CREATE: 'Chercher ou créer un joueur...',
     },
     HINT: {

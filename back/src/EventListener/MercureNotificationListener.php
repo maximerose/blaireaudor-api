@@ -46,7 +46,7 @@ final readonly class MercureNotificationListener
         $update = new Update(
             $topic,
             $payload,
-            true
+            false
         );
         try {
             $this->hub->publish($update);
