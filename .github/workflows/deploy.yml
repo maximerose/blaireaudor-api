@@ -26,7 +26,7 @@ jobs:
         run: |
           echo 'APP_ENV=prod' > .env.local
           echo 'DATABASE_URL="mysql://fake_user:fake_password@127.0.0.1:3306/fake_db?serverVersion=10.11.2-MariaDB"' >> .env.local
-          
+
       - name: Install Composer dependencies
         working-directory: ./back
         run: APP_ENV=prod composer install --no-dev --optimize-autoloader --no-progress --no-interaction
@@ -63,6 +63,11 @@ jobs:
 
       - name: Install dependencies and build
         working-directory: ./front
+        env:
+          VITE_API_BASE_URL: https://api.blaireaudor.maximerose.com/api
+          VITE_ADMIN_URL: https://api.blaireaudor.maximerose.com/admin
+          VITE_VAPID_PUBLIC_KEY: BFShZ7lm_kpjRnkDRILuBgkNbLHrmdFpnwpZSqFwuHzN8T1Cj9_EdvE1HPD_ygwb7cGjFbjb9ZRqqCJ6T75X8zY
+          VITE_MERCURE_PUBLIC_URL: https://blaireaudor-mercure.onrender.com/.well-known/mercure
         run: |
           npm install
           npm run build
@@ -80,3 +85,11 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
         run: |
           lftp -u "$FTP_USER","$FTP_PASS" -e "set ssl:verify-certificate no; mirror -R -v --parallel=10 --ignore-time --exclude-glob .git/ ./front/dist/ front/dist/; quit" "$FTP_HOST"
+
+  trigger-production-webhook:
+    runs-on: ubuntu-latest
+    needs: [deploy-backend, deploy-frontend]
+    steps:
+      - name: Call Webhook to clear remote cache and run migrations
+        run: |
+          curl -s "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
