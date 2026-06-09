@@ -92,4 +92,4 @@ jobs:
     steps:
       - name: Call Webhook to clear remote cache and run migrations
         run: |
-          curl -s "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
+          curl -s --http1.1 "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}"
