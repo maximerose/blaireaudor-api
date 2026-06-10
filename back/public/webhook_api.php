@@ -1,21 +1,29 @@
 <?php
 
-$logFile = dirname(__DIR__) . '/var/log/prod.log';
-if (file_exists($logFile)) {
-    echo "<h3>📋 Dernières lignes du log prod :</h3><pre>";
-    $lines = file($logFile);
-    echo htmlspecialchars(implode('', array_slice($lines, -50)));
-    echo "</pre>";
-} else {
-    echo "<p>⚠️ Log introuvable : $logFile</p>";
-}
-
 // On empêche le serveur de couper pour cause de délai (Litespeed)
 header('X-LiteSpeed-NoAbort: true');
 set_time_limit(300);
 
 echo "<pre style='background:#1e1e1e; color:#0f0; padding:20px; font-family:monospace;'>";
 echo "🚀 Démarrage du déploiement...\n\n";
+
+$logFile = dirname(__DIR__) . '/var/log/prod.log';
+if (file_exists($logFile)) {
+    $lines = file($logFile);
+    $last = array_slice($lines, -30);
+    echo "<pre>";
+    foreach ($last as $line) {
+        $decoded = json_decode($line, true);
+        if ($decoded && isset($decoded['level_name']) && in_array($decoded['level_name'], ['ERROR', 'CRITICAL'])) {
+            echo htmlspecialchars($decoded['datetime'] . ' [' . $decoded['level_name'] . '] ' . $decoded['message'] . "\n");
+            if (!empty($decoded['context']['exception']['message'])) {
+                echo htmlspecialchars('  → ' . $decoded['context']['exception']['message'] . "\n");
+                echo htmlspecialchars('  → ' . ($decoded['context']['exception']['file'] ?? '') . "\n");
+            }
+        }
+    }
+    echo "</pre>";
+}
 
 $expectedSecret = null;
 $phpBinary = null;

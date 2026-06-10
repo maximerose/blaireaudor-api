@@ -13,9 +13,8 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        // On ne surcharge que si la variable est définie (serveur o2switch)
-        if ($hostingUser = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
-            return (string) '/home2/'.$hostingUser.'/tmp/blaireaudor/cache/'.$this->getEnvironment();
+        if ('dev' === $this->getEnvironment()) {
+            return '/var/cache/'.$this->getEnvironment();
         }
 
         return parent::getCacheDir();
@@ -23,8 +22,8 @@ class Kernel extends BaseKernel
 
     public function getLogDir(): string
     {
-        if ($hostingUser = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
-            return (string) '/home2/'.$hostingUser.'/tmp/blaireaudor/log';
+        if ('dev' === $this->getEnvironment()) {
+            return '/var/log';
         }
 
         return parent::getLogDir();
