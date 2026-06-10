@@ -1,4 +1,3 @@
-import { getIdFromData } from '@/shared';
 import type {
   Competition,
   EnrichedLeaderboardItem,
@@ -8,6 +7,7 @@ import {
   isCreator,
   isReferee,
 } from '@/features/competition/utils';
+import { getIdFromData } from '@/shared';
 import { useState } from 'react';
 
 export const useLeaderboardRow = (
@@ -18,7 +18,7 @@ export const useLeaderboardRow = (
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
 
   const medal = getRankMedal(participation.rank);
-  const playerName = participation.player?.display_name || 'Anonyme';
+  const playerName = participation.player?.display_name || null;
 
   const playerId = getIdFromData(participation.player);
 

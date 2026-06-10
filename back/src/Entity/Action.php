@@ -121,9 +121,9 @@ class Action
     }
 
     #[Groups(['action:read'])]
-    public function getCreatorName(): string
+    public function getCreatorName(): ?string
     {
-        return $this->getCreatedBy()?->getPlayer()?->getDisplayName() ?? 'Anonyme';
+        return $this->getCreatedBy()?->getPlayer()?->getDisplayName() ?? null;
     }
 
     public function getCompetition(): ?Competition
@@ -189,5 +189,17 @@ class Action
         $this->participation = $participation;
 
         return $this;
+    }
+
+    #[Groups(['action:read'])]
+    public function getPlayerId(): ?string
+    {
+        return $this->participation?->getPlayer()?->getId()?->toString();
+    }
+
+    #[Groups(['action:read'])]
+    public function getCreatedById(): ?string
+    {
+        return $this->getCreatedBy()?->getId()?->toString();
     }
 }

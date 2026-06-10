@@ -8,6 +8,7 @@ use App\Constants\ErrorMessages;
 use App\Entity\Competition;
 use App\Repository\ActionRepository;
 use App\Security\Voter\CompetitionVoter;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,7 @@ final class CompetitionActionController extends AbstractController
 
     #[IsGranted(CompetitionVoter::VIEW, subject: 'competition')]
     #[Route('/actions', name: 'list', methods: ['GET'])]
-    public function getActions(Competition $competition, Request $request): JsonResponse
+    public function getActions(Competition $competition, Request $request, LoggerInterface $logger): JsonResponse
     {
         $date = $request->query->get('date');
         if (\in_array($date, ['undefined', 'null', ''], true)) {
@@ -47,6 +48,16 @@ final class CompetitionActionController extends AbstractController
 
         $actions = $this->actionRepository->findByCompetition($competition, $sortBy, $order, $limit, $offset, $date, $playerId);
         $total = $this->actionRepository->countByCompetition($competition, $date, $playerId);
+
+        $logger->critical('=== DEBUG ACTIONS ===');
+        $logger->critical('Actions trouvées en base : '.count($actions));
+        $logger->critical((string) 'Total calculé (count) : '.$total);
+
+        if (\count($actions) > 0) {
+            $first = $actions[0];
+            $logger->critical('Première action ID : '.$first->getId()->toString());
+            $logger->critical('Description : '.$first->getDescription());
+        }
 
         return $this->json([
             'data' => $actions,

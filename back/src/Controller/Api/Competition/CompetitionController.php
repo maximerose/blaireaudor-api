@@ -10,6 +10,7 @@ use App\Repository\CompetitionRepository;
 use App\Repository\ParticipationRepository;
 use App\Service\Manager\ParticipationManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,7 +61,7 @@ final class CompetitionController extends AbstractController
     }
 
     #[Route('/by-code/{code}', name: 'by_code', methods: ['GET'])]
-    public function getByCode(string $code, CompetitionRepository $repository, ParticipationRepository $partRepo): JsonResponse
+    public function getByCode(string $code, CompetitionRepository $repository, ParticipationRepository $partRepo, LoggerInterface $logger): JsonResponse
     {
         $cleanCode = strtoupper(trim($code));
         $competition = $repository->findOneBy(['joinCode' => $cleanCode]);
@@ -70,6 +71,17 @@ final class CompetitionController extends AbstractController
         }
 
         $leaderboard = $partRepo->findLeaderboard($competition);
+
+        $logger->critical('=== DEBUG LEADERBOARD ===');
+        $logger->critical('Nombre de participations trouvées : '.\count($leaderboard));
+
+        if (\count($leaderboard) > 0) {
+            $first = $leaderboard[0];
+            $logger->critical('Premier joueur : '.$first->getPlayer()->getDisplayName());
+            $logger->critical('Score du premier : '.$first->getScore());
+        } else {
+            $logger->critical('Le leaderboard est vide depuis la base de données !');
+        }
 
         return $this->json([
             'competition' => $competition,

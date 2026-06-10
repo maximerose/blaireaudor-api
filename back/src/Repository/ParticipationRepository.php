@@ -9,13 +9,6 @@ use App\Entity\Participation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * Repository gérant l'accès aux données des Participations.
- * * C'est ici que sera gérée la logique d'affichage du classement (Leaderboard)
- * en filtrant les scores par compétition.
- *
- * @extends ServiceEntityRepository<Participation>
- */
 class ParticipationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -29,7 +22,7 @@ class ParticipationRepository extends ServiceEntityRepository
             ->select('count(DISTINCT p.score)')
             ->where('p.competition = :competition')
             ->andWhere('p.score > :score')
-            ->setParameter('competition', $competition)
+            ->setParameter('competition', $competition->getId(), 'uuid') // <-- ICI
             ->setParameter('score', $score)
             ->getQuery()
             ->getSingleScalarResult();
@@ -38,16 +31,16 @@ class ParticipationRepository extends ServiceEntityRepository
     public function findLeaderboard(Competition $competition): array
     {
         $results = $this->createQueryBuilder('p')
-        ->select('p', 'player', 'user', 'actions')
-        ->join('p.player', 'player')
-        ->leftJoin('player.associatedUser', 'user')
-        ->leftJoin('p.actions', 'actions')
-        ->where('p.competition = :competition')
-        ->setParameter('competition', $competition)
-        ->orderBy('p.score', 'DESC')
-        ->addOrderBy('player.slug', 'ASC')
-        ->getQuery()
-        ->getResult();
+            ->select('p', 'player', 'user', 'actions')
+            ->join('p.player', 'player')
+            ->leftJoin('player.associatedUser', 'user')
+            ->leftJoin('p.actions', 'actions')
+            ->where('p.competition = :competition')
+            ->setParameter('competition', $competition->getId(), 'uuid') // <-- ET ICI
+            ->orderBy('p.score', 'DESC')
+            ->addOrderBy('player.slug', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         $currentRank = 0;
         $lastScore = null;

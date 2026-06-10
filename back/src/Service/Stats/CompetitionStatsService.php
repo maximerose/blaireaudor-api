@@ -9,6 +9,7 @@ use App\Entity\Competition;
 use App\Enum\ActionStatus;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
 
 final readonly class CompetitionStatsService
 {
@@ -17,52 +18,66 @@ final readonly class CompetitionStatsService
     ) {
     }
 
+    private function getTzOffsetStr(): string
+    {
+        $tz = new \DateTimeZone(AppConstants::TIMEZONE);
+        $offset = $tz->getOffset(new \DateTime('now', new \DateTimeZone('UTC')));
+        $hours = intdiv($offset, 3600);
+        $minutes = abs(intdiv($offset % 3600, 60));
+
+        return \sprintf('%+03d:%02d:00', $hours, $minutes);
+    }
+
     public function getCompetitionKpis(Competition $competition): array
     {
         $conn = $this->entityManager->getConnection();
-        $compId = $competition->getId()->toString();
+
+        $compIdBin = $competition->getId()->toBinary();
+        $tzOffset = $this->getTzOffsetStr();
 
         return [
-            'total_players' => $this->fetchTotalPlayers($conn, $compId),
-            'total_actions' => $this->fetchTotalActions($conn, $compId),
-            'total_points' => $this->fetchTotalPoints($conn, $compId),
-            'bonus_actions_ratio' => $this->fetchBonusActionsRatio($conn, $compId),
-            'max_actions_received' => $this->fetchMaxActionsReceived($conn, $compId),
-            'max_actions_reported' => $this->fetchMaxActionsReported($conn, $compId),
-            'min_actions_received' => $this->fetchMinActionsReceived($conn, $compId),
-            'min_actions_reported' => $this->fetchMinActionsReported($conn, $compId),
-            'max_approval_ratio' => $this->fetchMaxApprovalRatio($conn, $compId),
-            'max_rejected_reports' => $this->fetchMaxRejectedReports($conn, $compId),
-            'max_distinct_informers_received' => $this->fetchMaxDistinctInformersReceived($conn, $compId),
-            'average_points_per_action' => $this->fetchAveragePointsPerAction($conn, $compId),
-            'max_reciprocal_target_pair' => $this->fetchMaxReciprocalTargetPair($conn, $compId),
-            'max_unique_targets_reported' => $this->fetchMaxUniqueTargetsReported($conn, $compId),
-            'max_points_reported' => $this->fetchMaxPointsReported($conn, $compId),
-            'max_avg_points_received' => $this->fetchMaxAvgPointsReceived($conn, $compId),
-            'min_avg_points_received' => $this->fetchMinAvgPointsReceived($conn, $compId),
-            'max_points_single_action' => $this->fetchMaxPointsSingleAction($conn, $compId),
+            'total_players' => $this->fetchTotalPlayers($conn, $compIdBin),
+            'total_actions' => $this->fetchTotalActions($conn, $compIdBin),
+            'total_points' => $this->fetchTotalPoints($conn, $compIdBin, $tzOffset),
+            'bonus_actions_ratio' => $this->fetchBonusActionsRatio($conn, $compIdBin, $tzOffset),
+            'max_actions_received' => $this->fetchMaxActionsReceived($conn, $compIdBin),
+            'max_actions_reported' => $this->fetchMaxActionsReported($conn, $compIdBin),
+            'min_actions_received' => $this->fetchMinActionsReceived($conn, $compIdBin),
+            'min_actions_reported' => $this->fetchMinActionsReported($conn, $compIdBin),
+            'max_approval_ratio' => $this->fetchMaxApprovalRatio($conn, $compIdBin),
+            'max_rejected_reports' => $this->fetchMaxRejectedReports($conn, $compIdBin),
+            'max_distinct_informers_received' => $this->fetchMaxDistinctInformersReceived($conn, $compIdBin),
+            'average_points_per_action' => $this->fetchAveragePointsPerAction($conn, $compIdBin, $tzOffset),
+            'max_reciprocal_target_pair' => $this->fetchMaxReciprocalTargetPair($conn, $compIdBin),
+            'max_unique_targets_reported' => $this->fetchMaxUniqueTargetsReported($conn, $compIdBin),
+            'max_points_reported' => $this->fetchMaxPointsReported($conn, $compIdBin, $tzOffset),
+            'max_avg_points_received' => $this->fetchMaxAvgPointsReceived($conn, $compIdBin, $tzOffset),
+            'min_avg_points_received' => $this->fetchMinAvgPointsReceived($conn, $compIdBin, $tzOffset),
+            'max_points_single_action' => $this->fetchMaxPointsSingleAction($conn, $compIdBin, $tzOffset),
         ];
     }
 
     public function getDailyEvolution(Competition $competition): array
     {
         $conn = $this->entityManager->getConnection();
+        $compIdBin = $competition->getId()->toBinary();
+        $tzOffset = $this->getTzOffsetStr();
 
-        $sql = "SELECT DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) as date_day,
+        $sql = 'SELECT DATE(ADDTIME(a.date_action, :tz_offset)) as date_day,
                 part.player_id,
                 SUM(a.points * COALESCE(b.multiplier, 1)) as daily_points
             FROM action a
             JOIN participation part ON a.participation_id = part.id
-            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date AND b.competition_id = part.competition_id)
+            LEFT JOIN bonus_day b ON (DATE(ADDTIME(a.date_action, :tz_offset)) = b.date AND b.competition_id = part.competition_id)
             WHERE part.competition_id = :comp_id AND a.status = :status
             GROUP BY date_day, part.player_id
             ORDER BY date_day ASC
-        ";
+        ';
 
         $results = $conn->fetchAllAssociative($sql, [
-            'comp_id' => $competition->getId()->toString(),
+            'comp_id' => $compIdBin,
             'status' => ActionStatus::VALIDATED->value,
-            'tz' => AppConstants::TIMEZONE,
+            'tz_offset' => $tzOffset,
         ]);
 
         $dates = array_unique(array_column($results, 'date_day'));
@@ -79,7 +94,10 @@ final readonly class CompetitionStatsService
 
             foreach ($results as $row) {
                 if ($row['date_day'] === $date) {
-                    $runningTotals[$row['player_id']] += (int) $row['daily_points'];
+                    $rowPlayerId = Uuid::fromBinary($row['player_id'])->toString();
+                    if (isset($runningTotals[$rowPlayerId])) {
+                        $runningTotals[$rowPlayerId] += (int) $row['daily_points'];
+                    }
                 }
             }
 
@@ -95,71 +113,69 @@ final readonly class CompetitionStatsService
 
     // ─── PRIVATE KPI FETCHERS ───────────────────────────────────────────────
 
-    private function fetchTotalPlayers(Connection $conn, string $compId): int
+    private function fetchTotalPlayers(Connection $conn, string $compIdBin): int
     {
         return (int) $conn->fetchOne('SELECT COUNT(id) 
             FROM participation 
             WHERE competition_id = :comp_id
-        ', ['comp_id' => $compId]);
+        ', ['comp_id' => $compIdBin]);
     }
 
-    private function fetchTotalActions(Connection $conn, string $compId): int
+    private function fetchTotalActions(Connection $conn, string $compIdBin): int
     {
         return (int) $conn->fetchOne("SELECT COUNT(a.id)
             FROM action a
             JOIN participation p ON a.participation_id = p.id 
             WHERE p.competition_id = :comp_id 
             AND a.status = 'validated'
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
     }
 
-    private function fetchTotalPoints(Connection $conn, string $compId): int
+    private function fetchTotalPoints(Connection $conn, string $compIdBin, string $tzOffset): int
     {
         return (int) $conn->fetchOne("SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0) 
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE p.competition_id = :comp_id 
             AND a.status = 'validated'
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
     }
 
-    private function fetchBonusActionsRatio(Connection $conn, string $compId): float
+    private function fetchBonusActionsRatio(Connection $conn, string $compIdBin, string $tzOffset): float
     {
         $data = $conn->fetchAssociative("SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total 
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date
+                DATE(ADDTIME(a.date_action, :tz_offset)) = b.date
                 AND b.competition_id = p.competition_id) 
             WHERE p.competition_id = :comp_id 
             AND a.status = 'validated'
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
 
         return $data && $data['total'] > 0 ? round(($data['bonus_actions'] / $data['total']) * 100, 1) : 0.0;
     }
 
-    private function fetchAveragePointsPerAction(Connection $conn, string $compId): float
+    private function fetchAveragePointsPerAction(Connection $conn, string $compIdBin, string $tzOffset): float
     {
         return (float) round((float) $conn->fetchOne("SELECT AVG(points) 
             FROM action a 
             JOIN participation p ON a.participation_id = p.id 
             LEFT JOIN bonus_day b ON (
-                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE a.status = 'validated' 
             AND p.competition_id = :comp_id
         ", [
-            'comp_id' => $compId,
-            'tz' => AppConstants::TIMEZONE,
+            'comp_id' => $compIdBin,
+            'tz_offset' => $tzOffset,
         ]), 1);
     }
 
-    // --- RECORDS AVEC GESTION DES EX-AEQUO (RANK) ---
-
-    private function fetchMaxActionsReceived(Connection $conn, string $compId): ?array
+    private function fetchMaxActionsReceived(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, cnt 
             FROM (
@@ -172,12 +188,12 @@ final readonly class CompetitionStatsService
                 AND p.competition_id = :comp_id 
                 GROUP BY pl.id, pl.display_name) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMaxActionsReported(Connection $conn, string $compId): ?array
+    private function fetchMaxActionsReported(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, cnt 
             FROM (
@@ -191,12 +207,12 @@ final readonly class CompetitionStatsService
                 AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name) t
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMinActionsReceived(Connection $conn, string $compId): ?array
+    private function fetchMinActionsReceived(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, cnt 
             FROM (
@@ -209,12 +225,12 @@ final readonly class CompetitionStatsService
                 WHERE part.competition_id = :comp_id 
                 GROUP BY p.id, p.display_name) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMinActionsReported(Connection $conn, string $compId): ?array
+    private function fetchMinActionsReported(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, cnt 
             FROM (
@@ -232,12 +248,12 @@ final readonly class CompetitionStatsService
                 WHERE part.competition_id = :comp_id 
                 GROUP BY p.id, p.display_name) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMaxPointsReported(Connection $conn, string $compId): ?array
+    private function fetchMaxPointsReported(Connection $conn, string $compIdBin, string $tzOffset): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, total_pts 
             FROM (
@@ -248,18 +264,18 @@ final readonly class CompetitionStatsService
                 JOIN player pl ON pl.associated_user_id = u.id 
                 JOIN participation p ON a.participation_id = p.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                    DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id 
                 AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'points' => (int) $data[0]['total_pts']];
     }
 
-    private function fetchMaxAvgPointsReceived(Connection $conn, string $compId): ?array
+    private function fetchMaxAvgPointsReceived(Connection $conn, string $compIdBin, string $tzOffset): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, avg_pts, action_cnt 
             FROM (
@@ -271,17 +287,17 @@ final readonly class CompetitionStatsService
                 JOIN participation p ON a.participation_id = p.id 
                 JOIN player pl ON p.player_id = pl.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                    DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name
             ) t WHERE rnk = 1
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'average' => (float) $data[0]['avg_pts'], 'count' => (int) $data[0]['action_cnt']];
     }
 
-    private function fetchMinAvgPointsReceived(Connection $conn, string $compId): ?array
+    private function fetchMinAvgPointsReceived(Connection $conn, string $compIdBin, string $tzOffset): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, avg_pts, action_cnt
             FROM (
@@ -294,17 +310,17 @@ final readonly class CompetitionStatsService
                 JOIN participation p ON a.participation_id = p.id 
                 JOIN player pl ON p.player_id = pl.id 
                 LEFT JOIN bonus_day b ON (
-                    DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                    DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                     AND b.competition_id = p.competition_id)
                 WHERE p.competition_id = :comp_id AND a.status = 'validated' 
                 GROUP BY pl.id, pl.display_name
             ) t WHERE rnk = 1
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'average' => (float) $data[0]['avg_pts'], 'count' => (int) $data[0]['action_cnt']];
     }
 
-    private function fetchMaxApprovalRatio(Connection $conn, string $compId): ?array
+    private function fetchMaxApprovalRatio(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, ratio, total 
             FROM (
@@ -323,12 +339,12 @@ final readonly class CompetitionStatsService
                 GROUP BY pl.id, pl.display_name 
                 HAVING COUNT(a.id) >= 2) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'ratio' => (float) $data[0]['ratio'], 'total' => (int) $data[0]['total']];
     }
 
-    private function fetchMaxRejectedReports(Connection $conn, string $compId): ?array
+    private function fetchMaxRejectedReports(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, cnt 
             FROM (
@@ -344,12 +360,12 @@ final readonly class CompetitionStatsService
                 AND p.competition_id = :comp_id 
                 GROUP BY pl.id, pl.display_name) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMaxDistinctInformersReceived(Connection $conn, string $compId): ?array
+    private function fetchMaxDistinctInformersReceived(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative('SELECT display_name, cnt 
             FROM (
@@ -362,12 +378,12 @@ final readonly class CompetitionStatsService
                 AND p.competition_id = :comp_id 
                 GROUP BY pl.id, pl.display_name) t 
             WHERE rnk = 1
-        ', ['comp_id' => $compId]);
+        ', ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['cnt']];
     }
 
-    private function fetchMaxUniqueTargetsReported(Connection $conn, string $compId): ?array
+    private function fetchMaxUniqueTargetsReported(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT display_name, unique_targets 
             FROM (
@@ -385,12 +401,12 @@ final readonly class CompetitionStatsService
                     AND a.status = 'validated' 
                     GROUP BY r.id, r.display_name) t 
                 WHERE rnk = 1
-            ", ['comp_id' => $compId]);
+            ", ['comp_id' => $compIdBin]);
 
         return empty($data) ? null : ['player_names' => array_column($data, 'display_name'), 'count' => (int) $data[0]['unique_targets']];
     }
 
-    private function fetchMaxReciprocalTargetPair(Connection $conn, string $compId): ?array
+    private function fetchMaxReciprocalTargetPair(Connection $conn, string $compIdBin): ?array
     {
         $data = $conn->fetchAllAssociative("SELECT p1_name, 
             p2_name,
@@ -423,7 +439,7 @@ final readonly class CompetitionStatsService
                         COUNT(CASE WHEN r.id < t.id THEN 1 END), 
                         COUNT(CASE WHEN r.id > t.id THEN 1 END)) > 0) t 
             WHERE rnk = 1
-        ", ['comp_id' => $compId]);
+        ", ['comp_id' => $compIdBin]);
         if (empty($data)) {
             return null;
         }
@@ -440,7 +456,7 @@ final readonly class CompetitionStatsService
         ];
     }
 
-    private function fetchMaxPointsSingleAction(Connection $conn, string $compId): ?array
+    private function fetchMaxPointsSingleAction(Connection $conn, string $compIdBin, string $tzOffset): ?array
     {
         $data = $conn->fetchAssociative("SELECT pl.display_name, 
             a.description, 
@@ -450,13 +466,13 @@ final readonly class CompetitionStatsService
             JOIN participation p ON a.participation_id = p.id 
             JOIN player pl ON p.player_id = pl.id 
             LEFT JOIN bonus_day b ON (
-                DATE(CONVERT_TZ(a.date_action, 'UTC', :tz)) = b.date 
+                DATE(ADDTIME(a.date_action, :tz_offset)) = b.date 
                 AND b.competition_id = p.competition_id) 
             WHERE a.status = 'validated' 
             AND p.competition_id = :comp_id 
             ORDER BY total_pts DESC, 
             a.date_action DESC LIMIT 1
-        ", ['comp_id' => $compId, 'tz' => AppConstants::TIMEZONE]);
+        ", ['comp_id' => $compIdBin, 'tz_offset' => $tzOffset]);
 
         return $data ? ['player_name' => $data['display_name'], 'points' => (int) $data['total_pts'], 'description' => $data['description'], 'date_action' => $data['date_action']] : null;
     }

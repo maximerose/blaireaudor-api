@@ -20,6 +20,7 @@ import {
   Text,
   TEXT_THEME,
   TEXT_VARIANT,
+  UI,
 } from '@/shared';
 import type React from 'react';
 import { RankedScore } from './RankedScore';
@@ -173,7 +174,7 @@ export const LeaderboardRow = ({
                   ? COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD
                       .ARIA_LEAVE_COMPETITION
                   : COMPETITION_UI.DETAIL.SECTIONS.LEADERBOARD.ARIA_DELETE_PARTICIPATION(
-                      playerName,
+                      playerName || UI.ANONYMOUS,
                     )
               }
               title={
@@ -212,7 +213,7 @@ export const LeaderboardRow = ({
           competitionCode={competition.join_code}
           guestPlayer={{
             id: participation.player.id,
-            display_name: playerName,
+            display_name: playerName || UI.ANONYMOUS,
             actions_count: participation.has_actions ? 1 : 0,
           }}
           onClose={() => setIsMergeModalOpen(false)}

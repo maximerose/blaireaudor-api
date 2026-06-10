@@ -43,7 +43,6 @@ export const ActionRowDisplayMode = ({
     canEdit,
   } = useActionRow(action);
 
-  // Correction : Suppression du franglais pour une variable claire et lisible
   const canArbitrate = isPending && isAdmin && !competition.is_finished;
 
   return (
