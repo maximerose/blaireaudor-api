@@ -1,5 +1,15 @@
 <?php
 
+$logFile = dirname(__DIR__) . '/var/log/prod.log';
+if (file_exists($logFile)) {
+    echo "<h3>📋 Dernières lignes du log prod :</h3><pre>";
+    $lines = file($logFile);
+    echo htmlspecialchars(implode('', array_slice($lines, -50)));
+    echo "</pre>";
+} else {
+    echo "<p>⚠️ Log introuvable : $logFile</p>";
+}
+
 // On empêche le serveur de couper pour cause de délai (Litespeed)
 header('X-LiteSpeed-NoAbort: true');
 set_time_limit(300);

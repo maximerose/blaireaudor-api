@@ -13,19 +13,24 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        if ('dev' === $this->getEnvironment()) {
-            return '/tmp/blaireau_cache/'.$this->getEnvironment();
-        }
-
-        return parent::getCacheDir();
+        return '/home2/'.$this->getHostingUser().'/tmp/blaireaudor/cache/'.$this->getEnvironment();
     }
 
     public function getLogDir(): string
     {
-        if ('dev' === $this->getEnvironment()) {
-            return '/tmp/blaireau_logs';
+        return '/home2/'.$this->getHostingUser().'/tmp/blaireaudor/log';
+    }
+
+    private function getHostingUser(): string
+    {
+        if ($user = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
+            return $user;
         }
 
-        return parent::getLogDir();
+        if (\function_exists('posix_getpwuid') && \function_exists('posix_geteuid')) {
+            return posix_getpwuid(posix_geteuid())['name'] ?? 'nobody';
+        }
+
+        return 'nobody';
     }
 }
