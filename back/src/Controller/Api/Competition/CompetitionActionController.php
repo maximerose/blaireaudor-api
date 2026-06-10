@@ -49,16 +49,6 @@ final class CompetitionActionController extends AbstractController
         $actions = $this->actionRepository->findByCompetition($competition, $sortBy, $order, $limit, $offset, $date, $playerId);
         $total = $this->actionRepository->countByCompetition($competition, $date, $playerId);
 
-        $logger->critical('=== DEBUG ACTIONS ===');
-        $logger->critical('Actions trouvées en base : '.count($actions));
-        $logger->critical((string) 'Total calculé (count) : '.$total);
-
-        if (\count($actions) > 0) {
-            $first = $actions[0];
-            $logger->critical('Première action ID : '.$first->getId()->toString());
-            $logger->critical('Description : '.$first->getDescription());
-        }
-
         return $this->json([
             'data' => $actions,
             'meta' => [

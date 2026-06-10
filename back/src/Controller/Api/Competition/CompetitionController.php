@@ -72,17 +72,6 @@ final class CompetitionController extends AbstractController
 
         $leaderboard = $partRepo->findLeaderboard($competition);
 
-        $logger->critical('=== DEBUG LEADERBOARD ===');
-        $logger->critical('Nombre de participations trouvées : '.\count($leaderboard));
-
-        if (\count($leaderboard) > 0) {
-            $first = $leaderboard[0];
-            $logger->critical('Premier joueur : '.$first->getPlayer()->getDisplayName());
-            $logger->critical('Score du premier : '.$first->getScore());
-        } else {
-            $logger->critical('Le leaderboard est vide depuis la base de données !');
-        }
-
         return $this->json([
             'competition' => $competition,
             'leaderboard' => $leaderboard,
