@@ -13,24 +13,20 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        return '/home2/'.$this->getHostingUser().'/tmp/blaireaudor/cache/'.$this->getEnvironment();
+        // On ne surcharge que si la variable est définie (serveur o2switch)
+        if ($hostingUser = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
+            return (string) '/home2/'.$hostingUser.'/tmp/blaireaudor/cache/'.$this->getEnvironment();
+        }
+
+        return parent::getCacheDir();
     }
 
     public function getLogDir(): string
     {
-        return '/home2/'.$this->getHostingUser().'/tmp/blaireaudor/log';
-    }
-
-    private function getHostingUser(): string
-    {
-        if ($user = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
-            return $user;
+        if ($hostingUser = $_ENV['HOSTING_USER'] ?? $_SERVER['HOSTING_USER'] ?? null) {
+            return (string) '/home2/'.$hostingUser.'/tmp/blaireaudor/log';
         }
 
-        if (\function_exists('posix_getpwuid') && \function_exists('posix_geteuid')) {
-            return posix_getpwuid(posix_geteuid())['name'] ?? 'nobody';
-        }
-
-        return 'nobody';
+        return parent::getLogDir();
     }
 }
