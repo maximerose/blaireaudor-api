@@ -36,6 +36,8 @@ final readonly class PushSubscriptionProcessor implements ProcessorInterface
             $existing->setP256dh($data->getP256dh());
             $existing->setAuth($data->getAuth());
 
+            $this->entityManager->flush();
+
             return $existing;
         }
 

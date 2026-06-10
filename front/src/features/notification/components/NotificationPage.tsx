@@ -1,5 +1,3 @@
-// front/src/features/notification/components/NotificationPage.tsx
-
 import {
   cn,
   formatRelativeTime,
