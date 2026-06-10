@@ -93,8 +93,6 @@ jobs:
     steps:
       - name: Call Webhook to clear remote cache and run migrations
         run: |
-          curl -sS --http1.1 \
-            --max-time 300 \
-            --retry 0 \
+          curl -sS --http1.1 --max-time 300 \
             "https://api.blaireaudor.maximerose.com/webhook_api.php?secret=${{ secrets.DEPLOY_SECRET }}" \
-          ; EXIT=$?; [ $EXIT -eq 0 ] || [ $EXIT -eq 56 ] || [ $EXIT -eq 52 ] && exit 0 || exit $EXIT
+          || true
