@@ -67,7 +67,7 @@ jobs:
         env:
           VITE_API_BASE_URL: https://api.blaireaudor.maximerose.com/api
           VITE_ADMIN_URL: https://api.blaireaudor.maximerose.com/admin
-          VITE_VAPID_PUBLIC_KEY: BM6kHx_nl6mbbRmE6apRv1kIvJdR9sTd44c4B6qqD0BwfW395uNuTHDPk7E01yBZn8pbIbhEe0OHslZ2ntkjsSY
+          VITE_VAPID_PUBLIC_KEY: BFcf-Vg_1nmm2n1lCoxivS1la8lbkGLmr8zzl7w2TgfHWS3T5yyEClwsoP2oC-bnFtWUjxraCHpeiK0wd0cCMbc
           VITE_MERCURE_PUBLIC_URL: https://blaireaudor-mercure.onrender.com/.well-known/mercure
         run: |
           npm install
