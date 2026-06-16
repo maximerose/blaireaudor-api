@@ -147,7 +147,7 @@ class Competition
      *
      * @var Collection<int, Participation>
      */
-    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'competition', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[Groups(['competition:read', 'competition:write'])]
     private Collection $participations;
 

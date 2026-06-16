@@ -45,7 +45,7 @@ final class CompetitionCrudController extends AbstractCrudController
         yield DateTimeField::new('startDate', 'Début');
         yield DateTimeField::new('endDate', 'Fin');
         yield BooleanField::new('fogOfWar', 'Brouillard');
-        yield AssociationField::new('createdBy', 'Créateur')->hideOnIndex();
+        yield AssociationField::new('createdBy', 'Créateur')->hideOnIndex()->setRequired(false);
 
         if (Crud::PAGE_INDEX === $pageName) {
             yield CollectionField::new('participations', 'Joueurs')
@@ -69,9 +69,6 @@ final class CompetitionCrudController extends AbstractCrudController
 
         if (\in_array($pageName, [Crud::PAGE_NEW, Crud::PAGE_EDIT], true)) {
             yield AssociationField::new('referees', 'Arbitres')
-                ->setFormTypeOptions(['by_reference' => false]);
-
-            yield CollectionField::new('participations', 'Joueurs')
                 ->setFormTypeOptions(['by_reference' => false]);
 
             yield CollectionField::new('bonusDays', 'Jours bonus')
