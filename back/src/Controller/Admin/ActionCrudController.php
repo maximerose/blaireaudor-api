@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Action;
+use App\Entity\Participation; // Ne pas oublier cet import
 use App\Enum\ActionStatus;
+use Doctrine\ORM\EntityManagerInterface; // Ne pas oublier cet import
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -22,12 +24,31 @@ final class ActionCrudController extends AbstractCrudController
 {
     public function __construct(
         private AdminUrlGenerator $adminUrlGenerator,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
     public static function getEntityFqcn(): string
     {
         return Action::class;
+    }
+
+    // Nouvelle méthode pour pré-remplir la participation
+    public function createEntity(string $entityFqcn): Action
+    {
+        $action = new Action();
+
+        $participationId = $this->getContext()?->getRequest()->query->get('participation_id');
+
+        if ($participationId) {
+            $participation = $this->entityManager->getRepository(Participation::class)->find($participationId);
+
+            if ($participation) {
+                $action->setParticipation($participation);
+            }
+        }
+
+        return $action;
     }
 
     public function configureFields(string $pageName): iterable
@@ -57,6 +78,7 @@ final class ActionCrudController extends AbstractCrudController
         if (null !== $participation && null !== $participation->getCompetition()) {
             return $this->redirect(
                 $this->adminUrlGenerator
+                    ->unsetAll() // Bonne pratique ici aussi avant une redirection
                     ->setController('App\\Controller\\Admin\\CompetitionCrudController')
                     ->setAction(Crud::PAGE_DETAIL)
                     ->setEntityId($participation->getCompetition()->getId())

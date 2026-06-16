@@ -49,18 +49,37 @@ final class CompetitionCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             yield CollectionField::new('participations', 'Joueurs')
-        ->formatValue(function ($value) {
-            $count = is_countable($value) ? \count($value) : 0;
+                ->formatValue(static function ($value) {
+                    $count = is_countable($value) ? \count($value) : 0;
 
-            return \sprintf('%d joueur%s', $count, $count > 1 ? 's' : '');
-        });
+                    return \sprintf('%d joueur%s', $count, $count > 1 ? 's' : '');
+                });
         }
 
         if (Crud::PAGE_DETAIL === $pageName) {
+            // C'est via ce template personnalisé que les actions liées aux participations sont affichées
             yield CollectionField::new('participations', AdminConstants::FIELD_COLLECTION_TITLE)
                 ->setTemplatePath('admin/fields/competition_actions.html.twig')
                 ->setCustomOption('admin_constants', AdminConstants::class)
                 ->setCustomOption('url_generator', $this->adminUrlGenerator);
+
+            yield AssociationField::new('referees', 'Arbitres');
+            yield CollectionField::new('bonusDays', 'Jours bonus');
+        }
+
+        if (\in_array($pageName, [Crud::PAGE_NEW, Crud::PAGE_EDIT], true)) {
+            yield AssociationField::new('referees', 'Arbitres')
+                ->setFormTypeOptions(['by_reference' => false]);
+
+            yield CollectionField::new('participations', 'Joueurs')
+                ->setFormTypeOptions(['by_reference' => false]);
+
+            yield CollectionField::new('bonusDays', 'Jours bonus')
+                ->setFormTypeOptions(['by_reference' => false]);
+
+            yield CollectionField::new('participations', 'Joueurs')
+                ->useEntryCrudForm(ParticipationCrudController::class) // Ajoute cette ligne
+                ->setFormTypeOptions(['by_reference' => false]);
         }
     }
 }

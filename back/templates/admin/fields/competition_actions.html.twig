@@ -1,13 +1,46 @@
 {% set C = field.customOptions.get('admin_constants') %}
 {% set urlGenerator = field.customOptions.get('url_generator') %}
+{% set competitionId = entity.instance.id %}
+
+{# Génération de l'URL pour ajouter un joueur (participation) #}
+{% set addPlayerUrl = urlGenerator
+    .unsetAll()
+    .setController('App\\Controller\\Admin\\ParticipationCrudController')
+    .setAction('new')
+    .set('competition_id', competitionId)
+    .generateUrl()
+%}
 
 <div class="field-collection">
     {% if field.value is empty %}
-        <span class="badge badge-secondary">{{ constant(C ~ '::NO_PARTICIPANT') }}</span>
+        <div class="alert alert-secondary d-flex justify-content-between align-items-center">
+            <span class="m-0">{{ constant(C ~ '::NO_PARTICIPANT') }}</span>
+            <a href="{{ addPlayerUrl }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-user-plus"></i> Ajouter un joueur
+            </a>
+        </div>
     {% else %}
         <div class="accordion" id="competitionLeaderboardAccordion">
             {% for participation in field.value|sort((a, b) => a.player.displayName|lower <=> b.player.displayName|lower) %}
                 {% set collapseId = "collapse-player-" ~ loop.index %}
+                
+                {# URL : Ajouter une action #}
+                {% set addActionUrl = urlGenerator
+                    .unsetAll()
+                    .setController('App\\Controller\\Admin\\ActionCrudController')
+                    .setAction('new')
+                    .set('participation_id', participation.id)
+                    .generateUrl() 
+                %}
+
+                {# URL : Modifier la participation (le score) #}
+                {% set editParticipationUrl = urlGenerator
+                    .unsetAll()
+                    .setController('App\\Controller\\Admin\\ParticipationCrudController')
+                    .setAction('edit')
+                    .setEntityId(participation.id)
+                    .generateUrl() 
+                %}
                 
                 <div class="accordion-item card border-dark mb-2" style="background: transparent;">
                     
@@ -22,12 +55,30 @@
                         <strong class="text-silver">👤 {{ participation.player.displayName }}</strong>
                         
                         <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-primary px-2.5 py-1.5 font-weight-bold">{{ participation.score }} pts</span>
-                            {# Petit compteur sémantique pour savoir s'il y a du contenu avant d'ouvrir #}
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-primary px-2.5 py-1.5 font-weight-bold">{{ participation.score }} pts</span>
+                                
+                                {# Bouton crayon pour modifier le score/la participation #}
+                                <a href="{{ editParticipationUrl }}" 
+                                   class="btn btn-sm btn-link text-warning p-0 ms-2" 
+                                   onclick="event.stopPropagation();" 
+                                   title="Modifier la participation (score)">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            </div>
+                            
                             <span class="text-muted small font-italic">
                                 ({{ participation.actions|length }} {{ constant(C ~ '::SUFFIX_ACTIONS_COUNT') }})
                             </span>
-                            <i class="fas fa-chevron-down text-muted small transition-default"></i>
+                            
+                            <a href="{{ addActionUrl }}" 
+                               class="btn btn-sm btn-success" 
+                               onclick="event.stopPropagation();" 
+                               title="Ajouter une action">
+                                <i class="fas fa-plus"></i>
+                            </a>
+
+                            <i class="fas fa-chevron-down text-muted small transition-default ms-2"></i>
                         </div>
                     </div>
 
@@ -38,9 +89,15 @@
                          
                         <div class="card-body p-0 border-top border-border-subtle">
                             {% if participation.actions is empty %}
-                                <p class="text-muted p-3 m-0 italic text-small">{{ constant(C ~ '::NO_ACTION') }}</p>
+                                <div class="p-3 d-flex justify-content-between align-items-center">
+                                    <p class="text-muted m-0 italic text-small">{{ constant(C ~ '::NO_ACTION') }}</p>
+                                    <a href="{{ addActionUrl }}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-plus"></i> Nouvelle action
+                                    </a>
+                                </div>
                             {% else %}
                                 <table class="table table-sm table-hover m-0">
+                                    {# ... L'entête de ta table existante ... #}
                                     <thead>
                                         <tr class="table-secondary text-muted text-small">
                                             <th style="width: 15%">{{ constant(C ~ '::TH_DATE') }}</th>
@@ -53,6 +110,7 @@
                                     <tbody>
                                         {% for action in participation.actions %}
                                             {% set editUrl = urlGenerator
+                                                .unsetAll()
                                                 .setController('App\\Controller\\Admin\\ActionCrudController')
                                                 .setAction('edit')
                                                 .setEntityId(action.id)
@@ -85,6 +143,13 @@
                     </div>
                 </div>
             {% endfor %}
+        </div>
+        
+        {# Bouton global pour ajouter un autre joueur tout en bas #}
+        <div class="mt-3 text-end">
+            <a href="{{ addPlayerUrl }}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-user-plus"></i> Inscrire un joueur supplémentaire
+            </a>
         </div>
     {% endif %}
 </div>
