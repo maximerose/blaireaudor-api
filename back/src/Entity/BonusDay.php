@@ -130,4 +130,13 @@ class BonusDay
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return \sprintf(
+            'Bonus du %s (x%s)',
+            $this->date ? $this->date->format('d/m/Y') : 'Date inconnue',
+            $this->multiplier ?? '?'
+        );
+    }
 }
