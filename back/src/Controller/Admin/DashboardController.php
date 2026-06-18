@@ -116,6 +116,7 @@ final class DashboardController extends AbstractDashboardController
         return $this->render('admin/dashboard.html.twig', [
             'content_title' => AdminConstants::DASHBOARD_TITLE,
             'sections' => $sections,
+            'competitions_ranking' => $this->findCompetitionsRanking($conn),
         ]);
     }
 
@@ -289,14 +290,14 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) DESC) as rnk FROM player p JOIN participation part ON part.player_id = p.id GROUP BY p.id, p.display_name) t WHERE rnk = 1');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMinTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(a.points * COALESCE(b.multiplier, 1)) as total_pts, RANK() OVER (ORDER BY SUM(a.points * COALESCE(b.multiplier, 1)) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) ASC) as rnk FROM player p JOIN participation part ON part.player_id = p.id GROUP BY p.id, p.display_name) t WHERE rnk = 1');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
@@ -327,5 +328,23 @@ final class DashboardController extends AbstractDashboardController
         $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) ASC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['activity']]];
+    }
+
+    private function findCompetitionsRanking(Connection $conn): array
+    {
+        $sql = 'SELECT 
+                c.name,
+                c.start_date,
+                c.end_date,
+                COALESCE(SUM(part.score), 0) as total_pts,
+                COALESCE(MAX(part.score), 0) as max_score,
+                COUNT(part.id) as nb_players
+            FROM competition c
+            LEFT JOIN participation part ON part.competition_id = c.id
+            GROUP BY c.id, c.name, c.start_date, c.end_date
+            ORDER BY total_pts DESC
+        ';
+
+        return $conn->fetchAllAssociative($sql);
     }
 }

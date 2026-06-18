@@ -13,7 +13,6 @@ use App\Entity\Trait\UuidTrait;
 use App\Enum\ActionStatus;
 use App\Repository\ParticipationRepository;
 use App\State\Processor\Participation\ParticipationDeleteProcessor;
-use App\Validator\IsNotFinished;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +53,6 @@ class Participation
     #[ORM\ManyToOne(targetEntity: Competition::class, inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['user:read'])]
-    #[IsNotFinished]
     private ?Competition $competition = null;
 
     /**

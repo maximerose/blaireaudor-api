@@ -11,25 +11,22 @@
 {% block main %}
     {% import _self as macros %}
 
+    {# 1. Message de bienvenue #}
     <div class="mb-4">
         <p class="text-muted">{{ constant('App\\Constants\\AdminConstants::DASHBOARD_WELCOME') }}</p>
     </div>
 
+    {# 2. Section des KPIs (Indicateurs globaux en haut) #}
     {% for section in sections %}
         {% if section.title %}
-            <h5 class="text-gold fw-bold mt-5 mb-3" style="font-style: italic; font-size: 1.05rem; letter-spacing: 0.5px;">
+            <h5 class="text-gold fw-bold mt-4 mb-3" style="font-style: italic; font-size: 1.05rem; letter-spacing: 0.5px;">
                 {{ section.title }}
             </h5>
         {% endif %}
         
+        {# Optimisation de la logique d'affichage des colonnes #}
         {% set count = section.metrics|length %}
-        {% set col_class = 'col-12 col-md-6' %}
-        
-        {% if count == 4 %}
-            {% set col_class = 'col-12 col-md-6 col-xl-3' %}
-        {% elseif count == 3 %}
-            {% set col_class = 'col-12 col-lg-4' %}
-        {% endif %}
+        {% set col_class = count == 4 ? 'col-12 col-md-6 col-xl-3' : (count == 3 ? 'col-12 col-lg-4' : 'col-12 col-md-6') %}
         
         <div class="row">
             {% for metric in section.metrics %}
@@ -46,9 +43,95 @@
                         subtext: metric.subtext,
                         icon: metric.icon,
                         color: metric.color
-                    } %}
+                    } only %} {# Le 'only' garantit l'isolation des variables pour le sous-composant #}
                 </div>
             {% endfor %}
         </div>
     {% endfor %}
+
+    {# 3. Tableau détaillé des classements (En dessous des KPIs) #}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-trophy text-warning me-2"></i> Classement Historique des Compétitions</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-valign-middle mb-0" id="competitionRankingTable">
+                            <thead>
+                                <tr>
+                                    <th class="sortable">Compétition</th>
+                                    <th class="sortable text-end">Début</th>
+                                    <th class="sortable text-end">Fin</th>
+                                    <th class="sortable text-end">Joueurs engagés</th>
+                                    <th class="sortable text-end">Score Maximal</th>
+                                    <th class="sortable text-end desc">Total Points Distribués</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comp in competitions_ranking %}
+                                    <tr>
+                                        <td data-sort="{{ comp.name|lower }}"><strong>{{ comp.name }}</strong></td>
+                                        
+                                        <td data-sort="{{ comp.start_date ? comp.start_date|date('Ymd') : 0 }}" class="text-end text-muted">
+                                            {{ comp.start_date ? comp.start_date|date('d/m/Y') : '-' }}
+                                        </td>
+                                        
+                                        <td data-sort="{{ comp.end_date ? comp.end_date|date('Ymd') : 0 }}" class="text-end text-muted">
+                                            {{ comp.end_date ? comp.end_date|date('d/m/Y') : '-' }}
+                                        </td>
+                                        
+                                        <td data-sort="{{ comp.nb_players }}" class="text-end">{{ comp.nb_players }}</td>
+                                        
+                                        <td data-sort="{{ comp.max_score }}" class="text-end"><span class="badge bg-secondary">{{ comp.max_score }} pts</span></td>
+                                        
+                                        <td data-sort="{{ comp.total_pts }}" class="text-end text-success"><strong>{{ comp.total_pts|number_format(0, ',', ' ') }} pts</strong></td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Aucune donnée de compétition disponible.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 4. Logique et Styles (Isolés en bas de fichier pour ne pas polluer la vue) #}
+    <style>
+        th.sortable { cursor: pointer; position: relative; padding-right: 20px !important; }
+        th.sortable:hover { background-color: rgba(0,0,0,0.05); }
+        th.sortable::after { content: '\f0dc'; font-family: 'Font Awesome 5 Free'; font-weight: 900; position: absolute; right: 5px; opacity: 0.3; }
+        th.sortable.asc::after { content: '\f0de'; opacity: 1; color: #0d6efd; }
+        th.sortable.desc::after { content: '\f0dd'; opacity: 1; color: #0d6efd; }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('competitionRankingTable');
+        if (!table) return;
+
+        const getCellValue = (tr, idx) => tr.children[idx].getAttribute('data-sort') || tr.children[idx].innerText;
+
+        const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+        table.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', (() => {
+            const tbody = table.querySelector('tbody');
+            const asc = !th.classList.contains('asc');
+            
+            table.querySelectorAll('th').forEach(t => t.classList.remove('asc', 'desc'));
+            th.classList.add(asc ? 'asc' : 'desc');
+
+            Array.from(tbody.querySelectorAll('tr'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), asc))
+                .forEach(tr => tbody.appendChild(tr));
+        })));
+    });
+    </script>
 {% endblock %}

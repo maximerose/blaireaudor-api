@@ -45,21 +45,4 @@ final class CustomValidatorsTest extends KernelTestCase
         $this->assertGreaterThan(0, \count($errors));
         $this->assertEquals('dateAction', $errors[0]->getPropertyPath());
     }
-
-    public function testIsNotFinishedValidator(): void
-    {
-        $competition = new Competition();
-        $competition->setStartDate(new \DateTimeImmutable('2025-01-01'));
-        // La date de fin est dans le passé, donc $competition->getIsFinished() renvoie true
-        $competition->setEndDate(new \DateTimeImmutable('2025-01-10'));
-
-        $participation = new Participation();
-        // Le validateur IsNotFinished est posé sur cette propriété
-        $participation->setCompetition($competition);
-
-        $errors = $this->validator->validate($participation);
-
-        $this->assertGreaterThan(0, \count($errors));
-        $this->assertEquals('competition', $errors[0]->getPropertyPath());
-    }
 }
