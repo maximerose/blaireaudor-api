@@ -1,0 +1,698 @@
+openapi: 3.0.3
+info:
+  title: API Le Blaireau d'Or
+  description: |
+    Documentation détaillée de l'API du Blaireau d'Or.
+    Cette API gère l'authentification par jeton JWT, le suivi des compétitions (arènes), 
+    les déclarations de méfaits (actions) et les calculs de statistiques de jeu.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Serveur API principal
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Saisissez votre jeton JWT obtenu via l'endpoint `/login`.
+
+  schemas:
+    UserRead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        username:
+          type: string
+          example: "maxime"
+        email:
+          type: string
+          format: email
+          example: "maxime@blaireaudor.com"
+        roles:
+          type: array
+          items:
+            type: string
+          example: ["ROLE_USER"]
+        player:
+          $ref: '#/components/schemas/PlayerRead'
+        notification_preferences:
+          type: array
+          items:
+            type: string
+          example: ["NEW_SUBMISSION", "ACTION_VALIDATED"]
+        stats:
+          $ref: '#/components/schemas/PlayerStatsOutput'
+
+    PlayerRead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+          example: "Maxime"
+        username:
+          type: string
+          nullable: true
+          example: "maxime"
+        has_account:
+          type: boolean
+          example: true
+
+    PlayerStatsOutput:
+      type: object
+      properties:
+        career_points:
+          type: integer
+          example: 450
+        total_actions_received:
+          type: integer
+          example: 24
+
+    RegistrationInput:
+      type: object
+      required:
+        - username
+        - email
+        - plain_password
+        - display_name
+      properties:
+        username:
+          type: string
+          minLength: 3
+          example: "titine"
+        email:
+          type: string
+          format: email
+          example: "typhaine@blaireau.fr"
+        plain_password:
+          type: string
+          minLength: 6
+          example: "supersecret"
+        display_name:
+          type: string
+          minLength: 2
+          example: "Typhaine"
+        join_code:
+          type: string
+          nullable: true
+          example: "BLAIREAU26"
+        player_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: "ID d'un profil invité existant à revendiquer"
+
+    ProfileUpdateInput:
+      type: object
+      properties:
+        display_name:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        current_password:
+          type: string
+          nullable: true
+        new_password:
+          type: string
+          nullable: true
+        notification_preferences:
+          type: array
+          items:
+            type: string
+          nullable: true
+
+    ActionCreateInput:
+      type: object
+      required:
+        - description
+        - points
+        - date_action
+        - player
+      properties:
+        description:
+          type: string
+          minLength: 3
+          example: "Oubliage de saucisson"
+        points:
+          type: integer
+          example: 10
+        date_action:
+          type: string
+          format: date-time
+          example: "2026-02-21T12:00:00Z"
+        player:
+          type: string
+          example: "/api/players/123e4567-e89b-12d3-a456-426614174001"
+          description: "L'IRI ou l'identifiant du joueur ciblé par le méfait"
+
+    ActionRead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        points:
+          type: integer
+        status:
+          type: string
+          enum: [pending, validated, rejected]
+        date_action:
+          type: string
+          format: date-time
+
+    CompetitionCreateInput:
+      type: object
+      required:
+        - name
+        - start_date
+      properties:
+        name:
+          type: string
+          example: "Blaireau d'or 2026"
+        start_date:
+          type: string
+          format: date-time
+          example: "2026-02-21T00:00:00Z"
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        join_code:
+          type: string
+          minLength: 3
+          nullable: true
+        fog_of_war:
+          type: boolean
+          default: true
+        participate:
+          type: boolean
+          default: false
+          description: "Inscrire automatiquement le créateur comme participant"
+        is_creator_referee:
+          type: boolean
+          default: true
+
+    CompetitionAddPlayersInput:
+      type: object
+      properties:
+        existing_players_ids:
+          type: array
+          items:
+            type: string
+        new_players:
+          type: array
+          items:
+            type: string
+          description: "Liste de chaînes de caractères représentant les noms des nouveaux invités"
+        existing_referees_ids:
+          type: array
+          items:
+            type: string
+        new_referees:
+          type: array
+          items:
+            type: string
+
+    CompetitionRefereeInput:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          type: string
+          format: uuid
+
+    NotificationRead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        is_read:
+          type: boolean
+        target_url:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    PushSubscriptionInput:
+      type: object
+      required:
+        - endpoint
+        - p256dh
+        - auth
+      properties:
+        endpoint:
+          type: string
+        p256dh:
+          type: string
+        auth:
+          type: string
+
+    ResetPasswordRequestInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+
+    ResetPasswordResetInput:
+      type: object
+      required:
+        - plain_password
+      properties:
+        plain_password:
+          type: string
+          minLength: 6
+
+    ResetPasswordResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+  /login:
+    post:
+      summary: Authentification de l'utilisateur (LexikJWT)
+      description: Permet d'obtenir un token JWT d'accès en fournissant des identifiants valides.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Authentification réussie, jeton renvoyé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Identifiants invalides
+
+  /logout:
+    get:
+      summary: Déconnexion de la session actuelle
+      description: Invalide la session d'authentification actuelle.
+      responses:
+        '204':
+          description: Déconnexion enregistrée avec succès
+
+  /token/refresh:
+    post:
+      summary: Rafraîchir le token JWT expiré (Gesdinet)
+      description: Utilise le cookie ou le paramètre de rafraîchissement pour générer un nouveau token d'accès.
+      responses:
+        '200':
+          description: Nouveau jeton JWT généré
+        '401':
+          description: Token de rafraîchissement invalide ou manquant
+
+  /register:
+    post:
+      summary: Inscription d'un nouvel utilisateur
+      description: Valide les informations et crée un compte utilisateur ainsi qu'un profil joueur associé.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationInput'
+      responses:
+        '201':
+          description: Compte créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+        '422':
+          description: Violations des contraintes de validation (Ex. doublons de pseudo ou email)
+
+  /me:
+    get:
+      summary: Récupérer le profil de l'utilisateur connecté
+      description: Renvoie les informations complètes de l'identité connectée, y compris son profil de joueur et ses statistiques.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Informations utilisateur renvoyées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+        '401':
+          description: Non authentifié
+
+    patch:
+      summary: Mettre à jour le profil utilisateur
+      description: Modifie les informations personnelles (pseudo, nom d'affichage, mot de passe) de la session active.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateInput'
+      responses:
+        '200':
+          description: Profil mis à jour. Renvoie le nouvel objet utilisateur et un token JWT mis à jour.
+        '400':
+          description: Mot de passe actuel invalide ou données incorrectes
+
+  /check-username:
+    get:
+      summary: Vérifier la disponibilité d'un pseudonyme
+      description: Permet au front-end de valider en temps réel si un pseudonyme est libre ou s'il appartient à un profil invité.
+      parameters:
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Résultat de la vérification
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+                  is_guest_profile:
+                    type: boolean
+                  player:
+                    type: object
+                    nullable: true
+
+  /check-email:
+    get:
+      summary: Vérifier la disponibilité d'une adresse email
+      description: Valide l'existence ou la disponibilité d'un email avant l'inscription finale.
+      parameters:
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Résultat de la disponibilité de l'email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+
+  /users/search:
+    get:
+      summary: Recherche globale d'utilisateurs
+      description: Permet de filtrer des utilisateurs par correspondance partielle sur le pseudonyme ou l'adresse email.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Requête de recherche (Minimum 3 caractères requis)"
+      responses:
+        '200':
+          description: Liste d'utilisateurs correspondants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRead'
+
+  /competitions:
+    post:
+      summary: Créer une arène de compétition
+      description: Initialise une nouvelle saison de suivi des méfaits avec un code d'invitation généré ou fourni.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompetitionCreateInput'
+      responses:
+        '201':
+          description: Arène de compétition initialisée avec succès
+
+  /competitions/by-code/{code}:
+    get:
+      summary: Consulter une compétition par son code d'accès
+      description: Permet d'obtenir les détails d'une compétition et de ses participants en utilisant son code unique d'accès.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails complets de la compétition
+        '404':
+          description: Compétition introuvable
+
+  /competitions/{id}/add-players:
+    post:
+      summary: Ajout groupé de joueurs / invités et arbitres
+      description: Permet à un arbitre d'ajouter des participants existants ou de générer de nouveaux invités à la volée.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompetitionAddPlayersInput'
+      responses:
+        '201':
+          description: Traitement par lot exécuté
+        '403':
+          description: Droits de gestion insuffisants
+
+  /competitions/{id}/stats:
+    get:
+      summary: KPIs analytiques de la compétition
+      description: Récupère l'ensemble des records et calculs croisés complexes d'une arène (ex-aequo, paires réciproques de dénonciations...).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Données KPI retournées
+        '403':
+          description: Accès refusé (Brouillard de guerre actif ou non-participant)
+
+  /competitions/{id}/daily-evolution:
+    get:
+      summary: Graphique d'évolution temporelle des scores
+      description: Génère les cumuls quotidiens des scores calculés de chaque joueur pour alimenter les courbes de progression graphiques.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tableau chronologique d'évolution des points
+
+  /competitions/{competitionId}/actions:
+    post:
+      summary: Déclarer un nouveau méfait (Action)
+      description: Enregistre une déclaration. Si l'auteur est arbitre, l'action passe automatiquement à l'état validé. Sinon, elle reste en attente de validation.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: competitionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionCreateInput'
+      responses:
+        '201':
+          description: Action déclarée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionRead'
+        '403':
+          description: Non-inscription à la compétition concernée
+
+  /notifications:
+    get:
+      summary: Liste des notifications de l'utilisateur connecté
+      description: Retourne l'historique chronologique inverse des notifications reçues par le demandeur.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Flux de notifications renvoyé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationRead'
+
+  /notifications/{id}:
+    patch:
+      summary: Marquer une notification comme lue/non-lue
+      description: Permet de mettre à jour le drapeau d'état de lecture d'une de ses notifications personnelles.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_read:
+                  type: boolean
+      responses:
+        '200':
+          description: Statut mis à jour
+
+  /push_subscriptions:
+    post:
+      summary: Enregistrer un abonnement aux notifications WebPush
+      description: Stocke les clés d'identification d'un périphérique (navigateur mobile ou desktop) pour l'expédition de messages distants de type VAPID.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionInput'
+      responses:
+        '201':
+          description: Abonnement WebPush stocké avec succès
+
+  /reset-password:
+    post:
+      summary: Demander un lien de réinitialisation de mot de passe (Étape 1)
+      description: Transmet un email contenant un jeton d'accès temporaire unique si l'adresse email est référencée.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequestInput'
+      responses:
+        '200':
+          description: Demande prise en compte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordResponse'
+
+  /reset-password/{token}:
+    get:
+      summary: Valider la conformité du jeton de réinitialisation (Étape 2)
+      description: Analyse la date d'expiration et la validité du jeton présent dans l'URL de redirection.
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Jeton valide et actif
+        '400':
+          description: Jeton expiré ou corrompu
+
+    post:
+      summary: Remplacement définitif du mot de passe oublié (Étape 3)
+      description: Enregistre la nouvelle clé de chiffrement et détruit la demande de réinitialisation temporaire associée.
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordResetInput'
+      responses:
+        '200':
+          description: Mot de passe modifié avec succès

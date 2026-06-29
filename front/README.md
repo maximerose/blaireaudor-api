@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# ⚛️ Le Blaireau d'Or — Application Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Une interface utilisateur performante, fluide et découplée, construite pour offrir une expérience utilisateur (UX) irréprochable.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧠 Principes de Conception Appliqués
 
-## React Compiler
+### 🪓 1. Séparation Radicale : Logic vs View
+> **Architecture étanche :** Les composants graphiques doivent rester purement déclaratifs. Toute la logique complexe, le state management et les appels asynchrones sont déportés dans des **Hooks personnalisés**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🍃 2. Philosophie YAGNI & Performance des Flux
+* **Pas de sur-ingénierie :** Nous appliquons strictement le principe **YAGNI** (You Ain't Gonna Need It). L'état global lourd est banni au profit d'un cache serveur performant géré par **TanStack Query**.
+* **Consommation ciblée :** Interdiction de faire transiter des flots de propriétés (props) inutilisées à travers des sous-composants. Chaque composant vient récupérer les données dont il a besoin exactement là où il est instancié.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📐 Organisation Feature-Driven
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Le code est structuré en modules autonomes représentant les domaines fonctionnels de l'application :
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/features/
+├── account/       # Profil, authentification, session
+├── competition/   # Ligues, classements, gestion du Brouillard de Guerre
+├── notification/  # Abonnements WebPush et réactivité Mercure
+└── stats/         # Graphiques et indicateurs de performance
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚡ Commandes de Maintenance
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Validation du typage strict TypeScript
+npm run tsc
+
+# Analyse statique et correction automatique des écarts de style
+npm run lint
 ```
