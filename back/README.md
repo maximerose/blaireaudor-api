@@ -66,6 +66,7 @@ tests/
 ```
 
 Pour lancer l'ensemble des suites de tests à l'intérieur de l'environnement conteneurisé :
+
 ```bash
 docker compose exec back bin/phpunit
 ```
@@ -75,4 +76,4 @@ docker compose exec back bin/phpunit
 La spécification complète de l'API est disponible au format standard OpenAPI 3.0.
 
 - 📄 Fichier source : [`back/docs/openapi.yaml`](./docs/openapi.yaml)
-- 🚀 **[Visualiser interactivement l'API sur Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/maximerose/blaireaudor-api/main/back/docs/openapi.yaml)**
+- 🚀 **[Visualiser interactivement l'API sur Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/maximerose/blaireaudor-api/back/docs/openapi.yaml)**
