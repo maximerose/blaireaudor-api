@@ -236,6 +236,8 @@ components:
         playerId:
           type: string
           format: uuid
+          example: '018f5c22-9a3b-7123-b456-426614174001'
+          description: 'ID du joueur à ajouter ou retirer des arbitres de la compétition'
 
     NotificationRead:
       type: object
@@ -524,6 +526,66 @@ paths:
           description: Traitement par lot exécuté
         '403':
           description: Droits de gestion insuffisants
+
+  /competitions/{id}/referees/add:
+    post:
+      summary: Ajouter un arbitre à la compétition
+      description: Assigne le rôle d'arbitre à un joueur inscrit pour lui octroyer des privilèges de modération et lever le Brouillard de Guerre.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de la compétition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompetitionRefereeInput'
+      responses:
+        '200':
+          description: Arbitre ajouté avec succès.
+        '401':
+          description: Authentification requise.
+        '403':
+          description: Droits de gestion de la compétition manquants.
+        '422':
+          description: Erreur sur le payload d'entrée.
+
+  /competitions/{id}/referees/remove:
+    post:
+      summary: Retire un arbitre de la compétition
+      description: Enlève les privilèges de modération et d'arbitrage à un joueur sur la compétition ciblée.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de la compétition.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompetitionRefereeInput'
+      responses:
+        '200':
+          description: Arbitre révoqué avec succès.
+        '401':
+          description: Authentification requise.
+        '403':
+          description: Droits insuffisants pour révoquer l'arbitre.
+        '422':
+          description: Erreur sur le payload d'entrée.
 
   /competitions/{id}/stats:
     get:
