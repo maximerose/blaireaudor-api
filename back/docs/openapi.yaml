@@ -25,26 +25,26 @@ components:
         id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
+          example: '123e4567-e89b-12d3-a456-426614174000'
         username:
           type: string
-          example: "maxime"
+          example: 'maxime'
         email:
           type: string
           format: email
-          example: "maxime@blaireaudor.com"
+          example: 'maxime@blaireaudor.com'
         roles:
           type: array
           items:
             type: string
-          example: ["ROLE_USER"]
+          example: ['ROLE_USER']
         player:
           $ref: '#/components/schemas/PlayerRead'
         notification_preferences:
           type: array
           items:
             type: string
-          example: ["NEW_SUBMISSION", "ACTION_VALIDATED"]
+          example: ['NEW_SUBMISSION', 'ACTION_VALIDATED']
         stats:
           $ref: '#/components/schemas/PlayerStatsOutput'
 
@@ -56,11 +56,11 @@ components:
           format: uuid
         display_name:
           type: string
-          example: "Maxime"
+          example: 'Maxime'
         username:
           type: string
           nullable: true
-          example: "maxime"
+          example: 'maxime'
         has_account:
           type: boolean
           example: true
@@ -86,23 +86,23 @@ components:
         username:
           type: string
           minLength: 3
-          example: "titine"
+          example: 'titine'
         email:
           type: string
           format: email
-          example: "typhaine@blaireau.fr"
+          example: 'typhaine@blaireau.fr'
         plain_password:
           type: string
           minLength: 6
-          example: "supersecret"
+          example: 'supersecret'
         display_name:
           type: string
           minLength: 2
-          example: "Typhaine"
+          example: 'Typhaine'
         join_code:
           type: string
           nullable: true
-          example: "BLAIREAU26"
+          example: 'BLAIREAU26'
         player_id:
           type: string
           format: uuid
@@ -145,17 +145,17 @@ components:
         description:
           type: string
           minLength: 3
-          example: "Oubliage de saucisson"
+          example: 'Oubliage de saucisson'
         points:
           type: integer
           example: 10
         date_action:
           type: string
           format: date-time
-          example: "2026-02-21T12:00:00Z"
+          example: '2026-02-21T12:00:00Z'
         player:
           type: string
-          example: "/api/players/123e4567-e89b-12d3-a456-426614174001"
+          example: '/api/players/123e4567-e89b-12d3-a456-426614174001'
           description: "L'IRI ou l'identifiant du joueur ciblé par le méfait"
 
     ActionRead:
@@ -187,7 +187,7 @@ components:
         start_date:
           type: string
           format: date-time
-          example: "2026-02-21T00:00:00Z"
+          example: '2026-02-21T00:00:00Z'
         end_date:
           type: string
           format: date-time
@@ -202,7 +202,7 @@ components:
         participate:
           type: boolean
           default: false
-          description: "Inscrire automatiquement le créateur comme participant"
+          description: 'Inscrire automatiquement le créateur comme participant'
         is_creator_referee:
           type: boolean
           default: true
@@ -218,7 +218,7 @@ components:
           type: array
           items:
             type: string
-          description: "Liste de chaînes de caractères représentant les noms des nouveaux invités"
+          description: 'Liste de chaînes de caractères représentant les noms des nouveaux invités'
         existing_referees_ids:
           type: array
           items:
@@ -458,7 +458,7 @@ paths:
           required: true
           schema:
             type: string
-          description: "Requête de recherche (Minimum 3 caractères requis)"
+          description: 'Requête de recherche (Minimum 3 caractères requis)'
       responses:
         '200':
           description: Liste d'utilisateurs correspondants

@@ -21,19 +21,52 @@ L'API du projet fournit un moteur de règles robuste et hautement sécurisé pou
 
 ```text
 src/
-├── ApiResource/   # DTOs et configurations spécifiques API Platform 3
-├── Controller/    # Contrôleurs fins (Gestion exclusive des flushes)
-├── Entity/        # Modèles Doctrine (Entités découplées, UUIDs v6/v7)
-├── Security/      # Voters Symfony pour contrer les failles d'accès de type IDOR
-└── Service/       # Managers métier isolés de la persistance
+├── ApiResource/          # DTOs personnalisés exposés par API Platform (ex: ResetPassword)
+├── Command/              # Commandes CLI de maintenance (Recalcul, levée du Brouillard)
+├── Constants/            # Centralisation des messages d'erreur et des constantes KPIs
+├── Controller/
+│   ├── Admin/            # Contrôleurs du Back-office EasyAdmin
+│   └── Api/              # Endpoints personnalisés (Competition, Player, User)
+├── DataFixtures/         # Jeux de fausses données pour le développement local
+├── DTO/                  # Objets de transfert de données pour la validation des payloads
+├── Entity/
+│   └── Trait/            # Trait réutilisables de structure (UUID v6/v7, Blameable, Timestampable)
+├── Enum/                 # Énumérations strictes (ex: ActionStatus)
+├── EventListener/
+│   └── Notification/     # Écouteurs de cycle de vie Doctrine (Recalcul des scores, WebPush, Mercure)
+├── Factory/              # Fabriques de données pour les tests (Zenstruck Foundry)
+├── Repository/           # Requêtes personnalisées d'accès à la base de données
+├── Security/
+│   └── Voter/            # Abstraction des droits d'accès fins pour contrer les failles IDOR
+├── Serializer/           # Normaliseurs et encodeurs de contextes spécifiques
+├── Service/
+│   ├── Helper/           # Générateurs de codes et validateurs génériques
+│   ├── Manager/          # Services métiers principaux gérant l'intelligence de l'application
+│   ├── Notification/     # Constructeurs de messages et gestionnaires d'envoi
+│   └── Stats/            # Services de calculs et agrégations analytiques complexes
+├── State/
+│   ├── Processor/        # Intercepteurs d'écriture API Platform (Inscriptions, Créations)
+│   └── Provider/         # Intercepteurs de lecture API Platform (Données de session /me)
+├── Story/                # Scénarios d'initialisation des fixtures de test
+├── Utils/                # Fonctions utilitaires de manipulation temporelle
+└── Validator/            # Règles et contraintes de validation sur mesure (ex: ValidActionDate)
 ```
 
 ---
 
-## 🧪 Exécution de la Suite de Tests
+## 🧪 Structure & Exécution de la Suite de Tests
 
+La suite de tests reproduit fidèlement la séparation des concepts pour assurer une couverture maximale.
+
+```text
+tests/
+├── Api/                  # Tests fonctionnels complets des endpoints et de la sécurité (JWT/Voters)
+├── Integration/          # Tests de composants couplés (Commandes CLI, Managers, Doctrine Listeners)
+└── Unit/                 # Tests unitaires isolés de logique pure (Générateurs de code, Helpers)
+```
+
+Pour lancer l'ensemble des suites de tests à l'intérieur de l'environnement conteneurisé :
 ```bash
-# Exécuter l'ensemble des tests (Unitaires, Intégration, API)
 docker compose exec back bin/phpunit
 ```
 
