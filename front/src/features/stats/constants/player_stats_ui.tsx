@@ -162,7 +162,7 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
         icon: ICONS.WORST,
         getColor: () => 'text-danger-bright',
         getValue: (s) => fmtRank(s.min_rank?.rank ?? null),
-        getCompetitionName: (s) => s.max_rank?.competition_name,
+        getCompetitionName: (s) => s.min_rank?.competition_name,
         hint: {
           title: 'Pire classement',
           description:
@@ -175,7 +175,7 @@ export const PLAYER_STATS_CATEGORIES: CategoryConfig[] = [
         icon: ICONS.BEST,
         getColor: () => 'text-success-bright',
         getValue: (s) => fmtRank(s.max_rank?.rank ?? null),
-        getCompetitionName: (s) => s.min_rank?.competition_name,
+        getCompetitionName: (s) => s.max_rank?.competition_name,
         hint: {
           title: 'Meilleur classement',
           description:

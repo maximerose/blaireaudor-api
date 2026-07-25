@@ -37,7 +37,7 @@ final class DashboardController extends AbstractDashboardController
     {
         $conn = $this->userRepository->getEntityManager()->getConnection();
 
-        // 1. Calcul des données brutes avec gestion du format ['names' => [], 'args' => []]
+        // 1. Calcul des données brutes
         $rawValues = [
             'PENDING_ACTIONS' => ['value' => $this->actionRepository->count(['status' => ActionStatus::PENDING])],
             'ACTIVE_COMPETITIONS' => ['value' => $this->competitionRepository->count([])],
@@ -72,7 +72,7 @@ final class DashboardController extends AbstractDashboardController
             'MIN_COMPETITION_ACTIVITY' => $this->findMinCompetitionActivity($conn),
         ];
 
-        // 2. Formatage dynamique via le dictionnaire de configuration (Zéro HTML ici)
+        // 2. Formatage dynamique via le dictionnaire de configuration
         $sections = [];
         foreach (KpiConstants::CATEGORIES as $category) {
             $metrics = [];
@@ -92,15 +92,13 @@ final class DashboardController extends AbstractDashboardController
                         $subtext = $config['empty_subtext'];
                     }
 
-                    $hint = $config['hint'];
-
                     $metrics[] = [
                         'id' => $kpiKey,
                         'title' => $config['title'],
                         'icon' => $config['icon'],
                         'color' => $config['color'],
                         'suffix' => $config['suffix'],
-                        'hint' => $hint,
+                        'hint' => $config['hint'],
                         'value' => $value,
                         'names' => $names,
                         'subtext' => $subtext,
@@ -146,125 +144,231 @@ final class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl(AdminConstants::MENU_BACK_TO_SITE, 'fas fa-arrow-left', $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173');
     }
 
+    // --- CALCULS & REQUÊTES ---
+
     private function calculateTotalPointsDistributed(): int
     {
-        return (int) $this->participationRepository->createQueryBuilder('p')->select('SUM(p.score)')->getQuery()->getSingleScalarResult() ?? 0;
+        return (int) ($this->participationRepository->createQueryBuilder('p')
+            ->select('SUM(p.score)')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0);
     }
 
     private function calculateAveragePointsPerAction(Connection $conn): float
     {
-        $avg = $conn->fetchOne('SELECT AVG(points) FROM action WHERE status = :status', ['status' => ActionStatus::VALIDATED->value]);
+        $avg = $conn->fetchOne('SELECT AVG(points) FROM action WHERE status = :status', [
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
 
-        return round((float) $avg, 1);
+        return null !== $avg && false !== $avg ? round((float) $avg, 1) : 0.0;
     }
 
     private function calculateBonusActionsRatio(Connection $conn): float
     {
-        $data = $conn->fetchAssociative('SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, COUNT(a.id) as total FROM action a JOIN participation part ON a.participation_id = part.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id)', ['tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAssociative('
+            SELECT COUNT(CASE WHEN b.id IS NOT NULL THEN 1 END) as bonus_actions, 
+                   COUNT(a.id) as total 
+            FROM action a 
+            JOIN participation part ON a.participation_id = part.id 
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id)
+            WHERE a.status = :status
+        ', [
+            'tz' => AppConstants::TIMEZONE,
+            'status' => ActionStatus::VALIDATED->value,
+        ]);
 
         return $data && $data['total'] > 0 ? round(($data['bonus_actions'] / $data['total']) * 100, 1) : 0.0;
     }
 
-    // --- GRANDS REQUISITEURS ---
-
     private function findMaxActionsReceived(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT p.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id WHERE a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT p.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN participation part ON a.participation_id = part.id 
+                JOIN player p ON part.player_id = p.id 
+                WHERE a.status = :status 
+                GROUP BY p.id, p.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxActionsReported(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id GROUP BY pl.id, pl.display_name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN `user` u ON a.created_by_id = u.id 
+                JOIN player pl ON pl.associated_user_id = u.id 
+                WHERE a.status = :status
+                GROUP BY pl.id, pl.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMinActionsReceived(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT p.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) ASC) as rnk FROM player p JOIN participation part ON part.player_id = p.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY p.id, p.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT p.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) ASC) as rnk 
+                FROM player p 
+                JOIN participation part ON part.player_id = p.id 
+                LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status 
+                GROUP BY p.id, p.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxApprovalRatio(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, ratio, total FROM (SELECT pl.display_name, ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) as ratio, COUNT(a.id) as total, RANK() OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) DESC, COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status IN (\'validated\', \'rejected\') GROUP BY pl.id, pl.display_name HAVING COUNT(a.id) >= 3) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, ratio, total 
+            FROM (
+                SELECT pl.display_name, 
+                       ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) as ratio, 
+                       COUNT(a.id) as total, 
+                       RANK() OVER (ORDER BY ROUND(COUNT(CASE WHEN a.status = \'validated\' THEN 1 END) / COUNT(a.id) * 100, 1) DESC, COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN `user` u ON a.created_by_id = u.id 
+                JOIN player pl ON pl.associated_user_id = u.id 
+                WHERE a.status IN (\'validated\', \'rejected\') 
+                GROUP BY pl.id, pl.display_name 
+                HAVING COUNT(a.id) >= 3
+            ) t WHERE rnk = 1
+        ');
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['ratio'], $data[0]['total']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(float) $data[0]['ratio'], (int) $data[0]['total']]];
     }
 
     private function findMaxRejectedReports(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.created_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN `user` u ON a.created_by_id = u.id 
+                JOIN player pl ON pl.associated_user_id = u.id 
+                WHERE a.status = :status 
+                GROUP BY pl.id, pl.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::REJECTED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxDistinctInformersReceived(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT p.display_name, COUNT(DISTINCT a.created_by_id) as cnt, RANK() OVER (ORDER BY COUNT(DISTINCT a.created_by_id) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id WHERE a.created_by_id IS NOT NULL GROUP BY p.id, p.display_name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT p.display_name, COUNT(DISTINCT a.created_by_id) as cnt, RANK() OVER (ORDER BY COUNT(DISTINCT a.created_by_id) DESC) as rnk 
+                FROM action a 
+                JOIN participation part ON a.participation_id = part.id 
+                JOIN player p ON part.player_id = p.id 
+                WHERE a.created_by_id IS NOT NULL AND a.status = :status
+                GROUP BY p.id, p.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxActionsValidatedByReferee(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN `user` u ON a.updated_by_id = u.id 
+                JOIN player pl ON pl.associated_user_id = u.id 
+                WHERE a.status = :status 
+                GROUP BY pl.id, pl.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxActionsRejectedByReferee(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, cnt FROM (SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk FROM action a JOIN `user` u ON a.updated_by_id = u.id JOIN player pl ON pl.associated_user_id = u.id WHERE a.status = :status GROUP BY pl.id, pl.display_name) t WHERE rnk = 1', ['status' => ActionStatus::REJECTED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, cnt 
+            FROM (
+                SELECT pl.display_name, COUNT(a.id) as cnt, RANK() OVER (ORDER BY COUNT(a.id) DESC) as rnk 
+                FROM action a 
+                JOIN `user` u ON a.updated_by_id = u.id 
+                JOIN player pl ON pl.associated_user_id = u.id 
+                WHERE a.status = :status 
+                GROUP BY pl.id, pl.display_name
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::REJECTED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [$data[0]['cnt']]];
+        return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [(int) $data[0]['cnt']]];
     }
 
     private function findMaxPointsCompetition(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, total_pts FROM (SELECT c.name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) DESC) as rnk FROM competition c JOIN participation part ON part.competition_id = c.id GROUP BY c.id, c.name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT name, total_pts 
+            FROM (
+                SELECT c.name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) DESC) as rnk 
+                FROM competition c 
+                JOIN participation part ON part.competition_id = c.id 
+                GROUP BY c.id, c.name
+                HAVING SUM(part.score) > 0
+            ) t WHERE rnk = 1
+        ');
 
         return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMostFrequentTargetPair(Connection $conn): ?array
     {
-        $sql = "SELECT p1_name, 
-               p2_name,
-               reciprocal_score, 
-               total_exchanges 
-        FROM (
-            SELECT MAX(CASE WHEN r.id < t.id THEN r.display_name ELSE t.display_name END) as p1_name, 
-                   MAX(CASE WHEN r.id > t.id THEN r.display_name ELSE t.display_name END) as p2_name, 
-                   LEAST(
-                       COUNT(CASE WHEN r.id < t.id THEN 1 END), 
-                       COUNT(CASE WHEN r.id > t.id THEN 1 END)) as reciprocal_score, 
-                   COUNT(a.id) as total_exchanges, 
-                   RANK() OVER (
-                       ORDER BY LEAST(
-                           COUNT(CASE WHEN r.id < t.id THEN 1 END), 
-                           COUNT(CASE WHEN r.id > t.id THEN 1 END)) DESC, 
-                       COUNT(a.id) DESC) as rnk 
-            FROM action a 
-            JOIN `user` u ON a.created_by_id = u.id 
-            JOIN player r ON r.associated_user_id = u.id 
-            JOIN participation p ON a.participation_id = p.id 
-            JOIN player t ON p.player_id = t.id 
-            WHERE r.id != t.id 
-            AND a.status = 'validated' 
-            GROUP BY LEAST(r.id, t.id), 
-                     GREATEST(r.id, t.id) 
-            HAVING LEAST(
-                COUNT(CASE WHEN r.id < t.id THEN 1 END), 
-                COUNT(CASE WHEN r.id > t.id THEN 1 END)) > 0
-        ) t 
-        WHERE rnk = 1
-    ";
+        $sql = 'SELECT p1_name, 
+                       p2_name,
+                       reciprocal_score, 
+                       total_exchanges 
+                FROM (
+                    SELECT MAX(CASE WHEN r.id < t.id THEN r.display_name ELSE t.display_name END) as p1_name, 
+                           MAX(CASE WHEN r.id > t.id THEN r.display_name ELSE t.display_name END) as p2_name, 
+                           LEAST(
+                               COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                               COUNT(CASE WHEN r.id > t.id THEN 1 END)) as reciprocal_score, 
+                           COUNT(a.id) as total_exchanges, 
+                           RANK() OVER (
+                               ORDER BY LEAST(
+                                   COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                                   COUNT(CASE WHEN r.id > t.id THEN 1 END)) DESC, 
+                               COUNT(a.id) DESC) as rnk 
+                    FROM action a 
+                    JOIN `user` u ON a.created_by_id = u.id 
+                    JOIN player r ON r.associated_user_id = u.id 
+                    JOIN participation p ON a.participation_id = p.id 
+                    JOIN player t ON p.player_id = t.id 
+                    WHERE r.id != t.id 
+                    AND a.status = :status 
+                    GROUP BY LEAST(r.id, t.id), GREATEST(r.id, t.id) 
+                    HAVING LEAST(
+                        COUNT(CASE WHEN r.id < t.id THEN 1 END), 
+                        COUNT(CASE WHEN r.id > t.id THEN 1 END)) > 0
+                ) t 
+                WHERE rnk = 1
+        ';
 
-        $data = $conn->fetchAllAssociative($sql);
+        $data = $conn->fetchAllAssociative($sql, ['status' => ActionStatus::VALIDATED->value]);
         if (empty($data)) {
             return null;
         }
@@ -280,59 +384,130 @@ final class DashboardController extends AbstractDashboardController
 
     private function findMaxPointsSingleAction(Connection $conn): ?array
     {
-        $data = $conn->fetchAssociative('SELECT p.display_name, c.name as comp_name, a.description, (a.points * COALESCE(b.multiplier, 1)) as total_pts FROM action a JOIN participation part ON a.participation_id = part.id JOIN player p ON part.player_id = p.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status ORDER BY total_pts DESC, a.date_action DESC LIMIT 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAssociative('
+            SELECT p.display_name, c.name as comp_name, a.description, (a.points * COALESCE(b.multiplier, 1)) as total_pts 
+            FROM action a 
+            JOIN participation part ON a.participation_id = part.id 
+            JOIN player p ON part.player_id = p.id 
+            JOIN competition c ON part.competition_id = c.id 
+            LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) 
+            WHERE a.status = :status 
+            ORDER BY total_pts DESC, a.date_action DESC LIMIT 1
+        ', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
         return $data ? [
             'value' => $data['display_name'],
-            'args' => [$data['total_pts'], $data['description'], $data['comp_name']],
+            'args' => [(int) $data['total_pts'], $data['description'], $data['comp_name']],
         ] : null;
     }
 
     private function findMaxTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) DESC) as rnk FROM player p JOIN participation part ON part.player_id = p.id GROUP BY p.id, p.display_name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, total_pts 
+            FROM (
+                SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) DESC) as rnk 
+                FROM player p 
+                JOIN participation part ON part.player_id = p.id 
+                GROUP BY p.id, p.display_name
+                HAVING SUM(part.score) > 0
+            ) t WHERE rnk = 1
+        ');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMinTotalPointsPlayer(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT display_name, total_pts FROM (SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) ASC) as rnk FROM player p JOIN participation part ON part.player_id = p.id GROUP BY p.id, p.display_name) t WHERE rnk = 1');
+        $data = $conn->fetchAllAssociative('
+            SELECT display_name, total_pts 
+            FROM (
+                SELECT p.display_name, SUM(part.score) as total_pts, RANK() OVER (ORDER BY SUM(part.score) ASC) as rnk 
+                FROM player p 
+                JOIN participation part ON part.player_id = p.id 
+                GROUP BY p.id, p.display_name
+            ) t WHERE rnk = 1
+        ');
 
         return empty($data) ? null : ['names' => array_column($data, 'display_name'), 'args' => [number_format((int) $data[0]['total_pts'], 0, ',', ' ')]];
     }
 
     private function findMaxCompetitionSeverity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) DESC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('
+            SELECT name, severity 
+            FROM (
+                SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) DESC) as rnk 
+                FROM action a 
+                JOIN participation part ON a.participation_id = part.id 
+                JOIN competition c ON part.competition_id = c.id 
+                LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) 
+                WHERE a.status = :status 
+                GROUP BY c.id, c.name 
+                HAVING COUNT(a.id) > 0
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['severity']]];
+        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [(float) $data[0]['severity']]];
     }
 
     private function findMinCompetitionSeverity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, severity FROM (SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) ASC) as rnk FROM action a JOIN participation part ON a.participation_id = part.id JOIN competition c ON part.competition_id = c.id LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) WHERE a.status = :status GROUP BY c.id, c.name HAVING COUNT(a.id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
+        $data = $conn->fetchAllAssociative('
+            SELECT name, severity 
+            FROM (
+                SELECT c.name, ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) as severity, RANK() OVER (ORDER BY ROUND(AVG(a.points * COALESCE(b.multiplier, 1)), 1) ASC) as rnk 
+                FROM action a 
+                JOIN participation part ON a.participation_id = part.id 
+                JOIN competition c ON part.competition_id = c.id 
+                LEFT JOIN bonus_day b ON (DATE(CONVERT_TZ(a.date_action, \'UTC\', :tz)) = b.date AND b.competition_id = part.competition_id) 
+                WHERE a.status = :status 
+                GROUP BY c.id, c.name 
+                HAVING COUNT(a.id) > 0
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value, 'tz' => AppConstants::TIMEZONE]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['severity']]];
+        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [(float) $data[0]['severity']]];
     }
 
     private function findMaxCompetitionActivity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) DESC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT name, activity 
+            FROM (
+                SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) DESC) as rnk 
+                FROM participation part 
+                JOIN competition c ON part.competition_id = c.id 
+                LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status 
+                GROUP BY c.id, c.name 
+                HAVING COUNT(a.id) > 0
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['activity']]];
+        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [(float) $data[0]['activity']]];
     }
 
     private function findMinCompetitionActivity(Connection $conn): ?array
     {
-        $data = $conn->fetchAllAssociative('SELECT name, activity FROM (SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) ASC) as rnk FROM participation part JOIN competition c ON part.competition_id = c.id LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status GROUP BY c.id, c.name HAVING COUNT(DISTINCT part.player_id) > 0) t WHERE rnk = 1', ['status' => ActionStatus::VALIDATED->value]);
+        $data = $conn->fetchAllAssociative('
+            SELECT name, activity 
+            FROM (
+                SELECT c.name, ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) as activity, RANK() OVER (ORDER BY ROUND(COUNT(a.id) / NULLIF(COUNT(DISTINCT part.player_id), 0), 1) ASC) as rnk 
+                FROM participation part 
+                JOIN competition c ON part.competition_id = c.id 
+                LEFT JOIN action a ON a.participation_id = part.id AND a.status = :status 
+                GROUP BY c.id, c.name 
+                HAVING COUNT(DISTINCT part.player_id) > 0
+            ) t WHERE rnk = 1
+        ', ['status' => ActionStatus::VALIDATED->value]);
 
-        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [$data[0]['activity']]];
+        return empty($data) ? null : ['names' => array_column($data, 'name'), 'args' => [(float) $data[0]['activity']]];
     }
 
     private function findCompetitionsRanking(Connection $conn): array
     {
-        $sql = 'SELECT 
+        $sql = '
+            SELECT 
                 c.name,
                 c.start_date,
                 c.end_date,

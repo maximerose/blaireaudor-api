@@ -1,5 +1,3 @@
-// front/src/features/stats/components/CareerPalmares.tsx
-
 import { RankBadge, RankedScore } from '@/features/competition/leaderboard';
 import { PLAYER_STATS_PALMARES } from '@/features/stats/constants';
 import { useCareerPalmares } from '@/features/stats/hooks';
@@ -10,7 +8,7 @@ import {
   EmptyState,
   Grid,
   ICONS,
-  ROUTES, // 🟢 Ajout de ROUTES
+  ROUTES,
   SECTION_HEADER_THEME,
   SECTION_HEADER_VARIANT,
   SectionHeader,
@@ -19,7 +17,7 @@ import {
   TEXT_THEME,
   TEXT_VARIANT,
 } from '@/shared';
-import { Link } from 'react-router-dom'; // 🟢 Ajout de l'import
+import { Link } from 'react-router-dom';
 
 export const CareerPalmares = () => {
   const { palmares } = useCareerPalmares();

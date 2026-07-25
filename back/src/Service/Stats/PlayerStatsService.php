@@ -36,7 +36,7 @@ final readonly class PlayerStatsService
         $userIdBin = $user->getId()->toBinary();
         $tzOffset = $this->getTzOffsetStr();
 
-        $basicMetrics = $this->fetchBasicMetrics($conn, $playerIdBin, $tzOffset);
+        $basicMetrics = $this->fetchBasicMetrics($conn, $playerIdBin);
         $reportedMetrics = $this->fetchReportedMetrics($conn, $userIdBin);
 
         return [
@@ -44,9 +44,9 @@ final readonly class PlayerStatsService
             'totalPointsReceived' => (int) $basicMetrics['total_points'],
             'totalActionsReceived' => (int) $basicMetrics['total_actions'],
 
-            'maxCompetitionScore' => $this->fetchMaxCompetitionScoreWithContext($conn, $playerIdBin, $tzOffset),
+            'maxCompetitionScore' => $this->fetchMaxCompetitionScoreWithContext($conn, $playerIdBin),
             'maxCompetitionActionsReceived' => $this->fetchMaxCompetitionActionsWithContext($conn, $playerIdBin),
-            'minCompetitionScore' => $this->fetchMinCompetitionScoreWithContext($conn, $playerIdBin, $tzOffset),
+            'minCompetitionScore' => $this->fetchMinCompetitionScoreWithContext($conn, $playerIdBin),
             'minCompetitionActionsReceived' => $this->fetchMinCompetitionActionsWithContext($conn, $playerIdBin),
 
             'totalActionsReported' => (int) $reportedMetrics['total_reported'],
@@ -67,27 +67,18 @@ final readonly class PlayerStatsService
         ];
     }
 
-    private function fetchBasicMetrics(Connection $conn, string $playerIdBin, string $tzOffset): array
+    private function fetchBasicMetrics(Connection $conn, string $playerIdBin): array
     {
         return $conn->fetchAssociative('SELECT 
                 (SELECT COUNT(id) FROM participation WHERE player_id = :player_id) as total_comps,
-                (SELECT COALESCE(SUM(a.points * COALESCE(b.multiplier, 1)), 0)
-                    FROM action a
-                    JOIN participation p ON a.participation_id = p.id
-                    LEFT JOIN bonus_day b ON (DATE(ADDTIME(a.date_action, :tz_offset)) = b.date AND b.competition_id = p.competition_id)
-                    WHERE p.player_id = :player_id AND a.status = :status
-                ) as total_points,
-                (SELECT COUNT(id) 
-                FROM action 
-                WHERE participation_id IN (
-                    SELECT id 
-                    FROM participation 
-                    WHERE player_id = :player_id) 
-            AND status = :status) as total_actions
+                (SELECT COALESCE(SUM(score), 0) FROM participation WHERE player_id = :player_id) as total_points,
+                (SELECT COUNT(a.id) 
+                 FROM action a
+                 JOIN participation p ON a.participation_id = p.id
+                 WHERE p.player_id = :player_id AND a.status = :status) as total_actions
         ', [
             'player_id' => $playerIdBin,
             'status' => ActionStatus::VALIDATED->value,
-            'tz_offset' => $tzOffset,
         ]) ?: [];
     }
 
@@ -186,8 +177,14 @@ final readonly class PlayerStatsService
     private function fetchHistoricalRanks(Connection $conn, string $playerIdBin): array
     {
         $nowStr = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+
+        // Le rang 1 est le meilleur score (DENSE_RANK DESC).
+        // Donc MIN(rank) = Meilleur classement (ex: 1er)
+        // Et MAX(rank) = Pire classement (ex: 10e)
         $res = $conn->fetchAssociative('WITH ranked_participations AS (
-            SELECT p.player_id, c.name as competition_name, DENSE_RANK() OVER (PARTITION BY p.competition_id ORDER BY p.score DESC) as rank
+            SELECT p.player_id, 
+                   c.name as competition_name, 
+                   DENSE_RANK() OVER (PARTITION BY p.competition_id ORDER BY p.score DESC) as rank
             FROM participation p
             JOIN competition c ON p.competition_id = c.id
             WHERE c.end_date IS NOT NULL AND c.end_date < :now
@@ -195,22 +192,28 @@ final readonly class PlayerStatsService
         my_ranks AS (
             SELECT rank, competition_name FROM ranked_participations WHERE player_id = :player_id
         ),
-        min_rnk AS (
-            SELECT rank, competition_name FROM my_ranks ORDER BY rank ASC LIMIT 1
+        best_rnk AS (
+            SELECT rank, competition_name FROM my_ranks ORDER BY rank ASC, competition_name ASC LIMIT 1
         ),
-        max_rnk AS (
-            SELECT rank, competition_name FROM my_ranks ORDER BY rank DESC LIMIT 1
+        worst_rnk AS (
+            SELECT rank, competition_name FROM my_ranks ORDER BY rank DESC, competition_name ASC LIMIT 1
         )
         SELECT 
-            (SELECT rank FROM min_rnk) as min_rank,
-            (SELECT competition_name FROM min_rnk) as min_rank_competition_name,
-            (SELECT rank FROM max_rnk) as max_rank,
-            (SELECT competition_name FROM max_rnk) as max_rank_competition_name
-        ', ['player_id' => $playerIdBin, 'now' => $nowStr]);
+            (SELECT rank FROM best_rnk) as best_rank,
+            (SELECT competition_name FROM best_rnk) as best_rank_competition_name,
+            (SELECT rank FROM worst_rnk) as worst_rank,
+            (SELECT competition_name FROM worst_rnk) as worst_rank_competition_name
+    ', ['player_id' => $playerIdBin, 'now' => $nowStr]);
 
         return [
-            'min_rank_data' => $res && $res['min_rank'] ? ['rank' => (int) $res['min_rank'], 'competition_name' => $res['min_rank_competition_name']] : null,
-            'max_rank_data' => $res && $res['max_rank'] ? ['rank' => (int) $res['max_rank'], 'competition_name' => $res['max_rank_competition_name']] : null,
+            'min_rank_data' => $res && $res['best_rank'] ? [
+                'rank' => (int) $res['best_rank'],
+                'competition_name' => $res['best_rank_competition_name'],
+            ] : null,
+            'max_rank_data' => $res && $res['worst_rank'] ? [
+                'rank' => (int) $res['worst_rank'],
+                'competition_name' => $res['worst_rank_competition_name'],
+            ] : null,
         ];
     }
 
@@ -313,51 +316,45 @@ final readonly class PlayerStatsService
         ]);
     }
 
-    private function fetchMaxCompetitionScoreWithContext(Connection $conn, string $playerIdBin, string $tzOffset): ?array
+    private function fetchMaxCompetitionScoreWithContext(Connection $conn, string $playerIdBin): ?array
     {
         $nowStr = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-        $data = $conn->fetchAssociative("SELECT c.name as competition_name, SUM(a.points * COALESCE(b.multiplier, 1)) as points
-          FROM action a
-          JOIN participation p ON a.participation_id = p.id
-          JOIN competition c ON p.competition_id = c.id
-          LEFT JOIN bonus_day b ON (DATE(ADDTIME(a.date_action, :tz_offset)) = b.date AND b.competition_id = p.competition_id)
-          WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
-          GROUP BY p.id, c.name
-          ORDER BY points DESC LIMIT 1
-      ", ['player_id' => $playerIdBin, 'tz_offset' => $tzOffset, 'now' => $nowStr]);
+        $data = $conn->fetchAssociative('SELECT c.name as competition_name, p.score as points
+            FROM participation p
+            JOIN competition c ON p.competition_id = c.id
+            WHERE p.player_id = :player_id AND c.end_date IS NOT NULL AND c.end_date < :now
+            ORDER BY p.score DESC LIMIT 1
+        ', ['player_id' => $playerIdBin, 'now' => $nowStr]);
 
-        return $data ?: null;
+        return $data ? ['competition_name' => $data['competition_name'], 'points' => (int) $data['points']] : null;
     }
 
     private function fetchMaxCompetitionActionsWithContext(Connection $conn, string $playerIdBin): ?array
     {
         $nowStr = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $data = $conn->fetchAssociative("SELECT c.name as competition_name, COUNT(a.id) as points
-          FROM action a
-          JOIN participation p ON a.participation_id = p.id
-          JOIN competition c ON p.competition_id = c.id
-          WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
-          GROUP BY p.id, c.name
-          ORDER BY points DESC LIMIT 1
-      ", ['player_id' => $playerIdBin, 'now' => $nowStr]);
+            FROM action a
+            JOIN participation p ON a.participation_id = p.id
+            JOIN competition c ON p.competition_id = c.id
+            WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
+            GROUP BY p.id, c.name
+            ORDER BY points DESC LIMIT 1
+        ", ['player_id' => $playerIdBin, 'now' => $nowStr]);
 
         return $data ?: null;
     }
 
-    private function fetchMinCompetitionScoreWithContext(Connection $conn, string $playerIdBin, string $tzOffset): ?array
+    private function fetchMinCompetitionScoreWithContext(Connection $conn, string $playerIdBin): ?array
     {
         $nowStr = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-        $data = $conn->fetchAssociative("SELECT c.name as competition_name, SUM(a.points * COALESCE(b.multiplier, 1)) as points
-            FROM action a
-            JOIN participation p ON a.participation_id = p.id
+        $data = $conn->fetchAssociative('SELECT c.name as competition_name, p.score as points
+            FROM participation p
             JOIN competition c ON p.competition_id = c.id
-            LEFT JOIN bonus_day b ON (DATE(ADDTIME(a.date_action, :tz_offset)) = b.date AND b.competition_id = p.competition_id)
-            WHERE p.player_id = :player_id AND a.status = 'validated' AND c.end_date IS NOT NULL AND c.end_date < :now
-            GROUP BY p.id, c.name
-            ORDER BY points ASC LIMIT 1
-        ", ['player_id' => $playerIdBin, 'tz_offset' => $tzOffset, 'now' => $nowStr]);
+            WHERE p.player_id = :player_id AND c.end_date IS NOT NULL AND c.end_date < :now
+            ORDER BY p.score ASC LIMIT 1
+        ', ['player_id' => $playerIdBin, 'now' => $nowStr]);
 
-        return $data ?: null;
+        return $data ? ['competition_name' => $data['competition_name'], 'points' => (int) $data['points']] : null;
     }
 
     private function fetchMinCompetitionActionsWithContext(Connection $conn, string $playerIdBin): ?array
