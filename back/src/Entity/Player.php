@@ -174,9 +174,28 @@ class Player
     #[Groups(['competition:read', 'player:read'])]
     public function getLastCompetitionName(): ?string
     {
-        $lastParticipation = $this->participations->last();
+        if ($this->participations->isEmpty()) {
+            return null;
+        }
 
-        return $lastParticipation ? $lastParticipation->getCompetition()->getName() : null;
+        $latestParticipation = null;
+        $latestDate = null;
+
+        foreach ($this->participations as $participation) {
+            $competition = $participation->getCompetition();
+            if (!$competition) {
+                continue;
+            }
+
+            $date = $competition->getStartDate();
+
+            if (null !== $date && (null === $latestDate || $date > $latestDate)) {
+                $latestDate = $date;
+                $latestParticipation = $participation;
+            }
+        }
+
+        return $latestParticipation?->getCompetition()?->getName();
     }
 
     public function getRefereedCompetitions(): Collection

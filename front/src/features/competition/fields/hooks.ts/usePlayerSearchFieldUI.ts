@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import type { PlayerCompact } from '@/features/player';
+import { useEffect, useRef, useState } from 'react';
 
 interface UsePlayerSearchFieldProps {
   searchTerm: string;
@@ -39,6 +39,13 @@ export const usePlayerSearchFieldUI = ({
     }
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsOpen(true);
+    setTimeout(() => {
+      e.target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
@@ -62,8 +69,8 @@ export const usePlayerSearchFieldUI = ({
     showDropdown,
     containerRef,
     canCreate,
-    openDropdown: () => setIsOpen(true),
     handleSelect,
     handleCreateNew,
+    handleFocus,
   };
 };

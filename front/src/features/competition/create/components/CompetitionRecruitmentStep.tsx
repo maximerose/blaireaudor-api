@@ -1,19 +1,19 @@
+import { SelectedPlayersList } from '@/features/competition/enrollment';
+import type { CreateCompetitionFormData } from '@/features/competition/validations';
+import type { Player, PlayerCompact } from '@/features/player';
 import {
   Button,
-  BUTTON_VARIANT,
   BUTTON_SIZE,
-  SectionHeader,
-  SECTION_HEADER_VARIANT,
-  FORM,
+  BUTTON_VARIANT,
   BUTTONS,
-  Stack,
-  Row,
+  FORM,
   ICONS,
+  Row,
+  SECTION_HEADER_VARIANT,
+  SectionHeader,
+  Stack,
 } from '@/shared';
-import type { Player, PlayerCompact } from '@/features/player';
 import type { UseFormReturn } from 'react-hook-form';
-import type { CreateCompetitionFormData } from '@/features/competition/validations';
-import { SelectedPlayersList } from '@/features/competition/enrollment';
 import { PlayerSearchField } from '../../fields';
 
 interface PlayerManagement {
@@ -57,20 +57,22 @@ export const CompetitionRecruitmentStep = ({
       />
 
       <Stack gap="sm" className="w-full">
-        <PlayerSearchField
-          searchTerm={searchTerm}
-          setSearchTerm={players.setSearchTerm}
-          isSearching={players.searching}
-          results={results}
-          onSelect={(p) => {
-            players.add(p);
-            players.setSearchTerm('');
-          }}
-          onCreateNew={(name) => {
-            players.addNew(name);
-            players.setSearchTerm('');
-          }}
-        />
+        <div className="transition-[padding] duration-200 focus-within:pb-64">
+          <PlayerSearchField
+            searchTerm={searchTerm}
+            setSearchTerm={players.setSearchTerm}
+            isSearching={players.searching}
+            results={results}
+            onSelect={(p) => {
+              players.add(p);
+              players.setSearchTerm('');
+            }}
+            onCreateNew={(name) => {
+              players.addNew(name);
+              players.setSearchTerm('');
+            }}
+          />
+        </div>
 
         <SelectedPlayersList
           participants={currentPlayers}

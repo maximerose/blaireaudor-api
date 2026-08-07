@@ -1,19 +1,19 @@
+import { useInlineEnrollmentUI } from '@/features/competition/enrollment/hooks';
+import { PlayerSearchField } from '@/features/competition/fields';
+import { type PlayerCompact } from '@/features/player';
 import {
-  Button,
-  Card,
-  BUTTON_VARIANT,
-  BUTTON_SIZE,
-  CARD_VARIANT,
-  FORM,
   BUTTONS,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  Button,
+  CARD_VARIANT,
+  Card,
+  FORM,
   Row,
   Stack,
   cn,
 } from '@/shared';
-import { type PlayerCompact } from '@/features/player';
-import { useInlineEnrollmentUI } from '@/features/competition/enrollment/hooks';
 import { SelectedPlayerBadge } from './SelectedPlayerBadge';
-import { PlayerSearchField } from '@/features/competition/fields';
 
 export const InlineEnrollment = () => {
   const {
@@ -74,16 +74,18 @@ export const InlineEnrollment = () => {
           aria-label="Formulaire de recrutement"
         >
           <Stack gap="md" className="w-full">
-            <PlayerSearchField
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              isSearching={isSearching}
-              results={searchResults}
-              onSelect={addExistingPlayer}
-              onCreateNew={canCreatePlayer ? addNewPlayer : undefined}
-              placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
-              variant="inline"
-            />
+            <div className="transition-[padding] duration-200 focus-within:pb-64">
+              <PlayerSearchField
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                isSearching={isSearching}
+                results={searchResults}
+                onSelect={addExistingPlayer}
+                onCreateNew={canCreatePlayer ? addNewPlayer : undefined}
+                placeholder={FORM.PLAYER.LABELS.SEARCH_PLAYER}
+                variant="inline"
+              />
+            </div>
 
             {newPlayers.length > 0 && (
               <Row

@@ -1,16 +1,16 @@
+import { type PlayerCompact } from '@/features/player';
+import { PlayerSearchResultItem } from '@/features/player/components/PlayerSearchResultItem';
 import {
   Card,
   CARD_VARIANT,
+  cn,
+  FORM,
+  ICONS,
+  Input,
   Text,
   TEXT_VARIANT,
-  ICONS,
-  FORM,
-  cn,
-  Input,
 } from '@/shared';
-import { type PlayerCompact } from '@/features/player';
 import { usePlayerSearchFieldUI } from './hooks.ts';
-import { PlayerSearchResultItem } from '@/features/player/components/PlayerSearchResultItem';
 
 interface PlayerSearchFieldProps {
   searchTerm: string;
@@ -39,9 +39,9 @@ export const PlayerSearchField = ({
     showDropdown,
     containerRef,
     canCreate,
-    openDropdown,
     handleSelect,
     handleCreateNew,
+    handleFocus,
   } = usePlayerSearchFieldUI({ searchTerm, results, onSelect, onCreateNew });
 
   return (
@@ -52,7 +52,7 @@ export const PlayerSearchField = ({
         value={searchTerm}
         disabled={disabled}
         onChange={(e) => setSearchTerm(e.target.value)}
-        onFocus={openDropdown}
+        onFocus={handleFocus}
         icon={isSearching ? ICONS.LOADING : ICONS.SEARCH}
         role="combobox"
         aria-autocomplete="list"

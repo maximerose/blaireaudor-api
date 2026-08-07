@@ -94,7 +94,7 @@ export const RefereeManagement = () => {
       )}
 
       <Row justify="center" className="w-full pt-2">
-        <div className="w-full sm:max-w-md">
+        <div className="w-full sm:max-w-md transition-[padding] duration-200 focus-within:pb-64">
           <PlayerSearchField
             searchTerm={searchQuery}
             setSearchTerm={setSearchQuery}
