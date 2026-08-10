@@ -21,13 +21,13 @@ const TABLE_COLUMNS: Column[] = [
   {
     id: 'player',
     label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_PLAYER,
-    colSpan: 'col-span-6 md:col-span-3',
+    colSpan: 'hidden md:block md:col-span-3',
     align: 'text-center',
   },
   {
     id: 'description',
     label: COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.TABLE.COLUMN_ACTION,
-    colSpan: 'hidden md:block md:col-span-5',
+    colSpan: 'col-span-6 md:col-span-5',
     align: 'text-center',
     noSort: true,
   },

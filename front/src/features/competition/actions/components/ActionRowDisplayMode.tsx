@@ -1,5 +1,3 @@
-// front/src/features/competition/actions/components/ActionRowDisplayMode.tsx
-
 import { useActionRow } from '@/features/competition/actions/hooks';
 import { useCompetitionAdmin } from '@/features/competition/admin';
 import { COMPETITION_UI } from '@/features/competition/constants';
@@ -10,13 +8,13 @@ import {
   cn,
   formatCompactDate,
   Grid,
-  IconButton,
   ICONS,
   Row,
   Stack,
   Text,
   TEXT_THEME,
   TEXT_VARIANT,
+  UI,
 } from '@/shared';
 
 interface ActionRowDisplayModeProps {
@@ -28,7 +26,7 @@ export const ActionRowDisplayMode = ({
   action,
   onEdit,
 }: ActionRowDisplayModeProps) => {
-  const { handleActionStatus } = useCompetitionAdmin();
+  const { handleActionStatus, isChangingStatus } = useCompetitionAdmin();
   const { competition, isAdmin } = useCompetitionContext();
 
   const {
@@ -43,19 +41,26 @@ export const ActionRowDisplayMode = ({
     canEdit,
   } = useActionRow(action);
 
-  const canArbitrate = isPending && isAdmin && !competition.is_finished;
+  const isFinished = competition.is_finished;
+  const statusLower = action.status?.toLowerCase();
+
+  const canArbitrate = isPending && isAdmin && !isFinished;
+  const isValidated = statusLower === ActionStatus.VALIDATED;
+  const canInvalidate = isValidated && isAdmin && !isFinished;
+  const hasActions = canArbitrate || canInvalidate || canEdit;
 
   return (
     <div
       className={cn(
-        'flex flex-col border-b border-border-subtle/30 last:border-0 w-full relative group',
+        'flex flex-col border-b border-border-subtle/30 last:border-0 w-full relative group transition-opacity',
         playerIsMe ? 'bg-player-me-bg' : 'bg-transparent',
+        isChangingStatus && 'opacity-50 pointer-events-none',
       )}
     >
       {/* 🥞 A. LIGNE PRINCIPALE DE CONTENU */}
       <Grid cols={12} gap="sm" align="center" className="p-4 w-full">
         {/* 📅 1. DATE */}
-        <div className="col-span-2">
+        <div className="col-span-3 md:col-span-2">
           <Text
             variant={TEXT_VARIANT.MICRO}
             colorTheme={TEXT_THEME.DIMMED}
@@ -65,8 +70,8 @@ export const ActionRowDisplayMode = ({
           </Text>
         </div>
 
-        {/* 💬 2. INFOS DU MÉFAIT (Typographie hiérarchisée et harmonieuse) */}
-        <div className="col-span-7 md:col-span-8 flex flex-col text-left min-w-0">
+        {/* 👤 2. COLONNE JOUEUR (Desktop uniquement) */}
+        <div className="hidden md:flex flex-col text-center min-w-0 md:col-span-3">
           <Text
             variant={TEXT_VARIANT.CAPTION}
             className={cn(
@@ -74,14 +79,27 @@ export const ActionRowDisplayMode = ({
               playerIsMe ? 'text-player-me font-black' : 'text-player-other',
             )}
           >
-            {playerName}
+            {shouldHidePoints && !playerIsMe ? UI.ANONYMOUS : playerName}
+          </Text>
+        </div>
+
+        {/* 💬 3. COLONNE ACTION / MÉFAIT */}
+        <div className="col-span-6 md:col-span-5 flex flex-col text-center min-w-0">
+          <Text
+            variant={TEXT_VARIANT.CAPTION}
+            className={cn(
+              'text-xs font-bold tracking-wide transition-default md:hidden block normal-case mb-0.5',
+              playerIsMe ? 'text-player-me font-black' : 'text-player-other',
+            )}
+          >
+            {shouldHidePoints && !playerIsMe ? UI.ANONYMOUS : playerName}
           </Text>
 
-          <Stack gap="none" className="min-w-0 mt-0.5">
+          <Stack gap="none" className="min-w-0">
             <Text
               variant={TEXT_VARIANT.BODY}
               colorTheme={TEXT_THEME.WARNING}
-              className="text-sm normal-case italic tracking-normal line-clamp-2 leading-tight"
+              className="text-xs sm:text-sm normal-case italic tracking-normal line-clamp-2 leading-tight"
             >
               {action.description}
             </Text>
@@ -106,14 +124,11 @@ export const ActionRowDisplayMode = ({
           </Stack>
         </div>
 
-        {/* 🎯 3. COMPTEUR DE POINTS GÉRAL */}
+        {/* 🎯 4. COMPTEUR DE POINTS */}
         <Stack
           gap="none"
           align="end"
-          className={cn(
-            'col-span-3 md:col-span-2 text-right justify-center min-w-0',
-            canEdit && 'max-md:pr-3',
-          )}
+          className="col-span-3 md:col-span-2 text-right justify-center min-w-0"
         >
           {multiplier > 1 && !shouldHidePoints && (
             <Row gap="xs" align="center" justify="end" className="mb-0.5">
@@ -155,74 +170,60 @@ export const ActionRowDisplayMode = ({
         </Stack>
       </Grid>
 
-      {/* 📱 B. INTERFACE DE CONTROLE MOBILE (Bannières d'arbitrage Full-Width) */}
-      {canArbitrate && (
-        <div className="w-full grid grid-cols-2 border-t border-border-subtle/50 md:hidden animate-fade-in divide-x divide-border-subtle/50 select-none">
-          <button
-            type="button"
-            onClick={() =>
-              handleActionStatus(action.id, ActionStatus.VALIDATED)
-            }
-            className="py-3 bg-success-soft/20 text-success-bright font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-success/20"
-          >
-            <span className="text-xs">{ICONS.SUCCESS}</span> {BUTTONS.ACCEPT}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleActionStatus(action.id, ActionStatus.REJECTED)}
-            className="py-3 bg-danger-soft/20 text-danger-bright font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-danger/20"
-          >
-            <span className="text-xs">{ICONS.CANCEL}</span> {BUTTONS.REJECT}
-          </button>
-        </div>
-      )}
+      {/* 🥞 B. BANNIÈRE DE CONTRÔLE ET ACTIONS */}
+      {hasActions && (
+        <div className="w-full flex border-t border-border-subtle/50 animate-fade-in divide-x divide-border-subtle/50 select-none">
+          {canArbitrate && (
+            <>
+              <button
+                type="button"
+                disabled={isChangingStatus}
+                onClick={() =>
+                  handleActionStatus(action.id, ActionStatus.VALIDATED)
+                }
+                className="flex-1 py-2 bg-success-soft/20 text-success-bright hover:bg-success/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-success/30 disabled:opacity-50 cursor-pointer"
+              >
+                <span className="text-xs">{ICONS.SUCCESS}</span>{' '}
+                {BUTTONS.ACCEPT}
+              </button>
 
-      {/* 🖥️ C. INTERFACE DE CONTROLE DESKTOP (Menu en survol à droite) */}
-      {/* Si l'arbitrage est possible, on affiche le pack complet en survol */}
-      {canArbitrate && (
-        <div className="hidden md:flex items-center gap-1.5 absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-default bg-dark-lighter/90 backdrop-blur-xs pl-2 py-1 rounded-l-xl z-10">
-          <IconButton
-            icon={ICONS.SUCCESS}
-            className="bg-success-soft border border-success-border/30 text-success-bright hover:bg-success/20"
-            onClick={() =>
-              handleActionStatus(action.id, ActionStatus.VALIDATED)
-            }
-            title={BUTTONS.ACCEPT}
-          />
-          <IconButton
-            icon={ICONS.CANCEL}
-            className="bg-danger-soft border border-danger-border/30 text-danger-bright hover:bg-danger/20"
-            onClick={() => handleActionStatus(action.id, ActionStatus.REJECTED)}
-            title={BUTTONS.REJECT}
-          />
+              <button
+                type="button"
+                disabled={isChangingStatus}
+                onClick={() =>
+                  handleActionStatus(action.id, ActionStatus.REJECTED)
+                }
+                className="flex-1 py-2 bg-danger-soft/20 text-danger-bright hover:bg-danger/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-danger/30 disabled:opacity-50 cursor-pointer"
+              >
+                <span className="text-xs">{ICONS.CANCEL}</span> {BUTTONS.REJECT}
+              </button>
+            </>
+          )}
+
+          {canInvalidate && !canArbitrate && (
+            <button
+              type="button"
+              disabled={isChangingStatus}
+              onClick={() =>
+                handleActionStatus(action.id, ActionStatus.REJECTED)
+              }
+              className="flex-1 py-2 bg-danger-soft/10 text-danger-bright hover:bg-danger-soft/20 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-danger/30 disabled:opacity-50 cursor-pointer"
+            >
+              <span className="text-xs">{ICONS.CANCEL}</span> Invalider l'action
+            </button>
+          )}
+
           {canEdit && (
-            <IconButton
-              icon={ICONS.EDIT}
+            <button
+              type="button"
+              disabled={isChangingStatus}
               onClick={onEdit}
-              title={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ARIA.UPDATE_ACTION}
-            />
+              className="flex-1 py-2 bg-white/5 text-dimmed hover:text-white hover:bg-white/10 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-default active:bg-white/15 disabled:opacity-50 cursor-pointer"
+            >
+              <span className="text-xs">{ICONS.EDIT}</span> Modifier
+            </button>
           )}
         </div>
-      )}
-
-      {/* Si pas d'arbitrage requis mais modifiable, bouton d'édition classique en survol sur Desktop */}
-      {canEdit && !canArbitrate && (
-        <IconButton
-          icon={ICONS.EDIT}
-          onClick={onEdit}
-          className="absolute right-2 top-1/2 -translate-y-1/2 max-md:hidden opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-default z-10"
-          aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ARIA.UPDATE_ACTION}
-        />
-      )}
-
-      {/* 📱 D. INTERFACE D'ÉDITION MOBILE (Bouton d'édition toujours accessible en haut à droite) */}
-      {canEdit && (
-        <IconButton
-          icon={ICONS.EDIT}
-          onClick={onEdit}
-          className="absolute right-1 top-3 md:hidden opacity-50 focus:opacity-100 p-1"
-          aria-label={COMPETITION_UI.DETAIL.SECTIONS.ACTIONS.ARIA.UPDATE_ACTION}
-        />
       )}
     </div>
   );
