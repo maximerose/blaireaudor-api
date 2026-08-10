@@ -1,16 +1,16 @@
+import { useActionRowInteraction } from '@/features/competition/actions/hooks';
+import { useCompetitionAdmin } from '@/features/competition/admin';
+import { useCompetitionContext } from '@/features/competition/context';
+import type { Action } from '@/features/competition/types';
 import {
   Button,
   BUTTON_VARIANT,
   BUTTONS,
-  preventDefault,
   Grid,
+  preventDefault,
   Row,
   Stack,
 } from '@/shared';
-import type { Action } from '@/features/competition/types';
-import { useCompetitionContext } from '@/features/competition/context';
-import { useCompetitionAdmin } from '@/features/competition/admin';
-import { useActionRowInteraction } from '@/features/competition/actions/hooks';
 import { ActionDescriptionField, ActionPointsField } from '../fields';
 
 interface ActionRowEditModeProps {
@@ -23,7 +23,7 @@ export const ActionRowEditMode = ({
   onCancel,
 }: ActionRowEditModeProps) => {
   const { isAdmin } = useCompetitionContext();
-  const { handleUpdate } = useCompetitionAdmin();
+  const { handleUpdate, isUpdatingAction } = useCompetitionAdmin();
 
   const { editData, setEditData, handleSave } = useActionRowInteraction(
     action,
@@ -68,6 +68,7 @@ export const ActionRowEditMode = ({
           variant={BUTTON_VARIANT.GHOST_NEUTRAL}
           onClick={onCancel}
           type="button"
+          disabled={isUpdatingAction}
         >
           {BUTTONS.CANCEL}
         </Button>
@@ -75,6 +76,8 @@ export const ActionRowEditMode = ({
           className="flex-1"
           variant={BUTTON_VARIANT.PRIMARY}
           type="submit"
+          isLoading={isUpdatingAction}
+          disabled={isUpdatingAction}
         >
           {BUTTONS.SAVE}
         </Button>
