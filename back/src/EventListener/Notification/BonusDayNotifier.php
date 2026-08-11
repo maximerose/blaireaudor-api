@@ -52,7 +52,15 @@ final readonly class BonusDayNotifier
         $diffDays = (int) $today->diff($bonusDate)->format('%r%a');
         $multiplier = $bonus->getMultiplier();
 
-        if ($diffDays <= 0) {
+        if ($diffDays < 0) {
+            return \sprintf(
+                $content['msg_past'],
+                $multiplier,
+                $bonusDate->format('d/m/Y')
+            );
+        }
+
+        if (0 === $diffDays) {
             return \sprintf($content['msg_today'], $multiplier);
         }
 
