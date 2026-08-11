@@ -46,7 +46,9 @@ final class NotificationConstants
         self::TYPE_BONUS_TRIGGERED => [
             'label' => 'Jours Bonus activés',
             'title' => 'Multiplicateur activé !',
-            'msg' => 'Les points sont multipliés par %d aujourd\'hui !',
+            'msg_today' => 'Les points sont multipliés par %d aujourd\'hui !',
+            'msg_tomorrow' => 'Les points seront multipliés par %d demain !',
+            'msg_future' => 'Les points seront multipliés par %d dans %d jours (%s) !',
         ],
         self::TYPE_PLAYER_JOINED => [
             'label' => 'Nouveaux concurrents dans l\'arène',
