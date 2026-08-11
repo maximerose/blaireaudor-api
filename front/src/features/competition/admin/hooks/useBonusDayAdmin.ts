@@ -1,14 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
+import { bonusDayService } from '@/features/competition/services';
+import type { BonusDay } from '@/features/competition/types';
 import {
   ERRORS,
+  handleApiError,
   QUERY_KEYS,
   SUCCESS,
   type ApiError,
-  handleApiError,
 } from '@/shared';
-import type { BonusDay } from '@/features/competition/types';
-import { bonusDayService } from '@/features/competition/services';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 
 export const useBonusDayAdmin = (
   competitionId: string,
@@ -23,6 +23,10 @@ export const useBonusDayAdmin = (
 
     queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.competition.all,
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.competition.byId(competitionId).bonus,
     });
 
     onRefresh?.();

@@ -1,7 +1,6 @@
 export * from './useAdminSettings';
 export * from './useBonusDayAdmin';
 export * from './useBonusDayForm';
-export * from './useBonusDays';
 export * from './useCompetitionAdmin';
 export * from './useCompetitionDelete';
 export * from './useCompetitionForm';

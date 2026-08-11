@@ -1,20 +1,20 @@
-import { useMemo } from 'react';
-import { getLocalDayString, sortByDate, ERRORS, RULES } from '@/shared';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useCompetitionContext } from '@/features/competition/context';
-import { useBonusDays } from './useBonusDays';
-import { useBonusDayAdmin } from './useBonusDayAdmin';
-import { useCompetitionDateLimits } from '@/features/competition/view';
+import type { BonusDay } from '@/features/competition/types';
 import {
   getBonusDaySchema,
   type BonusDayFormData,
 } from '@/features/competition/validations';
-import type { BonusDay } from '@/features/competition/types';
+import { useCompetitionDateLimits } from '@/features/competition/view';
+import { ERRORS, getLocalDayString, RULES, sortByDate } from '@/shared';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { useBonusDayAdmin } from './useBonusDayAdmin';
 
 export const useBonusDayForm = () => {
   const { competition, refresh } = useCompetitionContext();
-  const { data: freshBonusDays } = useBonusDays(competition.id);
+  const bonusDays = competition?.bonus_days ?? [];
+
   const { addBonus, deleteBonus, isAdding } = useBonusDayAdmin(
     competition.id,
     refresh,
@@ -37,12 +37,12 @@ export const useBonusDayForm = () => {
   });
 
   const sortedBonusDays = useMemo(
-    () => sortByDate(freshBonusDays || [], 'date'),
-    [freshBonusDays],
+    () => sortByDate(bonusDays || [], 'date'),
+    [bonusDays],
   );
 
   const onSubmit = (data: BonusDayFormData) => {
-    const isDuplicate = (freshBonusDays || []).some(
+    const isDuplicate = (bonusDays || []).some(
       (bd: BonusDay) =>
         getLocalDayString(bd.date) === getLocalDayString(data.date),
     );
@@ -55,8 +55,14 @@ export const useBonusDayForm = () => {
       return;
     }
 
-    addBonus({ date: data.date, multiplier: data.multiplier });
-    reset();
+    addBonus(
+      { date: data.date, multiplier: data.multiplier },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      },
+    );
   };
 
   return {

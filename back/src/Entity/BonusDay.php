@@ -9,7 +9,6 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Constants\AppConstants;
@@ -38,14 +37,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     expression: 'this.getCompetition() == null or (this.getDate() >= this.getCompetition().getStartDate() and (this.getCompetition().getEndDate() == null or this.getDate() <= this.getCompetition().getEndDate()))',
     message: ErrorMessages::BONUS_DATE_OUT_OF_RANGE
 )]
-#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['competition' => 'exact', 'competition.id' => 'exact'])]
 #[ApiResource(
     operations: [
         new Get(
             security: "is_granted('".CompetitionVoter::VIEW."', object.getCompetition())",
             normalizationContext: ['groups' => ['bonus:read']]
         ),
-        new GetCollection(normalizationContext: ['groups' => ['bonus:read']]),
         new Post(
             securityPostDenormalize: "is_granted('".CompetitionVoter::REFEREE."', object.getCompetition())",
             securityPostDenormalizeMessage: ErrorMessages::BONUS_DENIED_CREATE,

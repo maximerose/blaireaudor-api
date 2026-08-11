@@ -41,7 +41,10 @@ export const competitionService = {
     const response = await apiFetch(API.ENDPOINTS.COMPETITIONS.BY_CODE(code), {
       signal,
     });
-    return response.json();
+
+    const data = await response.json();
+
+    return data;
   },
 
   checkJoinCode: async (
@@ -96,6 +99,7 @@ export const competitionService = {
       `${API.ENDPOINTS.COMPETITIONS.ACTIONS(id)}?${params.toString()}`,
       { signal },
     );
+
     return response.json();
   },
 
