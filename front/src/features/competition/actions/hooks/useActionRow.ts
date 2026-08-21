@@ -1,6 +1,6 @@
 import { useAuthContext } from '@/features/account/context/AuthContext';
-import { ActionStatus, type Action } from '@/features/competition/types';
 import { useCompetitionContext } from '@/features/competition/context';
+import { ActionStatus, type Action } from '@/features/competition/types';
 import { UI } from '@/shared';
 
 export const useActionRow = (action: Action) => {
@@ -19,7 +19,7 @@ export const useActionRow = (action: Action) => {
 
   const canEdit =
     !competition.is_finished && (isAdmin || (isPending && creatorIsMe));
-  const shouldHidePoints = competition.fog_of_war && !canEdit;
+  const shouldHidePoints = competition.fog_of_war && (!canEdit || isAdmin);
 
   const pointsDisplay = shouldHidePoints
     ? '??'
